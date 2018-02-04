@@ -13,7 +13,7 @@ Pyzik explores big music directories like:
 
 Pyzik finds datas from albums directories name and saves albums in database. 
 
-So you can find your music quikly.
+So you can find your music quickly.
 
 
 
