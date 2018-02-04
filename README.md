@@ -32,8 +32,9 @@ Coming soon:
 
 +Reading tags
 
-+Manager for music directories like ./Artist/1972 - Album1
++Manager for music directories like 
 
+                                    ./Artist/1972 - Album1
                                     ./Artist/1975 - Album2
 
 
