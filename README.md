@@ -2,17 +2,12 @@
 
 Pyzik explores big music directories like:
 
-./Rock/Artist1 - [1965] - Album1
-
-./Rock/Artist1 - [1967] - Album2
-
-./Rock/Artist2 - Album2 (1972)
-
-...
-
-./BLues/Artist3 - Album4
-
-...
+                                    ./Rock/Artist1 - [1965] - Album1
+                                    ./Rock/Artist1 - [1967] - Album2
+                                    ./Rock/Artist2 - Album2 (1972)
+                                    ...
+                                    ./Blues/Artist3 - Album4
+                                    ...
 
 
 
@@ -24,7 +19,15 @@ So you can find your music quikly.
 
 
 
-Coming soon:
+
+# To start the pre project use the command line: 
+
+python3 ./pyzik/mainWindowLauncher.py
+
+
+
+
+# Coming soon:
 
 +Playing albums with vlc module
 
@@ -40,6 +43,3 @@ Coming soon:
 
 
 
-To start the pre project use the command line: 
-
-python3 ./pyzik/mainWindowLauncher.py
