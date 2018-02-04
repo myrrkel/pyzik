@@ -14,8 +14,14 @@ Pyzik explores big music directories like:
 
 ...
 
+
+
 Pizic finds datas from albums directories name 
-and saves albums in database. So you can find your music quikly.
+
+and saves albums in database. 
+
+So you can find your music quikly.
+
 
 
 Coming soon:
@@ -27,7 +33,9 @@ Coming soon:
 +Reading tags
 
 +Manager for music directories like ./Artist/1972 - Album1
-									./Artist/1975 - Album2
+
+                                    ./Artist/1975 - Album2
+
 
 
 
