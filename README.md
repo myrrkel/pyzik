@@ -27,13 +27,13 @@ python3 ./pyzik/mainWindowLauncher.py
 
 # Coming soon:
 
-+Playing albums with vlc module
++ Playing albums with vlc module
 
-+Displaying covers
++ Displaying covers
 
-+Reading tags
++ Reading tags
 
-+Manager for music directories like 
++ Manager for music directories like 
 
                                     ./Artist/1972 - Album1
                                     ./Artist/1975 - Album2
