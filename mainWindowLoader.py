@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtGui
-import mainWindow  # import du fichier mainWindow.py généré par pyuic5
+import mainWindow  # import of mainWindow.py made with pyuic5
 from musicBase import * 
 from musicDirectory import *
 from database import *
