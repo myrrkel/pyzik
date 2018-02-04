@@ -107,10 +107,12 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def initAlbumTableWidget(self):
         self.ui.tableWidgetAlbums.setRowCount(0)
-        header = self.ui.tableWidgetAlbums.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        header.hideSection(2)
+        hHeader = self.ui.tableWidgetAlbums.horizontalHeader()
+        vHeader = self.ui.tableWidgetAlbums.verticalHeader()
+        vHeader.hide()
+        hHeader.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        hHeader.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        hHeader.hideSection(2)
         #header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
 
     
@@ -143,11 +145,23 @@ if __name__ == '__main__':
     
     mb.loadMusicBase()
 
+    #Load & Set the DarkStyleSheet
+    app.setStyleSheet(qdarkgraystyle.load_stylesheet_pyqt5())
+
 
     #mb.exploreAlbumsDirectories()
 
 
-    window = MainWindowLoader()
+    
+    translator = QtCore.QTranslator(app)
+    locale = QtCore.QLocale.system().name()
+    # translator for built-in qt strings
+    #print(locale)
+    translator.load('pyzik_%s.qm' % locale)
 
+    app.installTranslator(translator)
+
+
+    window = MainWindowLoader()
     window.show()
     sys.exit(app.exec_())

@@ -82,13 +82,13 @@ if __name__ == '__main__':
     translator.load('pyzik_%s.qm' % locale)
 
     app.installTranslator(translator)
-    sys.exit(app.exec_())
+    #sys.exit(app.exec_())
 
    
 
 
     #Load & Set the DarkStyleSheet
-    app.setStyleSheet(qdarkgraystyle.load_stylesheet_pyqt5())
+    #app.setStyleSheet(qdarkgraystyle.load_stylesheet_pyqt5())
 
 
     mb = musicBase()
