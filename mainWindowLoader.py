@@ -51,6 +51,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             model = self.ui.listViewArtists.model()
             self.ui.statusBar.showMessage(  "selected: "+model.data(index) \
                                         +" id="+str(model.item(nrow).artist.artistID))
+            self.ui.labelArtist.setText(model.item(nrow).artist.name)
         
             self.showAlbums(self.ui.listViewArtists.model().item(nrow).artist)
 
