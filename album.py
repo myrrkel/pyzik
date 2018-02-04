@@ -55,6 +55,7 @@ class album:
 		self.dirName = dirname
 		self.dirPath = ""
 		self.artistID = ""
+		self.musicDirectoryID = ""
 		self.artistName = ""
 		self.year = 0
 		self.cover = ""
@@ -66,7 +67,9 @@ class album:
 	def load(self,row):
 		self.albumID = row[0]
 		self.title = row[1]
-		self.artistID = row[2]
+		self.year = row[2]
+		self.dirPath = row[3]
+		self.artistID = row[4]
 
 	def formatTitle(self,title):
 		return title.title()

@@ -5,6 +5,7 @@
 from albumCollection import *
 from artistCollection import *
 from musicDirectoryCollection import *
+import os.path
 
 
 
@@ -21,9 +22,11 @@ class musicBase:
 		self.musicDirectoryCol = musicDirectoryCollection()
 
 	def loadMusicBase(self):
+		self.musicDirectoryCol.loadMusicDirectories()
 		self.artistCol.loadArtists()
 		self.albumCol.loadAlbums()
 		self.addAlbumsToArtists()
+
 
 	def exploreAlbumsDirectories(self):
 		for mdir in self.musicDirectoryCol.musicDirectories:
@@ -38,8 +41,11 @@ class musicBase:
 		
 		dirlist = next(os.walk(musicDir.dirPath))[1]
 
-		for sdir in dirlist:
-			curAlb = album(sdir)
+		for sDirName in dirlist:
+			curAlb = album(sDirName)
+			curAlb.musicDirectoryID = musicDir.musicDirectoryID
+			curAlb.dirPath = os.path.join(musicDir.dirPath,sDirName)
+
 			
 			if curAlb.toVerify == False:
 				#Artist name et album title has been found
@@ -57,10 +63,16 @@ class musicBase:
 					else:
 						print("Album "+curAlb.title+" already exists for "+curArt.name+" ArtistID="+str(curArt.artistID))
 				else:
-					print("No artist for "+sdir)
+					print("No artist for "+sDirName)
 
 
 	def addAlbumsToArtists(self):
 		for alb in self.albumCol.albums:
 			artists_found = self.artistCol.getArtistByID(alb.artistID)
 			artists_found[0].albums.append(alb)
+
+
+	def emptyDatas(self):
+		self.artistCol.artists = []
+		self.albumCol.albums = []
+		self.musicDirectoryCol.musicDirectories = []

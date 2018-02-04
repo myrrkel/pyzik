@@ -39,9 +39,10 @@ class albumCollection:
 
 
 	def insertAlbumDB(self,album):
-		sqlInsertAlbum = """	INSERT INTO albums (title, artistID)
-								VALUES ('{title}','{artistID}');
-						  """.format(title=album.title,artistID=album.artistID)
+		sqlInsertAlbum = """	INSERT INTO albums (title, artistID,dirPath,year,musicDirectoryID)
+								VALUES ('{title}','{artistID}','{dirPath}','{year}','{musicDirectoryID}');
+						  """.format(title=album.title,artistID=album.artistID,dirPath=album.dirPath,\
+						  		year=album.year,musicDirectoryID=album.musicDirectoryID)
 
 		album.albumID = self.db.insertLine(sqlInsertAlbum)
 
@@ -49,7 +50,7 @@ class albumCollection:
 
 
 	def loadAlbums(self):
-		for row_alb in self.db.getSelect("SELECT albumID, title, artistID FROM albums"):
+		for row_alb in self.db.getSelect("SELECT albumID, title, year, dirPath, artistID FROM albums"):
 			alb = album("")
 			alb.load(row_alb)
 			self.addAlbum(alb)

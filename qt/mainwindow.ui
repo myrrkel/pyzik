@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+    <horstretch>100</horstretch>
+    <verstretch>100</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
+  <property name="dockOptions">
+   <set>QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks|QMainWindow::ForceTabbedDocks</set>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>100</horstretch>
+     <verstretch>100</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QGridLayout" name="gridLayout" rowstretch="0" columnstretch="0">
+    <property name="sizeConstraint">
+     <enum>QLayout::SetMaximumSize</enum>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QWidget" name="h_mainWidget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>100</horstretch>
+        <verstretch>100</verstretch>
+       </sizepolicy>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMaximumSize</enum>
+       </property>
+       <property name="leftMargin">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>6</number>
+       </property>
+       <property name="rightMargin">
+        <number>6</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QListView" name="listViewArtists">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>20</horstretch>
+           <verstretch>100</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="showDropIndicator" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="resizeMode">
+          <enum>QListView::Adjust</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="v_artistWidget" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>80</horstretch>
+           <verstretch>100</verstretch>
+          </sizepolicy>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QWidget" name="verticalWidget" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>0</height>
+             </size>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_6">
+             <item row="0" column="0">
+              <widget class="QLabel" name="labelArtist">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
+                 <horstretch>100</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>12</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Artist</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QWidget" name="h_albumsWidget" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>100</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>0</height>
+             </size>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QTableWidget" name="tableWidgetAlbums">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="autoScrollMargin">
+                <number>16</number>
+               </property>
+               <property name="selectionMode">
+                <enum>QAbstractItemView::SingleSelection</enum>
+               </property>
+               <property name="columnCount">
+                <number>3</number>
+               </property>
+               <column>
+                <property name="text">
+                 <string>Title</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Year</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>ID</string>
+                </property>
+               </column>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="v_albumWidget" native="true">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_5">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item row="1" column="0">
+                 <widget class="QTableWidget" name="tableWidgetTracks"/>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QGraphicsView" name="graphicsView"/>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuConfiguration">
+    <property name="title">
+     <string>Config</string>
+    </property>
+    <addaction name="actionMusic_directories"/>
+    <addaction name="actionExplore_music_directories"/>
+    <addaction name="actionDelete_database"/>
+   </widget>
+   <addaction name="menuConfiguration"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionMusic_directories">
+   <property name="text">
+    <string>Music directories</string>
+   </property>
+  </action>
+  <action name="actionExplore_music_directories">
+   <property name="text">
+    <string>Explore Music directories</string>
+   </property>
+  </action>
+  <action name="actionDelete_database">
+   <property name="text">
+    <string>Delete database</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
