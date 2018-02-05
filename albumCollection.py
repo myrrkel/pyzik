@@ -10,15 +10,22 @@ from database import *
 
 def filterByTitle_ArtistID(seq, title, art_id):
 	for el in seq:
-		if el.artistID==art_id:
-			if el.title==el.formatTitle(title): yield el
-			elif el.title.replace("AND","&") ==el.formatTitle(title): yield el
-			elif el.title ==el.formatTitle(title).replace("AND","&"): yield el
+		if el.artistID == art_id:
+			if el.title == el.formatTitle(title):
+				yield el
+				break
+			elif el.title.replace("And","&") == el.formatTitle(title):
+				yield el
+				break
+			elif el.title == el.formatTitle(title).replace("And","&"):
+				yield el
+				break
 
 def filterByAlbumID(seq, alb_id):
 	for el in seq:
-		print("filterByID:"+str(el.albumID)+" Res="+str(el.albumID==alb_id))
-		if int(el.albumID)==int(alb_id): yield el
+		if int(el.albumID) == int(alb_id):
+			yield el
+			break
 			
 
 class albumCollection:

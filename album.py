@@ -3,14 +3,11 @@
 
 import re
 import os
+from track import *
+from globalConstants import *
 
-def representInt(s):
-	#True if string s could be converted as an int
-	try: 
-		int(s)
-		return True
-	except ValueError:
-		return False
+
+
 
 def year(s):
 	"""
@@ -18,7 +15,7 @@ def year(s):
 	Return 0 if string s is not a year, else return the year on 4 digits. ex: "73"-->1973
 	"""
 	res = 0
-	if representInt(s):
+	if str.isdigit(s):
 		if len(s) == 4: 
 			res = int(s)
 		else:
@@ -27,9 +24,6 @@ def year(s):
 			#Sounds ridiculous to have 16 instead of 2016.
 	return res
 
-
-def fstrip(s):
-	return s.strip()
 
 
 def replaceSpecialChars(text):
@@ -101,7 +95,7 @@ class album:
 
 			#Split datas separeted by @
 			datas = salb.split("@")
-			datas = [fstrip(data) for data in datas]
+			datas = [str.strip(data) for data in datas]
 			
 			
 			if len(datas)>=3:
@@ -109,12 +103,11 @@ class album:
 				we suppose that the fisrt one is the artist name,
 				If the second is a year, the third is the title'''
 				
-				print(datas[0]+";"+datas[1]+";"+datas[2]+";")
-				if representInt(datas[1]):
+				if(datas[1].isdigit()):
 					self.title = datas[2]
 					self.year = year(datas[1])
 					self.artistName = datas[0]
-				elif representInt(datas[2]):
+				elif (datas[2].isdigit()):
 					self.title = datas[1]
 					self.year = year(datas[2])
 					self.artistName = datas[0]
@@ -139,9 +132,21 @@ class album:
 
 	def getTracks(self):
 		files = os.listdir(self.dirPath)
-		print("DirPath="+self.dirPath)
+		files.sort()
+		#files = os.scandir(self.dirPath)
+
+		nTrack = track("","")
+		#print("DirPath="+self.dirPath)
 		for file in files:
-			print("File:"+str(file))
+			#print("File:"+str(file))
+			sname = file.split(".")[0]
+			sext = file.split(".")[1]
+			if(sext in musicFilesExtension):
+				itrack = track(sname,sext)
+				self.tracks.append(itrack)
+				#print("Track:"+str(file))
+			
+
 
 		
 			

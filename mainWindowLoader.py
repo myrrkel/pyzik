@@ -105,6 +105,18 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def showAlbum(self,album):
         self.ui.statusBar.showMessage("selected: "+album.title)
         album.getTracks()
+        i=0
+        self.ui.tableWidgetTracks.setColumnCount(1)        
+        self.ui.tableWidgetTracks.setRowCount(0)
+        for track in album.tracks:
+            
+
+            self.ui.tableWidgetTracks.insertRow(i)
+            self.ui.tableWidgetTracks.setItem(i,0,QtWidgets.QTableWidgetItem(track.title))
+            #self.ui.tableWidgetTracks.setItem(i,1,QtWidgets.QTableWidgetItem(str(alb.year)))
+
+            i+=1
+
 
     def showArtists(self):   
         # Add artists in the QListView

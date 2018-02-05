@@ -15,7 +15,9 @@ def filterByName(seq, value):
 
 def filterByID(seq, value):
 	for el in seq:
-		if el.artistID==value: yield el
+		if el.artistID==value:
+			yield el
+			break
 
 
 
