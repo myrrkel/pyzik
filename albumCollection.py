@@ -8,12 +8,18 @@ from album import *
 from database import *
 
 
-def filterByTitle_ID(seq, title, art_id):
+def filterByTitle_ArtistID(seq, title, art_id):
 	for el in seq:
 		if el.artistID==art_id:
 			if el.title==el.formatTitle(title): yield el
 			elif el.title.replace("AND","&") ==el.formatTitle(title): yield el
 			elif el.title ==el.formatTitle(title).replace("AND","&"): yield el
+
+def filterByAlbumID(seq, alb_id):
+	for el in seq:
+		print("filterByID:"+str(el.albumID)+" Res="+str(el.albumID==alb_id))
+		if int(el.albumID)==int(alb_id): yield el
+			
 
 class albumCollection:
 	"""
@@ -56,12 +62,19 @@ class albumCollection:
 			self.addAlbum(alb)
 
 
-	def findAlbums(self,stitle,id):
+	def findAlbums(self,stitle,artID):
 		albumList = []
-		for alb in filterByTitle_ID(self.albums,stitle,id):
-			print("Found Album "+stitle+" id="+str(alb.albumID))
+		for alb in filterByTitle_ArtistID(self.albums,stitle,artID):
+			print("Found Album "+stitle+" artID="+str(alb.albumID))
 			albumList.append(alb)
 		return albumList
+
+
+	def getAlbum(self,albID):
+		resAlb = album("")
+		for alb in filterByAlbumID(self.albums,albID):
+			resAlb = alb
+		return resAlb
 
 
 	

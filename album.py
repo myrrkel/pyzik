@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import os
 
 def representInt(s):
 	#True if string s could be converted as an int
@@ -60,6 +61,7 @@ class album:
 		self.year = 0
 		self.cover = ""
 		self.toVerify = False
+		self.tracks = []
 
 		if dirname!="":
 			self.extractDataFromDirName()
@@ -133,6 +135,14 @@ class album:
 
 		
 		self.title = self.formatTitle(self.title)
+
+
+	def getTracks(self):
+		files = os.listdir(self.dirPath)
+		print("DirPath="+self.dirPath)
+		for file in files:
+			print("File:"+str(file))
+
 		
 			
 			

@@ -64,14 +64,26 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             self.showAlbums(self.ui.listViewArtists.model().item(nrow).artist)
 
     def onAlbumChange(self,item):
-        sel = self.ui.tableWidgetAlbums.selectionModel().selectedIndexes()
+        '''sel = self.ui.tableWidgetAlbums.selectionModel().selectedIndexes()
         if len(sel)==1:
             #index = self.ui.listViewArtists.selectionModel().selectedIndexes()[0]
             index = item
             nrow = index.row()
             model = self.ui.tableWidgetAlbums.model()
                     
-            self.showAlbum(mb.albumCol.albums[nrow])
+            self.showAlbum(mb.albumCol.albums[nrow])'''
+        selItems = self.ui.tableWidgetAlbums.selectedItems()
+        for item in selItems:
+            r = item.row()
+            albumIDSel = self.ui.tableWidgetAlbums.item(r,2).text()
+            print("AlbumIDSel="+str(albumIDSel))
+            alb = mb.albumCol.getAlbum(albumIDSel)
+            if(alb.albumID != 0):
+                self.showAlbum(alb)
+            else:
+                print("No album to show")
+
+
 
     def showAlbums(self,artist):
         # Add albums in the QTableView
@@ -92,6 +104,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def showAlbum(self,album):
         self.ui.statusBar.showMessage("selected: "+album.title)
+        album.getTracks()
 
     def showArtists(self):   
         # Add artists in the QListView
