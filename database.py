@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import sqlite3
+import sqlite3, os
 
 class database():
 	'''
@@ -9,8 +9,9 @@ class database():
 	'''
 
 	def __init__(self):
+		self.dataDir = "./data"
 		self.connection = ""
-		self.createConnection("./data/pyzik.db")
+		self.createConnection(self.dataDir+"/pyzik.db")
 		self.createTableArtists()
 		self.createTableAlbums()
 		self.createTableMusicDirectories()
@@ -22,6 +23,9 @@ class database():
 		:param db_file: database file
 		:return: Connection object or None
 		"""
+
+		if not os.path.exists(self.dataDir):
+			os.makedirs(self.dataDir)
 		
 		try:
 			self.connection = sqlite3.connect(db_file)

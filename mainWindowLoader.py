@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from PyQt5 import QtWidgets, QtGui
 import mainWindow  # import of mainWindow.py made with pyuic5
 from musicBase import * 
@@ -11,6 +14,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def __init__(self, parent=None):
         QtWidgets.QMainWindow.__init__(self, parent)
+        
         self.ui = mainWindow.Ui_MainWindow()
         self.ui.setupUi(self)
         self.setWindowTitle("PyZic")
@@ -31,6 +35,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
         #Write message in status bar
         self.ui.statusBar.showMessage("PyZic")
+        
     
     def onMenuMusicDirectories(self):
         dirDiag = DialogMusicDirectoriesLoader(mb)
@@ -144,6 +149,12 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
 if __name__ == '__main__':
     import sys
+
+
+    ##############################################
+    #           Play mp3 with VLC                #
+    ##############################################
+
     import vlc
     # creating a basic vlc instance
     instance = vlc.Instance()
@@ -161,9 +172,10 @@ if __name__ == '__main__':
     media.parse()
     #mediaplayer.play()
 
+
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle('plastique')
+    #app.setStyle('plastique')
     mb = musicBase()
 
     db = database()
