@@ -245,11 +245,25 @@
                 <property name="bottomMargin">
                  <number>0</number>
                 </property>
-                <item row="1" column="0">
+                <item row="2" column="0">
+                 <widget class="QPushButton" name="stopButton">
+                  <property name="text">
+                   <string>Stop</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
                  <widget class="QTableWidget" name="tableWidgetTracks"/>
                 </item>
                 <item row="0" column="0">
                  <widget class="QGraphicsView" name="graphicsView"/>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QPushButton" name="playButton">
+                  <property name="text">
+                   <string>Play</string>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </widget>

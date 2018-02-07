@@ -4,7 +4,7 @@
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
-# WARNING! All changes made in this file will be los
+# WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -122,14 +122,20 @@ class Ui_MainWindow(object):
         self.gridLayout_5.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_5.setSpacing(6)
         self.gridLayout_5.setObjectName("gridLayout_5")
+        self.stopButton = QtWidgets.QPushButton(self.v_albumWidget)
+        self.stopButton.setObjectName("stopButton")
+        self.gridLayout_5.addWidget(self.stopButton, 2, 0, 1, 1)
         self.tableWidgetTracks = QtWidgets.QTableWidget(self.v_albumWidget)
         self.tableWidgetTracks.setObjectName("tableWidgetTracks")
         self.tableWidgetTracks.setColumnCount(0)
         self.tableWidgetTracks.setRowCount(0)
-        self.gridLayout_5.addWidget(self.tableWidgetTracks, 1, 0, 1, 1)
+        self.gridLayout_5.addWidget(self.tableWidgetTracks, 4, 0, 1, 1)
         self.graphicsView = QtWidgets.QGraphicsView(self.v_albumWidget)
         self.graphicsView.setObjectName("graphicsView")
         self.gridLayout_5.addWidget(self.graphicsView, 0, 0, 1, 1)
+        self.playButton = QtWidgets.QPushButton(self.v_albumWidget)
+        self.playButton.setObjectName("playButton")
+        self.gridLayout_5.addWidget(self.playButton, 1, 0, 1, 1)
         self.horizontalLayout_3.addWidget(self.v_albumWidget)
         self.verticalLayout.addWidget(self.h_albumsWidget)
         self.horizontalLayout.addWidget(self.v_artistWidget)
@@ -168,6 +174,8 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "Year"))
         item = self.tableWidgetAlbums.horizontalHeaderItem(2)
         item.setText(_translate("MainWindow", "ID"))
+        self.stopButton.setText(_translate("MainWindow", "Stop"))
+        self.playButton.setText(_translate("MainWindow", "Play"))
         self.menuConfiguration.setTitle(_translate("MainWindow", "Config"))
         self.actionMusic_directories.setText(_translate("MainWindow", "Music directories"))
         self.actionExplore_music_directories.setText(_translate("MainWindow", "Explore Music directories"))
@@ -181,6 +189,5 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
-    
     sys.exit(app.exec_())
 

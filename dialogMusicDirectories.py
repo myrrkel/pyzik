@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/myrrkel/Workspace/Qt/pyzic/dialogmusicdirectories.ui'
+# Form implementation generated from reading ui file './qt/dialogmusicdirectories.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
