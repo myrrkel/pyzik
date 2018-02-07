@@ -15,10 +15,10 @@ Pyzik finds datas from albums directories name and saves albums in database.
 
 So you can find your music quickly.
 
-# REquirements
+# Requirements
 
-									pip install qdarkgraystyle
-									pip install python-vlc
+				pip install qdarkgraystyle
+				pip install python-vlc
 
 
 # To start the pre project use the command line: 
