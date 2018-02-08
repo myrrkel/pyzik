@@ -38,7 +38,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         #Write message in status bar
         self.ui.statusBar.showMessage("PyZic")
         
-    
+
     def onMenuMusicDirectories(self):
         dirDiag = DialogMusicDirectoriesLoader(mb)
         dirDiag.show()
@@ -71,6 +71,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def onPlayAlbum(self,item):
         alb = self.getAlbumFromTable()
+        player.initMediaList()
         if(alb.albumID != 0):
             for track in alb.tracks:
                 player.addFile(alb.dirPath+'/'+track.getFileName())

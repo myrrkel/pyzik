@@ -47,22 +47,18 @@ class playerVLC:
 	def addFile(self,sfile):
 		self.mediaList.add_media(self.instance.media_new(sfile))
 
+	def addFileList(self,fileList):
+		for sfile in fileList:
+			self.mediaList.add_media(self.instance.media_new(sfile))
+
 
 	def playMediaList(self):
-		#create the media
-
 		self.mediaListPlayer.play()
 
-		'''
-		listPlayer = self.instance.media_list_player_new()
-		# put the media in the media player
-		listPlayer.set_media(self.instance.media_new(sDir))
-		self.mediaPlayer.insert_media(media)
 
-		p=i.media_list_player_new() 
-		p.set_media_list(listPlayer) 
-
-		# parse the metadata of the file
-		#media.parse()
-		#self.mediaPlayer.play()
-		'''
+	def initMediaList(self):
+		self.mediaList.release()
+		self.mediaListPlayer.release()
+		self.mediaList = self.instance.media_list_new()
+		self.mediaListPlayer = self.instance.media_list_player_new()
+		self.mediaListPlayer.set_media_list(self.mediaList) 
