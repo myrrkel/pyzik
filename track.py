@@ -25,6 +25,11 @@ class track:
 	def printInfos(self):
 		print("TrackTitle: "+self.title)
 
+	def getFileName(self):
+		return self.fileName+"."+self.extension
+
+
+
 	def extractDataFromTags(self):
 		self.title = self.fileName.replace("_"," ")
 

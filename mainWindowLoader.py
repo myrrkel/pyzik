@@ -6,6 +6,7 @@ import mainWindow  # import of mainWindow.py made with pyuic5
 from musicBase import * 
 from musicDirectory import *
 from database import *
+from playerVLC import *
 from dialogMusicDirectoriesLoader import *
 
 
@@ -29,6 +30,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.actionMusic_directories.triggered.connect(self.onMenuMusicDirectories)
         self.ui.actionExplore_music_directories.triggered.connect(self.onMenuExplore)
         self.ui.actionDelete_database.triggered.connect(self.onDelete_database)
+        self.ui.playButton.clicked.connect(self.onPlayAlbum)
 
         
         
@@ -55,6 +57,27 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.initAlbumTableWidget()
         #self.ui.statusBar.showMessage("Action Bouton")
 
+    def getAlbumFromTable(self):
+        selAlbItems = self.ui.tableWidgetAlbums.selectedItems()
+        for item in selAlbItems:
+            r = item.row()
+            albumIDSel = self.ui.tableWidgetAlbums.item(r,2).text()
+            print("AlbumIDSel="+str(albumIDSel))
+            alb = mb.albumCol.getAlbum(albumIDSel)
+            if(alb.albumID == 0): 
+                print("Album is Empty. Item:"+str(item))
+            return alb
+
+
+    def onPlayAlbum(self,item):
+        alb = self.getAlbumFromTable()
+        if(alb.albumID != 0):
+            for track in alb.tracks:
+                player.addFile(alb.dirPath+'/'+track.getFileName())
+                player.playMediaList()
+            
+
+
     def onArtistChange(self,item):
         sel = self.ui.listViewArtists.selectionModel().selectedIndexes()
         if len(sel)==1:
@@ -69,14 +92,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             self.showAlbums(self.ui.listViewArtists.model().item(nrow).artist)
 
     def onAlbumChange(self,item):
-        '''sel = self.ui.tableWidgetAlbums.selectionModel().selectedIndexes()
-        if len(sel)==1:
-            #index = self.ui.listViewArtists.selectionModel().selectedIndexes()[0]
-            index = item
-            nrow = index.row()
-            model = self.ui.tableWidgetAlbums.model()
-                    
-            self.showAlbum(mb.albumCol.albums[nrow])'''
+
         selItems = self.ui.tableWidgetAlbums.selectedItems()
         for item in selItems:
             r = item.row()
@@ -148,52 +164,24 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     
 
 if __name__ == '__main__':
-    import sys
 
-
-    ##############################################
-    #           Play mp3 with VLC                #
-    ##############################################
-
-    import vlc
-    # creating a basic vlc instance
-    instance = vlc.Instance()
-    # creating an empty vlc media player
-    mediaplayer = instance.media_player_new()
-    # create the media
-    filename = "/home/myrrkel/Workspace/Python/pyzik/TEST/BLOODROCK - [1972] - Passage/03 - Little Lover.mp3"
-    if sys.version < '3':
-        filename = unicode(filename)
-    media = instance.media_new(filename)
-    # put the media in the media player
-    mediaplayer.set_media(media)
-    
-    # parse the metadata of the file
-    media.parse()
-    #mediaplayer.play()
-
-
-    import sys
     app = QtWidgets.QApplication(sys.argv)
-    #app.setStyle('plastique')
+
     mb = musicBase()
 
     db = database()
     
     mb.loadMusicBase()
 
+    player = playerVLC()
+
     #Load & Set the DarkStyleSheet
     app.setStyleSheet(qdarkgraystyle.load_stylesheet_pyqt5())
-
-
-    #mb.exploreAlbumsDirectories()
-
 
     
     translator = QtCore.QTranslator(app)
     locale = QtCore.QLocale.system().name()
     # translator for built-in qt strings
-    #print(locale)
     translator.load('pyzik_%s.qm' % locale)
 
     app.installTranslator(translator)

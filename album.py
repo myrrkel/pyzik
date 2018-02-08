@@ -138,14 +138,16 @@ class album:
 		nTrack = track("","")
 		#print("DirPath="+self.dirPath)
 		for file in files:
-			#print("File:"+str(file))
-			sname = file.split(".")[0]
-			sext = file.split(".")[1]
-			if(sext in musicFilesExtension):
-				itrack = track(sname,sext)
-				self.tracks.append(itrack)
-				#print("Track:"+str(file))
-			
+			sfile = str(file)
+			print("File:"+sfile)
+			if("." in sfile):
+				sname = file.split(".")[0]
+				sext = file.split(".")[1]
+				if(sext in musicFilesExtension):
+					itrack = track(sname,sext)
+					self.tracks.append(itrack)
+					#print("Track:"+str(file))
+				
 
 
 		
