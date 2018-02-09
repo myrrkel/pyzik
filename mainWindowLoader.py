@@ -16,6 +16,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         QtWidgets.QMainWindow.__init__(self, parent)
         
+
+        self.coverPixmap = QtGui.QPixmap()
         self.ui = mainWindow.Ui_MainWindow()
         self.ui.setupUi(self)
         self.setWindowTitle("PyZic")
@@ -129,10 +131,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         album.getImages()
         album.getTracks()
         album.getCover()
-        print(album.cover)
-        if album.cover != "":
-            self.ui.cover.setPixmap(QtGui.QPixmap(album.dirPath+'/'+album.cover))
-            self.ui.cover.show()
+        self.showCover(album.dirPath+'/'+album.cover)
 
         i=0
         self.ui.tableWidgetTracks.setColumnCount(1)        
@@ -169,6 +168,18 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         hHeader.hideSection(2)
         #header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
 
+
+    def resizeEvent(self,event):
+        self.resizeCover()
+
+    def showCover(self,path):
+        self.coverPixmap = QtGui.QPixmap(path)
+        self.resizeCover()
+        self.ui.cover.show()
+
+    def resizeCover(self):
+        scaledPic = self.coverPixmap.scaled(self.ui.cover.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
+        self.ui.cover.setPixmap(scaledPic)
     
 
 if __name__ == '__main__':
