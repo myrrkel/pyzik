@@ -126,7 +126,14 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def showAlbum(self,album):
         self.ui.statusBar.showMessage("selected: "+album.title)
+        album.getImages()
         album.getTracks()
+        album.getCover()
+        print(album.cover)
+        if album.cover != "":
+            self.ui.cover.setPixmap(QtGui.QPixmap(album.dirPath+'/'+album.cover))
+            self.ui.cover.show()
+
         i=0
         self.ui.tableWidgetTracks.setColumnCount(1)        
         self.ui.tableWidgetTracks.setRowCount(0)
@@ -140,7 +147,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             i+=1
 
 
-    def showArtists(self):   
+    def showArtists(self):
         # Add artists in the QListView
         model = QtGui.QStandardItemModel(self.ui.listViewArtists)
         for art in mb.artistCol.artists:

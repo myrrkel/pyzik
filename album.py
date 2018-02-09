@@ -3,6 +3,7 @@
 
 import re
 import os
+import fnmatch
 from track import *
 from globalConstants import *
 
@@ -56,6 +57,7 @@ class album:
 		self.cover = ""
 		self.toVerify = False
 		self.tracks = []
+		self.images = []
 
 		if dirname!="":
 			self.extractDataFromDirName()
@@ -131,23 +133,48 @@ class album:
 
 
 	def getTracks(self):
+
+		self.tracks = []
+
 		files = os.listdir(self.dirPath)
 		files.sort()
-		#files = os.scandir(self.dirPath)
-
+		
 		nTrack = track("","")
 		#print("DirPath="+self.dirPath)
 		for file in files:
-			sfile = str(file)
-			print("File:"+sfile)
-			if("." in sfile):
-				sname = file.split(".")[0]
-				sext = file.split(".")[1]
-				if(sext in musicFilesExtension):
-					itrack = track(sname,sext)
-					self.tracks.append(itrack)
-					#print("Track:"+str(file))
-				
+			for ext in musicFilesExtension:
+				if fnmatch.fnmatch(file, '*.'+ext):
+					sfile = str(file)
+					print("File:"+sfile)
+					if("." in sfile):
+
+						sname = file.split(".")[0]
+						sext = file.split(".")[1]
+						itrack = track(sname,sext)
+						self.tracks.append(itrack)
+						break
+
+
+	def getImages(self):
+
+		self.images = []
+
+		files = os.listdir(self.dirPath)
+		files.sort()
+	
+		for file in files:
+			for ext in imageFilesExtension:
+				if fnmatch.fnmatch(file, '*.'+ext):
+					sfile = str(file)
+					if("." in sfile):
+						self.images.append(sfile)
+						print("Image:"+str(sfile))
+						break
+
+	def getCover(self):
+
+		self.cover = next((x for x in self.images if x=='cover.jpg'), "")
+
 
 
 		
