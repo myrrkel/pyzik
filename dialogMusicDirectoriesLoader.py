@@ -1,5 +1,4 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
-from qdarkgraystyle import * 
 import dialogMusicDirectories  # import du fichier dialogMusicDirectories.py généré par pyuic5
 from musicBase import * 
 from musicDirectory import *
@@ -72,6 +71,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
 
 if __name__ == '__main__':
     import sys
+    from qdarkgraystyle import *
     app = QtWidgets.QApplication(sys.argv)
     #app.setStyle('Windows')
 
@@ -88,7 +88,7 @@ if __name__ == '__main__':
 
 
     #Load & Set the DarkStyleSheet
-    #app.setStyleSheet(qdarkgraystyle.load_stylesheet_pyqt5())
+    app.setStyleSheet(qdarkgraystyle.load_stylesheet_pyqt5())
 
 
     mb = musicBase()

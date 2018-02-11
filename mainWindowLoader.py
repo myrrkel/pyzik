@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, QtCore
 import mainWindow  # import of mainWindow.py made with pyuic5
 from musicBase import * 
 from musicDirectory import *
 from database import *
 from playerVLC import *
+from darkStyle import darkStyle
 from dialogMusicDirectoriesLoader import *
 
 
@@ -15,138 +16,81 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def __init__(self, parent=None):
         QtWidgets.QMainWindow.__init__(self, parent)
-        
+
+        self.currentArtist = artist("",0)
+        self.coverPixmap = QtGui.QPixmap()
+        self.defaultPixmap = QtGui.QPixmap()
         self.ui = mainWindow.Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowTitle("PyZic")
+        self.setTitleLabel("")
+        self.setWindowTitle("PyZik")
+        self.initAlbumTableWidget()
+        self.initTrackTableWidget()
 
         self.showArtists()
         
 
-        self.initAlbumTableWidget()
-
+        #Connect UI triggers
         self.ui.listViewArtists.selectionModel().currentChanged.connect(self.onArtistChange)
         self.ui.listViewArtists.clicked.connect(self.onArtistChange)
         self.ui.actionMusic_directories.triggered.connect(self.onMenuMusicDirectories)
         self.ui.actionExplore_music_directories.triggered.connect(self.onMenuExplore)
-        self.ui.actionDelete_database.triggered.connect(self.onDelete_database)
+        self.ui.actionDelete_database.triggered.connect(self.onMenuDeleteDatabase)
         self.ui.playButton.clicked.connect(self.onPlayAlbum)
-
+        self.ui.searchEdit.textChanged.connect(self.onSearchChange)
+        self.ui.searchEdit.returnPressed.connect(self.onSearchEnter)
+       
         
-        
-
         #Write message in status bar
-        self.ui.statusBar.showMessage("PyZic")
+        self.ui.statusBar.showMessage("PyZik")
+    
+
+    '''
+    Init widgets
+    '''
+    def initAlbumTableWidget(self):
+        self.ui.tableWidgetAlbums.setMouseTracking(False)
+        self.ui.tableWidgetAlbums.mouseMoveEvent = (print("MoveMouse"))
+        self.ui.tableWidgetAlbums.setRowCount(0)
+        hHeader = self.ui.tableWidgetAlbums.horizontalHeader()
+        vHeader = self.ui.tableWidgetAlbums.verticalHeader()
+        vHeader.hide()
+        hHeader.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        hHeader.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        hHeader.hideSection(2)
+
+    def initTrackTableWidget(self):
+        self.ui.tableWidgetTracks.setRowCount(0)
+        hHeader = self.ui.tableWidgetTracks.horizontalHeader()
+        vHeader = self.ui.tableWidgetTracks.verticalHeader()
+        vHeader.hide()
+        hHeader.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        hHeader.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        hHeader.hideSection(2)
         
 
+    '''
+    Menu Actions
+    '''
     def onMenuMusicDirectories(self):
         dirDiag = DialogMusicDirectoriesLoader(mb)
         dirDiag.show()
         dirDiag.exec_()
-        #self.ui.statusBar.showMessage("Action Bouton")
-    
+        
     def onMenuExplore(self):
         mb.exploreAlbumsDirectories()
         self.showArtists()
-        #self.ui.statusBar.showMessage("Action Bouton")
     
-    def onDelete_database(self):
+    def onMenuDeleteDatabase(seDlf):
         db.dropAllTables()
         mb.emptyDatas()
         self.showArtists()
         self.initAlbumTableWidget()
-        #self.ui.statusBar.showMessage("Action Bouton")
-
-    def getAlbumFromTable(self):
-        selAlbItems = self.ui.tableWidgetAlbums.selectedItems()
-        for item in selAlbItems:
-            r = item.row()
-            albumIDSel = self.ui.tableWidgetAlbums.item(r,2).text()
-            print("AlbumIDSel="+str(albumIDSel))
-            alb = mb.albumCol.getAlbum(albumIDSel)
-            if(alb.albumID == 0): 
-                print("Album is Empty. Item:"+str(item))
-            return alb
 
 
-    def onPlayAlbum(self,item):
-        alb = self.getAlbumFromTable()
-        player.initMediaList()
-        if(alb.albumID != 0):
-            for track in alb.tracks:
-                player.addFile(alb.dirPath+'/'+track.getFileName())
-                player.playMediaList()
-            
-
-
-    def onArtistChange(self,item):
-        sel = self.ui.listViewArtists.selectionModel().selectedIndexes()
-        if len(sel)==1:
-            #index = self.ui.listViewArtists.selectionModel().selectedIndexes()[0]
-            index = item
-            nrow = index.row()
-            model = self.ui.listViewArtists.model()
-            self.ui.statusBar.showMessage(  "selected: "+model.data(index) \
-                                        +" id="+str(model.item(nrow).artist.artistID))
-            self.ui.labelArtist.setText(model.item(nrow).artist.name)
-        
-            self.showAlbums(self.ui.listViewArtists.model().item(nrow).artist)
-
-    def onAlbumChange(self,item):
-
-        selItems = self.ui.tableWidgetAlbums.selectedItems()
-        for item in selItems:
-            r = item.row()
-            albumIDSel = self.ui.tableWidgetAlbums.item(r,2).text()
-            print("AlbumIDSel="+str(albumIDSel))
-            alb = mb.albumCol.getAlbum(albumIDSel)
-            if(alb.albumID != 0):
-                self.showAlbum(alb)
-            else:
-                print("No album to show")
-
-
-
-    def showAlbums(self,artist):
-        # Add albums in the QTableView
-        self.ui.tableWidgetAlbums.setRowCount(0)
-        i=0
-        for alb in artist.albums:
-            self.ui.tableWidgetAlbums.insertRow(i)
-            self.ui.tableWidgetAlbums.setItem(i,0,QtWidgets.QTableWidgetItem(alb.title))
-            self.ui.tableWidgetAlbums.setItem(i,1,QtWidgets.QTableWidgetItem(str(alb.year)))
-            self.ui.tableWidgetAlbums.setItem(i,2,QtWidgets.QTableWidgetItem(str(alb.albumID)))
-
-            i+=1
-
-        # On click show album details
-        self.ui.tableWidgetAlbums.clicked.connect(self.onAlbumChange)
-        #self.ui.tableWidgetAlbums.setModel(model)
-        self.ui.tableWidgetAlbums.show()
-
-    def showAlbum(self,album):
-        self.ui.statusBar.showMessage("selected: "+album.title)
-        album.getImages()
-        album.getTracks()
-        album.getCover()
-        print(album.cover)
-        if album.cover != "":
-            self.ui.cover.setPixmap(QtGui.QPixmap(album.dirPath+'/'+album.cover))
-            self.ui.cover.show()
-
-        i=0
-        self.ui.tableWidgetTracks.setColumnCount(1)        
-        self.ui.tableWidgetTracks.setRowCount(0)
-        for track in album.tracks:
-            
-
-            self.ui.tableWidgetTracks.insertRow(i)
-            self.ui.tableWidgetTracks.setItem(i,0,QtWidgets.QTableWidgetItem(track.title))
-            #self.ui.tableWidgetTracks.setItem(i,1,QtWidgets.QTableWidgetItem(str(alb.year)))
-
-            i+=1
-
-
+    '''
+    Artist listView functions
+    '''
     def showArtists(self):
         # Add artists in the QListView
         model = QtGui.QStandardItemModel(self.ui.listViewArtists)
@@ -158,16 +102,179 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.listViewArtists.setModel(model)
         self.ui.listViewArtists.show()
 
+    def setHiddenAllArtistItem(self,hide):
+        #Hide all artists
+        model = self.ui.listViewArtists.model()
+        for i in range(model.rowCount()):
+            self.ui.listViewArtists.setRowHidden(i,hide)
 
-    def initAlbumTableWidget(self):
+    def getFirstVisibleArtistItem(self):
+        model = self.ui.listViewArtists.model()
+        for i in range(model.rowCount()):
+            if(not self.ui.listViewArtists.isRowHidden(i)):
+                return model.item(i)
+        
+    def onArtistChange(self,item):
+        #When call from listView, item is a QModelIndex
+        sel = self.ui.listViewArtists.selectionModel().selectedIndexes()
+        if len(sel)==1:
+            nrow = item.row()
+            
+            model = self.ui.listViewArtists.model()
+            self.currentArtist = model.item(nrow).artist
+
+            #self.ui.statusBar.showMessage(self.currentArtist.name)
+            #self.ui.labelArtist.setText(model.item(nrow).artist.name)
+        
+            self.showAlbums(self.currentArtist)
+
+
+    '''
+    Search artist functions
+    '''
+    def onSearchEnter(self):
+    #After typing, the user hit enter
+    #to select the first artist found
+        item = self.getFirstVisibleArtistItem()
+        if item != None:
+            selModel = self.ui.listViewArtists.selectionModel()
+            selModel.reset()
+            selModel.select(item.index(), QtCore.QItemSelectionModel.Select)
+            self.showAlbums(item.artist)
+
+    def onSearchChange(self,item):
+        #When user write a search, shows only matching artists
+        search = self.ui.searchEdit.text()
+
+        if(len(search)==0):
+            self.setHiddenAllArtistItem(False)
+        else:
+            self.setHiddenAllArtistItem(True)
+            items = self.ui.listViewArtists.model().findItems(search,QtCore.Qt.MatchContains)
+            for item in items:
+                i = item.row()
+                self.ui.listViewArtists.setRowHidden(i,False)
+
+
+
+    '''
+    Album tableWidget functions
+    '''
+    def getAlbumFromTable(self):
+        #Return the selected album
+        selAlbItems = self.ui.tableWidgetAlbums.selectedItems()
+        for item in selAlbItems:
+            r = item.row()
+            albumIDSel = self.ui.tableWidgetAlbums.item(r,2).text()
+            
+            alb = mb.albumCol.getAlbum(albumIDSel)
+            if(alb.albumID == 0): 
+                print("Album is Empty. Item:"+str(item))
+            return alb
+
+
+    def onAlbumChange(self,item):
+        selItems = self.ui.tableWidgetAlbums.selectedItems()
+        for item in selItems:
+            r = item.row()
+            albumIDSel = self.ui.tableWidgetAlbums.item(r,2).text()
+            alb = mb.albumCol.getAlbum(albumIDSel)
+            if(alb.albumID != 0):
+                self.showAlbum(alb)
+            else:
+                print("No album to show")
+
+
+    def showAlbums(self,artist):
+        #Add albums in the QTableView
         self.ui.tableWidgetAlbums.setRowCount(0)
-        hHeader = self.ui.tableWidgetAlbums.horizontalHeader()
-        vHeader = self.ui.tableWidgetAlbums.verticalHeader()
-        vHeader.hide()
-        hHeader.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        hHeader.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        hHeader.hideSection(2)
-        #header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        i=0
+        for alb in artist.albums:
+            self.ui.tableWidgetAlbums.insertRow(i)
+            self.ui.tableWidgetAlbums.setItem(i,0,QtWidgets.QTableWidgetItem(alb.title))
+            self.ui.tableWidgetAlbums.setItem(i,1,QtWidgets.QTableWidgetItem(str(alb.year)))
+            self.ui.tableWidgetAlbums.setItem(i,2,QtWidgets.QTableWidgetItem(str(alb.albumID)))
+            if(i==0):
+                self.ui.tableWidgetAlbums.selectRow(i)
+                self.onAlbumChange(self.ui.tableWidgetAlbums.item(i,0)) 
+            i+=1
+
+
+
+        #On click show album details
+        self.ui.tableWidgetAlbums.clicked.connect(self.onAlbumChange)
+        #self.ui.tableWidgetAlbums.setModel(model)
+        self.ui.tableWidgetAlbums.show()
+
+
+    def showAlbum(self,album):
+        self.ui.statusBar.showMessage("selected: "+album.title)
+        self.setTitleLabel(self.currentArtist.name,album.title,album.year)
+        
+        album.getImages()
+        album.getTracks()
+        album.getCover()
+        self.showCover(album)
+
+        self.ui.tableWidgetTracks.setColumnCount(1)
+        self.ui.tableWidgetTracks.setRowCount(0)
+        i=0
+        for track in album.tracks:
+            self.ui.tableWidgetTracks.insertRow(i)
+            self.ui.tableWidgetTracks.setItem(i,0,QtWidgets.QTableWidgetItem(track.title))
+            i+=1
+
+
+    '''
+    Interactions with vlc module
+    '''
+    def onPlayAlbum(self,item):
+        #Add tracks in playlist and start playing
+        alb = self.getAlbumFromTable()
+        player.initMediaList()
+        if(alb.albumID != 0):
+            for track in alb.tracks:
+                player.addFile(os.path.join(alb.dirPath,track.getFileName()))
+                player.playMediaList()
+
+
+    '''
+    Miscellanious UI functions 
+    '''
+
+    def setTitleLabel(self,artName="",AlbTitle="",Year=""):
+        if(artName==""):
+            sTitle = ""
+        else:
+            sAlbum = AlbTitle
+            sYear =str(Year)
+            if(sYear != "0"): sAlbum += " ("+sYear+")"
+            sTitle = '''<html><head/><body>
+            <p><span style=\" font-size:14pt; font-weight:600;\">{Artist}</span></p>
+            <p><span style=\" font-style:italic;\">{Album}</span></p>
+            </body></html>'''
+            sTitle = sTitle.format(Artist=artName,Album=sAlbum)
+        
+        self.ui.labelArtist.setText(sTitle)
+
+
+
+    def showCover(self,album):
+        
+        if album.cover != "":
+            self.coverPixmap = QtGui.QPixmap(album.dirPath+'/'+album.cover)
+            scaledCover = self.coverPixmap.scaled(self.ui.cover.size(), QtCore.Qt.KeepAspectRatio)
+            self.ui.cover.setPixmap(scaledCover)
+            self.ui.cover.show()
+        else:
+            self.ui.cover.setPixmap(self.defaultPixmap)
+            
+
+
+
+    def resizeEvent(self,event):
+        scaledCover = self.coverPixmap.scaled(self.ui.cover.size(), QtCore.Qt.KeepAspectRatio)
+        self.ui.cover.setPixmap(scaledCover)
 
     
 
@@ -184,7 +291,19 @@ if __name__ == '__main__':
     player = playerVLC()
 
     #Load & Set the DarkStyleSheet
-    app.setStyleSheet(qdarkgraystyle.load_stylesheet_pyqt5())
+    app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
+
+
+
+
+
+
+
+
+
+
+
+
 
     
     translator = QtCore.QTranslator(app)
@@ -197,4 +316,4 @@ if __name__ == '__main__':
 
     window = MainWindowLoader()
     window.show()
-    sys.exit(app.exec_())
+    app.exec()
