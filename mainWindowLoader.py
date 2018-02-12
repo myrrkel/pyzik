@@ -16,16 +16,12 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def __init__(self, parent=None):
         QtWidgets.QMainWindow.__init__(self, parent)
-<<<<<<< HEAD
-        
 
-        self.coverPixmap = QtGui.QPixmap()
-=======
-
+       
         self.currentArtist = artist("",0)
         self.coverPixmap = QtGui.QPixmap()
         self.defaultPixmap = QtGui.QPixmap()
->>>>>>> 616145ab23bdb7aa2a1a81abeb0977d9f8ac843c
+
         self.ui = mainWindow.Ui_MainWindow()
         self.ui.setupUi(self)
         self.setTitleLabel("")
@@ -220,11 +216,10 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         album.getImages()
         album.getTracks()
         album.getCover()
-<<<<<<< HEAD
+
         self.showCover(album.dirPath+'/'+album.cover)
-=======
-        self.showCover(album)
->>>>>>> 616145ab23bdb7aa2a1a81abeb0977d9f8ac843c
+
+
 
         self.ui.tableWidgetTracks.setColumnCount(1)
         self.ui.tableWidgetTracks.setRowCount(0)
