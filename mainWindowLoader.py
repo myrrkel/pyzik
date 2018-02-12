@@ -39,6 +39,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.actionExplore_music_directories.triggered.connect(self.onMenuExplore)
         self.ui.actionDelete_database.triggered.connect(self.onMenuDeleteDatabase)
         self.ui.playButton.clicked.connect(self.onPlayAlbum)
+        self.ui.stopButton.clicked.connect(self.onPauseAlbum)
         self.ui.searchEdit.textChanged.connect(self.onSearchChange)
         self.ui.searchEdit.returnPressed.connect(self.onSearchEnter)
        
@@ -51,8 +52,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     Init widgets
     '''
     def initAlbumTableWidget(self):
-        self.ui.tableWidgetAlbums.setMouseTracking(False)
-        self.ui.tableWidgetAlbums.mouseMoveEvent = (print("MoveMouse"))
+        #self.ui.tableWidgetAlbums.setMouseTracking(False)
+        #self.ui.tableWidgetAlbums.mouseMoveEvent = (print("MoveMouse"))
         self.ui.tableWidgetAlbums.setRowCount(0)
         hHeader = self.ui.tableWidgetAlbums.horizontalHeader()
         vHeader = self.ui.tableWidgetAlbums.verticalHeader()
@@ -241,6 +242,9 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             for track in alb.tracks:
                 player.addFile(os.path.join(alb.dirPath,track.getFileName()))
                 player.playMediaList()
+
+    def onPauseAlbum(self):
+        player.pauseMediaList()
 
 
     '''

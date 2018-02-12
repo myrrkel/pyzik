@@ -56,6 +56,10 @@ class playerVLC:
 		self.mediaListPlayer.play()
 
 
+	def pauseMediaList(self):
+		self.mediaListPlayer.pause()
+
+
 	def initMediaList(self):
 		self.mediaList.release()
 		self.mediaListPlayer.release()
