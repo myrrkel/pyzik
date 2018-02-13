@@ -42,11 +42,24 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.stopButton.clicked.connect(self.onPauseAlbum)
         self.ui.searchEdit.textChanged.connect(self.onSearchChange)
         self.ui.searchEdit.returnPressed.connect(self.onSearchEnter)
+
+
+        self.ui.volumeSlider.setMaximum(100)
+        self.ui.volumeSlider.setValue(player.mediaPlayer.audio_get_volume())
+        self.ui.volumeSlider.valueChanged.connect(self.setVolume)
        
         
         #Write message in status bar
         self.ui.statusBar.showMessage("PyZik")
     
+
+    def setVolume(self, Volume):
+        """Set the volume
+        """
+        #print("Volume:"+str(Volume))
+        player.setVolume(Volume)
+   
+
 
     '''
     Init widgets
