@@ -40,6 +40,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.actionDelete_database.triggered.connect(self.onMenuDeleteDatabase)
         self.ui.playButton.clicked.connect(self.onPlayAlbum)
         self.ui.stopButton.clicked.connect(self.onPauseAlbum)
+        self.ui.nextButton.clicked.connect(player.mediaListPlayer.next)
+        self.ui.previousButton.clicked.connect(player.mediaListPlayer.previous)
         self.ui.searchEdit.textChanged.connect(self.onSearchChange)
         self.ui.searchEdit.returnPressed.connect(self.onSearchEnter)
 
@@ -54,9 +56,6 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     
 
     def setVolume(self, Volume):
-        """Set the volume
-        """
-        #print("Volume:"+str(Volume))
         player.setVolume(Volume)
    
 
@@ -65,8 +64,6 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     Init widgets
     '''
     def initAlbumTableWidget(self):
-        #self.ui.tableWidgetAlbums.setMouseTracking(False)
-        #self.ui.tableWidgetAlbums.mouseMoveEvent = (print("MoveMouse"))
         self.ui.tableWidgetAlbums.setRowCount(0)
         hHeader = self.ui.tableWidgetAlbums.horizontalHeader()
         vHeader = self.ui.tableWidgetAlbums.verticalHeader()
@@ -207,9 +204,20 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         i=0
         for alb in artist.albums:
             self.ui.tableWidgetAlbums.insertRow(i)
-            self.ui.tableWidgetAlbums.setItem(i,0,QtWidgets.QTableWidgetItem(alb.title))
-            self.ui.tableWidgetAlbums.setItem(i,1,QtWidgets.QTableWidgetItem(str(alb.year)))
-            self.ui.tableWidgetAlbums.setItem(i,2,QtWidgets.QTableWidgetItem(str(alb.albumID)))
+
+            titleItem = QtWidgets.QTableWidgetItem(alb.title)
+            titleItem.setFlags(titleItem.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.ui.tableWidgetAlbums.setItem(i,0,titleItem)
+
+            yearItem = QtWidgets.QTableWidgetItem(str(alb.year))
+            yearItem.setFlags(yearItem.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.ui.tableWidgetAlbums.setItem(i,1,yearItem)
+            
+            idItem = QtWidgets.QTableWidgetItem(str(alb.albumID))
+            idItem.setFlags(idItem.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.ui.tableWidgetAlbums.setItem(i,2,idItem)
+
+
             if(i==0):
                 self.ui.tableWidgetAlbums.selectRow(i)
                 self.onAlbumChange(self.ui.tableWidgetAlbums.item(i,0)) 
@@ -231,16 +239,19 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         album.getTracks()
         album.getCover()
 
-        self.showCover(album.dirPath+'/'+album.cover)
-
-
-
+        if album.cover != "":
+            self.showCover(os.path.join(album.dirPath,album.cover))
+        else:
+            self.showCover("")
+        
         self.ui.tableWidgetTracks.setColumnCount(1)
         self.ui.tableWidgetTracks.setRowCount(0)
         i=0
         for track in album.tracks:
             self.ui.tableWidgetTracks.insertRow(i)
-            self.ui.tableWidgetTracks.setItem(i,0,QtWidgets.QTableWidgetItem(track.title))
+            titleItem = QtWidgets.QTableWidgetItem(track.title)
+            titleItem.setFlags(titleItem.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.ui.tableWidgetTracks.setItem(i,0,titleItem)
             i+=1
 
 
@@ -281,35 +292,27 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
 
 
-    def showCover(self,album):
+    def showCover(self,path):
         
-        if album.cover != "":
-            self.coverPixmap = QtGui.QPixmap(album.dirPath+'/'+album.cover)
+        if path != "":
+            print("MyCover="+path)
+            self.coverPixmap = QtGui.QPixmap(path)
             scaledCover = self.coverPixmap.scaled(self.ui.cover.size(), QtCore.Qt.KeepAspectRatio)
             self.ui.cover.setPixmap(scaledCover)
             self.ui.cover.show()
         else:
             self.ui.cover.setPixmap(self.defaultPixmap)
-            
-
-
-
-    def resizeEvent(self,event):
-        scaledCover = self.coverPixmap.scaled(self.ui.cover.size(), QtCore.Qt.KeepAspectRatio)
-        self.ui.cover.setPixmap(scaledCover)
-
+    
 
     def resizeEvent(self,event):
         self.resizeCover()
 
-    def showCover(self,path):
-        self.coverPixmap = QtGui.QPixmap(path)
-        self.resizeCover()
-        self.ui.cover.show()
 
     def resizeCover(self):
-        scaledPic = self.coverPixmap.scaled(self.ui.cover.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
-        self.ui.cover.setPixmap(scaledPic)
+        if (not self.coverPixmap.isNull()):
+            scaledCover = self.coverPixmap.scaled(self.ui.cover.size(), QtCore.Qt.KeepAspectRatio)
+            self.ui.cover.setPixmap(scaledCover)
+        
     
 
 if __name__ == '__main__':
@@ -326,18 +329,6 @@ if __name__ == '__main__':
 
     #Load & Set the DarkStyleSheet
     app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
-
-
-
-
-
-
-
-
-
-
-
-
 
     
     translator = QtCore.QTranslator(app)

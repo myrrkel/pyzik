@@ -18,17 +18,11 @@ class playerVLC:
         self.instance = vlc.Instance()
         # creating an empty vlc media player
         self.mediaPlayer = self.instance.media_player_new()
-
-        
-        self.mediaList = self.instance.media_list_new()
-        
         self.mediaListPlayer = self.instance.media_list_player_new()
-        self.mediaListPlayer.set_media_list(self.mediaList) 
-        self.mediaListPlayer.set_media_player(self.mediaPlayer)
-
-
         self.mediaPlayer.audio_set_volume(100)
-    
+
+        self.initMediaList()
+           
 
 
     def playFile(self,sfile):
@@ -46,7 +40,9 @@ class playerVLC:
         self.mediaPlayer.play() 
 
     def addFile(self,sfile):
-        self.mediaList.add_media(self.instance.media_new(sfile))
+        media = self.instance.media_new(sfile)
+        media.parse()
+        self.mediaList.add_media(media)
 
     def addFileList(self,fileList):
         for sfile in fileList:
@@ -62,10 +58,10 @@ class playerVLC:
 
 
     def initMediaList(self):
-        self.mediaList.release()
-        self.mediaListPlayer.release()
+        #self.mediaList.release()
+        #self.mediaListPlayer.release()
         self.mediaList = self.instance.media_list_new()
-        self.mediaListPlayer = self.instance.media_list_player_new()
+        self.mediaListPlayer.set_media_player(self.mediaPlayer)
         self.mediaListPlayer.set_media_list(self.mediaList) 
 
 

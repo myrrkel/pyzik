@@ -81,8 +81,7 @@ class album:
 		pos1 = self.dirName.find(" - [")
 		pos2 = self.dirName.find("] - ")
 		pos_separator = self.dirName.find("@")
-		print(self.dirName+" pos1:"+str(pos1))
-
+		
 		if 0<pos1 and pos1<pos2 and pos_separator < 0:
 			#The name of the directory is correct like 'DEEP PURPLE - [1972] - Machine Head'
 			self.title = self.dirName[pos2+4:]
@@ -132,48 +131,84 @@ class album:
 		self.title = self.formatTitle(self.title)
 
 
-	def getTracks(self):
+	def getTracks(self,subdir=""):
 
 		self.tracks = []
 
-		files = os.listdir(self.dirPath)
+		if(subdir==""): 
+			dir = self.dirPath
+		else:
+			dir = os.path.join(self.dirPath,subdir)
+
+		files = os.listdir(dir)
 		files.sort()
 		
 		nTrack = track("","")
-		#print("DirPath="+self.dirPath)
+	
 		for file in files:
-			for ext in musicFilesExtension:
-				if fnmatch.fnmatch(file, '*.'+ext):
-					sfile = str(file)
-					print("File:"+sfile)
-					if("." in sfile):
+			if not( fnmatch.fnmatch(file, '*.*')):
+				#file is a directory
+				self.getTracks(str(file))
+			else:
 
-						sname = file.split(".")[0]
-						sext = file.split(".")[1]
-						itrack = track(sname,sext)
-						self.tracks.append(itrack)
-						break
+				for ext in musicFilesExtension:
+					if fnmatch.fnmatch(file, '*.'+ext):
+						if subdir != "":
+							sfile = os.path.join(dir,str(file))
+						else:
+							sfile = str(file)
+						
+						print("File:"+sfile)
+						if("." in sfile):
+
+							sname = file.split(".")[0]
+							sext = file.split(".")[1]
+							itrack = track(sname,sext)
+							self.tracks.append(itrack)
+							break
 
 
-	def getImages(self):
+	def getImages(self,subdir=""):
 
 		self.images = []
 
-		files = os.listdir(self.dirPath)
+		if(subdir==""): 
+			dir = self.dirPath
+		else:
+			dir = os.path.join(self.dirPath,subdir)
+
+		files = os.listdir(dir)
+		
+
 		files.sort()
 	
 		for file in files:
-			for ext in imageFilesExtension:
-				if fnmatch.fnmatch(file, '*.'+ext):
-					sfile = str(file)
-					if("." in sfile):
+			if not( fnmatch.fnmatch(file, '*.*')):
+				#file is a directory
+				self.getImages(str(file))
+			else:
+
+				for ext in imageFilesExtension:
+					if fnmatch.fnmatch(file, '*.'+ext):
+						if subdir != "":
+							sfile = os.path.join(dir,str(file))
+						else:
+							sfile = str(file)
 						self.images.append(sfile)
 						print("Image:"+str(sfile))
 						break
 
-	def getCover(self):
 
-		self.cover = next((x for x in self.images if x=='cover.jpg'), "")
+	def getCover(self):
+		if(len(self.images)>0):
+			self.cover = next((x for x in self.images if 'cover' in x), "")
+
+			if self.cover == "":
+				self.cover = next((x for x in self.images if 'folder' in x), "")
+
+			if self.cover == "":
+				self.cover = self.images[0]
+
 
 
 
