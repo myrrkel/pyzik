@@ -396,6 +396,25 @@
                     </property>
                    </widget>
                   </item>
+                  <item>
+                   <widget class="QSlider" name="volumeSlider">
+                    <property name="minimumSize">
+                     <size>
+                      <width>100</width>
+                      <height>17</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>100</width>
+                      <height>17</height>
+                     </size>
+                    </property>
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </item>
                </layout>
