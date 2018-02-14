@@ -53,7 +53,18 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         
         #Write message in status bar
         self.ui.statusBar.showMessage("PyZik")
-    
+
+
+
+
+
+    def showEvent(self,event):
+        #This function is called when the mainWindow is shown
+        alb = mb.albumCol.getRandomAlbum()
+        print("RamdomAlb="+alb.title)
+        self.showAlbum(alb)
+
+
 
     def setVolume(self, Volume):
         player.setVolume(Volume)
@@ -297,7 +308,9 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         if path != "":
             print("MyCover="+path)
             self.coverPixmap = QtGui.QPixmap(path)
-            scaledCover = self.coverPixmap.scaled(self.ui.cover.size(), QtCore.Qt.KeepAspectRatio)
+            scaledCover = self.coverPixmap.scaled(self.ui.cover.size(),
+                                                    QtCore.Qt.KeepAspectRatio,
+                                                    QtCore.Qt.SmoothTransformation)
             self.ui.cover.setPixmap(scaledCover)
             self.ui.cover.show()
         else:
@@ -310,7 +323,9 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def resizeCover(self):
         if (not self.coverPixmap.isNull()):
-            scaledCover = self.coverPixmap.scaled(self.ui.cover.size(), QtCore.Qt.KeepAspectRatio)
+            scaledCover = self.coverPixmap.scaled(self.ui.cover.size(),
+                                                    QtCore.Qt.KeepAspectRatio,
+                                                    QtCore.Qt.SmoothTransformation)
             self.ui.cover.setPixmap(scaledCover)
         
     
@@ -341,4 +356,5 @@ if __name__ == '__main__':
 
     window = MainWindowLoader()
     window.show()
+
     app.exec()

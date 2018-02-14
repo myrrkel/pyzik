@@ -160,10 +160,8 @@ class album:
 						
 						print("File:"+sfile)
 						if("." in sfile):
-
-							sname = file.split(".")[0]
-							sext = file.split(".")[1]
-							itrack = track(sname,sext)
+							filename, file_extension = os.path.splitext(sfile)
+							itrack = track(filename,file_extension)
 							self.tracks.append(itrack)
 							break
 
@@ -200,12 +198,16 @@ class album:
 
 
 	def getCover(self):
+
 		if(len(self.images)>0):
-			self.cover = next((x for x in self.images if 'cover' in x), "")
+			keywords = ["cover","front","artwork","capa","folder","f"]
 
-			if self.cover == "":
-				self.cover = next((x for x in self.images if 'folder' in x), "")
-
+			for keyword in keywords:
+				coverFound = next((x for x in self.images if keyword in x.lower()), "")
+				if (coverFound!=""):
+					self.cover = coverFound
+					break
+				
 			if self.cover == "":
 				self.cover = self.images[0]
 

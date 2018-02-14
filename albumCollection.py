@@ -3,6 +3,7 @@
 
 #import database
 import os
+import random
 
 from album import *
 from database import *
@@ -81,6 +82,12 @@ class albumCollection:
 		resAlb = album("")
 		for alb in filterByAlbumID(self.albums,albID):
 			resAlb = alb
+		return resAlb
+
+
+	def getRandomAlbum(self):
+		irandom  = random.randint(0, len(self.albums)-1)
+		resAlb = self.albums[irandom]
 		return resAlb
 
 
