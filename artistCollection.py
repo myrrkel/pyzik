@@ -95,11 +95,11 @@ class artistCollection:
 			sqlInsertArtist = """	INSERT INTO artists (name)
 								VALUES (?);
 						  """
-			c.execute(sqlInsertArtist,(artist.name))
+			c.execute(sqlInsertArtist,(artist.name,))
 			self.db.connection.commit()
 			artist.artistID = c.lastrowid
 		except sqlite3.Error as e:
-			print(e)
+			print("InsertArtist error="+str(e))
 
 		return artist.artistID
 

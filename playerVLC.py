@@ -19,6 +19,7 @@ class playerVLC:
         # creating an empty vlc media player
         self.mediaPlayer = self.instance.media_player_new()
         self.mediaListPlayer = self.instance.media_list_player_new()
+        self.mediaList = self.instance.media_list_new()
         self.mediaPlayer.audio_set_volume(100)
 
         self.initMediaList()
@@ -60,9 +61,19 @@ class playerVLC:
     def initMediaList(self):
         #self.mediaList.release()
         #self.mediaListPlayer.release()
+        if(self.mediaList != None):
+            self.mediaList.release()
         self.mediaList = self.instance.media_list_new()
         self.mediaListPlayer.set_media_player(self.mediaPlayer)
         self.mediaListPlayer.set_media_list(self.mediaList) 
+
+    def dropMediaList(self):
+        self.mediaListPlayer.stop()
+        self.mediaList.unlock()
+        print("nb track="+str(self.mediaList.count()))
+        for i in reversed(range(0,self.mediaList.count())):
+            print("remove="+str(i))
+            self.mediaList.remove_index(i)
 
 
     def setVolume(self, Volume):

@@ -26,7 +26,7 @@ class track:
 		print("TrackTitle: "+self.title)
 
 	def getFileName(self):
-		return self.fileName+"."+self.extension
+		return self.fileName+self.extension
 
 
 

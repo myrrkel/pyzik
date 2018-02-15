@@ -58,7 +58,7 @@ class database():
 	def dropAllTables(self):
 		self.dropTable("artists")
 		self.dropTable("albums")
-		self.dropTable("musicDirectories")
+		#self.dropTable("musicDirectories")
 
 	def insertLine(self, insert_sql):
 		""" create a table from the create_table_sql statement
@@ -109,10 +109,6 @@ class database():
 									); """
 		self.createTable(sqlCreateTableMusicDirectories)
 
-	def dropAllTables(self):
-		self.dropTable("albums")
-		self.dropTable("artists")
-		self.dropTable("musicDirectories")
 
 
 	def getSelect(self,select_sql):

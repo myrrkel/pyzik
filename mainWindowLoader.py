@@ -34,7 +34,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
         #Connect UI triggers
         self.ui.listViewArtists.selectionModel().currentChanged.connect(self.onArtistChange)
-        self.ui.listViewArtists.clicked.connect(self.onArtistChange)
+        #self.ui.listViewArtists.clicked.connect(self.onArtistChange)
         self.ui.actionMusic_directories.triggered.connect(self.onMenuMusicDirectories)
         self.ui.actionExplore_music_directories.triggered.connect(self.onMenuExplore)
         self.ui.actionDelete_database.triggered.connect(self.onMenuDeleteDatabase)
@@ -44,7 +44,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.previousButton.clicked.connect(player.mediaListPlayer.previous)
         self.ui.searchEdit.textChanged.connect(self.onSearchChange)
         self.ui.searchEdit.returnPressed.connect(self.onSearchEnter)
-
+        self.ui.tableWidgetAlbums.clicked.connect(self.onAlbumChange)
 
         self.ui.volumeSlider.setMaximum(100)
         self.ui.volumeSlider.setValue(player.mediaPlayer.audio_get_volume())
@@ -147,9 +147,6 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             
             model = self.ui.listViewArtists.model()
             self.currentArtist = model.item(nrow).artist
-
-            #self.ui.statusBar.showMessage(self.currentArtist.name)
-            #self.ui.labelArtist.setText(model.item(nrow).artist.name)
         
             self.showAlbums(self.currentArtist)
 
@@ -199,9 +196,10 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
 
     def onAlbumChange(self,item):
+        print("OnAlbumChange")
         selItems = self.ui.tableWidgetAlbums.selectedItems()
-        for item in selItems:
-            r = item.row()
+        if(len(selItems)>0):
+            r = selItems[0].row()
             albumIDSel = self.ui.tableWidgetAlbums.item(r,2).text()
             alb = mb.albumCol.getAlbum(albumIDSel)
             if(alb.albumID != 0):
@@ -212,6 +210,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def showAlbums(self,artist):
         #Add albums in the QTableView
+
+        print("Show albums")
         self.ui.tableWidgetAlbums.setRowCount(0)
         i=0
         for alb in artist.albums:
@@ -236,14 +236,11 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             i+=1
 
 
-
-        #On click show album details
-        self.ui.tableWidgetAlbums.clicked.connect(self.onAlbumChange)
-        #self.ui.tableWidgetAlbums.setModel(model)
         self.ui.tableWidgetAlbums.show()
 
 
     def showAlbum(self,album):
+        print("showAlbum")
         self.ui.statusBar.showMessage("selected: "+album.title)
         self.setTitleLabel(self.currentArtist.name,album.title,album.year)
         
@@ -273,11 +270,13 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def onPlayAlbum(self,item):
         #Add tracks in playlist and start playing
         alb = self.getAlbumFromTable()
-        player.initMediaList()
+        player.dropMediaList()
         if(alb.albumID != 0):
             for track in alb.tracks:
                 player.addFile(os.path.join(alb.dirPath,track.getFileName()))
-                player.playMediaList()
+                
+        player.playMediaList()
+
 
     def onPauseAlbum(self):
         player.pauseMediaList()

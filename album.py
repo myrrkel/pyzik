@@ -25,6 +25,12 @@ def year(s):
 			#Sounds ridiculous to have 16 instead of 2016.
 	return res
 
+def titleCase(s):
+    return re.sub(r"[A-Za-z]+('[A-Za-z]+)?",
+     lambda mo: mo.group(0)[0].upper() +
+     mo.group(0)[1:].lower(),
+     s)
+
 
 
 def replaceSpecialChars(text):
@@ -70,7 +76,7 @@ class album:
 		self.artistID = row[4]
 
 	def formatTitle(self,title):
-		return title.title()
+		return titleCase(title)
 
 	def printInfos(self):
 		print("Title: "+self.title+"  # Artist: "+self.artistName\
@@ -150,17 +156,17 @@ class album:
 		for file in files:
 			if not( fnmatch.fnmatch(file, '*.*')):
 				#file is a directory
-				self.getTracks(str(file))
+				self.getTracks(os.path.join(dir,str(file)))
 			else:
 
 				for ext in musicFilesExtension:
 					if fnmatch.fnmatch(file, '*.'+ext):
 						if subdir != "":
-							sfile = os.path.join(dir,str(file))
+							sfile = os.path.join(dir,file)
 						else:
 							sfile = str(file)
 						
-						print("File:"+sfile)
+						#print("File:"+sfile)
 						if("." in sfile):
 							filename, file_extension = os.path.splitext(sfile)
 							itrack = track(filename,file_extension)
@@ -187,17 +193,17 @@ class album:
 		for file in files:
 			if not( fnmatch.fnmatch(file, '*.*')):
 				#file is a directory
-				self.getImages(str(file))
+				self.getImages(os.path.join(subdir,file))
 			else:
 
 				for ext in imageFilesExtension:
 					if fnmatch.fnmatch(file, '*.'+ext):
 						if subdir != "":
-							sfile = os.path.join(dir,str(file))
+							sfile = os.path.join(dir,file)
 						else:
 							sfile = str(file)
 						self.images.append(sfile)
-						print("Image:"+str(sfile))
+						#print("Image:"+str(sfile))
 						break
 
 
