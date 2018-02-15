@@ -89,11 +89,7 @@ class artistCollection:
 
 
 	def insertArtistDB(self,artist):
-		sqlInsertArtist = """	INSERT INTO artists (name)
-								VALUES ('{name}');
-						  """.format(name=artist.name)
-
-
+		
 		try:
 			c = self.db.connection.cursor()
 			sqlInsertArtist = """	INSERT INTO artists (name)
@@ -104,8 +100,6 @@ class artistCollection:
 			artist.artistID = c.lastrowid
 		except sqlite3.Error as e:
 			print(e)
-
-		#artist.artistID = self.db.insertLine(sqlInsertArtist)
 
 		return artist.artistID
 

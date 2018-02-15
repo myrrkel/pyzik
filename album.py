@@ -135,6 +135,8 @@ class album:
 
 		self.tracks = []
 
+		if(not self.checkDir()): return False
+
 		if(subdir==""): 
 			dir = self.dirPath
 		else:
@@ -169,6 +171,8 @@ class album:
 	def getImages(self,subdir=""):
 
 		self.images = []
+
+		if(not self.checkDir()): return False
 
 		if(subdir==""): 
 			dir = self.dirPath
@@ -210,6 +214,9 @@ class album:
 				
 			if self.cover == "":
 				self.cover = self.images[0]
+
+	def checkDir(self):
+		return os.path.exists(self.dirPath)
 
 
 

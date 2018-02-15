@@ -53,12 +53,17 @@ class albumCollection:
 
 
 	def insertAlbumDB(self,album):
-		sqlInsertAlbum = """	INSERT INTO albums (title, artistID,dirPath,year,musicDirectoryID)
-								VALUES ('{title}','{artistID}','{dirPath}','{year}','{musicDirectoryID}');
-						  """.format(title=album.title,artistID=album.artistID,dirPath=album.dirPath,\
-						  		year=album.year,musicDirectoryID=album.musicDirectoryID)
 
-		album.albumID = self.db.insertLine(sqlInsertAlbum)
+		try:
+			c = self.db.connection.cursor()
+			sqlInsertAlbum = """	INSERT INTO albums (title, artistID,dirPath,year,musicDirectoryID)
+								VALUES (?,?,?,?,?);
+						  """
+			c.execute(sqlInsertAlbum,(album.title,album.artistID,album.dirPath,album.year,album.musicDirectoryID))
+			self.db.connection.commit()
+			album.albumID = c.lastrowid
+		except sqlite3.Error as e:
+			print(e)
 
 		return album.albumID
 
@@ -88,7 +93,7 @@ class albumCollection:
 	def getRandomAlbum(self):
 		nbAlbum = len(self.albums)
 		if(nbAlbum > 0):
-			irandom  = random.randint(0, -1)
+			irandom  = random.randint(0, nbAlbum-1)
 			resAlb = self.albums[irandom]
 			return resAlb
 
