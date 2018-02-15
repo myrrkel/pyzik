@@ -37,18 +37,32 @@ class musicDirectoryCollection:
 
 
 	def insertMusicDirectoryDB(self,musicDirectory):
+		'''
 		sqlInsertMusicDirectory = """	INSERT INTO musicDirectories (dirPath, dirName)
 								VALUES ('{dirPath}','{dirName}');
 						  """.format(dirPath=musicDirectory.dirPath,dirName=musicDirectory.dirName)
+		'''
 
-		musicDirectory.musicDirectoryID = self.db.insertLine(sqlInsertMusicDirectory)
+		try:
+			c = self.db.connection.cursor()
+			sqlInsertMusicDirectory = """	INSERT INTO musicDirectories (dirPath, dirName)
+								VALUES (?,?);
+						  """
+			c.execute(sqlInsertMusicDirectory,(musicDirectory.dirPath,musicDirectory.dirName))
+			self.db.connection.commit()
+			musicDirectory.musicDirectoryID = c.lastrowid
+		except sqlite3.Error as e:
+			print(e)
+		
+		#musicDirectory.musicDirectoryID = self.db.insertLine(sqlInsertMusicDirectory)
 
 		return musicDirectory.musicDirectoryID
 
 
 	def loadMusicDirectories(self):
-		for row_dir in self.db.getSelect("SELECT musicDirectoryID, dirPath, dirName, styleID FROM musicDirectories"):
-			#print('{0} : {1}'.format(row_dir[0], row_dir[1]))
+		req = "SELECT musicDirectoryID, dirPath, dirName, styleID FROM musicDirectories"
+		for row_dir in self.db.getSelect(req):
+			print('{0} : {1}'.format(row_dir[0], row_dir[1]))
 			dir = musicDirectory("")
 			dir.load(row_dir)
 			self.addMusicDirectory(dir)

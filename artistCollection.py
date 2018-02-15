@@ -93,7 +93,19 @@ class artistCollection:
 								VALUES ('{name}');
 						  """.format(name=artist.name)
 
-		artist.artistID = self.db.insertLine(sqlInsertArtist)
+
+		try:
+			c = self.db.connection.cursor()
+			sqlInsertArtist = """	INSERT INTO artists (name)
+								VALUES (?);
+						  """
+			c.execute(sqlInsertArtist,(artist.name))
+			self.db.connection.commit()
+			artist.artistID = c.lastrowid
+		except sqlite3.Error as e:
+			print(e)
+
+		#artist.artistID = self.db.insertLine(sqlInsertArtist)
 
 		return artist.artistID
 

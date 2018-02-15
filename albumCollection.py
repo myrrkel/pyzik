@@ -86,9 +86,11 @@ class albumCollection:
 
 
 	def getRandomAlbum(self):
-		irandom  = random.randint(0, len(self.albums)-1)
-		resAlb = self.albums[irandom]
-		return resAlb
+		nbAlbum = len(self.albums)
+		if(nbAlbum > 0):
+			irandom  = random.randint(0, -1)
+			resAlb = self.albums[irandom]
+			return resAlb
 
 
 	

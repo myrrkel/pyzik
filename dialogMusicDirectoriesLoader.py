@@ -43,11 +43,9 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
             if((md.dirName != "") & ok):
                 self.mb.musicDirectoryCol.addMusicDirectory(md)
                 self.loadDirList()
-
-
-
         
-        print("Directory="+sDir+" DirName="+md.dirName)
+                print("Directory="+sDir+" DirName="+md.dirName)
+
 
     def onChangeDir(self):
         sDir = self.selectDir()

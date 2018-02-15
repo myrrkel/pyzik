@@ -61,8 +61,9 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def showEvent(self,event):
         #This function is called when the mainWindow is shown
         alb = mb.albumCol.getRandomAlbum()
-        print("RamdomAlb="+alb.title)
-        self.showAlbum(alb)
+        if(alb != None):
+            print("RamdomAlb="+alb.title)
+            self.showAlbum(alb)
 
 
 
@@ -105,7 +106,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         mb.exploreAlbumsDirectories()
         self.showArtists()
     
-    def onMenuDeleteDatabase(seDlf):
+    def onMenuDeleteDatabase(self):
         db.dropAllTables()
         mb.emptyDatas()
         self.showArtists()
