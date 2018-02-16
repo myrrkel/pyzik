@@ -81,3 +81,8 @@ class playerVLC:
         """
         print("Volume:"+str(Volume))
         self.mediaPlayer.audio_set_volume(Volume)
+
+    def getParsedMedia(self,sfile):
+        media = self.instance.media_new(sfile)
+        media.parse()
+        return media

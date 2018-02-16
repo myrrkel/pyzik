@@ -245,7 +245,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.setTitleLabel(self.currentArtist.name,album.title,album.year)
         
         album.getImages()
-        album.getTracks()
+        album.getTracks(player)
         album.getCover()
 
         if album.cover != "":
