@@ -257,6 +257,9 @@
                  <height>0</height>
                 </size>
                </property>
+               <property name="contextMenuPolicy">
+                <enum>Qt::CustomContextMenu</enum>
+               </property>
                <property name="autoScrollMargin">
                 <number>16</number>
                </property>
@@ -397,6 +400,13 @@
                    </widget>
                   </item>
                   <item>
+                   <widget class="QPushButton" name="openDirButton">
+                    <property name="text">
+                     <string>Open Dir</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
                    <widget class="QSlider" name="volumeSlider">
                     <property name="minimumSize">
                      <size>
@@ -450,6 +460,7 @@
     <addaction name="actionMusic_directories"/>
     <addaction name="actionExplore_music_directories"/>
     <addaction name="actionDelete_database"/>
+    <addaction name="actionRandom_album"/>
    </widget>
    <addaction name="menuConfiguration"/>
   </widget>
@@ -461,12 +472,17 @@
   </action>
   <action name="actionExplore_music_directories">
    <property name="text">
-    <string>Explore Music directories</string>
+    <string>Explore music directories</string>
    </property>
   </action>
   <action name="actionDelete_database">
    <property name="text">
     <string>Delete database</string>
+   </property>
+  </action>
+  <action name="actionRandom_album">
+   <property name="text">
+    <string>Random album</string>
    </property>
   </action>
  </widget>

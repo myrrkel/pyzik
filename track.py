@@ -34,9 +34,9 @@ class track:
 
 
 
-	def extractDataFromTags(self,player):
-		parsedMedia = player.getParsedMedia(self.getFileName())
-		parsedMedia.parse()
+	def extractDataFromTags(self,player,dir):
+		parsedMedia = player.getParsedMedia(os.path.join(dir,self.getFileName()))
+		#parsedMedia.parse()
 		self.title = parsedMedia.get_meta(0)
 		self.album = parsedMedia.get_meta(4)
 		self.artist = parsedMedia.get_meta(1)

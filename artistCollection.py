@@ -75,12 +75,8 @@ class artistCollection:
 		return artistList
 
 	def getArtistByID(self,id):
-		artistList = []
 		for art in filterByID(self.artists,id):
-			print("Found "+str(id)+" id="+str(art.artistID))
-			artistList.append(art)
-
-		return artistList
+			return art
 
 
 	def printArtists(self):
@@ -106,7 +102,7 @@ class artistCollection:
 
 	def loadArtists(self):
 		for row_art in self.db.getSelect("SELECT artistID, name FROM artists ORDER BY name"):
-			print('{0} : {1}'.format(row_art[0], row_art[1]))
+			#print('{0} : {1}'.format(row_art[0], row_art[1]))
 			art = artist(row_art[1],row_art[0])
 			self.addArtist(art)
 

@@ -68,9 +68,9 @@ class musicBase:
 
 	def addAlbumsToArtists(self):
 		for alb in self.albumCol.albums:
-			artists_found = self.artistCol.getArtistByID(alb.artistID)
-			if (len(artists_found) == 1):
-				artists_found[0].albums.append(alb)
+			artist_found = self.artistCol.getArtistByID(alb.artistID)
+			if (artist_found != None):
+				artist_found.albums.append(alb)
 
 
 	def emptyDatas(self):

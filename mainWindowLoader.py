@@ -19,6 +19,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
        
         self.currentArtist = artist("",0)
+        self.currentAlbum = album("")
         self.coverPixmap = QtGui.QPixmap()
         self.defaultPixmap = QtGui.QPixmap()
 
@@ -37,6 +38,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         #self.ui.listViewArtists.clicked.connect(self.onArtistChange)
         self.ui.actionMusic_directories.triggered.connect(self.onMenuMusicDirectories)
         self.ui.actionExplore_music_directories.triggered.connect(self.onMenuExplore)
+        self.ui.actionRandom_album.triggered.connect(self.ramdomAlbum)
         self.ui.actionDelete_database.triggered.connect(self.onMenuDeleteDatabase)
         self.ui.playButton.clicked.connect(self.onPlayAlbum)
         self.ui.stopButton.clicked.connect(self.onPauseAlbum)
@@ -45,6 +47,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.searchEdit.textChanged.connect(self.onSearchChange)
         self.ui.searchEdit.returnPressed.connect(self.onSearchEnter)
         self.ui.tableWidgetAlbums.clicked.connect(self.onAlbumChange)
+        self.ui.tableWidgetAlbums.customContextMenuRequested.connect(self.handleHeaderMenu)
 
         self.ui.volumeSlider.setMaximum(100)
         self.ui.volumeSlider.setValue(player.mediaPlayer.audio_get_volume())
@@ -60,11 +63,13 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def showEvent(self,event):
         #This function is called when the mainWindow is shown
+        self.ramdomAlbum()
+
+    def ramdomAlbum(self):
         alb = mb.albumCol.getRandomAlbum()
         if(alb != None):
             print("RamdomAlb="+alb.title)
             self.showAlbum(alb)
-
 
 
     def setVolume(self, Volume):
@@ -112,6 +117,13 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.showArtists()
         self.initAlbumTableWidget()
 
+    def handleHeaderMenu(self, pos):
+        print('column(%d)' % self.ui.tableWidgetAlbums.horizontalHeader().logicalIndexAt(pos))
+        menu = QtWidgets.QMenu()
+        menu.addAction('Add')
+        menu.addAction('Delete')
+        menu.exec(QtGui.QCursor.pos())
+
 
     '''
     Artist listView functions
@@ -142,13 +154,15 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def onArtistChange(self,item):
         #When call from listView, item is a QModelIndex
         sel = self.ui.listViewArtists.selectionModel().selectedIndexes()
-        if len(sel)==1:
-            nrow = item.row()
-            
-            model = self.ui.listViewArtists.model()
-            self.currentArtist = model.item(nrow).artist
+        #if len(sel)==1:
+        nrow = item.row()
         
-            self.showAlbums(self.currentArtist)
+        model = self.ui.listViewArtists.model()
+        self.currentArtist = model.item(nrow).artist
+    
+        self.showAlbums(self.currentArtist)
+   
+
 
 
     '''
@@ -211,7 +225,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def showAlbums(self,artist):
         #Add albums in the QTableView
 
-        print("Show albums")
+        print("Show albums Art="+artist.name)
         self.ui.tableWidgetAlbums.setRowCount(0)
         i=0
         for alb in artist.albums:
@@ -242,11 +256,14 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def showAlbum(self,album):
         print("showAlbum")
         self.ui.statusBar.showMessage("selected: "+album.title)
+
+        self.currentArtist = mb.artistCol.getArtistByID(album.artistID)
         self.setTitleLabel(self.currentArtist.name,album.title,album.year)
         
         album.getImages()
         album.getTracks(player)
         album.getCover()
+        self.currentAlbum = album
 
         if album.cover != "":
             self.showCover(os.path.join(album.dirPath,album.cover))
@@ -267,16 +284,21 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     '''
     Interactions with vlc module
     '''
-    def onPlayAlbum(self,item):
+    def playAlbum(self,alb):
         #Add tracks in playlist and start playing
-        alb = self.getAlbumFromTable()
         player.dropMediaList()
-        if(alb.albumID != 0):
+        print("playAlbum "+alb.dirPath)
+        if(alb != None):
             for track in alb.tracks:
+                print("play track "+os.path.join(alb.dirPath,track.getFileName()))
                 player.addFile(os.path.join(alb.dirPath,track.getFileName()))
                 
-        player.playMediaList()
+            player.playMediaList()
 
+    def onPlayAlbum(self,item):
+        #alb = self.getAlbumFromTable()
+        print("onPlayAlbum "+self.currentAlbum.dirPath)
+        self.playAlbum(self.currentAlbum)
 
     def onPauseAlbum(self):
         player.pauseMediaList()
@@ -287,17 +309,14 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     '''
 
     def setTitleLabel(self,artName="",AlbTitle="",Year=""):
-        if(artName==""):
-            sTitle = ""
-        else:
-            sAlbum = AlbTitle
-            sYear =str(Year)
-            if(sYear != "0"): sAlbum += " ("+sYear+")"
-            sTitle = '''<html><head/><body>
-            <p><span style=\" font-size:14pt; font-weight:600;\">{Artist}</span></p>
-            <p><span style=\" font-style:italic;\">{Album}</span></p>
-            </body></html>'''
-            sTitle = sTitle.format(Artist=artName,Album=sAlbum)
+        sAlbum = AlbTitle
+        sYear =str(Year)
+        if(sYear != "0"): sAlbum += " ("+sYear+")"
+        sTitle = '''<html><head/><body>
+        <p><span style=\" font-size:14pt; font-weight:600;\">{Artist}</span></p>
+        <p><span style=\" font-style:italic;\">{Album}</span></p>
+        </body></html>'''
+        sTitle = sTitle.format(Artist=artName,Album=sAlbum)
         
         self.ui.labelArtist.setText(sTitle)
 
@@ -343,7 +362,7 @@ if __name__ == '__main__':
     player = playerVLC()
 
     #Load & Set the DarkStyleSheet
-    app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
+    #app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
 
     
     translator = QtCore.QTranslator(app)

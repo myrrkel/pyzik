@@ -51,7 +51,7 @@ class album:
 	Album's class, each album is in a directory name.
 	"""
 
-	def __init__(self,dirname):
+	def __init__(self,dirname=""):
 		self.albumID = 0
 		self.title = ""
 		self.dirName = dirname
@@ -170,7 +170,7 @@ class album:
 						if("." in sfile):
 							filename, file_extension = os.path.splitext(sfile)
 							itrack = track(filename,file_extension)
-							itrack.extractDataFromTags(player)
+							itrack.extractDataFromTags(player,dir)
 							self.tracks.append(itrack)
 							break
 
