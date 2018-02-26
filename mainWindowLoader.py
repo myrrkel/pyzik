@@ -64,6 +64,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def showEvent(self,event):
         #This function is called when the mainWindow is shown
         self.ramdomAlbum()
+        player.playFuzzyGroovy()
 
     def ramdomAlbum(self):
         alb = mb.albumCol.getRandomAlbum()
@@ -311,7 +312,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def setTitleLabel(self,artName="",AlbTitle="",Year=""):
         sAlbum = AlbTitle
         sYear =str(Year)
-        if(sYear != "0"): sAlbum += " ("+sYear+")"
+        if(not sYear in ["0",""]): sAlbum += " ("+sYear+")"
         sTitle = '''<html><head/><body>
         <p><span style=\" font-size:14pt; font-weight:600;\">{Artist}</span></p>
         <p><span style=\" font-style:italic;\">{Album}</span></p>
@@ -362,7 +363,7 @@ if __name__ == '__main__':
     player = playerVLC()
 
     #Load & Set the DarkStyleSheet
-    #app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
+    app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
 
     
     translator = QtCore.QTranslator(app)
@@ -377,3 +378,7 @@ if __name__ == '__main__':
     window.show()
 
     app.exec()
+
+    player.release()
+
+    sys.exit()

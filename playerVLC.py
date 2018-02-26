@@ -8,6 +8,7 @@
 ##############################################
 
 import sys
+import time
 import vlc
 
 class playerVLC:
@@ -24,6 +25,10 @@ class playerVLC:
 
         self.initMediaList()
            
+    def release(self):
+        self.mediaPlayer.release()
+        self.mediaListPlayer.release()
+        self.instance.release()
 
 
     def playFile(self,sfile):
@@ -86,3 +91,26 @@ class playerVLC:
         media = self.instance.media_new(sfile)
         media.parse()
         return media
+
+    def playFuzzyGroovy(self):
+
+        m = self.instance.media_new("http://listen.radionomy.com/fuzzy-and-groovy.m3u")
+        #self.mediaPlayer.set_media(m)
+        #self.mediaPlayer.play()
+
+        self.mediaList.add_media(m)
+        self.playMediaList()
+        time.sleep(10)
+        m.parse()
+        print(PyUnicode_DecodeASCII(m.get_meta(12)))
+
+
+
+if __name__ == '__main__':
+    player = playerVLC()
+    player.initMediaList()
+    player.playFuzzyGroovy()
+
+
+
+
