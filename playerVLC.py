@@ -21,6 +21,7 @@ class playerVLC:
         self.mediaPlayer = self.instance.media_player_new()
         self.mediaListPlayer = self.instance.media_list_player_new()
         self.mediaList = self.instance.media_list_new()
+        self.mpEnventManager = self.mediaPlayer.event_manager()
         self.mediaPlayer.audio_set_volume(100)
 
         self.initMediaList()
@@ -95,14 +96,19 @@ class playerVLC:
     def playFuzzyGroovy(self):
 
         m = self.instance.media_new("http://listen.radionomy.com/fuzzy-and-groovy.m3u")
-        #self.mediaPlayer.set_media(m)
-        #self.mediaPlayer.play()
 
         self.mediaList.add_media(m)
         self.playMediaList()
-        time.sleep(10)
-        m.parse()
-        print(PyUnicode_DecodeASCII(m.get_meta(12)))
+        
+
+    def getNowPlaying(self):
+        m = self.mediaPlayer.get_media()
+        now_playing = m.get_meta(12)
+        if now_playing is not None:
+            print(now_playing)
+            return now_playing
+        else:
+            return ""
 
 
 

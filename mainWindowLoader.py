@@ -11,7 +11,6 @@ from darkStyle import darkStyle
 from dialogMusicDirectoriesLoader import *
 
 
-
 class MainWindowLoader(QtWidgets.QMainWindow):
 
     def __init__(self, parent=None):
@@ -65,6 +64,10 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         #This function is called when the mainWindow is shown
         self.ramdomAlbum()
         player.playFuzzyGroovy()
+        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerTitleChanged, self.nowPlayingChangedEvent)
+        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPaused, self.paused)
+        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPlaying, self.isPlaying)
+        
 
     def ramdomAlbum(self):
         alb = mb.albumCol.getRandomAlbum()
@@ -75,7 +78,18 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def setVolume(self, Volume):
         player.setVolume(Volume)
+
+    def paused(self,event):
+        print("Paused!")
+
+    def isPlaying(self,event):
+        print("isPlaying!")
    
+
+    def nowPlayingChangedEvent(self,event):
+        #print("TitleChanged="+player.getNowPlaying())
+        print("TitleChanged!")
+
 
 
     '''
@@ -361,6 +375,7 @@ if __name__ == '__main__':
     mb.loadMusicBase()
 
     player = playerVLC()
+    
 
     #Load & Set the DarkStyleSheet
     app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
@@ -374,7 +389,7 @@ if __name__ == '__main__':
     app.installTranslator(translator)
 
 
-    window = MainWindowLoader()
+    window = MainWindowLoader() 
     window.show()
 
     app.exec()
