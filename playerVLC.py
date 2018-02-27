@@ -11,6 +11,17 @@ import sys
 import time
 import vlc
 
+dirtySymbols = ["@","+","*","#"]
+
+def cleanTitle(title):
+    s = title
+    if s[0] in dirtySymbols:
+        s = s[1:]
+    if s[-1] in dirtySymbols:
+        s = s[:-2]
+    return s.strip()
+
+
 class playerVLC:
 
     def __init__(self):
@@ -59,6 +70,9 @@ class playerVLC:
     def playMediaList(self):
         self.mediaListPlayer.play()
 
+    def stop(self):
+        self.mediaPlayer.stop()
+
 
     def pauseMediaList(self):
         self.mediaListPlayer.pause()
@@ -103,12 +117,16 @@ class playerVLC:
 
     def getNowPlaying(self):
         m = self.mediaPlayer.get_media()
-        now_playing = m.get_meta(12)
-        if now_playing is not None:
-            print(now_playing)
-            return now_playing
+        if m is not None:
+            now_playing = m.get_meta(12)
+            if now_playing is not None:
+                #print(now_playing)
+                return cleanTitle(now_playing)
+            else:
+                return "NO_META"
         else:
-            return ""
+            return "No media"
+
 
 
 

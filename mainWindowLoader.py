@@ -9,6 +9,7 @@ from database import *
 from playerVLC import *
 from darkStyle import darkStyle
 from dialogMusicDirectoriesLoader import *
+from streamObserver import *
 
 
 class MainWindowLoader(QtWidgets.QMainWindow):
@@ -57,7 +58,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.statusBar.showMessage("PyZik")
 
 
-
+        self.threadStreamObserver = streamObserver(self,player)
+        self.threadStreamObserver.start()
 
 
     def showEvent(self,event):
@@ -87,8 +89,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
    
 
     def nowPlayingChangedEvent(self,event):
-        #print("TitleChanged="+player.getNowPlaying())
-        print("TitleChanged!")
+        print("TitleChanged="+player.getNowPlaying())
+        #print("TitleChanged!")
 
 
 
@@ -389,11 +391,12 @@ if __name__ == '__main__':
     app.installTranslator(translator)
 
 
-    window = MainWindowLoader() 
+    window = MainWindowLoader()
     window.show()
 
     app.exec()
-
+    window.threadStreamObserver.stop()
+    window.threadStreamObserver.join()
     player.release()
 
     sys.exit()
