@@ -125,7 +125,7 @@ class playerVLC:
             else:
                 return "NO_META"
         else:
-            return "No media"
+            return "NO_MEDIA"
 
 
 
