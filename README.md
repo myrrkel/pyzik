@@ -11,13 +11,13 @@ Pyzik explores big music directories like:
 
 
 
-Pyzik finds datas from albums directories name and saves albums in database. 
+Pyzik finds datas from albums directories name and saves it in database. 
 
-So you can find your music quickly.
+So you can find your music quickly, and play it.
 
 # Requirements
 
-				pip install qdarkgraystyle
+				pip install PyQt5
 				pip install python-vlc
 
 
@@ -25,17 +25,18 @@ So you can find your music quickly.
 
 python3 ./pyzik/mainWindowLauncher.py
 
-
-
-
-# Coming soon:
+# News
 
 + Playing albums with vlc module
-
-+ Displaying covers
-
++ Playing radio without ads
++ Displaying covers art
 + Reading tags
 
+# Coming soon:
++ Language selector
++ Music style filter
++ Correction folder's name acording ID3 tags
++ Collecting cover art and track list from web
 + Manager for music directories like 
 
                                     ./Artist/1972 - Album1
