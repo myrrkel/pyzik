@@ -1,0 +1,1 @@
+pylupdate5 ./pyzik.pro

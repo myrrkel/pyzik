@@ -1,9 +1,7 @@
 data/
 __pycache__/
 TEST/
-*.sh
 qt/*.qm
 qt/*.cpp
 qt/*.h
-qt/*.pro
 qt/*.pro.user
