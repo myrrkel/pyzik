@@ -69,26 +69,16 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
 
 if __name__ == '__main__':
     import sys
-    from qdarkgraystyle import *
+
     app = QtWidgets.QApplication(sys.argv)
-    #app.setStyle('Windows')
 
     translator = QtCore.QTranslator(app)
     locale = QtCore.QLocale.system().name()
-    # translator for built-in qt strings
-    #print(locale)
+
     translator.load('pyzik_%s.qm' % locale)
 
     app.installTranslator(translator)
-    #sys.exit(app.exec_())
-
    
-
-
-    #Load & Set the DarkStyleSheet
-    app.setStyleSheet(qdarkgraystyle.load_stylesheet_pyqt5())
-
-
     mb = musicBase()
 
     mb.musicDirectoryCol.loadMusicDirectories()
@@ -96,7 +86,5 @@ if __name__ == '__main__':
     window = DialogMusicDirectoriesLoader(mb)
 
     window.show()
-
-    #print(str(QtWidgets.QStyleFactory.keys()))
 
     sys.exit(app.exec_())
