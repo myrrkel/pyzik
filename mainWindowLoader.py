@@ -40,6 +40,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.actionExplore_music_directories.triggered.connect(self.onMenuExplore)
         self.ui.actionRandom_album.triggered.connect(self.ramdomAlbum)
         self.ui.actionDelete_database.triggered.connect(self.onMenuDeleteDatabase)
+        self.ui.actionFuzzyGroovy.triggered.connect(self.onPlayFuzzyGroovy)
         self.ui.playButton.clicked.connect(self.onPlayAlbum)
         self.ui.stopButton.clicked.connect(self.onPauseAlbum)
         self.ui.nextButton.clicked.connect(player.mediaListPlayer.next)
@@ -65,10 +66,14 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def showEvent(self,event):
         #This function is called when the mainWindow is shown
         self.ramdomAlbum()
+        
+
+    def onPlayFuzzyGroovy(self):
         player.playFuzzyGroovy()
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerTitleChanged, self.nowPlayingChangedEvent)
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPaused, self.paused)
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPlaying, self.isPlaying)
+
         
 
     def ramdomAlbum(self):

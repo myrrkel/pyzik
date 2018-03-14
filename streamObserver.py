@@ -34,15 +34,18 @@ class streamObserver(Thread):
             if title != "NO_META":
                 if (self.previousTitle != title):
                     print(title)
+                    msg = title
                     self.previousTitle = title
             else:
                 if self.previousTitle != "":
                     self.previousTitle = ""
                     self.player.stop()
-                    print("Advert Killed!")
+                    msg = "Advert Killed!"
+
                     time.sleep(2)
                     self.player.playMediaList()
 
+            self.window.ui.statusBar.showMessage(msg)
 
 
             time.sleep(1)
