@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import os, sys, subprocess
 from PyQt5 import QtWidgets, QtGui, QtCore
 import mainWindow  # import of mainWindow.py made with pyuic5
 from musicBase import * 
@@ -10,6 +10,16 @@ from playerVLC import *
 from darkStyle import darkStyle
 from dialogMusicDirectoriesLoader import *
 from streamObserver import *
+
+
+
+def open_file(filename):
+    if sys.platform == "win32":
+        os.startfile(filename)
+    else:
+        opener ="open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, filename])
+
 
 
 class MainWindowLoader(QtWidgets.QMainWindow):
@@ -44,6 +54,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.playButton.clicked.connect(self.onPlayAlbum)
         self.ui.stopButton.clicked.connect(self.onPauseAlbum)
         self.ui.nextButton.clicked.connect(player.mediaListPlayer.next)
+        self.ui.openDirButton.clicked.connect(self.onOpenDir)
         self.ui.previousButton.clicked.connect(player.mediaListPlayer.previous)
         self.ui.searchEdit.textChanged.connect(self.onSearchChange)
         self.ui.searchEdit.returnPressed.connect(self.onSearchEnter)
@@ -277,7 +288,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def showAlbum(self,album):
         print("showAlbum")
-        self.ui.statusBar.showMessage("selected: "+album.title)
+        #self.ui.statusBar.showMessage("selected: "+album.title)
 
         self.currentArtist = mb.artistCol.getArtistByID(album.artistID)
         self.setTitleLabel(self.currentArtist.name,album.title,album.year)
@@ -286,9 +297,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         album.getTracks(player)
         album.getCover()
         self.currentAlbum = album
-
         if album.cover != "":
-            self.showCover(os.path.join(album.dirPath,album.cover))
+            self.showCover(os.path.join(album.dirPath,album.cover)) 
         else:
             self.showCover("")
         
@@ -324,6 +334,9 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def onPauseAlbum(self):
         player.pauseMediaList()
+
+    def onOpenDir(self):
+        open_file(self.currentAlbum.dirPath)
 
 
     '''

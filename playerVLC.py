@@ -34,6 +34,7 @@ class playerVLC:
         self.mediaList = self.instance.media_list_new()
         self.mpEnventManager = self.mediaPlayer.event_manager()
         self.mediaPlayer.audio_set_volume(100)
+        self.radioMode = False
 
         self.initMediaList()
            
@@ -42,6 +43,8 @@ class playerVLC:
         self.mediaListPlayer.release()
         self.instance.release()
 
+    def isPlaying(self):
+        return self.mediaPlayer.is_playing()
 
     def playFile(self,sfile):
         #create the media
@@ -108,7 +111,8 @@ class playerVLC:
         return media
 
     def playFuzzyGroovy(self):
-
+        self.radioMode = True
+        self.dropMediaList()
         m = self.instance.media_new("http://listen.radionomy.com/fuzzy-and-groovy.m3u")
 
         self.mediaList.add_media(m)

@@ -24,28 +24,29 @@ class streamObserver(Thread):
     def run(self):
 
         """Code à exécuter pendant l'exécution du thread."""
-
+        msg = ""
         while True:
 
             if self.doStop: break
 
-            title = self.player.getNowPlaying()
+            if self.player.isPlaying() == True:
+                title = self.player.getNowPlaying()
 
-            if title != "NO_META":
-                if (self.previousTitle != title):
-                    print(title)
-                    msg = title
-                    self.previousTitle = title
-            else:
-                if self.previousTitle != "":
-                    self.previousTitle = ""
-                    self.player.stop()
-                    msg = "Advert Killed!"
+                if title != "NO_META":
+                    if (self.previousTitle != title):
+                        print(title)
+                        msg = title
+                        self.previousTitle = title
+                else:
+                    if self.previousTitle != "":
+                        self.previousTitle = ""
+                        self.player.stop()
+                        msg = "Advert Killed!"
 
-                    time.sleep(2)
-                    self.player.playMediaList()
+                        time.sleep(2)
+                        self.player.playMediaList()
 
-            self.window.ui.statusBar.showMessage(msg)
+                self.window.ui.statusBar.showMessage(msg)
 
 
             time.sleep(1)
