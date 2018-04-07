@@ -25,6 +25,12 @@ def year(s):
             #Sounds ridiculous to have 16 instead of 2016.
     return res
 
+def getFileName(path):
+    filename, file_extension = os.path.splitext(path)
+    filename = os.path.basename(path)
+    print("getFileName fileName="+filename)
+    return filename
+
 
 def capitaliseWord(word):
     res =""
@@ -156,23 +162,26 @@ class album:
 
     def getTracks(self,player,subdir=""):
 
-        self.tracks = []
-
+        print("dirPath="+str(self.dirPath))
         if(not self.checkDir()): return False
 
         if(subdir==""): 
+            self.tracks = []
             dir = self.dirPath
         else:
             dir = os.path.join(self.dirPath,subdir)
 
+        print("Dir="+str(dir))
         files = os.listdir(dir)
         files.sort()
         
         nTrack = track("","")
     
         for file in files:
-            if not( fnmatch.fnmatch(file, '*.*')):
+            print("file="+str(file))
+            if os.path.isdir(os.path.join(dir,str(file))):
                 #file is a directory
+                print("subDir="+str(file))
                 self.getTracks(player,os.path.join(dir,str(file)))
             else:
 
@@ -183,7 +192,7 @@ class album:
                         else:
                             sfile = str(file)
                         
-                        #print("File:"+sfile)
+                        print("File:"+sfile)
                         if("." in sfile):
                             filename, file_extension = os.path.splitext(sfile)
                             itrack = track(filename,file_extension)
@@ -194,11 +203,10 @@ class album:
 
     def getImages(self,subdir=""):
 
-        self.images = []
-
         if(not self.checkDir()): return False
 
         if(subdir==""): 
+            self.images = []
             dir = self.dirPath
         else:
             dir = os.path.join(self.dirPath,subdir)
@@ -209,19 +217,20 @@ class album:
         files.sort()
     
         for file in files:
-            if not( fnmatch.fnmatch(file, '*.*')):
+            if os.path.isdir(os.path.join(dir,str(file))):
                 #file is a directory
                 self.getImages(os.path.join(subdir,file))
             else:
 
                 for ext in imageFilesExtension:
-                    if fnmatch.fnmatch(file, '*.'+ext):
-                        if subdir != "":
-                            sfile = os.path.join(dir,file)
-                        else:
-                            sfile = str(file)
+                    if fnmatch.fnmatch(file.lower(), '*.'+ext):
+                        sfile = os.path.join(subdir,file)
+                        #if subdir != "":
+                        #    sfile = os.path.join(dir,file)
+                        #else:
+                        #    sfile = str(file)
                         self.images.append(sfile)
-                        #print("Image:"+str(sfile))
+                        print("Image:"+str(sfile))
                         break
 
 
@@ -231,12 +240,15 @@ class album:
             keywords = ["cover","front","artwork","capa","folder","f"]
 
             for keyword in keywords:
-                coverFound = next((x for x in self.images if keyword in x.lower()), "")
+                coverFound = next((x for x in self.images if keyword in getFileName(x.lower())), "")
                 if (coverFound!=""):
+                    print("getCover found="+coverFound)
                     self.cover = coverFound
                     break
-                
+            print("getCover cover="+self.cover)
+
             if self.cover == "":
+                print("getCover GetDefault="+self.images[0])
                 self.cover = self.images[0]
 
     def checkDir(self):

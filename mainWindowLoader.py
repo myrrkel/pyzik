@@ -298,6 +298,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         album.getCover()
         self.currentAlbum = album
         if album.cover != "":
+            print("Cover dirPath="+album.dirPath)
             self.showCover(os.path.join(album.dirPath,album.cover)) 
         else:
             self.showCover("")
