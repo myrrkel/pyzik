@@ -59,7 +59,7 @@ def titleExcept(title):
 def replaceSpecialChars(text):
     #Replace strings in given text according to the dictionary 'rep'
     
-    rep = {"_": " ", "#": "@",\
+    rep = {"_": " ", "  ": " ", "#": "@",\
      "-(": "@", ")-": "@", "- (": "@", ") -": "@",\
      "-[": "@", "]-": "@", "- [": "@", "] -": "@",\
      "(": "@", ")": "@", "[": "@", "]": "@",\
@@ -156,7 +156,8 @@ class album:
                 self.toVerify = True
 
 
-        
+        self.title.strip()
+        self.artistName.strip()
         self.title = self.formatTitle(self.title)
 
 
@@ -225,10 +226,6 @@ class album:
                 for ext in imageFilesExtension:
                     if fnmatch.fnmatch(file.lower(), '*.'+ext):
                         sfile = os.path.join(subdir,file)
-                        #if subdir != "":
-                        #    sfile = os.path.join(dir,file)
-                        #else:
-                        #    sfile = str(file)
                         self.images.append(sfile)
                         print("Image:"+str(sfile))
                         break

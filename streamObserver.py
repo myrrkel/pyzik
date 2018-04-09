@@ -1,28 +1,28 @@
 import sys
 
 from threading import Thread
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import QThread
 
 import time
 
 
-class streamObserver(Thread):
+class streamObserver(QThread):
 
 
     """Thread chargé simplement d'afficher une lettre dans la console."""
 
+    titleChanged = pyqtSignal(str, name='titleChanged')
 
-    def __init__(self,window,player):
-
-        Thread.__init__(self)
-
-        self.window = window
-        self.player = player
-        self.doStop = False
-        self.previousTitle = ""
+    #self.window = window
+    
+    doStop = False
+    previousTitle = ""
+    player = None   
 
 
     def run(self):
-
+        #self.player = player
         """Code à exécuter pendant l'exécution du thread."""
         msg = ""
         while True:
@@ -38,16 +38,22 @@ class streamObserver(Thread):
                         msg = title
                         self.previousTitle = title
                 else:
-                    if self.previousTitle != "":
-                        self.previousTitle = ""
-                        self.player.stop()
-                        msg = "Advert Killed!"
+                    
+                    title = self.player.getTitle()
+                    if title != "NO_TITLE":
+                        msg = title + " - " + self.player.getArtist()
 
-                        time.sleep(2)
-                        self.player.playMediaList()
+                    else:
+                        if self.previousTitle != "":
+                            self.previousTitle = ""
+                            self.player.stop()
+                            msg = "Advert Killed!"
 
-                self.window.ui.statusBar.showMessage(msg)
+                            time.sleep(2)
+                            self.player.playMediaList()
 
+                #self.window.ui.statusBar.showMessage(msg)
+                self.titleChanged.emit(msg)
 
             time.sleep(1)
 

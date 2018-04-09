@@ -62,7 +62,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.tableWidgetAlbums.customContextMenuRequested.connect(self.handleHeaderMenu)
 
         self.ui.volumeSlider.setMaximum(100)
-        self.ui.volumeSlider.setValue(player.mediaPlayer.audio_get_volume())
+        self.ui.volumeSlider.setValue(player.getVolume())
         self.ui.volumeSlider.valueChanged.connect(self.setVolume)
        
         
@@ -70,20 +70,28 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.statusBar.showMessage("PyZik")
 
 
-        self.threadStreamObserver = streamObserver(self,player)
+        self.threadStreamObserver = streamObserver()
+        self.threadStreamObserver.player = player
+        self.threadStreamObserver.titleChanged.connect(self.setStatus)
         self.threadStreamObserver.start()
 
-
+        self.ui.coverWidget.resizeEvent = self.resizeEvent
+        
     def showEvent(self,event):
         #This function is called when the mainWindow is shown
         self.ramdomAlbum()
         
 
     def onPlayFuzzyGroovy(self):
+        volume = player.getVolume()
+        
         player.playFuzzyGroovy()
+        self.setVolume(volume)
+        #self.ui.volumeSlider.setValue(player.getVolume())
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerTitleChanged, self.nowPlayingChangedEvent)
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPaused, self.paused)
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPlaying, self.isPlaying)
+        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerAudioVolume , self.setVolumeSliderFromPlayer)
 
         
 
@@ -94,8 +102,16 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             self.showAlbum(alb)
 
 
-    def setVolume(self, Volume):
-        player.setVolume(Volume)
+    def setVolume(self, volume):
+        player.setVolume(volume)
+
+    def setVolumeSliderFromPlayer(self,event):
+        volume = player.getVolume()
+        self.ui.volumeSlider.setValue(volume)
+
+    def setStatus(self,msg):
+        #self.ui.labelArtist.setText(msg)
+        self.ui.statusBar.showMessage(msg)
 
     def paused(self,event):
         print("Paused!")
@@ -171,6 +187,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
         self.ui.listViewArtists.setModel(model)
         self.ui.listViewArtists.show()
+        self.ui.listViewArtists.selectionModel().currentChanged.connect(self.onArtistChange)
 
     def setHiddenAllArtistItem(self,hide):
         #Hide all artists
@@ -288,7 +305,6 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def showAlbum(self,album):
         print("showAlbum")
-        #self.ui.statusBar.showMessage("selected: "+album.title)
 
         self.currentArtist = mb.artistCol.getArtistByID(album.artistID)
         self.setTitleLabel(self.currentArtist.name,album.title,album.year)
@@ -415,7 +431,7 @@ if __name__ == '__main__':
 
     app.exec()
     window.threadStreamObserver.stop()
-    window.threadStreamObserver.join()
+    #window.threadStreamObserver.join()
     player.release()
 
     sys.exit()

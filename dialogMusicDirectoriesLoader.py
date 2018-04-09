@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
-import dialogMusicDirectories  # import du fichier dialogMusicDirectories.py généré par pyuic5
+import dialogMusicDirectories
 from musicBase import * 
 from musicDirectory import *
 from database import *
@@ -18,19 +18,27 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
 
         self.ui.AddButton.clicked.connect(self.onAddDir)
         self.ui.DirButton.clicked.connect(self.onChangeDir)
+
         self.loadDirList()
+        
 
         
         
     def onDirChanged(self,item):
-        sel = self.ui.tableViewAlbums.selectionModel().selectedIndexes()
-        if len(sel)==1:
-            #index = self.ui.listViewArtists.selectionModel().selectedIndexes()[0]
-            index = item
-            nrow = index.row()
-            model = self.ui.tableViewAlbums.model()
-                    
-            self.showAlbum(self.ui.tableViewAlbums.model().item(nrow).album)
+
+        sel = self.ui.DirListView.selectionModel().selectedIndexes()
+        #if len(sel)==1:
+        #index = self.ui.listViewArtists.selectionModel().selectedIndexes()[0]
+        index = item
+        nrow = item.row()
+        model = self.ui.DirListView.model()
+                
+        md = model.item(nrow).musicDir
+        self.ui.wRight.setEnabled(True)
+        self.ui.Name.setText(md.dirName)
+        self.ui.DirEdit.setText(md.dirPath)
+        self.ui.DirStyle.setCurrentItem(md.styleID)
+        self.ui.wRight.setEnabled(True)
 
     def onAddDir(self):
         
@@ -38,7 +46,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         if(sDir != ""):
             md = musicDirectory(sDir)
             
-            md.dirName, ok = QtWidgets.QInputDialog.getText(self, 'Give a name to your directoy', 
+            md.dirName, ok = QtWidgets.QInputDialog.getText(self, 'Give a name to your directory', 
             'Directory name:')
             if((md.dirName != "") & ok):
                 self.mb.musicDirectoryCol.addMusicDirectory(md)
@@ -59,16 +67,18 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         
 
         model = QtGui.QStandardItemModel(self.ui.DirListView)
-        for mDir in self.mb.musicDirectoryCol.musicDirectories:
-            itemDir = QtGui.QStandardItem(mDir.dirName)
-            itemDir.mDirist = mDir
+        for musicDir in self.mb.musicDirectoryCol.musicDirectories:
+            itemDir = QtGui.QStandardItem(musicDir.dirName)
+            itemDir.musicDir = musicDir
             model.appendRow(itemDir)
         self.ui.DirListView.setModel(model)
+        self.ui.DirListView.selectionModel().currentChanged.connect(self.onDirChanged)
 
 
 
 if __name__ == '__main__':
     import sys
+    from darkStyle import darkStyle
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -78,6 +88,9 @@ if __name__ == '__main__':
     translator.load('pyzik_%s.qm' % locale)
 
     app.installTranslator(translator)
+
+    #Load & Set the DarkStyleSheet
+    app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
    
     mb = musicBase()
 

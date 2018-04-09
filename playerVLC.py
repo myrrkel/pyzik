@@ -99,6 +99,13 @@ class playerVLC:
             self.mediaList.remove_index(i)
 
 
+    def getVolume(self):
+        """Get the volume from the player
+        """
+        volume = int(self.mediaPlayer.audio_get_volume())
+        print("Volume:"+str(volume))
+        return volume
+
     def setVolume(self, Volume):
         """Set the volume
         """
@@ -131,6 +138,50 @@ class playerVLC:
         else:
             return "NO_MEDIA"
 
+    def getTitle(self):
+        title = ""
+        m = self.mediaPlayer.get_media()
+        if m is not None:
+            title = m.get_meta(0)
+        else:
+            title = "NO_TITLE"
+        return title
+
+    def getArtist(self):
+        artist = ""
+        m = self.mediaPlayer.get_media()
+        if m is not None:
+            artist = m.get_meta(1)
+            if artist == None: artist = "NO_ARTIST"
+        else:
+            artist = "NO_ARTIST"
+        return artist
+
+    def getAlbum(self):
+        album = ""
+        m = self.mediaPlayer.get_media()
+        if m is not None:
+            album = m.get_meta(4)
+        else:
+            album = "NO_ALBUM"
+        return album
+
+
+    def getTrackNumber(self):
+        number = 0
+        m = self.mediaPlayer.get_media()
+        if m is not None:
+            number = int(m.get_meta(5))
+        else:
+            number = 0
+        return number
+
+    def getDate(self):
+        year = ""
+        m = self.mediaPlayer.get_media()
+        if m is not None:
+            year = m.get_meta(8)
+        return year    
 
 
 

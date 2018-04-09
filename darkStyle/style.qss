@@ -1230,20 +1230,20 @@ QFrame[height="3"], QFrame[width="3"] {
 
 
 QSplitter::handle {
-    border: 1px dashed #76797C;
+    border: 1px none #76797C;
 }
 
 QSplitter::handle:hover {
     background-color: #787876;
-    border: 1px solid #76797C;
+    border: 1px none #76797C;
 }
 
 QSplitter::handle:horizontal {
-    width: 1px;
+    width: 0px;
 }
 
 QSplitter::handle:vertical {
-    height: 1px;
+    height: 0px;
 }
 
 QProgressBar {
