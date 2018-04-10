@@ -1234,16 +1234,16 @@ QSplitter::handle {
 }
 
 QSplitter::handle:hover {
-    background-color: #787876;
+    /*background-color: #787876;*/
     border: 1px none #76797C;
 }
 
 QSplitter::handle:horizontal {
-    width: 0px;
+    width: 6px;
 }
 
 QSplitter::handle:vertical {
-    height: 0px;
+    height: 6px;
 }
 
 QProgressBar {

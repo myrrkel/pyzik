@@ -37,7 +37,8 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.ui.wRight.setEnabled(True)
         self.ui.Name.setText(md.dirName)
         self.ui.DirEdit.setText(md.dirPath)
-        self.ui.DirStyle.setCurrentItem(md.styleID)
+        i = self.ui.DirStyle.findData(md.styleID)
+        self.ui.DirStyle.setCurrentIndex(i)
         self.ui.wRight.setEnabled(True)
 
     def onAddDir(self):

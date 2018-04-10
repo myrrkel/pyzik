@@ -87,6 +87,7 @@ class album:
         self.toVerify = False
         self.tracks = []
         self.images = []
+        self.doStop = False
 
         if dirname!="":
             self.extractDataFromDirName()
@@ -162,7 +163,7 @@ class album:
 
 
     def getTracks(self,player,subdir=""):
-
+        self.doStop = False
         print("dirPath="+str(self.dirPath))
         if(not self.checkDir()): return False
 
@@ -179,6 +180,7 @@ class album:
         nTrack = track("","")
     
         for file in files:
+            if self.doStop: break
             print("file="+str(file))
             if os.path.isdir(os.path.join(dir,str(file))):
                 #file is a directory
@@ -203,7 +205,7 @@ class album:
 
 
     def getImages(self,subdir=""):
-
+        self.doStop = False
         if(not self.checkDir()): return False
 
         if(subdir==""): 
@@ -218,6 +220,7 @@ class album:
         files.sort()
     
         for file in files:
+            if self.doStop: break
             if os.path.isdir(os.path.join(dir,str(file))):
                 #file is a directory
                 self.getImages(os.path.join(subdir,file))
@@ -251,7 +254,8 @@ class album:
     def checkDir(self):
         return os.path.exists(self.dirPath)
 
-
+    def setDoStop(self):
+        self.doStop = True
 
 if __name__ == '__main__':
 

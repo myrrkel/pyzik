@@ -10,6 +10,7 @@ from playerVLC import *
 from darkStyle import darkStyle
 from dialogMusicDirectoriesLoader import *
 from streamObserver import *
+from albumThread import *
 
 
 
@@ -74,6 +75,12 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.threadStreamObserver.player = player
         self.threadStreamObserver.titleChanged.connect(self.setStatus)
         self.threadStreamObserver.start()
+
+
+        self.loadAlbumFilesThread = loadAlbumFilesThread()
+        self.loadAlbumFilesThread.setTerminationEnabled(True)
+        self.loadAlbumFilesThread.imagesLoaded.connect(self.showAlbumCover)
+        self.loadAlbumFilesThread.tracksLoaded.connect(self.showAlbumTracks)
 
         self.ui.coverWidget.resizeEvent = self.resizeEvent
         
@@ -304,30 +311,41 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
 
     def showAlbum(self,album):
-        print("showAlbum")
-
+        print("showAlbum: "+album.title)
+        
         self.currentArtist = mb.artistCol.getArtistByID(album.artistID)
         self.setTitleLabel(self.currentArtist.name,album.title,album.year)
         
-        album.getImages()
-        album.getTracks(player)
-        album.getCover()
+        #Start a thread to load album datas from directory
+        #When updated, triggers launch showAlbumCover and showAlbumTracks
+        if self.loadAlbumFilesThread.isRunning() :
+            print("Stop Thread loadAlbum")
+            self.loadAlbumFilesThread.stop()
+            self.loadAlbumFilesThread.wait()
         self.currentAlbum = album
-        if album.cover != "":
-            print("Cover dirPath="+album.dirPath)
-            self.showCover(os.path.join(album.dirPath,album.cover)) 
-        else:
-            self.showCover("")
-        
+        self.loadAlbumFilesThread.album = album
+        self.loadAlbumFilesThread.player = player
+        self.loadAlbumFilesThread.start()
+
+
+    def showAlbumTracks(self,result):        
         self.ui.tableWidgetTracks.setColumnCount(1)
         self.ui.tableWidgetTracks.setRowCount(0)
         i=0
-        for track in album.tracks:
+        for track in self.currentAlbum.tracks:
             self.ui.tableWidgetTracks.insertRow(i)
             titleItem = QtWidgets.QTableWidgetItem(track.title)
             titleItem.setFlags(titleItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.ui.tableWidgetTracks.setItem(i,0,titleItem)
             i+=1
+
+    def showAlbumCover(self,result):
+        album = self.currentAlbum
+        if album.cover != "":
+            print("Cover dirPath="+album.dirPath)
+            self.showCover(os.path.join(album.dirPath,album.cover)) 
+        else:
+            self.showCover("")
 
 
     '''
