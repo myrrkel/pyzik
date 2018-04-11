@@ -13,6 +13,7 @@ class musicDirectory:
 	"""
 
 	def __init__(self,sdir):
+		self.db = database()
 		self.dirPath = sdir
 		self.musicDirectoryID = 0
 		self.styleID = 0
@@ -66,4 +67,25 @@ class musicDirectory:
 				if len(albumList)==0:
 					self.albumCol.addAlbum(curAlb)
 		return 
+
+
+
+	def updateMusicDirectoryDB(self):
+		if self.musicDirectoryID > 0 :
+			try:
+				c = self.db.connection.cursor()
+				sqlInsertMusicDirectory = """	UPDATE musicDirectories SET dirPath=?, dirName=?, styleID=?
+							WHERE musicDirectoryID=?;
+							  """
+				c.execute(sqlInsertMusicDirectory,
+					(self.dirPath,
+					self.dirName,
+					self.styleID,
+					self.musicDirectoryID))
+
+				self.db.connection.commit()
+
+			except sqlite3.Error as e:
+				print(e)
+		
 

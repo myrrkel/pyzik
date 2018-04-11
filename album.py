@@ -199,7 +199,8 @@ class album:
                         if("." in sfile):
                             filename, file_extension = os.path.splitext(sfile)
                             itrack = track(filename,file_extension)
-                            itrack.extractDataFromTags(player,dir)
+                            #itrack.extractDataFromTags(player,dir)
+                            itrack.getMutagenTags(dir)
                             self.tracks.append(itrack)
                             break
 
@@ -256,6 +257,7 @@ class album:
 
     def setDoStop(self):
         self.doStop = True
+
 
 if __name__ == '__main__':
 

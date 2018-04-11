@@ -18,14 +18,19 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
 
         self.ui.AddButton.clicked.connect(self.onAddDir)
         self.ui.DirButton.clicked.connect(self.onChangeDir)
+        self.ui.Name.textChanged.connect(self.onNameChanged)
 
         self.loadDirList()
+        self.showGenres()
+        self.currentDir = None
         
 
-        
+    def onNameChanged(self,item):
+        self.currentDir.dirName = self.ui.Name.text()
         
     def onDirChanged(self,item):
-
+        if self.currentDir != None :
+            self.currentDir.updateMusicDirectoryDB()
         sel = self.ui.DirListView.selectionModel().selectedIndexes()
         #if len(sel)==1:
         #index = self.ui.listViewArtists.selectionModel().selectedIndexes()[0]
@@ -34,11 +39,17 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         model = self.ui.DirListView.model()
                 
         md = model.item(nrow).musicDir
+        self.currentDir = md
         self.ui.wRight.setEnabled(True)
         self.ui.Name.setText(md.dirName)
         self.ui.DirEdit.setText(md.dirPath)
-        i = self.ui.DirStyle.findData(md.styleID)
-        self.ui.DirStyle.setCurrentIndex(i)
+
+        if md.styleID != None :
+            i = self.ui.comboStyle.findData(md.styleID)
+            self.ui.comboStyle.setCurrentIndex(i)
+        else:
+            self.ui.comboStyle.setCurrentIndex(-1)
+
         self.ui.wRight.setEnabled(True)
 
     def onAddDir(self):
@@ -64,9 +75,9 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         sDir = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory"))
         return sDir
 
+
     def loadDirList(self):
         
-
         model = QtGui.QStandardItemModel(self.ui.DirListView)
         for musicDir in self.mb.musicDirectoryCol.musicDirectories:
             itemDir = QtGui.QStandardItem(musicDir.dirName)
@@ -75,6 +86,15 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.ui.DirListView.setModel(model)
         self.ui.DirListView.selectionModel().currentChanged.connect(self.onDirChanged)
 
+    def showGenres(self):
+        model = QtGui.QStandardItemModel(self.ui.comboStyle)
+        for genre in musicGenres:
+            item = QtGui.QStandardItem(genre)  
+             
+            # Add the item to the model
+            model.appendRow(item)
+        self.ui.comboStyle.setModel(model)
+        self.ui.comboStyle.setCurrentIndex(9)
 
 
 if __name__ == '__main__':

@@ -37,11 +37,6 @@ class musicDirectoryCollection:
 
 
 	def insertMusicDirectoryDB(self,musicDirectory):
-		'''
-		sqlInsertMusicDirectory = """	INSERT INTO musicDirectories (dirPath, dirName)
-								VALUES ('{dirPath}','{dirName}');
-						  """.format(dirPath=musicDirectory.dirPath,dirName=musicDirectory.dirName)
-		'''
 
 		try:
 			c = self.db.connection.cursor()
@@ -54,7 +49,6 @@ class musicDirectoryCollection:
 		except sqlite3.Error as e:
 			print(e)
 		
-		#musicDirectory.musicDirectoryID = self.db.insertLine(sqlInsertMusicDirectory)
 
 		return musicDirectory.musicDirectoryID
 

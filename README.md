@@ -19,6 +19,7 @@ So you can find your music quickly, and play it.
 
 				pip install PyQt5
 				pip install python-vlc
+                        pip install mutagen
 
 
 # To start the pre project use the command line: 
