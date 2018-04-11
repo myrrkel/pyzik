@@ -445,6 +445,10 @@ if __name__ == '__main__':
 
 
     window = MainWindowLoader()
+
+    for genre in musicGenres:
+        print(genre+" id="+str(musicGenres.index(genre)))
+
     window.show()
 
     app.exec()
