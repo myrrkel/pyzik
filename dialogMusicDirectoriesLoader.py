@@ -11,6 +11,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
     def __init__(self,mb):
         QtWidgets.QDialog.__init__(self)
         self.mb = mb
+        self.currentDir = None
         self.ui = dialogMusicDirectories.Ui_Dialog()
         self.ui.setupUi(self)
         self.setWindowTitle("PyZic")
@@ -19,10 +20,11 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.ui.AddButton.clicked.connect(self.onAddDir)
         self.ui.DirButton.clicked.connect(self.onChangeDir)
         self.ui.Name.textChanged.connect(self.onNameChanged)
+        self.ui.comboStyle.currentIndexChanged.connect(self.onChangeGenre)
 
         self.loadDirList()
         self.showGenres()
-        self.currentDir = None
+
         
 
     def onNameChanged(self,item):
@@ -43,10 +45,11 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.ui.wRight.setEnabled(True)
         self.ui.Name.setText(md.dirName)
         self.ui.DirEdit.setText(md.dirPath)
-
+        print("Current Style ID="+str(md.styleID))
         if md.styleID != None :
-            i = self.ui.comboStyle.findData(md.styleID)
-            self.ui.comboStyle.setCurrentIndex(i)
+            #i = self.ui.comboStyle.findData(md.styleID)
+            #print("found index="+str(i))
+            self.ui.comboStyle.setCurrentIndex(md.styleID)
         else:
             self.ui.comboStyle.setCurrentIndex(-1)
 
@@ -70,6 +73,13 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
     def onChangeDir(self):
         sDir = self.selectDir()
         self.ui.DirEdit.text = sDir
+        self.currentDir.dirPath = sDir
+
+    def onChangeGenre(self):
+        if self.currentDir != None:
+            self.currentDir.styleID = self.ui.comboStyle.currentIndex()
+            print("New Genre ID="+str(self.currentDir.styleID))
+
 
     def selectDir(self):
         sDir = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory"))
@@ -89,7 +99,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
     def showGenres(self):
         model = QtGui.QStandardItemModel(self.ui.comboStyle)
         for genre in musicGenres:
-            item = QtGui.QStandardItem(genre)  
+            item = QtGui.QStandardItem(genre)
              
             # Add the item to the model
             model.appendRow(item)

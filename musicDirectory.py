@@ -77,6 +77,7 @@ class musicDirectory:
 				sqlInsertMusicDirectory = """	UPDATE musicDirectories SET dirPath=?, dirName=?, styleID=?
 							WHERE musicDirectoryID=?;
 							  """
+				print("save idStyle="+str(self.styleID))
 				c.execute(sqlInsertMusicDirectory,
 					(self.dirPath,
 					self.dirName,
