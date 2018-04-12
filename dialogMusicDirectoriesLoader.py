@@ -47,9 +47,8 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.ui.DirEdit.setText(md.dirPath)
         print("Current Style ID="+str(md.styleID))
         if md.styleID != None :
-            #i = self.ui.comboStyle.findData(md.styleID)
-            #print("found index="+str(i))
-            self.ui.comboStyle.setCurrentIndex(md.styleID)
+            i = self.ui.comboStyle.findData(md.styleID)
+            self.ui.comboStyle.setCurrentIndex(i)
         else:
             self.ui.comboStyle.setCurrentIndex(-1)
 
@@ -77,7 +76,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
 
     def onChangeGenre(self):
         if self.currentDir != None:
-            self.currentDir.styleID = self.ui.comboStyle.currentIndex()
+            self.currentDir.styleID = self.ui.comboStyle.currentData()
             print("New Genre ID="+str(self.currentDir.styleID))
 
 
@@ -97,15 +96,21 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.ui.DirListView.selectionModel().currentChanged.connect(self.onDirChanged)
 
     def showGenres(self):
-        model = QtGui.QStandardItemModel(self.ui.comboStyle)
-        for genre in musicGenres:
-            item = QtGui.QStandardItem(genre)
-             
-            # Add the item to the model
-            model.appendRow(item)
-        self.ui.comboStyle.setModel(model)
-        self.ui.comboStyle.setCurrentIndex(9)
+        #model = QtGui.QStandardItemModel(self.ui.comboStyle)
+        #model.setColumnCount(2)
+        i=0
+        for genre in genresTab:
+            self.ui.comboStyle.addItem(genre[0],genre[1])
 
+            #item = QtGui.QStandardItem(genre)
+            #item.setData(i)
+            # Add the item to the model
+            #model.appendRow(item)
+            i+=1
+
+        #self.ui.comboStyle.setModel(model)
+        #self.ui.comboStyle.setCurrentIndex(9)
+        #model.sort(0)
 
 if __name__ == '__main__':
     import sys

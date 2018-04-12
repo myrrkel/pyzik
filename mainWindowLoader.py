@@ -356,11 +356,14 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         player.dropMediaList()
         print("playAlbum "+alb.dirPath)
         if(alb != None):
+            i = 0
             for track in alb.tracks:
                 print("play track "+os.path.join(alb.dirPath,track.getFileName()))
                 player.addFile(os.path.join(alb.dirPath,track.getFileName()))
+                if i == 0 : player.playMediaList()
+                i+=1
                 
-            player.playMediaList()
+            #player.playMediaList()
 
     def onPlayAlbum(self,item):
         #alb = self.getAlbumFromTable()

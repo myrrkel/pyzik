@@ -33,3 +33,20 @@ musicGenres = [
     "Black Metal", "Crossover", "Contemporary Christian", "Christian Rock",
     "Merengue", "Salsa", "Thrash Metal", "Anime", "Jpop", "Synthpop" 
 ]
+
+def createGenreTab():
+    tab = []
+    i=0
+    for genre in musicGenres:
+        tab.append((genre,i))
+        i+=1
+    return tab
+
+
+global genresTab
+genresTab = createGenreTab()
+genresTab = sorted(genresTab, key=lambda x: x[0])
+
+for genre in genresTab:
+    print(genre[0])
+

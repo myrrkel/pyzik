@@ -12,7 +12,7 @@ class track:
     Track's class, each track is music a file such mp3, ogg, wma (sic), mpc, flac...
     """
 
-    def __init__(self,fileName,extension):
+    def __init__(self,fileName,extension,subPath=""):
         self.trackID = 0
         self.title = ""
         self.album = ""
@@ -21,6 +21,7 @@ class track:
         self.trackNumber = 0
         self.position = 0
         self.fileName = fileName
+        self.subPath = subPath
         self.extension = extension
         self.musicDirectoryID = ""
         
@@ -32,17 +33,16 @@ class track:
         print("TrackTitle: "+self.title)
 
     def getFileName(self):
-        return self.fileName+self.extension
+        return os.path.join(self.subPath,self.fileName+self.extension)
 
 
 
     def extractDataFromTagsWithVLC(self,player,dir):
+        """Extract ID3 metadatas with VLC"""
         parsedMedia = player.getParsedMedia(os.path.join(dir,self.getFileName()))
-        #parsedMedia.parse()
         self.title = parsedMedia.get_meta(0)
         self.album = parsedMedia.get_meta(4)
         self.artist = parsedMedia.get_meta(1)
-        #print(parsedMedia.get_parsed_status())
         self.trackNumber = parsedMedia.get_meta(5)
         self.year = parsedMedia.get_meta(8)
         print("title="+self.title+" album="+str(self.album)+" artist="+str(self.artist)+" N°"+str(self.trackNumber))
@@ -50,7 +50,7 @@ class track:
 
 
     def getMutagenTags(self,dir):
-        """"""
+        """Extract ID3 metadatas with Mutagen"""
         try:
             audio = ID3(os.path.join(dir,self.getFileName()))
 
@@ -60,14 +60,12 @@ class track:
             self.year = str(audio.get("TDRC"))
             self.trackNumber = str(audio.get("TRCK"))
 
-            if self.title in("","None"): self.title = self. fileName
+            if self.title in("","None"): self.title = self.fileName
 
         except ID3NoHeaderError:
-        	print("No tags")
-
-        	
+        	print("No tags")   	
 
         except:
             print("exception mutagen: "+str(sys.exc_info()[0]))
 
-        if self.title in("","None"): self.title = self. fileName
+        if self.title in("","None"): self.title = self.fileName

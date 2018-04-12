@@ -181,24 +181,24 @@ class album:
     
         for file in files:
             if self.doStop: break
-            print("file="+str(file))
+            print("Found file="+str(file))
             if os.path.isdir(os.path.join(dir,str(file))):
                 #file is a directory
-                print("subDir="+str(file))
-                self.getTracks(player,os.path.join(dir,str(file)))
+                print("subDir="+os.path.join(subdir,str(file)))
+                self.getTracks(player,os.path.join(subdir,str(file)))
             else:
 
                 for ext in musicFilesExtension:
                     if fnmatch.fnmatch(file, '*.'+ext):
-                        if subdir != "":
-                            sfile = os.path.join(dir,file)
-                        else:
-                            sfile = str(file)
-                        
-                        print("File:"+sfile)
+                        #if subdir != "":
+                        #    sfile = os.path.join(dir,file)
+                        #else:
+                        #    sfile = str(file)
+                        sfile = str(file)
+                        print("Music file="+sfile+" ext="+ext)
                         if("." in sfile):
                             filename, file_extension = os.path.splitext(sfile)
-                            itrack = track(filename,file_extension)
+                            itrack = track(filename,file_extension,subdir)
                             #itrack.extractDataFromTags(player,dir)
                             itrack.getMutagenTags(dir)
                             self.tracks.append(itrack)
