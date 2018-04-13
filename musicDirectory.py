@@ -14,6 +14,8 @@ class musicDirectory:
 
 	def __init__(self,sdir):
 		self.db = database()
+		self.albumCol = albumCollection()
+		self.artistCol = artistCollection()
 		self.dirPath = sdir
 		self.musicDirectoryID = 0
 		self.styleID = 0
@@ -39,34 +41,83 @@ class musicDirectory:
 
 		for dir in dirlist:
 			curAlb = album(dir)
-			#curAlb.extractDataFromDirName()
-			
-			if curAlb.toVerify == False:
-				#this album have enought datas
-				newArt = artist(curAlb.artistName,0)
-				artistList = self.artistCol.findArtists(newArt.name)
-				
-				if len(artistList)==0:
-					#The artist is not in the musicBase
-					curArt = self.artistCol.addArtist(newArt)
-					curAlb.artistID = curArt.artistID
-					curAlb.artistName = newArt.name
-					curArt.albums.append(curAlb)
-					print("Add artist in list"+str(curAlb.artistID))
+			curAlb.musicDirectoryID = self.musicDirectoryID
+			#curAlb.dirPath = os.path.join(musicDir.dirPath,sDirName)
 
-				elif len(artistList)==1:
-					#The artist is in the musicBase
-					print("artist found")
-					curArt = artistList[0]
+			if curAlb.toVerify == False:
+				#Artist name et album title has been found
+				curArt = self.artistCol.getArtist(curAlb.artistName)
+				#GetArtist return a new artist if if doesn't exists in artistsCol
+				if curArt != None:				
 					curAlb.artistID = curArt.artistID
 					curAlb.artistName = curArt.name
 
-					curArt.albums.append(curAlb)
+					albumList = self.albumCol.findAlbums(curAlb.title,curAlb.artistID)
+					if len(albumList)==0:
+						print("Add "+curAlb.title+" in "+curArt.name+" discography. ArtID="+str(curArt.artistID))
+						self.albumCol.addAlbum(curAlb)
+						curArt.albums.append(curAlb)
+					else:
+						print("Album "+curAlb.title+" already exists for "+curArt.name+" ArtistID="+str(curArt.artistID))
+				else:
+					print("No artist for "+sDirName)
+			
+			# if curAlb.toVerify == False:
+			# 	#Artist name et album title has been found
+			# 	newArt = artist(curAlb.artistName,0)
+			# 	artistList = self.artistCol.findArtists(newArt.name)
+				
+			# 	if len(artistList)==0:
+			# 		#The artist is not in the musicBase
+			# 		curArt = self.artistCol.addArtist(newArt)
+			# 		curAlb.artistID = curArt.artistID
+			# 		curAlb.artistName = newArt.name
+			# 		curArt.albums.append(curAlb)
+			# 		print("Add artist in list"+str(curAlb.artistID))
 
-				albumList = self.albumCol.findAlbums(curAlb.title,curAlb.artistID)
-				if len(albumList)==0:
-					self.albumCol.addAlbum(curAlb)
+			# 	elif len(artistList)==1:
+			# 		#The artist is in the musicBase
+			# 		print("artist found")
+			# 		curArt = artistList[0]
+			# 		curAlb.artistID = curArt.artistID
+			# 		curAlb.artistName = curArt.name
+
+			# 		curArt.albums.append(curAlb)
+
+			# 	albumList = self.albumCol.findAlbums(curAlb.title,curAlb.artistID)
+			# 	if len(albumList)==0:
+			# 		self.albumCol.addAlbum(curAlb)
 		return 
+
+
+
+	def exploreAlbumsDirectory2(self,musicDir):
+		
+		dirlist = next(os.walk(musicDir.dirPath))[1]
+
+		for sDirName in dirlist:
+			curAlb = album(sDirName)
+			curAlb.musicDirectoryID = musicDir.musicDirectoryID
+			curAlb.dirPath = os.path.join(musicDir.dirPath,sDirName)
+
+			
+			if curAlb.toVerify == False:
+				#Artist name et album title has been found
+				curArt = self.artistCol.getArtist(curAlb.artistName)
+				#GetArtist return a new artist if if doesn't exists in artistsCol
+				if curArt != None:				
+					curAlb.artistID = curArt.artistID
+					curAlb.artistName = curArt.name
+
+					albumList = self.albumCol.findAlbums(curAlb.title,curAlb.artistID)
+					if len(albumList)==0:
+						print("Add "+curAlb.title+" in "+curArt.name+" discography. ArtID="+str(curArt.artistID))
+						self.albumCol.addAlbum(curAlb)
+						curArt.albums.append(curAlb)
+					else:
+						print("Album "+curAlb.title+" already exists for "+curArt.name+" ArtistID="+str(curArt.artistID))
+				else:
+					print("No artist for "+sDirName)
 
 
 

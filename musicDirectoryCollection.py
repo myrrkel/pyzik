@@ -5,12 +5,9 @@ from musicDirectory import *
 from database import *
 
 
-def filterByTitle_ID(seq, title, art_id):
+def filterByID(seq, id):
 	for el in seq:
-		if el.musicDirectoryID==art_id:
-			if el.title==el.formatTitle(title): yield el
-			elif el.title.replace("AND","&") ==el.formatTitle(title): yield el
-			elif el.title ==el.formatTitle(title).replace("AND","&"): yield el
+		if el.musicDirectoryID==id : yield el
 
 
 class musicDirectoryCollection:
@@ -62,12 +59,11 @@ class musicDirectoryCollection:
 			self.addMusicDirectory(dir)
 
 
-	def findMusicDirectories(self,stitle,id):
-		musicDirectoryList = []
-		for dir in filterByTitle_ID(self.musicDirectories,stitle,id):
-			print("Found MusicDirectory "+stitle+" id="+str(dir.musicDirectoryID))
-			musicDirectoryList.append(dir)
-		return musicDirectoryList
+	def getMusicDirectory(self,id):
+		resMB = musicDirectory("")
+		for mdir in filterByID(self.musicDirectories,id):
+			resMB = mdir
+		return resMB
 
 
 	

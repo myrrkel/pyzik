@@ -47,6 +47,6 @@ global genresTab
 genresTab = createGenreTab()
 genresTab = sorted(genresTab, key=lambda x: x[0])
 
-for genre in genresTab:
-    print(genre[0])
+#for genre in genresTab:
+#    print(genre[0])
 

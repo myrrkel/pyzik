@@ -9,6 +9,7 @@ from album import *
 from database import *
 
 
+
 def filterByTitle_ArtistID(seq, title, art_id):
 	for el in seq:
 		if el.artistID == art_id:
@@ -33,10 +34,14 @@ class albumCollection:
 	"""
 	AlbumCollection class
 	"""
+	musicBase = None
 
-	def __init__(self):
+	def __init__(self,mainMusicBase=None):
 		self.albums = [] #Album Collection
 		self.db = database()
+		if mainMusicBase != None :
+			self.musicBase = mainMusicBase
+
 		
 
 	def addAlbum(self,album):
@@ -69,7 +74,7 @@ class albumCollection:
 
 
 	def loadAlbums(self):
-		for row_alb in self.db.getSelect("SELECT albumID, title, year, dirPath, artistID FROM albums"):
+		for row_alb in self.db.getSelect("SELECT albumID, title, year, dirPath, artistID, musicDirectoryID FROM albums"):
 			alb = album("")
 			alb.load(row_alb)
 			self.addAlbum(alb)
@@ -99,3 +104,11 @@ class albumCollection:
 
 
 	
+if __name__ == '__main__':
+	from musicBase import *
+	ac = albumCollection()
+	ac.musicBase = musicBase()
+	ac.musicBase.loadMusicBase()
+	ac.loadAlbums()
+	ac.printAlbums()
+

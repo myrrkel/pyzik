@@ -98,13 +98,17 @@ class album:
         self.year = row[2]
         self.dirPath = row[3]
         self.artistID = row[4]
+        self.musicDirectoryID = row[5]
 
     def formatTitle(self,title):
         return titleExcept(title)
 
     def printInfos(self):
         print("Title: "+self.title+"  # Artist: "+self.artistName\
-            +"  # ArtistID: "+str(self.artistID)+"  # Year: "+str(self.year))
+            +"  # ArtistID: "+str(self.artistID)\
+            +"  # Year: "+str(self.year)\
+            +"  # musicDirectoryID: "+str(self.musicDirectoryID)
+            +"  # dirPath: "+str(self.dirPath))
 
 
     def extractDataFromDirName(self):

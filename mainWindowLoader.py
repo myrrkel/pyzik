@@ -3,7 +3,7 @@
 import os, sys, subprocess
 from PyQt5 import QtWidgets, QtGui, QtCore
 import mainWindow  # import of mainWindow.py made with pyuic5
-from musicBase import * 
+from musicBase import *
 from musicDirectory import *
 from database import *
 from playerVLC import *
