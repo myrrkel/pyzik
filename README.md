@@ -17,8 +17,8 @@ So you can find your music quickly, and play it.
 
 # Requirements
 
-				pip install PyQt5
-				pip install python-vlc
+                        pip install PyQt5
+                        pip install python-vlc
                         pip install mutagen
 
 
