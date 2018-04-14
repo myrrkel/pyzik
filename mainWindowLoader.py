@@ -342,8 +342,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def showAlbumCover(self,result):
         album = self.currentAlbum
         if album.cover != "":
-            print("Cover dirPath="+album.dirPath)
-            self.showCover(os.path.join(album.dirPath,album.cover)) 
+            print("Cover dirPath="+album.getAlbumDir())
+            self.showCover(os.path.join(album.getAlbumDir(),album.cover)) 
         else:
             self.showCover("")
 
@@ -358,8 +358,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         if(alb != None):
             i = 0
             for track in alb.tracks:
-                print("play track "+os.path.join(alb.dirPath,track.getFileName()))
-                player.addFile(os.path.join(alb.dirPath,track.getFileName()))
+                print("play track "+os.path.join(alb.getAlbumDir(),track.getFileName()))
+                player.addFile(os.path.join(alb.getAlbumDir(),track.getFileName()))
                 if i == 0 : player.playMediaList()
                 i+=1
                 
@@ -367,14 +367,14 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def onPlayAlbum(self,item):
         #alb = self.getAlbumFromTable()
-        print("onPlayAlbum "+self.currentAlbum.dirPath)
+        print("onPlayAlbum "+self.currentAlbum.getAlbumDir())
         self.playAlbum(self.currentAlbum)
 
     def onPauseAlbum(self):
         player.pauseMediaList()
 
     def onOpenDir(self):
-        open_file(self.currentAlbum.dirPath)
+        open_file(self.currentAlbum.getAlbumDir())
 
 
     '''

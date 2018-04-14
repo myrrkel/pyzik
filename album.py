@@ -88,6 +88,7 @@ class album:
         self.tracks = []
         self.images = []
         self.doStop = False
+        self.musicDirectory = None
 
         if dirname!="":
             self.extractDataFromDirName()
@@ -168,14 +169,14 @@ class album:
 
     def getTracks(self,player,subdir=""):
         self.doStop = False
-        print("dirPath="+str(self.dirPath))
+        print("dirPath="+str(self.getAlbumDir()))
         if(not self.checkDir()): return False
 
         if(subdir==""): 
             self.tracks = []
-            dir = self.dirPath
+            dir = self.getAlbumDir()
         else:
-            dir = os.path.join(self.dirPath,subdir)
+            dir = os.path.join(self.getAlbumDir(),subdir)
 
         print("Dir="+str(dir))
         files = os.listdir(dir)
@@ -204,7 +205,7 @@ class album:
                             filename, file_extension = os.path.splitext(sfile)
                             itrack = track(filename,file_extension,subdir)
                             #itrack.extractDataFromTags(player,dir)
-                            itrack.getMutagenTags(dir)
+                            itrack.getMutagenTags(self.getAlbumDir())
                             self.tracks.append(itrack)
                             break
 
@@ -215,9 +216,9 @@ class album:
 
         if(subdir==""): 
             self.images = []
-            dir = self.dirPath
+            dir = self.getAlbumDir()
         else:
-            dir = os.path.join(self.dirPath,subdir)
+            dir = os.path.join(self.getAlbumDir(),subdir)
 
         files = os.listdir(dir)
         
@@ -257,10 +258,15 @@ class album:
                 self.cover = self.images[0]
 
     def checkDir(self):
-        return os.path.exists(self.dirPath)
+        return os.path.exists(self.getAlbumDir())
 
     def setDoStop(self):
         self.doStop = True
+
+    def getAlbumDir(self):
+        albumDir = os.path.join(self.musicDirectory.getDirPath(),self.dirPath)
+        print("getAlbumDir="+albumDir)
+        return albumDir
 
 
 if __name__ == '__main__':

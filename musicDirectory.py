@@ -42,7 +42,7 @@ class musicDirectory:
 		for dir in dirlist:
 			curAlb = album(dir)
 			curAlb.musicDirectoryID = self.musicDirectoryID
-			#curAlb.dirPath = os.path.join(musicDir.dirPath,sDirName)
+			curAlb.dirPath = dir
 
 			if curAlb.toVerify == False:
 				#Artist name et album title has been found
@@ -60,7 +60,7 @@ class musicDirectory:
 					else:
 						print("Album "+curAlb.title+" already exists for "+curArt.name+" ArtistID="+str(curArt.artistID))
 				else:
-					print("No artist for "+sDirName)
+					print("No artist for "+dir)
 			
 			# if curAlb.toVerify == False:
 			# 	#Artist name et album title has been found

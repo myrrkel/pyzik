@@ -48,6 +48,7 @@ class albumCollection:
 		if album.albumID == 0:
 			album.albumID = self.insertAlbumDB(album)
 
+		album.musicDirectory = self.musicBase.musicDirectoryCol.getMusicDirectory(album.musicDirectoryID)
 		self.albums.append(album)
 		return album.albumID
 

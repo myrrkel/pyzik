@@ -6,6 +6,7 @@ import os
 import sys
 from mutagen.id3 import ID3
 from mutagen.id3 import ID3NoHeaderError
+from mutagen import MutagenError
 
 class track:
     """
@@ -52,7 +53,8 @@ class track:
     def getMutagenTags(self,dir):
         """Extract ID3 metadatas with Mutagen"""
         try:
-            audio = ID3(os.path.join(dir,self.getFileName()))
+            trackPath = os.path.join(dir,self.getFileName())
+            audio = ID3(trackPath)
 
             self.artist = str(audio.get('TPE1'))
             self.album = str(audio.get('TALB'))
@@ -63,7 +65,10 @@ class track:
             if self.title in("","None"): self.title = self.fileName
 
         except ID3NoHeaderError:
-        	print("No tags")   	
+            print("No tags")
+
+        except MutagenError:
+            print("MutagenError:"+trackPath)
 
         except:
             print("exception mutagen: "+str(sys.exc_info()[0]))
