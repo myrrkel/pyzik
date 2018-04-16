@@ -11,6 +11,7 @@ from darkStyle import darkStyle
 from dialogMusicDirectoriesLoader import *
 from streamObserver import *
 from albumThread import *
+from musicBaseThread import *
 
 
 
@@ -81,6 +82,10 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.loadAlbumFilesThread.setTerminationEnabled(True)
         self.loadAlbumFilesThread.imagesLoaded.connect(self.showAlbumCover)
         self.loadAlbumFilesThread.tracksLoaded.connect(self.showAlbumTracks)
+
+        self.exploreAlbumsDirectoriesThread = exploreAlbumsDirectoriesThread()
+        self.exploreAlbumsDirectoriesThread.progressChanged.connect(self.showAlbumTracks)
+        self.exploreAlbumsDirectoriesThread.exploreCompleted.connect(self.showArtists)
 
         self.ui.coverWidget.resizeEvent = self.resizeEvent
         
@@ -164,8 +169,10 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         dirDiag.exec_()
         
     def onMenuExplore(self):
-        mb.exploreAlbumsDirectories()
-        self.showArtists()
+        #mb.exploreAlbumsDirectories()
+        self.exploreAlbumsDirectoriesThread.musicbase = mb
+        self.exploreAlbumsDirectoriesThread.start()
+        #self.showArtists()
     
     def onMenuDeleteDatabase(self):
         db.dropAllTables()

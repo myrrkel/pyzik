@@ -237,7 +237,7 @@ class album:
 
                 for ext in imageFilesExtension:
                     if fnmatch.fnmatch(file.lower(), '*.'+ext):
-                        sfile = os.path.join(subdir,file)
+                        sfile = os.path.join(dir,file)
                         self.images.append(sfile)
                         print("Image:"+str(sfile))
                         break
