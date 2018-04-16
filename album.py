@@ -231,6 +231,9 @@ class album:
                 #file is a directory
                 self.getImages(os.path.join(subdir,file))
             else:
+                if file == "cover":
+                    os.rename(os.path.join(dir,file),os.path.join(dir,"cover.jpg"))
+
 
                 for ext in imageFilesExtension:
                     if fnmatch.fnmatch(file.lower(), '*.'+ext):
