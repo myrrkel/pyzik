@@ -34,6 +34,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.currentAlbum = album("")
         self.coverPixmap = QtGui.QPixmap()
         self.defaultPixmap = QtGui.QPixmap()
+        self.firstShow = True
 
         self.ui = mainWindow.Ui_MainWindow()
         self.ui.setupUi(self)
@@ -91,8 +92,9 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         
     def showEvent(self,event):
         #This function is called when the mainWindow is shown
-        self.ramdomAlbum()
-        
+        if self.firstShow == True:
+            self.ramdomAlbum()
+            self.firstShow = False
 
     def onPlayFuzzyGroovy(self):
         volume = player.getVolume()
@@ -171,6 +173,12 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def onMenuExplore(self):
         #mb.exploreAlbumsDirectories()
         self.exploreAlbumsDirectoriesThread.musicbase = mb
+        self.wProgress = progressWidget()
+        self.wProgress = progressWidget()
+        self.wProgress.show()
+        self.exploreAlbumsDirectoriesThread.progressChanged.connect(self.wProgress.setValue)
+        self.exploreAlbumsDirectoriesThread.directoryChanged.connect(self.wProgress.setDirectoryText)
+        self.exploreAlbumsDirectoriesThread.exploreCompleted.connect(self.wProgress.close)
         self.exploreAlbumsDirectoriesThread.start()
         #self.showArtists()
     

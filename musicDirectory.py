@@ -23,6 +23,7 @@ class musicDirectory:
 		self.albums = []
 
 
+
 	def load(self,row):
 		#musicDirectoryID, dirPath, dirName, styleID
 		self.musicDirectoryID = row[0]
@@ -35,11 +36,14 @@ class musicDirectory:
 		return self.dirPath
 		
 
-	def exploreAlbumsDirectory(self):
-		
+	def exploreAlbumsDirectory(self,progressChanged=None):
 		dirlist = next(os.walk(self.dirPath))[1]
-
+		i=0
 		for dir in dirlist:
+			i+=1
+			iProgress = round((i/len(dirlist))*100)
+			print("progress="+str(iProgress))
+			progressChanged.emit(iProgress)
 			curAlb = album(dir)
 			curAlb.musicDirectoryID = self.musicDirectoryID
 			curAlb.dirPath = dir
@@ -61,32 +65,7 @@ class musicDirectory:
 						print("Album "+curAlb.title+" already exists for "+curArt.name+" ArtistID="+str(curArt.artistID))
 				else:
 					print("No artist for "+dir)
-			
-			# if curAlb.toVerify == False:
-			# 	#Artist name et album title has been found
-			# 	newArt = artist(curAlb.artistName,0)
-			# 	artistList = self.artistCol.findArtists(newArt.name)
-				
-			# 	if len(artistList)==0:
-			# 		#The artist is not in the musicBase
-			# 		curArt = self.artistCol.addArtist(newArt)
-			# 		curAlb.artistID = curArt.artistID
-			# 		curAlb.artistName = newArt.name
-			# 		curArt.albums.append(curAlb)
-			# 		print("Add artist in list"+str(curAlb.artistID))
 
-			# 	elif len(artistList)==1:
-			# 		#The artist is in the musicBase
-			# 		print("artist found")
-			# 		curArt = artistList[0]
-			# 		curAlb.artistID = curArt.artistID
-			# 		curAlb.artistName = curArt.name
-
-			# 		curArt.albums.append(curAlb)
-
-			# 	albumList = self.albumCol.findAlbums(curAlb.title,curAlb.artistID)
-			# 	if len(albumList)==0:
-			# 		self.albumCol.addAlbum(curAlb)
 		return 
 
 
