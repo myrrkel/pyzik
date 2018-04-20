@@ -35,6 +35,7 @@ class playerVLC:
         self.mpEnventManager = self.mediaPlayer.event_manager()
         self.mediaPlayer.audio_set_volume(100)
         self.radioMode = False
+        self.now_playing = ""
 
         self.initMediaList()
            
@@ -45,6 +46,11 @@ class playerVLC:
 
     def isPlaying(self):
         return self.mediaPlayer.is_playing()
+
+    def playAlbum(self,fileList):
+        self.radioMode = False
+        self.addFileList(fileList)
+        self.playMediaList()
 
     def playFile(self,sfile):
         #create the media
@@ -131,7 +137,9 @@ class playerVLC:
         if m is not None:
             now_playing = m.get_meta(12)
             if now_playing is not None:
-                #print(now_playing)
+                if self.now_playing != now_playing:
+                    self.now_playing = now_playing
+                    print(now_playing)
                 return cleanTitle(now_playing)
             else:
                 return "NO_META"

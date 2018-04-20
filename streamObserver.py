@@ -28,29 +28,32 @@ class streamObserver(QThread):
             if self.doStop: break
 
             if self.player.isPlaying() == True:
-                title = self.player.getNowPlaying()
+                if self.player.radioMode == True:
+                    title = self.player.getNowPlaying()
 
-                if title != "NO_META":
-                    if (self.previousTitle != title):
-                        print(title)
-                        msg = title
-                        self.previousTitle = title
-                else:
-                    
-                    title = self.player.getTitle()
-                    if title != "NO_TITLE":
-                        msg = title + " - " + self.player.getArtist()
-
+                    if title != "NO_META":
+                        if (self.previousTitle != title):
+                            print(title)
+                            msg = title
+                            self.previousTitle = title
+                            self.titleChanged.emit(msg)
                     else:
                         if self.previousTitle != "":
                             self.previousTitle = ""
                             self.player.stop()
                             msg = "Advert Killed!"
-
+                            self.titleChanged.emit(msg)
                             time.sleep(2)
                             self.player.playMediaList()
+                else:
 
-                self.titleChanged.emit(msg)
+                    title = self.player.getTitle()
+                    if title != "NO_TITLE":
+                        msg = title + " - " + self.player.getArtist()
+                        self.previousTitle = title
+
+                    
+                    self.titleChanged.emit(msg)
 
             time.sleep(1)
 

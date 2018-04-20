@@ -271,6 +271,13 @@ class album:
         print("getAlbumDir="+albumDir)
         return albumDir
 
+    def getTracksFilePath(self):
+        files =[]
+        for track in self.tracks:
+            files.append(os.path.join(self.getAlbumDir(),track.getFileName()))
+        return files
+        
+
 
 if __name__ == '__main__':
 

@@ -102,7 +102,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         player.playFuzzyGroovy()
         self.setVolume(volume)
         #self.ui.volumeSlider.setValue(player.getVolume())
-        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerTitleChanged, self.nowPlayingChangedEvent)
+        #player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerTitleChanged, self.nowPlayingChangedEvent)
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPaused, self.paused)
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPlaying, self.isPlaying)
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerAudioVolume , self.setVolumeSliderFromPlayer)
@@ -134,9 +134,9 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         print("isPlaying!")
    
 
-    def nowPlayingChangedEvent(self,event):
-        print("TitleChanged="+player.getNowPlaying())
-        #print("TitleChanged!")
+    # def nowPlayingChangedEvent(self,event):
+    #     print("TitleChanged="+player.getNowPlaying())
+    #     print("TitleChanged!")
 
 
 
@@ -368,20 +368,12 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     '''
     def playAlbum(self,alb):
         #Add tracks in playlist and start playing
+        volume = player.getVolume()
         player.dropMediaList()
-        print("playAlbum "+alb.dirPath)
-        if(alb != None):
-            i = 0
-            for track in alb.tracks:
-                print("play track "+os.path.join(alb.getAlbumDir(),track.getFileName()))
-                player.addFile(os.path.join(alb.getAlbumDir(),track.getFileName()))
-                if i == 0 : player.playMediaList()
-                i+=1
-                
-            #player.playMediaList()
+        player.playAlbum(alb.getTracksFilePath())
+        self.setVolume(volume)
 
     def onPlayAlbum(self,item):
-        #alb = self.getAlbumFromTable()
         print("onPlayAlbum "+self.currentAlbum.getAlbumDir())
         self.playAlbum(self.currentAlbum)
 
@@ -464,8 +456,8 @@ if __name__ == '__main__':
 
     window = MainWindowLoader()
 
-    for genre in musicGenres:
-        print(genre+" id="+str(musicGenres.index(genre)))
+    #for genre in musicGenres:
+    #    print(genre+" id="+str(musicGenres.index(genre)))
 
     window.show()
 
