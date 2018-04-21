@@ -84,7 +84,6 @@ class albumCollection:
 	def findAlbums(self,stitle,artID):
 		albumList = []
 		for alb in filterByTitle_ArtistID(self.albums,stitle,artID):
-			print("Found Album "+stitle+" artID="+str(alb.albumID))
 			albumList.append(alb)
 		return albumList
 

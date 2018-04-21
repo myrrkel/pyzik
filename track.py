@@ -13,7 +13,7 @@ class track:
     Track's class, each track is music a file such mp3, ogg, wma (sic), mpc, flac...
     """
 
-    def __init__(self,fileName,extension,subPath=""):
+    def __init__(self,fileName="",extension="",subPath=""):
         self.trackID = 0
         self.title = ""
         self.album = ""
@@ -23,6 +23,7 @@ class track:
         self.position = 0
         self.fileName = fileName
         self.subPath = subPath
+        self.path = ""
         self.extension = extension
         self.musicDirectoryID = ""
         
@@ -36,6 +37,9 @@ class track:
     def getFileName(self):
         return os.path.join(self.subPath,self.fileName+self.extension)
 
+    def setPath(self,path):
+        self.fileName, self.extension = os.path.splitext(path)
+        self.path = path
 
 
     def extractDataFromTagsWithVLC(self,player,dir):
@@ -50,10 +54,14 @@ class track:
 
 
 
-    def getMutagenTags(self,dir):
+    def getMutagenTags(self,dir=""):
         """Extract ID3 metadatas with Mutagen"""
         try:
-            trackPath = os.path.join(dir,self.getFileName())
+            if dir != "":
+                trackPath = os.path.join(dir,self.getFileName())
+            else:
+                trackPath = self.path
+
             audio = ID3(trackPath)
 
             self.artist = str(audio.get('TPE1'))

@@ -99,9 +99,7 @@ class playerVLC:
     def dropMediaList(self):
         self.mediaListPlayer.stop()
         self.mediaList.unlock()
-        print("nb track="+str(self.mediaList.count()))
         for i in reversed(range(0,self.mediaList.count())):
-            print("remove="+str(i))
             self.mediaList.remove_index(i)
 
 
@@ -109,13 +107,11 @@ class playerVLC:
         """Get the volume from the player
         """
         volume = int(self.mediaPlayer.audio_get_volume())
-        print("Volume:"+str(volume))
         return volume
 
     def setVolume(self, Volume):
         """Set the volume
         """
-        print("Volume:"+str(Volume))
         self.mediaPlayer.audio_set_volume(Volume)
 
     def getParsedMedia(self,sfile):

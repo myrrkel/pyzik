@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from operator import itemgetter, attrgetter
+
 class artist:
 	"""
 	Artist's class, the have 
@@ -24,3 +26,6 @@ class artist:
 
 	def printInfos(self):
 		print(self.name+" id="+str(self.artistID))
+
+	def sortAlbums(self):
+		self.albums = sorted(self.albums, key=attrgetter('year','title'))

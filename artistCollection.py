@@ -70,7 +70,6 @@ class artistCollection:
 	def findArtists(self,sname):
 		artistList = []
 		for art in filterByName(self.artists,sname):
-			print("Found "+sname+" id="+str(art.artistID))
 			artistList.append(art)
 		return artistList
 
@@ -102,7 +101,6 @@ class artistCollection:
 
 	def loadArtists(self):
 		for row_art in self.db.getSelect("SELECT artistID, name FROM artists ORDER BY name"):
-			#print('{0} : {1}'.format(row_art[0], row_art[1]))
 			art = artist(row_art[1],row_art[0])
 			self.addArtist(art)
 
@@ -112,5 +110,5 @@ class artistCollection:
 
 	def sortArtists(self):
 		self.artists = sorted(self.artists, key=attrgetter('name'))
-		#self.artists.sort(self.artistCompare)
+
 

@@ -28,7 +28,6 @@ def year(s):
 def getFileName(path):
     filename, file_extension = os.path.splitext(path)
     filename = os.path.basename(path)
-    print("getFileName fileName="+filename)
     return filename
 
 
@@ -158,7 +157,7 @@ class album:
 
             else:
                 #No synthaxe does match with this dirname
-                print("No matching: "+salb)
+                print("No matching: "+salb+" for Dir: "+self.dirPath)
                 self.toVerify = True
 
 
@@ -169,7 +168,6 @@ class album:
 
     def getTracks(self,player,subdir=""):
         self.doStop = False
-        print("dirPath="+str(self.getAlbumDir()))
         if(not self.checkDir()): return False
 
         if(subdir==""): 
@@ -178,7 +176,7 @@ class album:
         else:
             dir = os.path.join(self.getAlbumDir(),subdir)
 
-        print("Dir="+str(dir))
+
         files = os.listdir(dir)
         files.sort()
         
@@ -186,10 +184,8 @@ class album:
     
         for file in files:
             if self.doStop: break
-            print("Found file="+str(file))
             if os.path.isdir(os.path.join(dir,str(file))):
                 #file is a directory
-                print("subDir="+os.path.join(subdir,str(file)))
                 self.getTracks(player,os.path.join(subdir,str(file)))
             else:
 
@@ -200,7 +196,7 @@ class album:
                         #else:
                         #    sfile = str(file)
                         sfile = str(file)
-                        print("Music file="+sfile+" ext="+ext)
+
                         if("." in sfile):
                             filename, file_extension = os.path.splitext(sfile)
                             itrack = track(filename,file_extension,subdir)
@@ -239,7 +235,6 @@ class album:
                     if fnmatch.fnmatch(file.lower(), '*.'+ext):
                         sfile = os.path.join(dir,file)
                         self.images.append(sfile)
-                        print("Image:"+str(sfile))
                         break
 
 
@@ -251,10 +246,9 @@ class album:
             for keyword in keywords:
                 coverFound = next((x for x in self.images if keyword in getFileName(x.lower())), "")
                 if (coverFound!=""):
-                    print("getCover found="+coverFound)
                     self.cover = coverFound
                     break
-            print("getCover cover="+self.cover)
+            #print("getCover cover="+self.cover)
 
             if self.cover == "":
                 print("getCover GetDefault="+self.images[0])
@@ -268,7 +262,6 @@ class album:
 
     def getAlbumDir(self):
         albumDir = os.path.join(self.musicDirectory.getDirPath(),self.dirPath)
-        print("getAlbumDir="+albumDir)
         return albumDir
 
     def getTracksFilePath(self):

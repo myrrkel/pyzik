@@ -12,6 +12,7 @@ from dialogMusicDirectoriesLoader import *
 from streamObserver import *
 from albumThread import *
 from musicBaseThread import *
+from playlistWidget import *
 
 
 
@@ -48,6 +49,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
         #Connect UI triggers
         self.ui.listViewArtists.selectionModel().currentChanged.connect(self.onArtistChange)
+        #self.ui.listViewArtists.selectionModel().currentRowChanged.connect(self.onArtistChange)
         #self.ui.listViewArtists.clicked.connect(self.onArtistChange)
         self.ui.actionMusic_directories.triggered.connect(self.onMenuMusicDirectories)
         self.ui.actionExplore_music_directories.triggered.connect(self.onMenuExplore)
@@ -62,6 +64,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.searchEdit.textChanged.connect(self.onSearchChange)
         self.ui.searchEdit.returnPressed.connect(self.onSearchEnter)
         self.ui.tableWidgetAlbums.clicked.connect(self.onAlbumChange)
+        self.ui.tableWidgetAlbums.selectionModel().currentRowChanged.connect(self.onAlbumChange)
         self.ui.tableWidgetAlbums.customContextMenuRequested.connect(self.handleHeaderMenu)
 
         self.ui.volumeSlider.setMaximum(100)
@@ -174,8 +177,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         #mb.exploreAlbumsDirectories()
         self.exploreAlbumsDirectoriesThread.musicbase = mb
         self.wProgress = progressWidget()
-        self.wProgress = progressWidget()
-        self.wProgress.show()
+        #self.wProgress.show()
         self.exploreAlbumsDirectoriesThread.progressChanged.connect(self.wProgress.setValue)
         self.exploreAlbumsDirectoriesThread.directoryChanged.connect(self.wProgress.setDirectoryText)
         self.exploreAlbumsDirectoriesThread.exploreCompleted.connect(self.wProgress.close)
@@ -300,6 +302,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         print("Show albums Art="+artist.name)
         self.ui.tableWidgetAlbums.setRowCount(0)
         i=0
+        artist.sortAlbums()
         for alb in artist.albums:
             self.ui.tableWidgetAlbums.insertRow(i)
 
@@ -357,7 +360,6 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def showAlbumCover(self,result):
         album = self.currentAlbum
         if album.cover != "":
-            print("Cover dirPath="+album.getAlbumDir())
             self.showCover(os.path.join(album.getAlbumDir(),album.cover)) 
         else:
             self.showCover("")
@@ -372,6 +374,9 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         player.dropMediaList()
         player.playAlbum(alb.getTracksFilePath())
         self.setVolume(volume)
+
+        self.playList = playlistWidget()
+        self.playList.showMediaList(player.mediaList)
 
     def onPlayAlbum(self,item):
         print("onPlayAlbum "+self.currentAlbum.getAlbumDir())
