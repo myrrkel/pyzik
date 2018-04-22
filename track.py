@@ -7,6 +7,7 @@ import sys
 from mutagen.id3 import ID3
 from mutagen.id3 import ID3NoHeaderError
 from mutagen import MutagenError
+from urllib.parse import unquote
 
 class track:
     """
@@ -26,6 +27,8 @@ class track:
         self.path = ""
         self.extension = extension
         self.musicDirectoryID = ""
+        self.mrl = ""
+        self.albumObj = None
         
         #if fileName != "":
         #    self.extractDataFromTags()
@@ -52,6 +55,11 @@ class track:
         self.year = parsedMedia.get_meta(8)
         print("title="+self.title+" album="+str(self.album)+" artist="+str(self.artist)+" N°"+str(self.trackNumber))
 
+
+    def setMRL(self,mrl):
+        self.mrl = mrl
+        path = unquote(mrl)
+        self.setPath(path.replace("file://",""))
 
 
     def getMutagenTags(self,dir=""):

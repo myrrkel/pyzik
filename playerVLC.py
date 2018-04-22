@@ -10,6 +10,7 @@
 import sys
 import time
 import vlc
+import os
 
 dirtySymbols = ["@","+","*","#"]
 
@@ -23,6 +24,8 @@ def cleanTitle(title):
 
 
 class playerVLC:
+
+    tracksDatas = []
 
     def __init__(self):
 
@@ -44,12 +47,27 @@ class playerVLC:
         self.mediaListPlayer.release()
         self.instance.release()
 
+    def getTrackAlbum(self,mrl):
+        trackData = [item for item in self.tracksDatas if item[0] == mrl]
+
+        if trackData != None:
+            return trackData[0][1]
+        else:
+            return None
+
     def isPlaying(self):
         return self.mediaPlayer.is_playing()
 
-    def playAlbum(self,fileList):
+    def playAlbum(self,album):
         self.radioMode = False
-        self.addFileList(fileList)
+        album.getTracksFilePath()
+        for track in album.tracks:
+            path = os.path.join(album.getAlbumDir(),track.getFileName())
+            media = self.instance.media_new(path)
+        
+            self.mediaList.add_media(media)
+            self.tracksDatas.append((media.get_mrl(),album))
+
         self.playMediaList()
 
     def playFile(self,sfile):
@@ -69,6 +87,7 @@ class playerVLC:
     def addFile(self,sfile):
         media = self.instance.media_new(sfile)
         media.parse()
+        media.artist = "Queen"
         self.mediaList.add_media(media)
 
     def addFileList(self,fileList):
@@ -186,6 +205,9 @@ class playerVLC:
         if m is not None:
             year = m.get_meta(8)
         return year    
+
+    def setPlaylistTrack(self,index):
+        self.mediaListPlayer.play_item_at_index(index)
 
 
 

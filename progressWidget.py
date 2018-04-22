@@ -2,8 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import pyqtSignal
 
 class progressWidget(QtWidgets.QDialog):
+
+    progressClosed = pyqtSignal(int, name='progressClosed')
+        
+
     def __init__(self):
         QtWidgets.QDialog.__init__(self)
         self.initUI()
@@ -28,3 +33,8 @@ class progressWidget(QtWidgets.QDialog):
 
     def setDirectoryText(self,value):
         self.directory.setText(value)
+
+    def closeEvent(self,event):
+        print("progressClosed=OnClose")
+        self.progressClosed.emit(0)
+        event.accept()

@@ -36,6 +36,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.coverPixmap = QtGui.QPixmap()
         self.defaultPixmap = QtGui.QPixmap()
         self.firstShow = True
+        self.playList = None
 
         self.ui = mainWindow.Ui_MainWindow()
         self.ui.setupUi(self)
@@ -63,9 +64,12 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.previousButton.clicked.connect(player.mediaListPlayer.previous)
         self.ui.searchEdit.textChanged.connect(self.onSearchChange)
         self.ui.searchEdit.returnPressed.connect(self.onSearchEnter)
-        self.ui.tableWidgetAlbums.clicked.connect(self.onAlbumChange)
+        #self.ui.tableWidgetAlbums.clicked.connect(self.onAlbumChange)
         self.ui.tableWidgetAlbums.selectionModel().currentRowChanged.connect(self.onAlbumChange)
         self.ui.tableWidgetAlbums.customContextMenuRequested.connect(self.handleHeaderMenu)
+
+        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerMediaChanged, self.onTrackChanged)
+
 
         self.ui.volumeSlider.setMaximum(100)
         self.ui.volumeSlider.setValue(player.getVolume())
@@ -88,7 +92,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.loadAlbumFilesThread.tracksLoaded.connect(self.showAlbumTracks)
 
         self.exploreAlbumsDirectoriesThread = exploreAlbumsDirectoriesThread()
-        self.exploreAlbumsDirectoriesThread.progressChanged.connect(self.showAlbumTracks)
+        #self.exploreAlbumsDirectoriesThread.progressChanged.connect(self.showAlbumTracks)
         self.exploreAlbumsDirectoriesThread.exploreCompleted.connect(self.showArtists)
 
         self.ui.coverWidget.resizeEvent = self.resizeEvent
@@ -174,15 +178,14 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         dirDiag.exec_()
         
     def onMenuExplore(self):
-        #mb.exploreAlbumsDirectories()
         self.exploreAlbumsDirectoriesThread.musicbase = mb
         self.wProgress = progressWidget()
-        #self.wProgress.show()
         self.exploreAlbumsDirectoriesThread.progressChanged.connect(self.wProgress.setValue)
         self.exploreAlbumsDirectoriesThread.directoryChanged.connect(self.wProgress.setDirectoryText)
         self.exploreAlbumsDirectoriesThread.exploreCompleted.connect(self.wProgress.close)
+        self.wProgress.progressClosed.connect(self.exploreAlbumsDirectoriesThread.stop)
         self.exploreAlbumsDirectoriesThread.start()
-        #self.showArtists()
+        
     
     def onMenuDeleteDatabase(self):
         db.dropAllTables()
@@ -232,9 +235,9 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         nrow = item.row()
         
         model = self.ui.listViewArtists.model()
-        self.currentArtist = model.item(nrow).artist
-    
-        self.showAlbums(self.currentArtist)
+        if self.currentArtist.artistID != model.item(nrow).artist.artistID :
+            self.currentArtist = model.item(nrow).artist
+            self.showAlbums(self.currentArtist)
    
 
 
@@ -284,11 +287,9 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
 
     def onAlbumChange(self,item):
-        print("OnAlbumChange")
-        selItems = self.ui.tableWidgetAlbums.selectedItems()
-        if(len(selItems)>0):
-            r = selItems[0].row()
-            albumIDSel = self.ui.tableWidgetAlbums.item(r,2).text()
+        if item.row() >= 0:
+            print("OnAlbumChange:"+str(item.row()))
+            albumIDSel = self.ui.tableWidgetAlbums.item(item.row(),2).text()
             alb = mb.albumCol.getAlbum(albumIDSel)
             if(alb.albumID != 0):
                 self.showAlbum(alb)
@@ -300,6 +301,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         #Add albums in the QTableView
 
         print("Show albums Art="+artist.name)
+        self.currentAlbum = None
         self.ui.tableWidgetAlbums.setRowCount(0)
         i=0
         artist.sortAlbums()
@@ -320,18 +322,19 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
 
             if(i==0):
+                print("Show first album")
                 self.ui.tableWidgetAlbums.selectRow(i)
-                self.onAlbumChange(self.ui.tableWidgetAlbums.item(i,0)) 
+                #self.onAlbumChange(self.ui.tableWidgetAlbums.item(i,0)) 
             i+=1
 
 
-        self.ui.tableWidgetAlbums.show()
+        #self.ui.tableWidgetAlbums.show()
 
 
     def showAlbum(self,album):
         print("showAlbum: "+album.title)
-        
-        self.currentArtist = mb.artistCol.getArtistByID(album.artistID)
+        self.currentAlbum = album
+        #self.currentArtist = mb.artistCol.getArtistByID(album.artistID)
         self.setTitleLabel(self.currentArtist.name,album.title,album.year)
         
         #Start a thread to load album datas from directory
@@ -340,7 +343,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             print("Stop Thread loadAlbum")
             self.loadAlbumFilesThread.stop()
             self.loadAlbumFilesThread.wait()
-        self.currentAlbum = album
+        
         self.loadAlbumFilesThread.album = album
         self.loadAlbumFilesThread.player = player
         self.loadAlbumFilesThread.start()
@@ -372,11 +375,19 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         #Add tracks in playlist and start playing
         volume = player.getVolume()
         player.dropMediaList()
-        player.playAlbum(alb.getTracksFilePath())
+        player.playAlbum(alb)
         self.setVolume(volume)
 
         self.playList = playlistWidget()
-        self.playList.showMediaList(player.mediaList)
+        self.playList.trackChanged.connect(player.setPlaylistTrack)
+        self.playList.showMediaList(player.mediaList,player)
+        #player.connect.titleChanged(self.playList.setCurrentTrack)
+        #player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerMediaChanged, self.onTrackChanged)
+
+    def onTrackChanged(self,event):
+        m = player.mediaPlayer.get_media()
+        if self.playList != None:
+            self.playList.setCurrentTrack(m)
 
     def onPlayAlbum(self,item):
         print("onPlayAlbum "+self.currentAlbum.getAlbumDir())
@@ -454,7 +465,8 @@ if __name__ == '__main__':
     translator = QtCore.QTranslator(app)
     locale = QtCore.QLocale.system().name()
     # translator for built-in qt strings
-    translator.load('pyzik_%s.qm' % locale)
+    #translator.load('pyzik_%s.qm' % locale)
+    translator.load('pyzik_es.qm')
 
     app.installTranslator(translator)
 

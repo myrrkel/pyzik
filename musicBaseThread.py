@@ -28,6 +28,7 @@ class exploreAlbumsDirectoriesThread(QThread):
         self.musicbase.musicDirectoryCol.db = database()
        
         for mdir in self.musicbase.musicDirectoryCol.musicDirectories:
+            print("explore="+mdir.dirName)
             self.directoryChanged.emit(mdir.dirName)
             mdir.db = database()
             mdir.artistCol = self.musicbase.artistCol
@@ -45,7 +46,7 @@ class exploreAlbumsDirectoriesThread(QThread):
 
     def stop(self):
         self.doStop = True
-        self.album.setDoStop()
+        
 
 
 
