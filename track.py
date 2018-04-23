@@ -4,6 +4,7 @@
 import re
 import os
 import sys
+import platform
 from mutagen.id3 import ID3
 from mutagen.id3 import ID3NoHeaderError
 from mutagen import MutagenError
@@ -59,7 +60,11 @@ class track:
     def setMRL(self,mrl):
         self.mrl = mrl
         path = unquote(mrl)
-        self.setPath(path.replace("file:///",""))
+        if platform.system() == "Windows":
+            path = path.replace("file:///","")
+        else:
+            path = path.replace("file://","")
+        self.setPath(path)
 
 
     def getMutagenTags(self,dir=""):

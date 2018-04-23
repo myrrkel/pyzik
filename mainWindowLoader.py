@@ -141,11 +141,6 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         print("isPlaying!")
    
 
-    # def nowPlayingChangedEvent(self,event):
-    #     print("TitleChanged="+player.getNowPlaying())
-    #     print("TitleChanged!")
-
-
 
     '''
     Init widgets
@@ -466,8 +461,8 @@ if __name__ == '__main__':
     translator = QtCore.QTranslator(app)
     locale = QtCore.QLocale.system().name()
     # translator for built-in qt strings
-    #translator.load('pyzik_%s.qm' % locale)
-    translator.load('pyzik_es.qm')
+    translator.load('pyzik_%s.qm' % locale)
+    #translator.load('pyzik_es.qm')
 
     app.installTranslator(translator)
 
