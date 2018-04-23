@@ -94,7 +94,7 @@ class playlistWidget(QtWidgets.QDialog):
             artistItem = QtWidgets.QTableWidgetItem(track.albumObj.artistName)
             artistItem.setFlags(artistItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetTracks.setItem(i,1,artistItem)
-            print("track.albumObj.title:"+track.albumObj.title)
+
             albumItem = QtWidgets.QTableWidgetItem(track.albumObj.title)
             albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetTracks.setItem(i,2,albumItem)
@@ -110,8 +110,6 @@ class playlistWidget(QtWidgets.QDialog):
             t = track("","")
             mrl = m.get_mrl()
             t.albumObj = player.getTrackAlbum(mrl)
-            #path = unquote(m.get_mrl())
-            #t.setPath(path.replace("file://",""))
             t.setMRL(mrl)
             t.getMutagenTags()
             tracks.append(t)
@@ -122,14 +120,15 @@ class playlistWidget(QtWidgets.QDialog):
     def setCurrentTrack(self,track_media):
         index = self.mediaList.index_of_item(track_media)
         print("setCurrentTrack:"+str(index))
-        #selModel = self.tableWidgetTracks.selectionModel()
-        #selModel.reset()
-        item = self.tableWidgetTracks.item(index,0)
-        self.tableWidgetTracks.setCurrentItem(item)
-        #selModel.select(item.index(), QtCore.QItemSelectionModel.Select)
-        #self.showAlbums(item.artist)
 
-        #self.tableWidgetTracks.selectRow(index)
+        item = self.tableWidgetTracks.item(index,0)
+        f = item.font()
+        f.setBold(True)
+        item.setFont(f)
+        self.tableWidgetTracks.item(index,1).setFont(f)
+        self.tableWidgetTracks.item(index,2).setFont(f)
+        self.tableWidgetTracks.setCurrentItem(item)
+
 
 
 

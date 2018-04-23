@@ -378,11 +378,12 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         player.playAlbum(alb)
         self.setVolume(volume)
 
-        self.playList = playlistWidget()
-        self.playList.trackChanged.connect(player.setPlaylistTrack)
+        if self.playList == None:
+            self.playList = playlistWidget()
+            self.playList.trackChanged.connect(player.setPlaylistTrack)
+
         self.playList.showMediaList(player.mediaList,player)
-        #player.connect.titleChanged(self.playList.setCurrentTrack)
-        #player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerMediaChanged, self.onTrackChanged)
+
 
     def onTrackChanged(self,event):
         m = player.mediaPlayer.get_media()

@@ -59,7 +59,7 @@ class track:
     def setMRL(self,mrl):
         self.mrl = mrl
         path = unquote(mrl)
-        self.setPath(path.replace("file://",""))
+        self.setPath(path.replace("file:///",""))
 
 
     def getMutagenTags(self,dir=""):
