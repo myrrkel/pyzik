@@ -68,7 +68,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.tableWidgetAlbums.selectionModel().currentRowChanged.connect(self.onAlbumChange)
         self.ui.tableWidgetAlbums.customContextMenuRequested.connect(self.handleHeaderMenu)
 
-        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerMediaChanged, self.onTrackChanged)
+        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerMediaChanged, self.onPlayerMediaChanged)
 
 
         self.ui.volumeSlider.setMaximum(100)
@@ -372,18 +372,26 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         player.dropMediaList()
         player.playAlbum(alb)
         self.setVolume(volume)
+        self.setVolumeSliderFromPlayer(True)
 
         if self.playList == None:
             self.playList = playlistWidget()
             self.playList.trackChanged.connect(player.setPlaylistTrack)
 
         self.playList.showMediaList(player)
+        self.playList.show()
 
 
-    def onTrackChanged(self,event):
-        m = player.mediaPlayer.get_media()
+    def onPlayerMediaChanged(self,event):
+        print("onPlayerMediaChanged")
         if self.playList != None:
-            self.playList.setCurrentTrack(m)
+            self.playList.setCurrentTrack()
+
+    def onPlayerMediaChanged(self,event=None,param=None):
+        print("onPlayerMediaChanged")
+        if self.playList != None:
+            self.playList.setCurrentTrack()
+
 
     def onPlayAlbum(self,item):
         print("onPlayAlbum "+self.currentAlbum.getAlbumDir())

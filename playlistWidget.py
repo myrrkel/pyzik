@@ -27,11 +27,11 @@ class playlistWidget(QtWidgets.QDialog):
         self.setSizePolicy(sizePolicy)
 
         self.tableWidgetTracks = QtWidgets.QTableWidget(self)
-        self.tableWidgetTracks.setGeometry(0, 0, 300, 250)
+        self.tableWidgetTracks.setGeometry(0, 0, 400, 250)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
-        sizePolicy.setHeightForWidth(self.tableWidgetTracks.sizePolicy().hasHeightForWidth())
+        #sizePolicy.setHeightForWidth(self.tableWidgetTracks.sizePolicy().hasHeightForWidth())
         self.tableWidgetTracks.setSizePolicy(sizePolicy)
         self.tableWidgetTracks.setMinimumSize(QtCore.QSize(50, 0))
         self.tableWidgetTracks.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
@@ -64,22 +64,45 @@ class playlistWidget(QtWidgets.QDialog):
         self.tableWidgetTracks.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
         self.tableWidgetTracks.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
 
+        self.resize(400,250)
 
         self.tableWidgetTracks.setRowCount(0)
-        hHeader = self.tableWidgetTracks.horizontalHeader()
-        vHeader = self.tableWidgetTracks.verticalHeader()
-        vHeader.hide()
-        hHeader.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        hHeader.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        hHeader.hideSection(4)
+
+        self.initColumnHeaders()
 
         layout.addWidget(self.tableWidgetTracks)
 
         self.tableWidgetTracks.cellDoubleClicked.connect(self.changeTrack)
 
         self.setWindowTitle("Playlist")
-        self.show()
+        
 
+    def initColumnHeaders(self):
+
+        hHeader = self.tableWidgetTracks.horizontalHeader()
+        vHeader = self.tableWidgetTracks.verticalHeader()
+        vHeader.hide()
+        hHeader.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        hHeader.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+        hHeader.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
+
+
+        hHeader.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        width = hHeader.sectionSize(0)
+        hHeader.setSectionResizeMode(0, QtWidgets.QHeaderView.Interactive)
+        hHeader.resizeSection(0, width)
+
+        hHeader.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        width = hHeader.sectionSize(1)
+        hHeader.setSectionResizeMode(1, QtWidgets.QHeaderView.Interactive)
+        hHeader.resizeSection(1, width)
+
+        hHeader.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        width = hHeader.sectionSize(2)
+        hHeader.setSectionResizeMode(2, QtWidgets.QHeaderView.Interactive)
+        hHeader.resizeSection(2, width)
+
+        hHeader.hideSection(4)
 
 
     def showAlbumTracks(self,tracks):        
@@ -132,22 +155,25 @@ class playlistWidget(QtWidgets.QDialog):
             tracks.append(t)
 
         self.showAlbumTracks(tracks)
-        m = self.player.mediaPlayer.get_media()
-        self.setCurrentTrack(m)
+        
+        self.setCurrentTrack()
+
+        self.initColumnHeaders()
 
 
-    def setCurrentTrack(self,track_media):
-        index = self.mediaList.index_of_item(track_media)
+    def setCurrentTrack(self):
+        index = self.player.getCurrentIndexPlaylist()
         print("setCurrentTrack:"+str(index))
-
         for i in range(self.mediaList.count()):
 
             item = self.tableWidgetTracks.item(i,0)
             f = item.font()
             if i == index:
                 f.setBold(True)
+                f.setItalic(True)
             else:
                 f.setBold(False)
+                f.setItalic(False)
             item.setFont(f)
             self.tableWidgetTracks.item(i,1).setFont(f)
             self.tableWidgetTracks.item(i,2).setFont(f)

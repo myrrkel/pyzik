@@ -190,7 +190,7 @@ class album:
             else:
 
                 for ext in musicFilesExtension:
-                    if fnmatch.fnmatch(file, '*.'+ext):
+                    if fnmatch.fnmatch(file.lower(), '*.'+ext):
                         #if subdir != "":
                         #    sfile = os.path.join(dir,file)
                         #else:

@@ -42,8 +42,11 @@ class track:
         return os.path.join(self.subPath,self.fileName+self.extension)
 
     def setPath(self,path):
-        self.fileName, self.extension = os.path.splitext(path)
-        self.path = path
+        self.subPath = ""
+        self.path = os.path.dirname(path)
+        basename = os.path.basename(path)
+        self.fileName, self.extension = os.path.splitext(basename)
+        
 
 
     def extractDataFromTagsWithVLC(self,player,dir):
@@ -73,7 +76,7 @@ class track:
             if dir != "":
                 trackPath = os.path.join(dir,self.getFileName())
             else:
-                trackPath = self.path
+                trackPath = os.path.join(self.path,self.getFileName())
 
             audio = ID3(trackPath)
 

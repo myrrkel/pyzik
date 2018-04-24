@@ -58,6 +58,11 @@ class playerVLC:
     def isPlaying(self):
         return self.mediaPlayer.is_playing()
 
+    def getCurrentIndexPlaylist(self):
+        m = self.mediaPlayer.get_media()
+        index = self.mediaList.index_of_item(m)
+        return index
+
     def playAlbum(self,album):
         self.radioMode = False
         album.getTracksFilePath()
