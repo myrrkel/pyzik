@@ -8,6 +8,7 @@ from track import *
 class playlistWidget(QtWidgets.QDialog):
     
     mediaList = None
+    player = None
     trackChanged = pyqtSignal(int, name='trackChanged')
 
     def __init__(self):
@@ -116,18 +117,41 @@ class playlistWidget(QtWidgets.QDialog):
 
         self.showAlbumTracks(tracks)
 
+    def showMediaList(self,player):
+        tracks = []
+
+        self.mediaList = player.mediaList
+        self.player = player
+        for i in range(self.mediaList.count()):
+            m = self.mediaList.item_at_index(i)
+            t = track("","")
+            mrl = m.get_mrl()
+            t.albumObj = player.getTrackAlbum(mrl)
+            t.setMRL(mrl)
+            t.getMutagenTags()
+            tracks.append(t)
+
+        self.showAlbumTracks(tracks)
+        m = self.player.mediaPlayer.get_media()
+        self.setCurrentTrack(m)
+
 
     def setCurrentTrack(self,track_media):
         index = self.mediaList.index_of_item(track_media)
         print("setCurrentTrack:"+str(index))
 
-        item = self.tableWidgetTracks.item(index,0)
-        f = item.font()
-        f.setBold(True)
-        item.setFont(f)
-        self.tableWidgetTracks.item(index,1).setFont(f)
-        self.tableWidgetTracks.item(index,2).setFont(f)
-        self.tableWidgetTracks.setCurrentItem(item)
+        for i in range(self.mediaList.count()):
+
+            item = self.tableWidgetTracks.item(i,0)
+            f = item.font()
+            if i == index:
+                f.setBold(True)
+            else:
+                f.setBold(False)
+            item.setFont(f)
+            self.tableWidgetTracks.item(i,1).setFont(f)
+            self.tableWidgetTracks.item(i,2).setFont(f)
+            if i == index: self.tableWidgetTracks.setCurrentItem(item)
 
 
 

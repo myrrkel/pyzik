@@ -377,7 +377,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             self.playList = playlistWidget()
             self.playList.trackChanged.connect(player.setPlaylistTrack)
 
-        self.playList.showMediaList(player.mediaList,player)
+        self.playList.showMediaList(player)
 
 
     def onTrackChanged(self,event):
