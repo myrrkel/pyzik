@@ -15,6 +15,7 @@ class database():
 		self.createTableArtists()
 		self.createTableAlbums()
 		self.createTableMusicDirectories()
+		self.createTablePlayHistoryAlbum()
 
 
 	def createConnection(self,db_file):
@@ -108,6 +109,15 @@ class database():
 										styleID integer
 									); """
 		self.createTable(sqlCreateTableMusicDirectories)
+
+	def createTablePlayHistoryAlbum(self):
+		sqlCreateTablePlayHistoryAlbum = """ CREATE TABLE IF NOT EXISTS playHistoryAlbum (
+										HistoryAlbumID integer PRIMARY KEY,
+										albumID integer,
+										PlayDate datetime,
+										FOREIGN KEY (albumID) REFERENCES albums(albumID)
+									); """
+		self.createTable(sqlCreateTablePlayHistoryAlbum)
 
 
 

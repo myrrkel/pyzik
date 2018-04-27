@@ -34,8 +34,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         if self.currentDir != None :
             self.currentDir.updateMusicDirectoryDB()
         sel = self.ui.DirListView.selectionModel().selectedIndexes()
-        #if len(sel)==1:
-        #index = self.ui.listViewArtists.selectionModel().selectedIndexes()[0]
+
         index = item
         nrow = item.row()
         model = self.ui.DirListView.model()
@@ -96,21 +95,12 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.ui.DirListView.selectionModel().currentChanged.connect(self.onDirChanged)
 
     def showGenres(self):
-        #model = QtGui.QStandardItemModel(self.ui.comboStyle)
-        #model.setColumnCount(2)
+
         i=0
         for genre in genresTab:
             self.ui.comboStyle.addItem(genre[0],genre[1])
-
-            #item = QtGui.QStandardItem(genre)
-            #item.setData(i)
-            # Add the item to the model
-            #model.appendRow(item)
             i+=1
 
-        #self.ui.comboStyle.setModel(model)
-        #self.ui.comboStyle.setCurrentIndex(9)
-        #model.sort(0)
 
 if __name__ == '__main__':
     import sys
