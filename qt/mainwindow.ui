@@ -611,9 +611,19 @@
     <property name="title">
      <string>Config</string>
     </property>
+    <widget class="QMenu" name="menuLanguage">
+     <property name="title">
+      <string>Language</string>
+     </property>
+     <addaction name="actionLanguageEnglish"/>
+     <addaction name="actionLanguageFrench"/>
+     <addaction name="actionLanguageSpanish"/>
+     <addaction name="actionLanguageGerman"/>
+    </widget>
     <addaction name="actionMusic_directories"/>
     <addaction name="actionExplore_music_directories"/>
     <addaction name="actionDelete_database"/>
+    <addaction name="menuLanguage"/>
    </widget>
    <widget class="QMenu" name="menuRadios">
     <property name="title">
@@ -627,9 +637,16 @@
     </property>
     <addaction name="actionRandom_album"/>
    </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionPlaylist"/>
+   </widget>
    <addaction name="menuConfiguration"/>
    <addaction name="menuAlbums"/>
    <addaction name="menuRadios"/>
+   <addaction name="menuTools"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionMusic_directories">
@@ -655,6 +672,31 @@
   <action name="actionFuzzyGroovy">
    <property name="text">
     <string>Fuzzy and Groovy Rock Radio</string>
+   </property>
+  </action>
+  <action name="actionPlaylist">
+   <property name="text">
+    <string>Playlist</string>
+   </property>
+  </action>
+  <action name="actionLanguageEnglish">
+   <property name="text">
+    <string>English</string>
+   </property>
+  </action>
+  <action name="actionLanguageFrench">
+   <property name="text">
+    <string>French</string>
+   </property>
+  </action>
+  <action name="actionLanguageSpanish">
+   <property name="text">
+    <string>Spanish</string>
+   </property>
+  </action>
+  <action name="actionLanguageGerman">
+   <property name="text">
+    <string>German</string>
    </property>
   </action>
  </widget>

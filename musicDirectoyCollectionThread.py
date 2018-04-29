@@ -20,13 +20,13 @@ class loadAlbumFilesThread(QThread):
     def run(self):
         self.doStop = False
         self.album.getImages()
-        if self.doStop: return
+        if self.doStop: return 1
         self.album.getCover()
         self.imagesLoaded.emit(1)
-        if self.doStop: return
+        if self.doStop: return 1
         self.album.getTracks(self.player)
         self.tracksLoaded.emit(1)
-        if self.doStop: return
+        return 1
         
 
 

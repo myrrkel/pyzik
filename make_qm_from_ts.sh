@@ -3,7 +3,8 @@
 #		TRANSLATIONS += pyzik_en.ts pyzik_es.ts pyzik_fr.ts
 
 
-lrelease lrelease ./qt/*.ts
+lrelease ./qt/*.ts
+lrelease ./*.ts
 cp ./qt/*.qm ./
 
 

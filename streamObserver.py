@@ -17,6 +17,7 @@ class streamObserver(QThread):
     
     doStop = False
     previousTitle = ""
+    currentVolume = 0
     player = None   
 
 
@@ -33,12 +34,20 @@ class streamObserver(QThread):
 
                     if title != "NO_META":
                         if (self.previousTitle != title):
+                            #if self.previousTitle == "Advert Killed!":
+                            #    self.player.setVolume(self.currentVolume)
                             print(title)
                             msg = title
                             self.previousTitle = title
                             self.titleChanged.emit(msg)
                     else:
+                        #if self.previousTitle == "Advert Killed!":
+                        #    self.currentVolume = self.player.getVolume()
+                        #    self.player.setVolume(0)
+
+
                         if self.previousTitle != "":
+                            
                             self.previousTitle = ""
                             self.player.stop()
                             msg = "Advert Killed!"
@@ -51,9 +60,7 @@ class streamObserver(QThread):
                     if title != "NO_TITLE":
                         msg = title + " - " + self.player.getArtist()
                         self.previousTitle = title
-
-                    
-                    self.titleChanged.emit(msg)
+                        self.titleChanged.emit(msg)
 
             time.sleep(1)
 

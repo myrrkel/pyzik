@@ -36,7 +36,7 @@ class playerVLC:
         self.mediaListPlayer = self.instance.media_list_player_new()
         self.mediaList = self.instance.media_list_new()
         self.mpEnventManager = self.mediaPlayer.event_manager()
-        self.mediaPlayer.audio_set_volume(100)
+        #self.mediaPlayer.audio_set_volume(100)
         self.radioMode = False
         self.now_playing = ""
 
@@ -47,11 +47,25 @@ class playerVLC:
         self.mediaListPlayer.release()
         self.instance.release()
 
-    def getTrackAlbum(self,mrl):
+    def getAlbumFromMrl(self,mrl):
         trackData = [item for item in self.tracksDatas if item[0] == mrl]
 
         if trackData != None:
-            return trackData[0][1]
+            if len(trackData) > 0:
+                return trackData[0][1]
+            else:
+                return None
+        else:
+            return None
+
+    def getTrackFromMrl(self,mrl):
+        trackData = [item for item in self.tracksDatas if item[0] == mrl]
+
+        if trackData != None:
+            if len(trackData) > 0:
+                return trackData[0][2]
+            else:
+                return None
         else:
             return None
 
@@ -65,13 +79,13 @@ class playerVLC:
 
     def playAlbum(self,album):
         self.radioMode = False
-        album.getTracksFilePath()
+        
         for track in album.tracks:
-            path = os.path.join(album.getAlbumDir(),track.getFileName())
+            path = os.path.join(album.getAlbumDir(),track.getFilePathInAlbumDir())
             media = self.instance.media_new(path)
         
             self.mediaList.add_media(media)
-            self.tracksDatas.append((media.get_mrl(),album))
+            self.tracksDatas.append((media.get_mrl(),album,track))
 
         self.playMediaList()
 

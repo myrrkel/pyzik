@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from operator import itemgetter, attrgetter
+import random
 
 class artist:
 	"""
@@ -14,6 +15,7 @@ class artist:
 		self.countryID = 0
 		self.categoryID = 0
 		self.albums = []
+		self.itemListViewArtist = None
 		
 
 	def getName(self):
@@ -29,3 +31,10 @@ class artist:
 
 	def sortAlbums(self):
 		self.albums = sorted(self.albums, key=attrgetter('year','title'))
+
+	def getRandomAlbum(self):
+		nbAlbum = len(self.albums)
+		if(nbAlbum > 0):
+			irandom  = random.randint(0, nbAlbum-1)
+			resAlb = self.albums[irandom]
+			return resAlb

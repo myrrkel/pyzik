@@ -29,7 +29,7 @@ class track:
         self.extension = extension
         self.musicDirectoryID = ""
         self.mrl = ""
-        self.albumObj = None
+        self.parentAlbum = None
         
         #if fileName != "":
         #    self.extractDataFromTags()
@@ -38,7 +38,7 @@ class track:
     def printInfos(self):
         print("TrackTitle: "+self.title)
 
-    def getFileName(self):
+    def getFilePathInAlbumDir(self):
         return os.path.join(self.subPath,self.fileName+self.extension)
 
     def setPath(self,path):
@@ -46,12 +46,25 @@ class track:
         self.path = os.path.dirname(path)
         basename = os.path.basename(path)
         self.fileName, self.extension = os.path.splitext(basename)
+
+    def getArtistName(self):
+        if self.parentAlbum != None:
+            return self.parentAlbum.artistName
+        else:
+            return self.artist
+
+
+    def getAlbumTitle(self):
+        if self.parentAlbum != None:
+            return self.parentAlbum.title
+        else:
+            return self.album
         
 
 
     def extractDataFromTagsWithVLC(self,player,dir):
         """Extract ID3 metadatas with VLC"""
-        parsedMedia = player.getParsedMedia(os.path.join(dir,self.getFileName()))
+        parsedMedia = player.getParsedMedia(os.path.join(dir,self.getFilePathInAlbumDir()))
         self.title = parsedMedia.get_meta(0)
         self.album = parsedMedia.get_meta(4)
         self.artist = parsedMedia.get_meta(1)
@@ -74,9 +87,9 @@ class track:
         """Extract ID3 metadatas with Mutagen"""
         try:
             if dir != "":
-                trackPath = os.path.join(dir,self.getFileName())
+                trackPath = os.path.join(dir,self.getFilePathInAlbumDir())
             else:
-                trackPath = os.path.join(self.path,self.getFileName())
+                trackPath = os.path.join(self.path,self.getFilePathInAlbumDir())
 
             audio = ID3(trackPath)
 

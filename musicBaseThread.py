@@ -24,8 +24,8 @@ class exploreAlbumsDirectoriesThread(QThread):
 
     def run(self):
         self.doStop = False
-
-        self.musicbase.musicDirectoryCol.db = database()
+        db = database()
+        self.musicbase.musicDirectoryCol.db = db
        
         for mdir in self.musicbase.musicDirectoryCol.musicDirectories:
             print("explore="+mdir.dirName)
@@ -33,8 +33,8 @@ class exploreAlbumsDirectoriesThread(QThread):
             mdir.db = database()
             mdir.artistCol = self.musicbase.artistCol
             mdir.albumCol = self.musicbase.albumCol
-            mdir.artistCol.db = database()
-            mdir.albumCol.db = database()
+            mdir.artistCol.db = db
+            mdir.albumCol.db = db
             mdir.exploreAlbumsDirectory(self.progressChanged)
             if self.doStop: break
 

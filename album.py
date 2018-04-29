@@ -26,8 +26,10 @@ def year(s):
     return res
 
 def getFileName(path):
-    filename, file_extension = os.path.splitext(path)
+    
     filename = os.path.basename(path)
+    filename, file_extension = os.path.splitext(filename)
+    #print("getFileName = "+filename)
     return filename
 
 
@@ -202,6 +204,7 @@ class album:
                             itrack = track(filename,file_extension,subdir)
                             #itrack.extractDataFromTags(player,dir)
                             itrack.getMutagenTags(self.getAlbumDir())
+                            itrack.parentAlbum = self
                             self.tracks.append(itrack)
                             break
 
@@ -241,13 +244,22 @@ class album:
     def getCover(self):
 
         if(len(self.images)>0):
-            keywords = ["cover","front","artwork","capa","folder","f"]
+            keywords = ["cover","front","artwork","capa","caratula","frente editada","frente","folder","f"]
+
 
             for keyword in keywords:
-                coverFound = next((x for x in self.images if keyword in getFileName(x.lower())), "")
+                coverFound = next((x for x in self.images if keyword == getFileName(x.lower())), "")
                 if (coverFound!=""):
+                    print("Image found equal="+keyword)
                     self.cover = coverFound
                     break
+
+            if (coverFound==""):
+                for keyword in keywords:
+                    coverFound = next((x for x in self.images if keyword in getFileName(x.lower()) and "back" not in getFileName(x.lower())), "")
+                    if (coverFound!=""):
+                        self.cover = coverFound
+                        break
             #print("getCover cover="+self.cover)
 
             if self.cover == "":
@@ -267,7 +279,7 @@ class album:
     def getTracksFilePath(self):
         files =[]
         for track in self.tracks:
-            files.append(os.path.join(self.getAlbumDir(),track.getFileName()))
+            files.append(os.path.join(self.getAlbumDir(),track.getFilePathInAlbumDir()))
         return files
         
 

@@ -22,11 +22,13 @@ class loadAlbumFilesThread(QThread):
         self.album.getImages()
         if self.doStop: self.quit()
         self.album.getCover()
+        if self.doStop: self.quit()
         self.imagesLoaded.emit(1)
-        if self.doStop: self.quit()
         self.album.getTracks(self.player)
-        self.tracksLoaded.emit(1)
         if self.doStop: self.quit()
+        self.tracksLoaded.emit(1)
+        self.quit()
+        
          
         
 

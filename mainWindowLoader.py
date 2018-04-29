@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import os, sys, subprocess
+import os, sys, subprocess, functools
 from PyQt5 import QtWidgets, QtGui, QtCore
 import mainWindow  # import of mainWindow.py made with pyuic5
 from musicBase import *
@@ -27,19 +27,32 @@ def open_file(filename):
 
 class MainWindowLoader(QtWidgets.QMainWindow):
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None,app=None):
         QtWidgets.QMainWindow.__init__(self, parent)
 
-       
+
+        self.firstShow = True
+        self.playList = None
+
+        self.app = app
+        self.translators = []
+        self.locale = QtCore.QLocale.system().name()
         self.currentArtist = artist("",0)
         self.currentAlbum = album("")
         self.coverPixmap = QtGui.QPixmap()
         self.defaultPixmap = QtGui.QPixmap()
-        self.firstShow = True
-        self.playList = None
+
+        self.settings = QtCore.QSettings('pyzik', 'pyzik')
+        self.loadSettings()
 
         self.ui = mainWindow.Ui_MainWindow()
         self.ui.setupUi(self)
+        self.changeLanguage(self.locale)
+
+
+
+
+
         self.setTitleLabel("")
         self.setWindowTitle("PyZik")
         self.initAlbumTableWidget()
@@ -50,13 +63,15 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
         #Connect UI triggers
         self.ui.listViewArtists.selectionModel().currentChanged.connect(self.onArtistChange)
-        #self.ui.listViewArtists.selectionModel().currentRowChanged.connect(self.onArtistChange)
-        #self.ui.listViewArtists.clicked.connect(self.onArtistChange)
         self.ui.actionMusic_directories.triggered.connect(self.onMenuMusicDirectories)
         self.ui.actionExplore_music_directories.triggered.connect(self.onMenuExplore)
         self.ui.actionRandom_album.triggered.connect(self.ramdomAlbum)
         self.ui.actionDelete_database.triggered.connect(self.onMenuDeleteDatabase)
         self.ui.actionFuzzyGroovy.triggered.connect(self.onPlayFuzzyGroovy)
+        self.ui.actionPlaylist.triggered.connect(self.showPlaylist)
+        self.ui.actionLanguageSpanish.triggered.connect(functools.partial(self.changeLanguage, 'es'))
+        self.ui.actionLanguageFrench.triggered.connect(functools.partial(self.changeLanguage, 'fr'))
+        self.ui.actionLanguageEnglish.triggered.connect(functools.partial(self.changeLanguage, 'en'))
         self.ui.playButton.clicked.connect(self.onPlayAlbum)
         self.ui.stopButton.clicked.connect(self.onPauseAlbum)
         self.ui.nextButton.clicked.connect(player.mediaListPlayer.next)
@@ -64,15 +79,24 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.previousButton.clicked.connect(player.mediaListPlayer.previous)
         self.ui.searchEdit.textChanged.connect(self.onSearchChange)
         self.ui.searchEdit.returnPressed.connect(self.onSearchEnter)
-        #self.ui.tableWidgetAlbums.clicked.connect(self.onAlbumChange)
         self.ui.tableWidgetAlbums.selectionModel().currentRowChanged.connect(self.onAlbumChange)
         self.ui.tableWidgetAlbums.customContextMenuRequested.connect(self.handleHeaderMenu)
+        
+        self.shortcutRandomAlbum = QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+R"), self)
+        self.shortcutRandomAlbum.activated.connect(self.ramdomAlbum)
 
+
+        #Connect VLC triggers
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerMediaChanged, self.onPlayerMediaChanged)
+        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPaused, self.paused)
+        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPlaying, self.isPlaying)
+        #player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerAudioVolume , self.setVolumeSliderFromPlayer)
 
 
         self.ui.volumeSlider.setMaximum(100)
-        self.ui.volumeSlider.setValue(player.getVolume())
+
+        self.ui.volumeSlider.setValue(self.volume)
+        player.setVolume(self.volume)
         self.ui.volumeSlider.valueChanged.connect(self.setVolume)
        
         
@@ -103,28 +127,30 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             self.ramdomAlbum()
             self.firstShow = False
 
-    def onPlayFuzzyGroovy(self):
-        volume = player.getVolume()
-        
+    def onPlayFuzzyGroovy(self):      
         player.playFuzzyGroovy()
-        self.setVolume(volume)
-        #self.ui.volumeSlider.setValue(player.getVolume())
-        #player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerTitleChanged, self.nowPlayingChangedEvent)
-        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPaused, self.paused)
-        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPlaying, self.isPlaying)
-        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerAudioVolume , self.setVolumeSliderFromPlayer)
+        self.setVolume(self.getVolumeFromSlider())
 
         
 
     def ramdomAlbum(self):
         alb = mb.albumCol.getRandomAlbum()
+        self.currentAlbum = alb
         if(alb != None):
             print("RamdomAlb="+alb.title)
-            self.showAlbum(alb)
+            art = mb.artistCol.getArtistByID(alb.artistID)
+            self.currentArtist = art
+            self.selectArtistListView(art)
+            self.showArtist(art)
+            #self.showAlbum(alb)
+
 
 
     def setVolume(self, volume):
         player.setVolume(volume)
+
+    def getVolumeFromSlider(self):
+        return self.ui.volumeSlider.value()
 
     def setVolumeSliderFromPlayer(self,event):
         volume = player.getVolume()
@@ -173,7 +199,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         dirDiag.exec_()
         
     def onMenuExplore(self):
-        self.exploreAlbumsDirectoriesThread.musicbase = mb
+        self.exploreAlbumsDirectoriesThread.musicbase = mb 
         self.wProgress = progressWidget()
         self.exploreAlbumsDirectoriesThread.progressChanged.connect(self.wProgress.setValue)
         self.exploreAlbumsDirectoriesThread.directoryChanged.connect(self.wProgress.setDirectoryText)
@@ -205,6 +231,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         for art in mb.artistCol.artists:
             itemArt = QtGui.QStandardItem(art.name)
             itemArt.artist = art
+            art.itemListViewArtist = itemArt
             model.appendRow(itemArt)
 
         self.ui.listViewArtists.setModel(model)
@@ -225,17 +252,25 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         
     def onArtistChange(self,item):
         #When call from listView, item is a QModelIndex
-        sel = self.ui.listViewArtists.selectionModel().selectedIndexes()
+        #sel = self.ui.listViewArtists.selectionModel().selectedIndexes()
         #if len(sel)==1:
         nrow = item.row()
         
         model = self.ui.listViewArtists.model()
         if self.currentArtist.artistID != model.item(nrow).artist.artistID :
-            self.currentArtist = model.item(nrow).artist
-            self.showAlbums(self.currentArtist)
+            self.showArtist(model.item(nrow).artist)
+            
    
 
+    def selectArtistListView(self,artist):
 
+        item = artist.itemListViewArtist
+
+        selModel = self.ui.listViewArtists.selectionModel()
+        selModel.reset()
+        selModel.select(item.index(), QtCore.QItemSelectionModel.SelectCurrent)
+
+        self.ui.listViewArtists.scrollTo(item.index(), QtWidgets.QAbstractItemView.PositionAtCenter)
 
     '''
     Search artist functions
@@ -248,7 +283,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             selModel = self.ui.listViewArtists.selectionModel()
             selModel.reset()
             selModel.select(item.index(), QtCore.QItemSelectionModel.Select)
-            self.showAlbums(item.artist)
+            self.showArtist(item.artist)
 
     def onSearchChange(self,item):
         #When user write a search, shows only matching artists
@@ -291,13 +326,23 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             else:
                 print("No album to show")
 
+    def showArtist(self,artist):
+        self.currentArtist = artist
+        self.showAlbums(self.currentArtist)
 
     def showAlbums(self,artist):
         #Add albums in the QTableView
 
         print("Show albums Art="+artist.name)
-        self.currentAlbum = None
+
+        if(self.currentAlbum == None):
+            self.currentAlbum = artist.getRandomAlbum()
+
+        if(self.currentAlbum.artistID != artist.artistID):
+            self.currentAlbum = artist.getRandomAlbum()
+
         self.ui.tableWidgetAlbums.setRowCount(0)
+        indexToSel = 0
         i=0
         artist.sortAlbums()
         for alb in artist.albums:
@@ -316,12 +361,18 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             self.ui.tableWidgetAlbums.setItem(i,2,idItem)
 
 
-            if(i==0):
+            if(i==0 and self.currentAlbum == None):
                 print("Show first album")
-                self.ui.tableWidgetAlbums.selectRow(i)
-                #self.onAlbumChange(self.ui.tableWidgetAlbums.item(i,0)) 
+                
+            elif(alb.albumID==self.currentAlbum.albumID):
+                print("showAlbums() --> Select album="+alb.title)
+                indexToSel = i
+                #self.ui.tableWidgetAlbums.selectRow(i)
+
             i+=1
 
+        self.ui.tableWidgetAlbums.selectRow(indexToSel)
+        self.ui.tableWidgetAlbums.scrollTo(self.ui.tableWidgetAlbums.currentIndex(), QtWidgets.QAbstractItemView.PositionAtCenter)
 
         #self.ui.tableWidgetAlbums.show()
 
@@ -345,7 +396,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
 
     def showAlbumTracks(self,result):        
-        self.ui.tableWidgetTracks.setColumnCount(1)
+        #self.ui.tableWidgetTracks.setColumnCount(1)
         self.ui.tableWidgetTracks.setRowCount(0)
         i=0
         for track in self.currentAlbum.tracks:
@@ -368,18 +419,21 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     '''
     def playAlbum(self,alb):
         #Add tracks in playlist and start playing
-        volume = player.getVolume()
+        
         player.dropMediaList()
         player.playAlbum(alb)
-        self.setVolume(volume)
-        self.setVolumeSliderFromPlayer(True)
+        self.setVolume(self.getVolumeFromSlider())
+        self.showPlaylist()
 
+
+    def showPlaylist(self):
         if self.playList == None:
             self.playList = playlistWidget()
             self.playList.trackChanged.connect(player.setPlaylistTrack)
 
         self.playList.showMediaList(player)
         self.playList.show()
+
 
 
     def onPlayerMediaChanged(self,event):
@@ -409,6 +463,13 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     '''
 
     def setTitleLabel(self,artName="",AlbTitle="",Year=""):
+
+        if self.currentArtist != None and artName=="":
+            artName = self.currentArtist.name
+        if self.currentAlbum != None and AlbTitle=="":  
+            AlbTitle = self.currentAlbum.title
+            Year = self.currentAlbum.year
+
         sAlbum = AlbTitle
         sYear =str(Year)
         if(not sYear in ["0",""]): sAlbum += " ("+sYear+")"
@@ -447,6 +508,47 @@ class MainWindowLoader(QtWidgets.QMainWindow):
                                                     QtCore.Qt.SmoothTransformation)
             self.ui.cover.setPixmap(scaledCover)
         
+
+    def closeEvent(self, event):
+
+        self.saveSettings()
+
+    def saveSettings(self):
+        self.settings.setValue('volume', player.getVolume())
+
+    def loadSettings(self):
+        if self.settings.contains('volume'):
+            self.volume = self.settings.value('volume', type=int)
+        else:
+            self.volume = 100
+
+    def changeLanguage(self,locale):
+        # translator for built-in qt strings
+        self.unInstallTranslators()
+        self.installTranslator("pyzik",locale)
+        self.installTranslator("playlistWidget",locale)
+        self.ui.retranslateUi(self)
+        if self.playList != None: self.playList.retranslateUi()
+        
+        
+        self.update()
+        self.setWindowTitle("PyZik")
+        self.setTitleLabel()
+
+
+
+    def installTranslator(self,filename,locale):
+        translator = QtCore.QTranslator(self.app)
+        translator.load('{0}_{1}.qm'.format(filename,locale))
+        self.translators.append(translator)
+        self.app.installTranslator(translator)
+
+    
+    def unInstallTranslators(self):
+        for translator in self.translators:
+            self.app.removeTranslator(translator)
+        self.translators = []
+
     
 
 if __name__ == '__main__':
@@ -466,16 +568,21 @@ if __name__ == '__main__':
     app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
 
     
-    translator = QtCore.QTranslator(app)
-    locale = QtCore.QLocale.system().name()
-    # translator for built-in qt strings
-    translator.load('pyzik_%s.qm' % locale)
-    #translator.load('pyzik_es.qm')
+    
+    
 
-    app.installTranslator(translator)
+    # # translator for built-in qt strings
+    # translator = QtCore.QTranslator(app)
+    # translator.load('pyzik_%s.qm' % locale)
+    # #translator.load('pyzik_es.qm')
+    # app.installTranslator(translator)
 
+    # translator = QtCore.QTranslator(app)
+    # translator.load('playlistWidget_%s.qm' % locale)
+    # #translator.load('playlistWidget_es.qm')
+    # app.installTranslator(translator)
 
-    window = MainWindowLoader()
+    window = MainWindowLoader(None,app)
 
     #for genre in musicGenres:
     #    print(genre+" id="+str(musicGenres.index(genre)))
@@ -485,6 +592,8 @@ if __name__ == '__main__':
     app.exec()
     window.threadStreamObserver.stop()
     #window.threadStreamObserver.join()
+
+
     player.release()
 
     sys.exit()
