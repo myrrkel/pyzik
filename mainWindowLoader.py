@@ -73,10 +73,11 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.actionLanguageFrench.triggered.connect(functools.partial(self.changeLanguage, 'fr'))
         self.ui.actionLanguageEnglish.triggered.connect(functools.partial(self.changeLanguage, 'en'))
         self.ui.playButton.clicked.connect(self.onPlayAlbum)
-        self.ui.stopButton.clicked.connect(self.onPauseAlbum)
-        self.ui.nextButton.clicked.connect(player.mediaListPlayer.next)
+        self.ui.addAlbumButton.clicked.connect(self.onAddAlbum)
+        self.ui.pauseButton.clicked.connect(self.onPauseAlbum)
+        #self.ui.nextButton.clicked.connect(player.mediaListPlayer.next)
         self.ui.openDirButton.clicked.connect(self.onOpenDir)
-        self.ui.previousButton.clicked.connect(player.mediaListPlayer.previous)
+        #self.ui.previousButton.clicked.connect(player.mediaListPlayer.previous)
         self.ui.searchEdit.textChanged.connect(self.onSearchChange)
         self.ui.searchEdit.returnPressed.connect(self.onSearchEnter)
         self.ui.tableWidgetAlbums.selectionModel().currentRowChanged.connect(self.onAlbumChange)
@@ -428,6 +429,14 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.setVolume(self.getVolumeFromSlider())
         self.showPlaylist(True)
 
+    def addAlbum(self,alb):
+        #Add tracks in playlist and start playing
+        
+        #player.dropMediaList()
+        player.addAlbum(alb)
+        self.setVolume(self.getVolumeFromSlider())
+        self.showPlaylist(True)
+
 
     def showPlaylist(self,showOnlyIfNew=False):
         isNew = False
@@ -456,6 +465,11 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def onPlayAlbum(self,item):
         print("onPlayAlbum "+self.currentAlbum.getAlbumDir())
         self.playAlbum(self.currentAlbum)
+
+
+    def onAddAlbum(self,item):
+        print("onAddAlbum "+self.currentAlbum.getAlbumDir())
+        self.addAlbum(self.currentAlbum)
 
 
     def onPlayerPositionChanged(self,event):

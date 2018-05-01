@@ -221,7 +221,7 @@ class playlistWidget(QtWidgets.QDialog):
                 print("BREAK setCurrentTrack item="+str(i))
                 break
 
-            if trk!=None and trk.radioName != "":
+            if trk!=None and trk.radioName != "" and i==index:
                 item.setText(self.player.getNowPlaying())
 
 

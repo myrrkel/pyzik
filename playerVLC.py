@@ -62,7 +62,7 @@ class playerVLC:
             return None
 
     def getTrackFromMrl(self,mrl):
-        print("getTrackFromMrl="+mrl)
+        #print("getTrackFromMrl="+mrl)
         trackData = [item for item in self.tracksDatas if item[0] == mrl]
 
         if trackData != None:
@@ -85,19 +85,39 @@ class playerVLC:
         index = self.mediaList.index_of_item(m)
         if index == -1:
             print("count PlayList="+str(self.mediaList.count()))
-            if self.mediaList.count() == 1: index = 0
+            if self.mediaList.count() > 0: 
+                index = self.findItemIndexInPlaylist(m.get_mrl())
 
         return index
 
     def getCurrentMrlPlaylist(self):
         m = self.mediaPlayer.get_media()
-        return m.get_mrl()
+        if m != None :
+            return m.get_mrl()
+        else:
+            return None
+
+    def getItemInPlaylist(self,index):
+        return self.mediaList.item_at_index(index)
+
+    def findItemIndexInPlaylist(self,mrl):
+        res = 0
+        for i in range(self.mediaList.count()):
+            item = self.getItemInPlaylist(i)
+            if item.get_mrl() == mrl:
+                return i
+
+        return res
+
 
     def getCurrentTrackPlaylist(self):
         mrl = self.getCurrentMrlPlaylist()
-        return self.getTrackFromMrl(mrl)
+        if mrl != None :
+            return self.getTrackFromMrl(mrl)
+        else:
+            return None
 
-    def playAlbum(self,album):
+    def playAlbum(self,album,autoplay=True):
         self.radioMode = False
         
         for trk in album.tracks:
@@ -107,7 +127,19 @@ class playerVLC:
             self.mediaList.add_media(media)
             self.tracksDatas.append((media.get_mrl(),"",trk))
 
-        self.playMediaList()
+        if autoplay : self.playMediaList()
+
+
+    def addAlbum(self,album):
+          
+        for trk in album.tracks:
+            path = os.path.join(album.getAlbumDir(),trk.getFilePathInAlbumDir())
+            media = self.instance.media_new(path)
+            trk.radioName = ""
+        
+            self.mediaList.add_media(media)
+            self.tracksDatas.append((media.get_mrl(),"",trk))
+
 
     def playFile(self,sfile):
         #create the media
