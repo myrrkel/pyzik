@@ -23,6 +23,7 @@ class streamObserver(QThread):
 
     def run(self):
 
+
         msg = ""
         while True:
 
@@ -31,7 +32,7 @@ class streamObserver(QThread):
             if self.player.isPlaying() == True:
                 if self.player.radioMode == True:
                     title = self.player.getNowPlaying()
-
+                    #print("streamObserver="+title+" "+self.player.getTitle()+" "+self.player.getArtist())
                     if title != "NO_META":
                         if (self.previousTitle != title):
                             #if self.previousTitle == "Advert Killed!":
@@ -54,16 +55,21 @@ class streamObserver(QThread):
                             self.titleChanged.emit(msg)
                             time.sleep(2)
                             self.player.playMediaList()
-                else:
+                # else:
 
-                    title = self.player.getTitle()
-                    if title != "NO_TITLE":
-                        msg = title + " - " + self.player.getArtist()
-                        self.previousTitle = title
-                        self.titleChanged.emit(msg)
+                #     title = self.player.getTitle()
+                #     if title != "NO_TITLE":
+                #         msg = title + " - " + self.player.getArtist()
+                #         self.previousTitle = title
+                #         self.titleChanged.emit(msg)
 
             time.sleep(1)
 
 
     def stop(self):
         self.doStop = True
+
+    def resetPreviousTitle(self,event):
+        if self.previousTitle != "Advert Killed!":
+            self.previousTitle = ""
+

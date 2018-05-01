@@ -11,6 +11,9 @@ import sys
 import time
 import vlc
 import os
+from track import *
+from PyQt5 import QtCore
+
 
 dirtySymbols = ["@","+","*","#"]
 
@@ -59,13 +62,18 @@ class playerVLC:
             return None
 
     def getTrackFromMrl(self,mrl):
+        print("getTrackFromMrl="+mrl)
         trackData = [item for item in self.tracksDatas if item[0] == mrl]
 
         if trackData != None:
             if len(trackData) > 0:
                 return trackData[0][2]
             else:
-                return None
+                trackData = [item for item in self.tracksDatas if item[1] == mrl]
+                if len(trackData) > 0:
+                    return trackData[0][2]
+                else:
+                    return None
         else:
             return None
 
@@ -75,17 +83,29 @@ class playerVLC:
     def getCurrentIndexPlaylist(self):
         m = self.mediaPlayer.get_media()
         index = self.mediaList.index_of_item(m)
+        if index == -1:
+            print("count PlayList="+str(self.mediaList.count()))
+            if self.mediaList.count() == 1: index = 0
+
         return index
+
+    def getCurrentMrlPlaylist(self):
+        m = self.mediaPlayer.get_media()
+        return m.get_mrl()
+
+    def getCurrentTrackPlaylist(self):
+        mrl = self.getCurrentMrlPlaylist()
+        return self.getTrackFromMrl(mrl)
 
     def playAlbum(self,album):
         self.radioMode = False
         
-        for track in album.tracks:
-            path = os.path.join(album.getAlbumDir(),track.getFilePathInAlbumDir())
+        for trk in album.tracks:
+            path = os.path.join(album.getAlbumDir(),trk.getFilePathInAlbumDir())
             media = self.instance.media_new(path)
         
             self.mediaList.add_media(media)
-            self.tracksDatas.append((media.get_mrl(),album,track))
+            self.tracksDatas.append((media.get_mrl(),"",trk))
 
         self.playMediaList()
 
@@ -106,7 +126,6 @@ class playerVLC:
     def addFile(self,sfile):
         media = self.instance.media_new(sfile)
         media.parse()
-        media.artist = "Queen"
         self.mediaList.add_media(media)
 
     def addFileList(self,fileList):
@@ -152,19 +171,41 @@ class playerVLC:
         """
         self.mediaPlayer.audio_set_volume(Volume)
 
+    def getPosition(self):
+        """Get the position in media
+        """
+        return self.mediaPlayer.get_position()
+
+    def setPosition(self,pos):
+        """Set the position in media
+        """
+        return self.mediaPlayer.set_position(pos)
+
     def getParsedMedia(self,sfile):
         media = self.instance.media_new(sfile)
         media.parse()
         return media
 
     def playFuzzyGroovy(self):
+        stream = "http://listen.radionomy.com/fuzzy-and-groovy.m3u"
         self.radioMode = True
         self.dropMediaList()
-        m = self.instance.media_new("http://listen.radionomy.com/fuzzy-and-groovy.m3u")
+        media = self.instance.media_new(stream)
 
-        self.mediaList.add_media(m)
+        self.mediaList.add_media(media)
         self.playMediaList()
-        
+        trk = track()
+        trk.radioName = "Fuzzy & Groovy Rock Radio"
+        trk.radioStream = stream
+        print("Fuzzy & Groovy Rock Radio isPlaying="+str(self.isPlaying()))
+
+        #Wait until playing start
+        while self.isPlaying() == 0:
+            time.sleep(0.05)
+
+        mrl = self.getCurrentMrlPlaylist()
+        print("playFuzzyGroovy mrl="+mrl)
+        self.tracksDatas.append((mrl,stream,trk))
 
     def getNowPlaying(self):
         m = self.mediaPlayer.get_media()

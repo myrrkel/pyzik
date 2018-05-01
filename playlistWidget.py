@@ -38,8 +38,24 @@ class playlistWidget(QtWidgets.QDialog):
         self.initTableWidgetTracks()
         self.playerControls = playerControlsWidget()
 
+        
+        self.timeSlider = QtWidgets.QSlider(self)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.timeSlider.sizePolicy().hasHeightForWidth())
+        self.timeSlider.setSizePolicy(sizePolicy)
+        self.timeSlider.setMinimumSize(QtCore.QSize(60, 0))
+        self.timeSlider.setMinimum(0)
+        self.timeSlider.setMaximum(1000)
+        self.timeSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.timeSlider.setObjectName("timeSlider")
+
+        self.timeSlider.sliderReleased.connect(self.setPlayerPosition)
+
         layout.addWidget(self.tableWidgetTracks)
         layout.addWidget(self.playerControls)
+        layout.addWidget(self.timeSlider)
 
         self.tableWidgetTracks.cellDoubleClicked.connect(self.changeTrack)
 
@@ -131,17 +147,27 @@ class playlistWidget(QtWidgets.QDialog):
         i=0
         for track in tracks:
             self.tableWidgetTracks.insertRow(i)
-            titleItem = QtWidgets.QTableWidgetItem(track.title)
+            titleItem = QtWidgets.QTableWidgetItem(track.getTrackTitle())
             titleItem.setFlags(titleItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetTracks.setItem(i,0,titleItem)
             
-            artistItem = QtWidgets.QTableWidgetItem(track.getArtistName())
-            artistItem.setFlags(artistItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetTracks.setItem(i,1,artistItem)
+            if track.radioName == "":
+                artistItem = QtWidgets.QTableWidgetItem(track.getArtistName())
+                artistItem.setFlags(artistItem.flags() ^ QtCore.Qt.ItemIsEditable)
+                self.tableWidgetTracks.setItem(i,1,artistItem)
 
-            albumItem = QtWidgets.QTableWidgetItem(track.getAlbumTitle())
-            albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetTracks.setItem(i,2,albumItem)
+                albumItem = QtWidgets.QTableWidgetItem(track.getAlbumTitle())
+                albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
+                self.tableWidgetTracks.setItem(i,2,albumItem)
+            else:
+                print("radioName="+track.radioName)
+                artistItem = QtWidgets.QTableWidgetItem(track.getTrackTitle())
+                artistItem.setFlags(artistItem.flags() ^ QtCore.Qt.ItemIsEditable)
+                self.tableWidgetTracks.setItem(i,1,artistItem)
+
+                albumItem = QtWidgets.QTableWidgetItem(track.getTrackTitle())
+                albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
+                self.tableWidgetTracks.setItem(i,2,albumItem)
 
             i+=1
 
@@ -157,7 +183,12 @@ class playlistWidget(QtWidgets.QDialog):
                 break
             
             mrl = m.get_mrl()
+            print("ShowMediaList mrl="+mrl)
             t = player.getTrackFromMrl(mrl)
+            if t == None:
+                t = track()
+                t.setMRL(mrl)
+                t.title = player.getTitle()
 
             # t.albumObj = player.getAlbumFromMrl(mrl)
             # t.setMRL(mrl)
@@ -173,17 +204,26 @@ class playlistWidget(QtWidgets.QDialog):
 
     def setCurrentTrack(self):
 
+        if self.player == None : return 
         orange = QtGui.QColor(216, 119, 0)
         white = QtGui.QColor(255, 255, 255)
 
         index = self.player.getCurrentIndexPlaylist()
         print("setCurrentTrack:"+str(index))
+
+        trk = self.player.getCurrentTrackPlaylist()
+
+
         for i in range(self.mediaList.count()):
 
             item = self.tableWidgetTracks.item(i,0)
             if item == None:
                 print("BREAK setCurrentTrack item="+str(i))
                 break
+
+            if trk!=None and trk.radioName != "":
+                item.setText(self.player.getNowPlaying())
+
 
             f = item.font()
             if i == index:
@@ -216,3 +256,15 @@ class playlistWidget(QtWidgets.QDialog):
         i = self.tableWidgetTracks.currentRow()
 
         self.trackChanged.emit(i)
+
+
+    def setTimeSliderPosition(self,pos):
+        if not self.timeSlider.isSliderDown():
+            self.timeSlider.setValue(pos)
+
+
+    def setPlayerPosition(self):
+
+        pos = self.timeSlider.value()/1000
+        self.player.setPosition(pos)
+    

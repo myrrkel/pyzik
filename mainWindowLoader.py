@@ -90,6 +90,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerMediaChanged, self.onPlayerMediaChanged)
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPaused, self.paused)
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPlaying, self.isPlaying)
+        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
         #player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerAudioVolume , self.setVolumeSliderFromPlayer)
 
 
@@ -107,6 +108,9 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.threadStreamObserver = streamObserver()
         self.threadStreamObserver.player = player
         self.threadStreamObserver.titleChanged.connect(self.setStatus)
+        
+        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerStopped, self.threadStreamObserver.resetPreviousTitle)
+
         self.threadStreamObserver.start()
 
 
@@ -129,6 +133,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def onPlayFuzzyGroovy(self):      
         player.playFuzzyGroovy()
+        self.showPlaylist(True)
         self.setVolume(self.getVolumeFromSlider())
 
         
@@ -252,8 +257,6 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         
     def onArtistChange(self,item):
         #When call from listView, item is a QModelIndex
-        #sel = self.ui.listViewArtists.selectionModel().selectedIndexes()
-        #if len(sel)==1:
         nrow = item.row()
         
         model = self.ui.listViewArtists.model()
@@ -423,17 +426,20 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         player.dropMediaList()
         player.playAlbum(alb)
         self.setVolume(self.getVolumeFromSlider())
-        self.showPlaylist()
+        self.showPlaylist(True)
 
 
-    def showPlaylist(self):
+    def showPlaylist(self,showOnlyIfNew=False):
+        isNew = False
         if self.playList == None:
+            isNew = True
             self.playList = playlistWidget()
             self.playList.trackChanged.connect(player.setPlaylistTrack)
+            self.threadStreamObserver.titleChanged.connect(self.onPlayerMediaChanged)
 
         self.playList.showMediaList(player)
-        self.playList.show()
-
+            
+        if isNew or showOnlyIfNew==False: self.playList.show()
 
 
     def onPlayerMediaChanged(self,event):
@@ -450,6 +456,14 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def onPlayAlbum(self,item):
         print("onPlayAlbum "+self.currentAlbum.getAlbumDir())
         self.playAlbum(self.currentAlbum)
+
+
+    def onPlayerPositionChanged(self,event):
+        pos = player.getPosition()
+
+        if self.playList != None:
+            self.playList.setTimeSliderPosition(pos*1000)
+        
 
     def onPauseAlbum(self):
         player.pauseMediaList()
@@ -510,7 +524,6 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         
 
     def closeEvent(self, event):
-
         self.saveSettings()
 
     def saveSettings(self):
@@ -529,7 +542,6 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.installTranslator("playlistWidget",locale)
         self.ui.retranslateUi(self)
         if self.playList != None: self.playList.retranslateUi()
-        
         
         self.update()
         self.setWindowTitle("PyZik")
@@ -567,31 +579,12 @@ if __name__ == '__main__':
     #Load & Set the DarkStyleSheet
     app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
 
-    
-    
-    
-
-    # # translator for built-in qt strings
-    # translator = QtCore.QTranslator(app)
-    # translator.load('pyzik_%s.qm' % locale)
-    # #translator.load('pyzik_es.qm')
-    # app.installTranslator(translator)
-
-    # translator = QtCore.QTranslator(app)
-    # translator.load('playlistWidget_%s.qm' % locale)
-    # #translator.load('playlistWidget_es.qm')
-    # app.installTranslator(translator)
 
     window = MainWindowLoader(None,app)
-
-    #for genre in musicGenres:
-    #    print(genre+" id="+str(musicGenres.index(genre)))
-
     window.show()
 
     app.exec()
     window.threadStreamObserver.stop()
-    #window.threadStreamObserver.join()
 
 
     player.release()

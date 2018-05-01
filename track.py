@@ -30,9 +30,9 @@ class track:
         self.musicDirectoryID = ""
         self.mrl = ""
         self.parentAlbum = None
-        
-        #if fileName != "":
-        #    self.extractDataFromTags()
+        self.radioName = ""
+        self.radioStream = ""
+
 
 
     def printInfos(self):
@@ -59,6 +59,12 @@ class track:
             return self.parentAlbum.title
         else:
             return self.album
+
+    def getTrackTitle(self):
+        if self.radioName != "":
+            return self.radioName
+        else:
+            return self.title
         
 
 
