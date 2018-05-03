@@ -29,13 +29,26 @@ class musicBase:
         self.addAlbumsToArtists()
 
 
-    def exploreAlbumsDirectories(self):
+    def exploreDirectories(self):
         for mdir in self.musicDirectoryCol.musicDirectories:
             print("Dir="+mdir.dirPath)
             mdir.artistCol = self.artistCol
             mdir.albumCol = self.albumCol
-            mdir.exploreAlbumsDirectory()
+
+            if mdir.dirType == 0 : mdir.exploreAlbumsDirectory()
+            elif mdir.dirType == 1 : mdir.exploreArtistsDirectory()
+            elif mdir.dirType == 2 : print("Dirty directory not managed yet!")
+            
         self.artistCol.sortArtists()
+
+
+    # def exploreArtistsDirectories(self):
+    #     for mdir in self.musicDirectoryCol.musicDirectories:
+    #         print("Dir="+mdir.dirPath)
+    #         mdir.artistCol = self.artistCol
+    #         mdir.albumCol = self.albumCol
+    #         mdir.exploreAlbumsDirectory()
+    #     self.artistCol.sortArtists()
 
 
 

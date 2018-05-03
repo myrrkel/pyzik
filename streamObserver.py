@@ -47,11 +47,15 @@ class streamObserver(QThread):
                         #    self.player.setVolume(0)
 
 
-                        if self.previousTitle != "":
+                        if self.previousTitle == "Advert Killed!":
+                            time.sleep(2)
+                            self.previousTitle = ""
                             
+                        if self.previousTitle != "":
                             self.previousTitle = ""
                             self.player.stop()
                             msg = "Advert Killed!"
+                            print(msg)
                             self.titleChanged.emit(msg)
                             time.sleep(2)
                             self.player.playMediaList()

@@ -67,6 +67,54 @@ class musicDirectory:
 
 		return 
 
+		
+
+	def exploreArtistsDirectory(self,progressChanged=None):
+		dirlist = next(os.walk(self.dirPath))[1]
+		i=0
+		for dir in dirlist:
+			i+=1
+			iProgress = round((i/len(dirlist))*100)
+			progressChanged.emit(iProgress)
+
+			print('exploreArtistsDirectory='+dir)
+			curArt = self.artistCol.getArtist(dir)
+			#GetArtist return a new artist if if doesn't exists in artistsCol
+
+			self.exploreAlbumsInArtistDirectory(curArt,dir,progressChanged)
+
+
+		return 
+
+
+
+	def exploreAlbumsInArtistDirectory(self,artist,artDir,progressChanged=None):
+		
+		artPath = os.path.join(self.dirPath,artDir)
+		dirlist = next(os.walk(artPath))[1]
+		i=0
+		for dir in dirlist:
+			i+=1
+			iProgress = round((i/len(dirlist))*100)
+			progressChanged.emit(iProgress)
+			curAlb = album(dir)
+			curAlb.musicDirectoryID = self.musicDirectoryID
+			curAlb.dirPath = artDir
+
+			curAlb.artistID = artist.artistID
+			curAlb.artistName = artist.name
+
+			if curAlb.toVerify == False:
+				#Artist name et album title has been found
+
+				albumList = self.albumCol.findAlbums(curAlb.title,curAlb.artistID)
+				if len(albumList)==0:
+					print("Add "+curAlb.title+" in "+artist.name+" discography. ArtID="+str(artist.artistID))
+					self.albumCol.addAlbum(curAlb)
+					artist.albums.append(curAlb)
+
+
+		return 
 
 
 	def updateMusicDirectoryDB(self):

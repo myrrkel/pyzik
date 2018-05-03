@@ -35,26 +35,18 @@ class database():
 			print(e)
 			return None
 
-	def createTable(self, create_table_sql):
-		""" create a table from the create_table_sql statement
-		:param conn: Connection object
-		:param create_table_sql: a CREATE TABLE statement
-		:return:
-		"""
+	def execSQLWithoutResult(self, sql):
 		try:
 			c = self.connection.cursor()
-			c.execute(create_table_sql)
+			c.execute(sql)
 		except sqlite3.Error as e:
 				print(e)
 
 	def dropTable(self, table_name):
 		""" drop the table called table_name
 		"""
-		try:
-			c = self.connection.cursor()
-			c.execute("drop table "+table_name)
-		except sqlite3.Error as e:
-				print(e)
+		self.execSQLWithoutResult("DROP TABLE "+table_name)
+
 
 	def dropAllTables(self):
 		self.dropTable("artists")
@@ -62,11 +54,7 @@ class database():
 		#self.dropTable("musicDirectories")
 
 	def insertLine(self, insert_sql):
-		""" create a table from the create_table_sql statement
-		:param conn: Connection object
-		:param create_table_sql: a CREATE TABLE statement
-		:return:
-		"""
+		""" insert a line from the insert_sql statement """
 		try:
 			c = self.connection.cursor()
 			c.execute(insert_sql)
@@ -74,6 +62,7 @@ class database():
 			return c.lastrowid
 		except sqlite3.Error as e:
 			print(e)
+			return -1
 
 
 	def createTableArtists(self):
@@ -83,7 +72,7 @@ class database():
 									countryID integer,
 									categoryID integer
 								); """
-		self.createTable(sqlCreateTableArtist)
+		self.execSQLWithoutResult(sqlCreateTableArtist)
 
 
 	def createTableAlbums(self):
@@ -99,7 +88,7 @@ class database():
 										FOREIGN KEY (artistID) REFERENCES artists(artistID),
 										FOREIGN KEY (musicDirectoryID) REFERENCES musicDirectories(musicDirectoryID)
 									); """
-		self.createTable(sqlCreateTableAlbum)
+		self.execSQLWithoutResult(sqlCreateTableAlbum)
 
 	def createTableMusicDirectories(self):
 		sqlCreateTableMusicDirectories = """ CREATE TABLE IF NOT EXISTS musicDirectories (
@@ -108,7 +97,14 @@ class database():
 										dirName text,
 										styleID integer
 									); """
-		self.createTable(sqlCreateTableMusicDirectories)
+		self.execSQLWithoutResult(sqlCreateTableMusicDirectories)
+
+		if not self.columnExistsInTable("musicDirectories","dirType"):
+			sqlAddcolumnDirType = """ ALTER TABLE musicDirectories ADD COLUMN dirType integer default 0 """
+			self.execSQLWithoutResult(sqlAddcolumnDirType)
+
+
+
 
 	def createTablePlayHistoryAlbum(self):
 		sqlCreateTablePlayHistoryAlbum = """ CREATE TABLE IF NOT EXISTS playHistoryAlbum (
@@ -117,16 +113,27 @@ class database():
 										PlayDate datetime,
 										FOREIGN KEY (albumID) REFERENCES albums(albumID)
 									); """
-		self.createTable(sqlCreateTablePlayHistoryAlbum)
+		self.execSQLWithoutResult(sqlCreateTablePlayHistoryAlbum)
 
 
 
-	def getSelect(self,select_sql):
+	def getSelect(self,select_sql,params=None):
 		c = self.connection.cursor()
-		c.execute(select_sql)
+		if params == None:
+			c.execute(select_sql)
+		else:
+			c.execute(select_sql,params)
 		rows = c.fetchall()
 		return rows
 
+
+	def columnExistsInTable(self,table,column):
+		sqlExists = "PRAGMA table_info("+table+");"
+		columns = self.getSelect(sqlExists)
+		for col in columns:
+			if column == col[1] : return True
+
+		return False
 
 
 

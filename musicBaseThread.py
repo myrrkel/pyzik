@@ -35,7 +35,8 @@ class exploreAlbumsDirectoriesThread(QThread):
             mdir.albumCol = self.musicbase.albumCol
             mdir.artistCol.db = db
             mdir.albumCol.db = db
-            mdir.exploreAlbumsDirectory(self.progressChanged)
+            #mdir.exploreAlbumsDirectory(self.progressChanged)
+            mdir.exploreArtistsDirectory(self.progressChanged)
             if self.doStop: break
 
         self.musicbase.artistCol.sortArtists()        
