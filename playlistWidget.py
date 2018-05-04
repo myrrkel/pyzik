@@ -202,7 +202,7 @@ class playlistWidget(QtWidgets.QDialog):
         self.initColumnHeaders()
 
 
-    def setCurrentTrack(self):
+    def setCurrentTrack(self,title=""):
 
         if self.player == None : return 
         orange = QtGui.QColor(216, 119, 0)
@@ -222,7 +222,11 @@ class playlistWidget(QtWidgets.QDialog):
                 break
 
             if trk!=None and trk.radioName != "" and i==index:
-                item.setText(self.player.getNowPlaying())
+                if title != "":
+                    item.setText(title)
+                else:
+                    nowPlaying = self.player.getNowPlaying()
+                    item.setText(nowPlaying)
 
 
             f = item.font()

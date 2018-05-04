@@ -51,7 +51,7 @@ class musicDirectoryCollection:
 
 
 	def loadMusicDirectories(self):
-		req = "SELECT musicDirectoryID, dirPath, dirName, styleID FROM musicDirectories"
+		req = "SELECT musicDirectoryID, dirPath, dirName, styleID, dirType FROM musicDirectories"
 		for row_dir in self.db.getSelect(req):
 			print('{0} : {1}'.format(row_dir[0], row_dir[1]))
 			dir = musicDirectory("")

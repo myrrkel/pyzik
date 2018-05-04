@@ -21,6 +21,7 @@ class musicDirectory:
 		self.styleID = 0
 		self.dirName = ""
 		self.albums = []
+		self.dirType = 0
 
 
 
@@ -30,10 +31,17 @@ class musicDirectory:
 		self.dirPath = row[1]
 		self.dirName = row[2]
 		self.styleID = row[3]
+		self.dirType = row[4]
 		
 
 	def getDirPath(self):
 		return self.dirPath
+
+
+	def exploreDirectory(self,progressChanged=None):
+            if self.dirType in (0,None) : self.exploreAlbumsDirectory(progressChanged)
+            elif self.dirType == 1 : self.exploreArtistsDirectory(progressChanged)
+            elif self.dirType == 2 : print("Dirty directory not managed yet!")
 		
 
 	def exploreAlbumsDirectory(self,progressChanged=None):

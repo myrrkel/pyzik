@@ -97,13 +97,18 @@ class playerVLC:
         else:
             return None
 
-    def getItemInPlaylist(self,index):
+    def getItemAtIndex(self,index):
         return self.mediaList.item_at_index(index)
+
+    def getTrackAtIndex(self,index):
+        item = self.getItemAtIndex(index)
+        return self.getTrackFromMrl(item.get_mrl())
+
 
     def findItemIndexInPlaylist(self,mrl):
         res = 0
         for i in range(self.mediaList.count()):
-            item = self.getItemInPlaylist(i)
+            item = self.getItemAtIndex(i)
             if item.get_mrl() == mrl:
                 return i
 
@@ -119,7 +124,7 @@ class playerVLC:
 
     def playAlbum(self,album,autoplay=True):
         self.radioMode = False
-        
+        i=0
         for trk in album.tracks:
             path = os.path.join(album.getAlbumDir(),trk.getFilePathInAlbumDir())
             media = self.instance.media_new(path)
@@ -127,7 +132,10 @@ class playerVLC:
             self.mediaList.add_media(media)
             self.tracksDatas.append((media.get_mrl(),"",trk))
 
-        if autoplay : self.playMediaList()
+            if i==0 and autoplay : 
+                index = self.mediaList.count()-1
+                self.mediaListPlayer.play_item_at_index(index)
+            i+=1
 
 
     def addAlbum(self,album):
@@ -299,6 +307,11 @@ class playerVLC:
         return year    
 
     def setPlaylistTrack(self,index):
+
+        trk = self.getTrackAtIndex(index)
+        self.radioMode = (trk.radioName != "")
+        print("radioMode="+str(self.radioMode))
+
         self.mediaListPlayer.play_item_at_index(index)
 
 

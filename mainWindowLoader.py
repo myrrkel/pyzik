@@ -88,7 +88,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
 
         #Connect VLC triggers
-        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerMediaChanged, self.onPlayerMediaChanged)
+        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerMediaChanged, self.onPlayerMediaChangedVLC)
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPaused, self.paused)
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPlaying, self.isPlaying)
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
@@ -422,17 +422,15 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     Interactions with vlc module
     '''
     def playAlbum(self,alb):
-        #Add tracks in playlist and start playing
+        '''Add tracks in playlist and start playing'''
         
-        player.dropMediaList()
+        #player.dropMediaList()
         player.playAlbum(alb)
         self.setVolume(self.getVolumeFromSlider())
         self.showPlaylist(True)
 
     def addAlbum(self,alb):
-        #Add tracks in playlist and start playing
-        
-        #player.dropMediaList()
+        '''Add tracks in playlist and start playing'''
         player.addAlbum(alb)
         self.setVolume(self.getVolumeFromSlider())
         self.showPlaylist(True)
@@ -444,22 +442,24 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             isNew = True
             self.playList = playlistWidget()
             self.playList.trackChanged.connect(player.setPlaylistTrack)
-            self.threadStreamObserver.titleChanged.connect(self.onPlayerMediaChanged)
+            self.threadStreamObserver.titleChanged.connect(self.onPlayerMediaChangedStreamObserver)
 
         self.playList.showMediaList(player)
             
         if isNew or showOnlyIfNew==False: self.playList.show()
 
 
-    def onPlayerMediaChanged(self,event):
-        print("onPlayerMediaChanged")
+    def onPlayerMediaChangedVLC(self,event):
+        print("onPlayerMediaChangedVLC")
         if self.playList != None:
             self.playList.setCurrentTrack()
 
-    def onPlayerMediaChanged(self,event=None,param=None):
-        print("onPlayerMediaChanged")
+
+    def onPlayerMediaChangedStreamObserver(self,title):
+        print("onPlayerMediaChangedStreamObserver="+title)
         if self.playList != None:
-            self.playList.setCurrentTrack()
+            self.playList.setCurrentTrack(title)
+
 
 
     def onPlayAlbum(self,item):
