@@ -5,6 +5,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from track import *
 
+from vlc import EventType as vlcEventType
+
 
 
 class playerControlsWidget(QtWidgets.QWidget):
@@ -18,10 +20,17 @@ class playlistWidget(QtWidgets.QDialog):
     
     mediaList = None
     player = None
+    nextPosition = 0
+    isTimeSliderDown = False
     trackChanged = pyqtSignal(int, name='trackChanged')
 
-    def __init__(self):
+    def __init__(self,player):
         QtWidgets.QDialog.__init__(self)
+        self.player = player
+        self.mediaList = self.player.mediaList
+
+        
+
         self.initUI()
 
     def initUI(self):
@@ -51,7 +60,13 @@ class playlistWidget(QtWidgets.QDialog):
         self.timeSlider.setOrientation(QtCore.Qt.Horizontal)
         self.timeSlider.setObjectName("timeSlider")
 
-        self.timeSlider.sliderReleased.connect(self.setPlayerPosition)
+        #self.timeSlider.mousePressEvent=self.setIsTimeSliderDown
+        #self.timeSlider.mouseReleaseEvent=self.onTimeSliderIsReleased
+
+        self.timeSlider.sliderPressed.connect(self.setIsTimeSliderDown)
+        self.timeSlider.sliderReleased.connect(self.onTimeSliderIsReleased)
+        self.timeSlider.sliderMoved.connect(self.setPlayerPosition)
+        self.player.mpEnventManager.event_attach(vlcEventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
 
         layout.addWidget(self.tableWidgetTracks)
         layout.addWidget(self.playerControls)
@@ -62,6 +77,16 @@ class playlistWidget(QtWidgets.QDialog):
         self.setWindowTitle("Playlist")
 
         #self.resizeEvent = self.onResize
+
+    def setIsTimeSliderDown(self,event=None):
+        print('setIsTimeSliderDown')
+        self.isTimeSliderDown = True
+        if event!=None: return event.accept()
+
+    def setIsTimeSliderReleased(self,event=None):
+        print('setIsTimeSliderReleased')
+        self.isTimeSliderDown = False
+        if event!=None: return event.accept()
 
     def onResize(self,event):
         hHeader = self.tableWidgetTracks.horizontalHeader()
@@ -171,11 +196,10 @@ class playlistWidget(QtWidgets.QDialog):
 
             i+=1
 
-    def showMediaList(self,player):
+    def showMediaList(self):
         tracks = []
 
-        self.mediaList = player.mediaList
-        self.player = player
+        self.mediaList = self.player.mediaList
         for i in range(self.mediaList.count()):
             m = self.mediaList.item_at_index(i)
             if m == None:
@@ -184,11 +208,11 @@ class playlistWidget(QtWidgets.QDialog):
             
             mrl = m.get_mrl()
             print("ShowMediaList mrl="+mrl)
-            t = player.getTrackFromMrl(mrl)
+            t = self.player.getTrackFromMrl(mrl)
             if t == None:
                 t = track()
                 t.setMRL(mrl)
-                t.title = player.getTitle()
+                t.title = self.player.getTitle()
 
             # t.albumObj = player.getAlbumFromMrl(mrl)
             # t.setMRL(mrl)
@@ -256,19 +280,30 @@ class playlistWidget(QtWidgets.QDialog):
 
 
 
+
     def changeTrack(self,item):
         i = self.tableWidgetTracks.currentRow()
 
         self.trackChanged.emit(i)
 
 
-    def setTimeSliderPosition(self,pos):
-        if not self.timeSlider.isSliderDown():
-            self.timeSlider.setValue(pos)
+    def onTimeSliderIsReleased(self,event=None):
+        print('onTimeSliderIsReleased')
+        self.isTimeSliderDown = False
+        #self.player.setPosition(self.nextPosition)
 
 
-    def setPlayerPosition(self):
-
-        pos = self.timeSlider.value()/1000
-        self.player.setPosition(pos)
+    def setPlayerPosition(self,pos):
+        print(str(pos))
+        self.nextPosition = pos/1000
+        self.player.setPosition(self.nextPosition)
+        
     
+
+    def onPlayerPositionChanged(self,event=None):
+        if not self.isTimeSliderDown:
+
+            pos = self.player.getPosition()
+            print('onPlayerPositionChanged='+str(pos))
+            self.timeSlider.setValue(pos*1000)
+       

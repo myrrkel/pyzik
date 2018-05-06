@@ -11,7 +11,9 @@ class progressWidget(QtWidgets.QDialog):
 
     def __init__(self):
         QtWidgets.QDialog.__init__(self)
+        #self.setAttribute()
         self.initUI()
+
 
     def initUI(self):
 
@@ -37,4 +39,5 @@ class progressWidget(QtWidgets.QDialog):
     def closeEvent(self,event):
         print("progressClosed=OnClose")
         self.progressClosed.emit(0)
+        self.close()
         event.accept()

@@ -91,7 +91,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerMediaChanged, self.onPlayerMediaChangedVLC)
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPaused, self.paused)
         player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPlaying, self.isPlaying)
-        player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
+        #player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
         #player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerAudioVolume , self.setVolumeSliderFromPlayer)
 
 
@@ -215,7 +215,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         
     
     def onMenuDeleteDatabase(self):
-        db.dropAllTables()
+        mb.db.dropAllTables()
         mb.emptyDatas()
         self.showArtists()
         self.initAlbumTableWidget()
@@ -440,11 +440,11 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         isNew = False
         if self.playList == None:
             isNew = True
-            self.playList = playlistWidget()
+            self.playList = playlistWidget(player)
             self.playList.trackChanged.connect(player.setPlaylistTrack)
             self.threadStreamObserver.titleChanged.connect(self.onPlayerMediaChangedStreamObserver)
 
-        self.playList.showMediaList(player)
+        self.playList.showMediaList()
             
         if isNew or showOnlyIfNew==False: self.playList.show()
 
@@ -471,13 +471,6 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         print("onAddAlbum "+self.currentAlbum.getAlbumDir())
         self.addAlbum(self.currentAlbum)
 
-
-    def onPlayerPositionChanged(self,event):
-        pos = player.getPosition()
-
-        if self.playList != None:
-            self.playList.setTimeSliderPosition(pos*1000)
-        
 
     def onPauseAlbum(self):
         player.pauseMediaList()
@@ -581,20 +574,20 @@ if __name__ == '__main__':
 
     app = QtWidgets.QApplication(sys.argv)
 
-    mb = musicBase()
-
-    db = database()
-    
-    mb.loadMusicBase()
-
-    player = playerVLC()
-    
-
     #Load & Set the DarkStyleSheet
     app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
 
+    mb = musicBase()
+    print('loadMusicBase')
+    mb.loadMusicBase()
+    print('player')
+    player = playerVLC()
+    
+
+
 
     window = MainWindowLoader(None,app)
+    print('show')
     window.show()
 
     app.exec()

@@ -244,7 +244,7 @@ class album:
     def getCover(self):
 
         if(len(self.images)>0):
-            keywords = ["cover","front","artwork","capa","caratula","frente editada","frente","folder","f"]
+            keywords = ["cover","front","artwork","capa","caratula","recto","frente editada","frente","folder","f"]
 
 
             for keyword in keywords:
@@ -256,7 +256,7 @@ class album:
 
             if (coverFound==""):
                 for keyword in keywords:
-                    coverFound = next((x for x in self.images if keyword in getFileName(x.lower()) and "back" not in getFileName(x.lower())), "")
+                    coverFound = next((x for x in self.images if (keyword in getFileName(x.lower()) and "back" not in getFileName(x.lower()))), "")
                     if (coverFound!=""):
                         self.cover = coverFound
                         break

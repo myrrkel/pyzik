@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
+from database import *
 from albumCollection import *
 from artistCollection import *
 from musicDirectoryCollection import *
@@ -18,9 +19,10 @@ class musicBase:
     """
 
     def __init__(self):
+        self.db = database()
         self.albumCol = albumCollection(self)
-        self.artistCol = artistCollection()
-        self.musicDirectoryCol = musicDirectoryCollection()
+        self.artistCol = artistCollection(self)
+        self.musicDirectoryCol = musicDirectoryCollection(self)
 
     def loadMusicBase(self):
         self.musicDirectoryCol.loadMusicDirectories()

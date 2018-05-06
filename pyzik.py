@@ -9,17 +9,17 @@ from artistCollection import *
 from mainWindowLoader import * 
 
 def main():
-	mb = musicBase()
-	mb.artistCol.loadArtists()
-	mb.albumCol.loadAlbums()
-	mb.exploreAlbumsDirectory("./TEST")
-	mb.albumCol.printAlbums()
-	mb.artistCol.printArtists()
+    mb = musicBase()
+    mb.artistCol.loadArtists()
+    mb.albumCol.loadAlbums()
+    mb.exploreAlbumsDirectory("./TEST")
+    mb.albumCol.printAlbums()
+    mb.artistCol.printArtists()
 
-	
-	'''albList.printAlbums()
-	albList.connectDB()
-	albList.createTableAlbums()'''
+    
+    '''albList.printAlbums()
+    albList.connectDB()
+    albList.createTableAlbums()'''
 
 
 
@@ -27,16 +27,16 @@ def main():
 if __name__ == "__main__":
 
 
-	main()
+    main()
 
-	'''
-	import sys
-	from PyQt5.QtWidgets import QApplication
+    '''
+    import sys
+    from PyQt5.QtWidgets import QApplication
 
-	app = QApplication(sys.argv)
-	print('test1')
-	window = MainWindowLoader()
-	window.show()
-	sys.exit(app.exec_())
-	'''
-	
+    app = QApplication(sys.argv)
+    print('test1')
+    window = MainWindowLoader()
+    window.show()
+    sys.exit(app.exec_())
+    '''
+    
