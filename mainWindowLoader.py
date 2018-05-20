@@ -200,6 +200,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     Menu Actions
     '''
     def onMenuMusicDirectories(self):
+        mb.db = database()
         dirDiag = DialogMusicDirectoriesLoader(mb)
         dirDiag.show()
         dirDiag.exec_()
@@ -210,9 +211,13 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.exploreAlbumsDirectoriesThread.progressChanged.connect(self.wProgress.setValue)
         self.exploreAlbumsDirectoriesThread.directoryChanged.connect(self.wProgress.setDirectoryText)
         self.exploreAlbumsDirectoriesThread.exploreCompleted.connect(self.wProgress.close)
+        self.exploreAlbumsDirectoriesThread.exploreCompleted.connect(self.onExploreCompleted)
         self.wProgress.progressClosed.connect(self.exploreAlbumsDirectoriesThread.stop)
         self.exploreAlbumsDirectoriesThread.start()
-        
+    
+    def onExploreCompleted(self,event):
+        mb.db = database()
+
     
     def onMenuDeleteDatabase(self):
         mb.db.dropAllTables()

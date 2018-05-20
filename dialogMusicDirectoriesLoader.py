@@ -85,6 +85,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         return sDir
 
     def closeEvent(self,event):
+        print("close")
         self.mb.db.saveMemoryToDisc()
 
 
