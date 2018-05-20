@@ -40,7 +40,7 @@ class musicDirectoryCollection:
                                 VALUES (?,?);
                           """
             c.execute(sqlInsertMusicDirectory,(musicDirectory.dirPath,musicDirectory.dirName))
-            self.db.connection.commit()
+            self.musicBase.db.connection.commit()
             musicDirectory.musicDirectoryID = c.lastrowid
         except sqlite3.Error as e:
             print(e)
