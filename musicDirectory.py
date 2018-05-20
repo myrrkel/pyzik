@@ -74,7 +74,7 @@ class musicDirectory:
                 #Artist name et album title has been found
                 curArt = self.artistCol.getArtist(curAlb.artistName)
                 #GetArtist return a new artist if if doesn't exists in artistsCol
-                if curArt != None:                
+                if curArt:                
                     curAlb.artistID = curArt.artistID
                     curAlb.artistName = curArt.name
 
