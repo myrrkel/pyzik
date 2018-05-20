@@ -144,7 +144,7 @@ class musicDirectory:
     def updateMusicDirectoryDB(self):
         if self.musicDirectoryID > 0 :
             try:
-                c = self.db.connection.cursor()
+                c = self.musicBase.db.connection.cursor()
                 sqlInsertMusicDirectory = """    UPDATE musicDirectories SET dirPath=?, dirName=?, styleID=?
                             WHERE musicDirectoryID=?;
                               """
@@ -155,7 +155,7 @@ class musicDirectory:
                     self.styleID,
                     self.musicDirectoryID))
 
-                self.db.connection.commit()
+                self.musicBase.db.connection.commit()
 
             except sqlite3.Error as e:
                 print(e)

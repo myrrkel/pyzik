@@ -32,6 +32,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         
     def onDirChanged(self,item):
         if self.currentDir != None :
+            self.currentDir.musicBase = self.mb
             self.currentDir.updateMusicDirectoryDB()
         sel = self.ui.DirListView.selectionModel().selectedIndexes()
 
@@ -82,6 +83,9 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
     def selectDir(self):
         sDir = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory"))
         return sDir
+
+    def closeEvent(self,event):
+        self.mb.db.saveMemoryToDisc()
 
 
     def loadDirList(self):
