@@ -59,7 +59,7 @@ class musicDirectoryCollection:
 
 
     def getMusicDirectory(self,id):
-
+        resMB = None
         for mdir in filterByID(self.musicDirectories,id):
             resMB = mdir
         return resMB
