@@ -15,16 +15,14 @@ Pyzik finds datas from albums directories name and saves it in database.
 
 So you can find your music quickly, and play it.
 
-# Requirements
+# Installation
 
-                        pip install PyQt5
-                        pip install python-vlc
-                        pip install mutagen
+    pip install -r requirements.txt
 
 
 # To start the pre project use the command line: 
 
-python3 ./pyzik/mainWindowLauncher.py
+    python3 ./pyzik/mainWindowLauncher.py
 
 # News
 
