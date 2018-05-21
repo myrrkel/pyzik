@@ -9,6 +9,15 @@ Pyzik explores big music directories like:
                                     ./Blues/Artist3 - Album4
                                     ...
 
+or
+
+                                    ./Artist/1972 - Album1
+                                    ./Artist/1975 - Album2
+                                    ./Artist2/1967 - Album1
+                                    ./Artist2/1968 - Album2
+
+
+
 
 
 Pyzik finds datas from albums directories name and saves it in database. 
@@ -22,7 +31,7 @@ So you can find your music quickly, and play it.
 
 # To start the pre project use the command line: 
 
-    python3 ./pyzik/mainWindowLauncher.py
+    python3 ./pyzik/mainWindowLoader.py
 
 # News
 
@@ -30,16 +39,12 @@ So you can find your music quickly, and play it.
 + Playing radio without ads
 + Displaying covers art
 + Reading tags
++ Language selector
 
 # Coming soon:
-+ Language selector
 + Music style filter
 + Correction folder's name acording ID3 tags
 + Collecting cover art and track list from web
-+ Manager for music directories like 
-
-                                    ./Artist/1972 - Album1
-                                    ./Artist/1975 - Album2
 
 
 
