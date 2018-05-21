@@ -14,7 +14,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.currentDir = None
         self.ui = dialogMusicDirectories.Ui_Dialog()
         self.ui.setupUi(self)
-        self.setWindowTitle("PyZic")
+        self.setWindowTitle("PyZik")
         self.ui.wRight.setEnabled(False)
 
         self.ui.AddButton.clicked.connect(self.onAddDir)
@@ -58,7 +58,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         
         sDir = self.selectDir()
         if(sDir != ""):
-            md = musicDirectory(sDir)
+            md = musicDirectory(self.mb,sDir)
             
             md.dirName, ok = QtWidgets.QInputDialog.getText(self, 'Give a name to your directory', 
             'Directory name:')

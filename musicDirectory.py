@@ -12,12 +12,12 @@ class musicDirectory:
     All his albums heritates of this style on import
     """
 
-    def __init__(self,musicBase):
+    def __init__(self,musicBase,dirPath=""):
 
         self.musicBase = musicBase
         self.albumCol = albumCollection(self.musicBase)
         self.artistCol = artistCollection(self.musicBase)
-        self.dirPath = ""
+        self.dirPath = dirPath
         self.musicDirectoryID = 0
         self.styleID = 0
         self.dirName = ""

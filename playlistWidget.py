@@ -73,8 +73,8 @@ class playlistWidget(QtWidgets.QDialog):
         layout.addWidget(self.timeSlider)
 
         self.tableWidgetTracks.cellDoubleClicked.connect(self.changeTrack)
-
-        self.setWindowTitle("Playlist")
+        _translate = QtCore.QCoreApplication.translate
+        self.setWindowTitle(_translate("playlist", "Playlist"))
 
         #self.resizeEvent = self.onResize
 
@@ -304,6 +304,6 @@ class playlistWidget(QtWidgets.QDialog):
         if not self.isTimeSliderDown:
 
             pos = self.player.getPosition()
-            print('onPlayerPositionChanged='+str(pos))
+            #print('onPlayerPositionChanged='+str(pos))
             self.timeSlider.setValue(pos*1000)
        

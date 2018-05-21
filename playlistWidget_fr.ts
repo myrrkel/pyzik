@@ -4,6 +4,10 @@
 <context>
     <name>playlist</name>
     <message>
+        <source>Playlist</source>
+        <translation>Liste de lecture</translation>
+    </message>
+    <message>
         <source>Title</source>
         <translation>Titre</translation>
     </message>

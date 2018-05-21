@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.1" language="fr_FR">
 <context>
     <name>Dialog</name>
     <message>
@@ -8,7 +9,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="dialogmusicdirectories.ui" line="196"/>
+        <location filename="dialogmusicdirectories.ui" line="211"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
@@ -23,17 +24,17 @@
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="dialogmusicdirectories.ui" line="221"/>
+        <location filename="dialogmusicdirectories.ui" line="236"/>
         <source>Dir</source>
         <translation>Dossier</translation>
     </message>
     <message>
-        <location filename="dialogmusicdirectories.ui" line="246"/>
+        <location filename="dialogmusicdirectories.ui" line="261"/>
         <source>Style</source>
         <translation>Style</translation>
     </message>
     <message>
-        <location filename="dialogmusicdirectories.ui" line="366"/>
+        <location filename="dialogmusicdirectories.ui" line="393"/>
         <source>...</source>
         <translation></translation>
     </message>
@@ -69,27 +70,27 @@
         <translation type="obsolete">Artiste</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="289"/>
+        <location filename="mainwindow.ui" line="578"/>
         <source>Title</source>
         <translation>Titre</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="254"/>
+        <location filename="mainwindow.ui" line="327"/>
         <source>Year</source>
         <translation>Année</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="299"/>
+        <location filename="mainwindow.ui" line="588"/>
         <source>ID</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="423"/>
+        <location filename="mainwindow.ui" line="624"/>
         <source>Config</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="448"/>
+        <location filename="mainwindow.ui" line="666"/>
         <source>Music directories</source>
         <translation>Dossiers musicaux</translation>
     </message>
@@ -99,74 +100,104 @@
         <translation type="obsolete">Explorer les répertoires</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="458"/>
+        <location filename="mainwindow.ui" line="676"/>
         <source>Delete database</source>
         <translation>Vider la base de données</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="84"/>
+        <location filename="mainwindow.ui" line="113"/>
         <source>Search</source>
         <translation>Recherche</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="181"/>
+        <location filename="mainwindow.ui" line="238"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Artist&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Album Name (1970)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Artiste&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Nom Album (1970)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="294"/>
+        <location filename="mainwindow.ui" line="583"/>
         <source>Duration</source>
         <translation>Durée</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="322"/>
+        <location filename="mainwindow.ui" line="503"/>
         <source>Play</source>
         <translation>Lecture</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="329"/>
-        <source>Stop</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="336"/>
-        <source>&lt;&lt;</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="343"/>
-        <source>&gt;&gt;</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="350"/>
+        <location filename="mainwindow.ui" line="517"/>
         <source>Open Dir</source>
         <translation>Ouvrir Rep</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="431"/>
+        <location filename="mainwindow.ui" line="642"/>
         <source>Radios</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="437"/>
+        <location filename="mainwindow.ui" line="648"/>
         <source>Albums</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="453"/>
+        <location filename="mainwindow.ui" line="671"/>
         <source>Explore music directories</source>
         <translation>Explorer les répertoires musicaux</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="463"/>
+        <location filename="mainwindow.ui" line="681"/>
         <source>Random album</source>
         <translation>Album au hasard</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="468"/>
+        <location filename="mainwindow.ui" line="686"/>
         <source>Fuzzy and Groovy Rock Radio</source>
         <translation>Fuzzy and Groovy Rock Radio</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="510"/>
+        <source>Add</source>
+        <translation>Ajouter</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="524"/>
+        <source>Pause</source>
+        <translation>Pause</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="628"/>
+        <source>Language</source>
+        <translation>Langue</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="654"/>
+        <source>Tools</source>
+        <translation>Outils</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="691"/>
+        <source>Playlist</source>
+        <translation>Liste de lecture</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="696"/>
+        <source>English</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="701"/>
+        <source>French</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="706"/>
+        <source>Spanish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="711"/>
+        <source>German</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
