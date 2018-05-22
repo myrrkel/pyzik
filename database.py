@@ -176,7 +176,7 @@ class database():
 
     def getSelect(self,select_sql,params=None):
         c = self.memoryConnection.cursor()
-        if params == None:
+        if params is None:
             c.execute(select_sql)
         else:
             c.execute(select_sql,params)

@@ -81,12 +81,12 @@ class playlistWidget(QtWidgets.QDialog):
     def setIsTimeSliderDown(self,event=None):
         print('setIsTimeSliderDown')
         self.isTimeSliderDown = True
-        if event!=None: return event.accept()
+        if event is not None: return event.accept()
 
     def setIsTimeSliderReleased(self,event=None):
         print('setIsTimeSliderReleased')
         self.isTimeSliderDown = False
-        if event!=None: return event.accept()
+        if event is not None: return event.accept()
 
     def onResize(self,event):
         hHeader = self.tableWidgetTracks.horizontalHeader()
@@ -202,14 +202,14 @@ class playlistWidget(QtWidgets.QDialog):
         self.mediaList = self.player.mediaList
         for i in range(self.mediaList.count()):
             m = self.mediaList.item_at_index(i)
-            if m == None:
+            if m is None:
                 print("BREAK ShowMediaList media="+str(i))
                 break
             
             mrl = m.get_mrl()
             print("ShowMediaList mrl="+mrl)
             t = self.player.getTrackFromMrl(mrl)
-            if t == None:
+            if t is None:
                 t = track()
                 t.setMRL(mrl)
                 t.title = self.player.getTitle()
@@ -228,7 +228,7 @@ class playlistWidget(QtWidgets.QDialog):
 
     def setCurrentTrack(self,title=""):
 
-        if self.player == None : return 
+        if self.player is None : return 
         orange = QtGui.QColor(216, 119, 0)
         white = QtGui.QColor(255, 255, 255)
 
@@ -241,11 +241,11 @@ class playlistWidget(QtWidgets.QDialog):
         for i in range(self.mediaList.count()):
 
             item = self.tableWidgetTracks.item(i,0)
-            if item == None:
+            if item is None:
                 print("BREAK setCurrentTrack item="+str(i))
                 break
 
-            if trk!=None and trk.radioName != "" and i==index:
+            if trk is not None and trk.radioName != "" and i==index:
                 if title != "":
                     item.setText(title)
                 else:

@@ -36,7 +36,7 @@ class musicBase:
     def addAlbumsToArtists(self):
         for alb in self.albumCol.albums:
             artist_found = self.artistCol.getArtistByID(alb.artistID)
-            if (artist_found != None):
+            if artist_found is not None:
                 alb.artistName = artist_found.name
                 artist_found.albums.append(alb)
 

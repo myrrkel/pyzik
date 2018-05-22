@@ -16,7 +16,7 @@ class exploreAlbumsDirectoriesThread(QThread):
     """Read datas from files in the album folder"""
 
     doStop = False 
-    musicbase = None
+    musicBase = None
     progressChanged = pyqtSignal(int, name='progressChanged')
     directoryChanged = pyqtSignal(str, name='directoryChanged')
     exploreCompleted = pyqtSignal(int, name='exploreCompleted')
@@ -25,15 +25,15 @@ class exploreAlbumsDirectoriesThread(QThread):
     def run(self):
         self.doStop = False
         db = database()
-        self.musicbase.db = db
-        self.musicbase.musicDirectoryCol.db = db
+        self.musicBase.db = db
+        self.musicBase.musicDirectoryCol.db = db
        
-        for mdir in self.musicbase.musicDirectoryCol.musicDirectories:
+        for mdir in self.musicBase.musicDirectoryCol.musicDirectories:
             print("explore="+mdir.dirName)
             self.directoryChanged.emit(mdir.dirName)
             mdir.db = db
-            mdir.artistCol = self.musicbase.artistCol
-            mdir.albumCol = self.musicbase.albumCol
+            mdir.artistCol = self.musicBase.artistCol
+            mdir.albumCol = self.musicBase.albumCol
             mdir.artistCol.db = db
             mdir.albumCol.db = db
 
@@ -42,8 +42,8 @@ class exploreAlbumsDirectoriesThread(QThread):
 
             if self.doStop: break
         self.directoryChanged.emit("Saving datas..")
-        self.musicbase.db.saveMemoryToDisc()
-        self.musicbase.artistCol.sortArtists()        
+        self.musicBase.db.saveMemoryToDisc()
+        self.musicBase.artistCol.sortArtists()        
         self.exploreCompleted.emit(1)
         self.quit()      
         

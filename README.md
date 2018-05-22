@@ -31,7 +31,7 @@ So you can find your music quickly, and play it.
 
 # To start the pre project use the command line: 
 
-    python3 ./pyzik/mainWindowLoader.py
+    python3 ./pyzik/pyzik.py
 
 # News
 

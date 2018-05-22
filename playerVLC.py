@@ -53,7 +53,7 @@ class playerVLC:
     def getAlbumFromMrl(self,mrl):
         trackData = [item for item in self.tracksDatas if item[0] == mrl]
 
-        if trackData != None:
+        if trackData is not None:
             if len(trackData) > 0:
                 return trackData[0][1]
             else:
@@ -65,7 +65,7 @@ class playerVLC:
         #print("getTrackFromMrl="+mrl)
         trackData = [item for item in self.tracksDatas if item[0] == mrl]
 
-        if trackData != None:
+        if trackData is not None:
             if len(trackData) > 0:
                 return trackData[0][2]
             else:
@@ -92,7 +92,7 @@ class playerVLC:
 
     def getCurrentMrlPlaylist(self):
         m = self.mediaPlayer.get_media()
-        if m != None :
+        if m is not None :
             return m.get_mrl()
         else:
             return None
@@ -117,7 +117,7 @@ class playerVLC:
 
     def getCurrentTrackPlaylist(self):
         mrl = self.getCurrentMrlPlaylist()
-        if mrl != None :
+        if mrl is not None :
             return self.getTrackFromMrl(mrl)
         else:
             return None
@@ -187,8 +187,9 @@ class playerVLC:
     def initMediaList(self):
         #self.mediaList.release()
         #self.mediaListPlayer.release()
-        if(self.mediaList != None):
+        if self.mediaList is not None:
             self.mediaList.release()
+            
         self.mediaList = self.instance.media_list_new()
         self.mediaListPlayer.set_media_player(self.mediaPlayer)
         self.mediaListPlayer.set_media_list(self.mediaList) 
