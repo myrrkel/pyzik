@@ -28,40 +28,35 @@ def open_file(filename):
 
 class MainWindowLoader(QtWidgets.QMainWindow):
 
-    def __init__(self, parent=None,app=None,musicbase=None,player=None):
+    def __init__(self, parent=None,app=None,musicbase=None,player=None,translator=None):
         QtWidgets.QMainWindow.__init__(self, parent)
 
+        self.app = app
+        self.translator = translator
         self.musicBase = musicbase
         self.player = player
 
+        self.settings = QtCore.QSettings('pyzik', 'pyzik')
         self.firstShow = True
         self.playList = None
-
-        self.app = app
-        self.translators = []
-        self.locale = QtCore.QLocale.system().name()
         self.currentArtist = artist("",0)
         self.currentAlbum = album("")
+
         self.coverPixmap = QtGui.QPixmap()
         self.defaultPixmap = QtGui.QPixmap()
 
-        self.settings = QtCore.QSettings('pyzik', 'pyzik')
-        self.loadSettings()
-
         self.ui = mainWindow.Ui_MainWindow()
         self.ui.setupUi(self)
-        self.changeLanguage(self.locale)
 
-
-
-
-
+        
         self.setTitleLabel("")
         self.setWindowTitle("PyZik")
+
         self.initAlbumTableWidget()
         self.initTrackTableWidget()
 
         self.showArtists()
+        self.loadSettings()
         
 
         #Connect UI triggers
@@ -551,9 +546,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def changeLanguage(self,locale):
         # translator for built-in qt strings
-        self.unInstallTranslators()
-        self.installTranslator("pyzik",locale)
-        self.installTranslator("playlistWidget",locale)
+        self.translator.unInstallTranslators()
+        self.translator.installTranslators(locale)
         self.ui.retranslateUi(self)
         if self.playList is not None: self.playList.retranslateUi()
         
@@ -563,47 +557,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
 
 
-    def installTranslator(self,filename,locale):
-        translator = QtCore.QTranslator(self.app)
-        translator.load('{0}_{1}.qm'.format(filename,locale))
-        self.translators.append(translator)
-        self.app.installTranslator(translator)
-
-    
-    def unInstallTranslators(self):
-        for translator in self.translators:
-            self.app.removeTranslator(translator)
-        self.translators = []
-
     
 
 if __name__ == '__main__':
-    from darkStyle import darkStyle
-    from playerVLC import *
-
-
-    app = QtWidgets.QApplication(sys.argv)
-
-    #Load & Set the DarkStyleSheet
-    app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
-
-    mb = musicBase()
-    print('loadMusicBase')
-    mb.loadMusicBase()
-    print('player')
-    player = playerVLC()
-    
-
-
-
-    window = MainWindowLoader(None,app,mb,player)
-    print('show')
-    window.show()
-
-    app.exec()
-    window.threadStreamObserver.stop()
-
-
-    player.release()
-
-    sys.exit()
+    from pyzik import *
+    main()

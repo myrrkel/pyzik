@@ -21,12 +21,13 @@ class database():
         self.memoryConnection = ""
 
         self.createConnection()
-        self.initMemoryDB()
+        
+
+    def initDataBase(self):
         self.createTableArtists()
         self.createTableAlbums()
         self.createTableMusicDirectories()
         self.createTablePlayHistoryAlbum()
-
 
 
     def initMemoryDB(self):
@@ -175,7 +176,7 @@ class database():
 
 
     def getSelect(self,select_sql,params=None):
-        c = self.memoryConnection.cursor()
+        c = self.connection.cursor()
         if params is None:
             c.execute(select_sql)
         else:

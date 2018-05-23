@@ -20,11 +20,13 @@ class musicBase:
 
     def __init__(self):
         self.db = database()
+        self.db.initDataBase()
         self.albumCol = albumCollection(self)
         self.artistCol = artistCollection(self)
         self.musicDirectoryCol = musicDirectoryCollection(self)
 
     def loadMusicBase(self):
+        self.db.initMemoryDB()
         self.musicDirectoryCol.loadMusicDirectories()
         self.artistCol.loadArtists()
         self.albumCol.loadAlbums()

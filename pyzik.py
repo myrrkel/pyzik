@@ -7,12 +7,18 @@ from darkStyle import darkStyle
 from playerVLC import *
 from mainWindowLoader import * 
 from musicBase import *
+from translators import *
 
 
 
 def main():
 
     app = QtWidgets.QApplication(sys.argv)
+
+    tr = translators(app)      
+    localeLanguage = QtCore.QLocale.system().name()
+    tr.installTranslators(localeLanguage)
+
 
     #Load & Set the DarkStyleSheet
     app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
@@ -23,7 +29,7 @@ def main():
     print('player')
     player = playerVLC()
 
-    window = MainWindowLoader(None,app,mb,player)
+    window = MainWindowLoader(None,app,mb,player,tr)
 
     print('show')
     window.show()
@@ -34,6 +40,10 @@ def main():
     player.release()
 
     sys.exit()
+
+
+
+
 
 
 if __name__ == "__main__":

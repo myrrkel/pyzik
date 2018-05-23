@@ -25,6 +25,7 @@ class exploreAlbumsDirectoriesThread(QThread):
     def run(self):
         self.doStop = False
         db = database()
+        db.initMemoryDB()
         self.musicBase.db = db
         self.musicBase.musicDirectoryCol.db = db
        
