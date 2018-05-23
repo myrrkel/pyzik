@@ -6,7 +6,6 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from darkStyle import darkStyle
 from playerVLC import *
 from mainWindowLoader import * 
-
 from musicBase import *
 
 
@@ -23,9 +22,6 @@ def main():
     mb.loadMusicBase()
     print('player')
     player = playerVLC()
-    
-
-
 
     window = MainWindowLoader(None,app,mb,player)
 
@@ -35,12 +31,11 @@ def main():
     app.exec()
     window.threadStreamObserver.stop()
 
-
     player.release()
 
     sys.exit()
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     main()
 
