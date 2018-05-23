@@ -22,13 +22,17 @@ def main():
 
     #Load & Set the DarkStyleSheet
     app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
+    print("Available system styles: "+str(QtWidgets.QStyleFactory.keys()))
+    #myStyle = QtWidgets.QStyleFactory.create('Fusion')
+    #app.setStyle(myStyle)
 
+    print('musicBase')
     mb = musicBase()
     print('loadMusicBase')
     mb.loadMusicBase()
     print('player')
     player = playerVLC()
-
+    print('MainWindowLoader')
     window = MainWindowLoader(None,app,mb,player,tr)
 
     print('show')

@@ -485,16 +485,16 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     Miscellanious UI functions 
     '''
 
-    def setTitleLabel(self,artName="",AlbTitle="",Year=""):
+    def setTitleLabel(self,artName="",albTitle="",year=""):
 
         if self.currentArtist is not None and artName=="":
             artName = self.currentArtist.name
-        if self.currentAlbum is not None and AlbTitle=="":  
-            AlbTitle = self.currentAlbum.title
-            Year = self.currentAlbum.year
+        if self.currentAlbum is not None and albTitle=="":  
+            albTitle = self.currentAlbum.title
+            year = self.currentAlbum.year
 
-        sAlbum = AlbTitle
-        sYear =str(Year)
+        sAlbum = albTitle
+        sYear =str(year)
         if(not sYear in ["0",""]): sAlbum += " ("+sYear+")"
         sTitle = '''<html><head/><body>
         <p><span style=\" font-size:14pt; font-weight:600;\">{Artist}</span></p>
