@@ -4,6 +4,7 @@
 
 from artist import *
 from operator import itemgetter, attrgetter
+from sortedcontainers import SortedKeyList
 
 def filterByName(seq, value):
     for el in seq:
@@ -27,7 +28,7 @@ class artistCollection:
     """
 
     def __init__(self,mainMusicBase):
-        self.artists = [] #Artist Collection
+        self.artists = SortedKeyList(key=attrgetter('name')) #[] #Artist Collection
         self.musicBase = mainMusicBase
 
         
@@ -39,14 +40,17 @@ class artistCollection:
         if artist.artistID == 0:
             artist.artistID = self.musicBase.db.insertArtist(artist)
 
-        self.artists.append(artist)
+        self.artists.add(artist)
 
         return artist
 
 
     def getArtist(self,artistName):
         newArt = artist(artistName,0)
-        artistList = self.findArtists(newArt.name)
+        
+        artistList = self.findSortedArtist(newArt)
+        if len(artistList) == 0 :
+            artistList = self.findArtists(newArt.name)
 
         if len(artistList)==0:
             #If the artist is not found in artistCol, we add it and return the
@@ -66,8 +70,21 @@ class artistCollection:
 
     def findArtists(self,sname):
         artistList = []
+
         for art in filterByName(self.artists,sname):
             artistList.append(art)
+        return artistList
+
+    def findSortedArtist(self,art):
+        artistList = []
+        try:
+            artFound = self.artists.index(art)
+
+        except ValueError:
+            artFound = None
+        
+        if artFound: artistList.append(artFound)
+
         return artistList
 
     def getArtistByID(self,id):
@@ -88,7 +105,7 @@ class artistCollection:
     def artistCompare(art1,art2):
         return art1.name > art2.name
 
-    def sortArtists(self):
+    def sortArtists(self): 
         self.artists = sorted(self.artists, key=attrgetter('name'))
 
 

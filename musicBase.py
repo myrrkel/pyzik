@@ -12,6 +12,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 
 
 
+
 class musicBase:
     """
     musicBase manage albums and artists from
@@ -24,6 +25,7 @@ class musicBase:
         self.albumCol = albumCollection(self)
         self.artistCol = artistCollection(self)
         self.musicDirectoryCol = musicDirectoryCollection(self)
+        self.styleIDList = []
 
     def loadMusicBase(self):
         self.db.initMemoryDB()
