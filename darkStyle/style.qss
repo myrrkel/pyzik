@@ -670,6 +670,17 @@ QComboBox QAbstractItemView
     selection-background-color: #D1DBCB;
 }
 
+
+QComboBox::indicator:checked
+{
+    image: none;
+}
+
+
+
+
+QMenu::icon:checked
+
 QComboBox::drop-down
 {
     subcontrol-origin: padding;

@@ -6,7 +6,7 @@
     <message>
         <location filename="dialogmusicdirectories.ui" line="20"/>
         <source>Dialog</source>
-        <translation></translation>
+        <translation>Carpetas de música</translation>
     </message>
     <message>
         <location filename="dialogmusicdirectories.ui" line="107"/>
@@ -34,9 +34,29 @@
         <translation>Estilo</translation>
     </message>
     <message>
-        <location filename="dialogmusicdirectories.ui" line="393"/>
+        <location filename="dialogmusicdirectories.ui" line="412"/>
         <source>...</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="dialogmusicdirectories.ui" line="280"/>
+        <source>Mode</source>
+        <translation>Modo</translation>
+    </message>
+    <message>
+        <location filename="dialogmusicdirectories.ui" line="457"/>
+        <source>Album directory</source>
+        <translation>Álbumes</translation>
+    </message>
+    <message>
+        <location filename="dialogmusicdirectories.ui" line="462"/>
+        <source>Artist/Album directory</source>
+        <translation>Artistas/Álbumes</translation>
+    </message>
+    <message>
+        <location filename="dialogmusicdirectories.ui" line="467"/>
+        <source>Song directory</source>
+        <translation>Archivos de música</translation>
     </message>
 </context>
 <context>
@@ -114,7 +134,7 @@
     <message>
         <location filename="mainwindow.ui" line="648"/>
         <source>Albums</source>
-        <translation>Albums</translation>
+        <translation>Álbumes</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="671"/>

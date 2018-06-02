@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="en_US" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.1" language="en_US">
 <context>
     <name>Dialog</name>
     <message>
         <location filename="dialogmusicdirectories.ui" line="20"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Music directories</translation>
     </message>
     <message>
         <location filename="dialogmusicdirectories.ui" line="107"/>
@@ -33,8 +34,28 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dialogmusicdirectories.ui" line="393"/>
+        <location filename="dialogmusicdirectories.ui" line="412"/>
         <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dialogmusicdirectories.ui" line="280"/>
+        <source>Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dialogmusicdirectories.ui" line="457"/>
+        <source>Album directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dialogmusicdirectories.ui" line="462"/>
+        <source>Artist/Album directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dialogmusicdirectories.ui" line="467"/>
+        <source>Song directory</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -14,13 +14,14 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.currentDir = None
         self.ui = dialogMusicDirectories.Ui_Dialog()
         self.ui.setupUi(self)
-        self.setWindowTitle("PyZik")
+        #self.setWindowTitle("PyZik")
         self.ui.wRight.setEnabled(False)
 
         self.ui.AddButton.clicked.connect(self.onAddDir)
         self.ui.DirButton.clicked.connect(self.onChangeDir)
         self.ui.Name.textChanged.connect(self.onNameChanged)
         self.ui.comboStyle.currentIndexChanged.connect(self.onChangeGenre)
+        self.ui.comboDirType.currentIndexChanged.connect(self.onChangeDirType)
 
         self.loadDirList()
         self.showGenres()
@@ -52,6 +53,9 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         else:
             self.ui.comboStyle.setCurrentIndex(-1)
 
+        self.ui.comboDirType.setCurrentIndex(md.dirType)
+
+
         self.ui.wRight.setEnabled(True)
 
     def onAddDir(self):
@@ -78,6 +82,12 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         if self.currentDir is not None:
             self.currentDir.styleID = self.ui.comboStyle.currentData()
             print("New Genre ID="+str(self.currentDir.styleID))
+
+
+    def onChangeDirType(self):
+        if self.currentDir is not None:
+            self.currentDir.dirType = self.ui.comboDirType.currentIndex()
+            print("New Dir Type ID="+str(self.currentDir.dirType))
 
 
     def selectDir(self):

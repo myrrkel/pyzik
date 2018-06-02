@@ -53,7 +53,7 @@ class musicDirectory:
     def exploreDirectory(self,progressChanged=None):
             if self.dirType in (0,None) : self.exploreAlbumsDirectory(progressChanged)
             elif self.dirType == 1 : self.exploreArtistsDirectory(progressChanged)
-            elif self.dirType == 2 : print("Dirty directory not managed yet!")
+            elif self.dirType == 2 : print("Song directory not managed yet!")
         
 
     def exploreAlbumsDirectory(self,progressChanged=None):
@@ -78,11 +78,11 @@ class musicDirectory:
                     curAlb.artistID = curArt.artistID
                     curAlb.artistName = curArt.name
 
-                    albumList = self.albumCol.findAlbums(curAlb.title,curAlb.artistID)
+                    albumList = curArt.findAlbums(curAlb.title)
                     if len(albumList)==0:
                         print("Add "+curAlb.title+" in "+curArt.name+" discography. ArtID="+str(curArt.artistID))
                         self.albumCol.addAlbum(curAlb)
-                        curArt.albums.append(curAlb)
+                        curArt.addAlbum(curAlb)
                     #else:
                         #print("Album "+curAlb.title+" already exists for "+curArt.name+" ArtistID="+str(curArt.artistID))
                 else:
@@ -131,11 +131,11 @@ class musicDirectory:
             if curAlb.toVerify == False:
                 #Artist name et album title has been found
 
-                albumList = self.albumCol.findAlbums(curAlb.title,curAlb.artistID)
+                albumList = artist.findAlbums(curAlb.title,curAlb.artistID)
                 if len(albumList)==0:
                     print("Add "+curAlb.title+" in "+artist.name+" discography. ArtID="+str(artist.artistID))
                     self.albumCol.addAlbum(curAlb)
-                    artist.albums.append(curAlb)
+                    artist.addAlbum(curAlb)
 
 
         return 
@@ -145,14 +145,14 @@ class musicDirectory:
         if self.musicDirectoryID > 0 :
             try:
                 c = self.musicBase.db.connection.cursor()
-                sqlInsertMusicDirectory = """    UPDATE musicDirectories SET dirPath=?, dirName=?, styleID=?
+                sqlInsertMusicDirectory = """    UPDATE musicDirectories SET dirPath=?, dirName=?, styleID=?, dirType=?
                             WHERE musicDirectoryID=?;
                               """
-                print("save idStyle="+str(self.styleID))
                 c.execute(sqlInsertMusicDirectory,
                     (self.dirPath,
                     self.dirName,
                     self.styleID,
+                    self.dirType,
                     self.musicDirectoryID))
 
                 self.musicBase.db.connection.commit()
