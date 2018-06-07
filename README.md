@@ -1,5 +1,7 @@
 # pyzik
 
+<img src="https://raw.githubusercontent.com/myrrkel/pyzik/master/screeenshot.png" alt="pyzik" />
+
 Pyzik explores big music directories like:
 
                                     ./Rock/Artist1 - [1965] - Album1
