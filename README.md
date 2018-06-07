@@ -1,6 +1,6 @@
 # pyzik
 
-<img src="https://raw.githubusercontent.com/myrrkel/pyzik/master/screeenshot.png" alt="pyzik" />
+<img src="https://raw.githubusercontent.com/myrrkel/pyzik/master/screenshot.png" alt="pyzik" />
 
 Pyzik explores big music directories like:
 
