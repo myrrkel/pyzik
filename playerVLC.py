@@ -179,6 +179,22 @@ class playerVLC:
     def stop(self):
         self.mediaPlayer.stop()
 
+    def play(self):
+        self.mediaPlayer.play()
+
+    def pause(self):
+        self.mediaPlayer.pause()
+
+    def next(self):
+        self.mediaListPlayer.next()
+
+    def previous(self):
+        self.mediaListPlayer.previous()
+
+
+    def mute(self,value):
+        self.mediaPlayer.audio_set_mute(value)
+
 
     def pauseMediaList(self):
         self.mediaListPlayer.pause()
@@ -223,8 +239,12 @@ class playerVLC:
         return self.mediaPlayer.set_position(pos)
 
     def getParsedMedia(self,sfile):
-        media = self.instance.media_new(sfile)
+        media = self.getMedia(sfile)
         media.parse()
+        return media
+
+    def getMedia(self,sfile):
+        media = self.instance.media_new(sfile)
         return media
 
     def playFuzzyGroovy(self):

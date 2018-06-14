@@ -407,9 +407,15 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         i=0
         for track in self.currentAlbum.tracks:
             self.ui.tableWidgetTracks.insertRow(i)
+
             titleItem = QtWidgets.QTableWidgetItem(track.title)
             titleItem.setFlags(titleItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.ui.tableWidgetTracks.setItem(i,0,titleItem)
+
+            durationItem = QtWidgets.QTableWidgetItem(track.getDurationText())
+            durationItem.setFlags(durationItem.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.ui.tableWidgetTracks.setItem(i,1,durationItem)
+
             i+=1
 
     def showAlbumCover(self,result):

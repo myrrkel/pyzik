@@ -23,5 +23,17 @@
         <source>Duration</source>
         <translation>Duración</translation>
     </message>
+    <message>
+        <source>Pause</source>
+        <translation>Pausa</translation>
+    </message>
+    <message>
+        <source>Previous</source>
+        <translation>Precedente</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation>Siguiente</translation>
+    </message>
 </context>
 </TS>

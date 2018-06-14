@@ -159,7 +159,7 @@ class album:
 
             else:
                 #No synthaxe does match with this dirname
-                print("No matching: "+salb+" for Dir: "+self.dirPath)
+                print("No matching: "+salb+" for currentDir: "+self.dirPath)
                 self.toVerify = True
 
 
@@ -174,19 +174,19 @@ class album:
 
         if(subdir==""): 
             self.tracks = []
-            dir = self.getAlbumDir()
+            currentDir = self.getAlbumDir()
         else:
-            dir = os.path.join(self.getAlbumDir(),subdir)
+            currentDir = os.path.join(self.getAlbumDir(),subdir)
 
 
-        files = os.listdir(dir)
+        files = os.listdir(currentDir)
         files.sort()
         
         nTrack = track("","")
     
         for file in files:
             if self.doStop: break
-            if os.path.isdir(os.path.join(dir,str(file))):
+            if os.path.isdir(os.path.join(currentDir,str(file))):
                 #file is a directory
                 self.getTracks(player,os.path.join(subdir,str(file)))
             else:
@@ -194,7 +194,7 @@ class album:
                 for ext in musicFilesExtension:
                     if fnmatch.fnmatch(file.lower(), '*.'+ext):
                         #if subdir != "":
-                        #    sfile = os.path.join(dir,file)
+                        #    sfile = os.path.join(currentDir,file)
                         #else:
                         #    sfile = str(file)
                         sfile = str(file)
@@ -202,7 +202,7 @@ class album:
                         if("." in sfile):
                             filename, file_extension = os.path.splitext(sfile)
                             itrack = track(filename,file_extension,subdir)
-                            #itrack.extractDataFromTags(player,dir)
+                            #itrack.extractDataFromTags(player,currentDir)
                             itrack.getMutagenTags(self.getAlbumDir())
                             itrack.parentAlbum = self
                             self.tracks.append(itrack)
@@ -215,28 +215,28 @@ class album:
 
         if(subdir==""): 
             self.images = []
-            dir = self.getAlbumDir()
+            currentDir = self.getAlbumDir()
         else:
-            dir = os.path.join(self.getAlbumDir(),subdir)
+            currentDir = os.path.join(self.getAlbumDir(),subdir)
 
-        files = os.listdir(dir)
+        files = os.listdir(currentDir)
         
 
         files.sort()
     
         for file in files:
             if self.doStop: break
-            if os.path.isdir(os.path.join(dir,str(file))):
+            if os.path.isdir(os.path.join(currentDir,str(file))):
                 #file is a directory
                 self.getImages(os.path.join(subdir,file))
             else:
                 if file == "cover":
-                    os.rename(os.path.join(dir,file),os.path.join(dir,"cover.jpg"))
+                    os.rename(os.path.join(currentDir,file),os.path.join(currentDir,"cover.jpg"))
 
 
                 for ext in imageFilesExtension:
                     if fnmatch.fnmatch(file.lower(), '*.'+ext):
-                        sfile = os.path.join(dir,file)
+                        sfile = os.path.join(currentDir,file)
                         self.images.append(sfile)
                         break
 

@@ -7,14 +7,43 @@ from track import *
 
 from vlc import EventType as vlcEventType
 
+orange = QtGui.QColor(216, 119, 0)
+white = QtGui.QColor(255, 255, 255)
+
 
 
 class playerControlsWidget(QtWidgets.QWidget):
-    def __init__(self, parent=None):
-        QtWidgets.QWidget.__init__(self, parent=parent)
+    
+    player = None
+
+    def __init__(self,parent=None):
+        QtWidgets.QWidget.__init__(self,parent=parent)
+
         lay = QtWidgets.QHBoxLayout(self)
-        for i in range(4):
-            lay.addWidget(QtWidgets.QPushButton("{}".format(i)))
+        
+        _translate = QtCore.QCoreApplication.translate
+
+        self.pauseButton = QtWidgets.QPushButton(_translate("playlist", "Pause"))
+        lay.addWidget(self.pauseButton)
+
+        self.previousButton = QtWidgets.QPushButton(_translate("playlist", "Previous"))
+        lay.addWidget(self.previousButton)
+
+        self.nextButton = QtWidgets.QPushButton(_translate("playlist", "Next"))
+        lay.addWidget(self.nextButton)
+
+        self.volumeSlider = QtWidgets.QSlider()
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.volumeSlider.sizePolicy().hasHeightForWidth())
+        self.volumeSlider.setSizePolicy(sizePolicy)
+        self.volumeSlider.setMinimumSize(QtCore.QSize(80, 0))
+        self.volumeSlider.setMaximum(100)
+        self.volumeSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.volumeSlider.setObjectName("volumeSlider")
+        lay.addWidget(self.volumeSlider)
+
 
 class playlistWidget(QtWidgets.QDialog):
     
@@ -43,9 +72,15 @@ class playlistWidget(QtWidgets.QDialog):
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
         self.setSizePolicy(sizePolicy)
-        self.resize(400,250)
+        self.resize(550,400)
         self.initTableWidgetTracks()
+
         self.playerControls = playerControlsWidget()
+        self.playerControls.pauseButton.clicked.connect(self.onPause)
+        self.playerControls.previousButton.clicked.connect(self.player.previous)
+        self.playerControls.nextButton.clicked.connect(self.player.next)
+        self.playerControls.volumeSlider.setValue(self.player.getVolume())
+        self.playerControls.volumeSlider.valueChanged.connect(self.setVolume)
 
         
         self.timeSlider = QtWidgets.QSlider(self)
@@ -69,14 +104,22 @@ class playlistWidget(QtWidgets.QDialog):
         self.player.mpEnventManager.event_attach(vlcEventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
 
         layout.addWidget(self.tableWidgetTracks)
-        layout.addWidget(self.playerControls)
         layout.addWidget(self.timeSlider)
+        layout.addWidget(self.playerControls)
+        
 
         self.tableWidgetTracks.cellDoubleClicked.connect(self.changeTrack)
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("playlist", "Playlist"))
 
         #self.resizeEvent = self.onResize
+
+    def onPause(self,event):
+        self.player.pause()
+
+    
+    def setVolume(self, volume):
+        self.player.setVolume(volume)
 
     def setIsTimeSliderDown(self,event=None):
         print('setIsTimeSliderDown')
@@ -97,7 +140,7 @@ class playlistWidget(QtWidgets.QDialog):
 
         self.tableWidgetTracks = QtWidgets.QTableWidget(self)
 
-        self.tableWidgetTracks.setGeometry(0, 0, 400, 250)
+        self.tableWidgetTracks.setGeometry(0, 0, 550, 300)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
@@ -146,7 +189,7 @@ class playlistWidget(QtWidgets.QDialog):
 
         hHeader.resizeSections(QtWidgets.QHeaderView.ResizeToContents)
         hHeader.setSectionResizeMode(QtWidgets.QHeaderView.Interactive)
-        hHeader.hideSection(3)
+        #hHeader.hideSection(3)
         hHeader.hideSection(4)
 
 
@@ -184,6 +227,10 @@ class playlistWidget(QtWidgets.QDialog):
                 albumItem = QtWidgets.QTableWidgetItem(track.getAlbumTitle())
                 albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i,2,albumItem)
+
+                durationItem = QtWidgets.QTableWidgetItem(track.getDurationText())
+                durationItem.setFlags(durationItem.flags() ^ QtCore.Qt.ItemIsEditable)
+                self.tableWidgetTracks.setItem(i,3,durationItem)
             else:
                 print("radioName="+track.radioName)
                 artistItem = QtWidgets.QTableWidgetItem(track.getTrackTitle())
@@ -229,8 +276,6 @@ class playlistWidget(QtWidgets.QDialog):
     def setCurrentTrack(self,title=""):
 
         if self.player is None : return 
-        orange = QtGui.QColor(216, 119, 0)
-        white = QtGui.QColor(255, 255, 255)
 
         index = self.player.getCurrentIndexPlaylist()
         print("setCurrentTrack:"+str(index))
@@ -270,6 +315,7 @@ class playlistWidget(QtWidgets.QDialog):
             self.tableWidgetTracks.item(i,0).setForeground(color)
             self.tableWidgetTracks.item(i,1).setForeground(color)
             self.tableWidgetTracks.item(i,2).setForeground(color)
+            self.tableWidgetTracks.item(i,3).setForeground(color)
 
             if i == index: self.tableWidgetTracks.setCurrentItem(item)
 

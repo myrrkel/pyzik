@@ -18,7 +18,8 @@ class streamObserver(QThread):
     doStop = False
     previousTitle = ""
     currentVolume = 0
-    player = None   
+    player = None
+
 
 
     def run(self):
@@ -34,6 +35,7 @@ class streamObserver(QThread):
                     title = self.player.getNowPlaying()
                     #print("streamObserver="+title+" "+self.player.getTitle()+" "+self.player.getArtist())
                     if title != "NO_META":
+                        self.player.mute(False)
                         if (self.previousTitle != title):
                             #if self.previousTitle == "Advert Killed!":
                             #    self.player.setVolume(self.currentVolume)
@@ -48,24 +50,24 @@ class streamObserver(QThread):
 
 
                         if self.previousTitle == "Advert Killed!":
+                            self.player.stop()
                             time.sleep(2)
-                            self.previousTitle = ""
+                            self.player.play()
                             
-                        if self.previousTitle != "":
-                            self.previousTitle = ""
+                        #elif self.previousTitle != "":
+                        else:
+                            #It's an advert!
+                            
+                            self.player.mute(True)
                             self.player.stop()
                             msg = "Advert Killed!"
+                            self.previousTitle = msg
                             print(msg)
                             self.titleChanged.emit(msg)
                             time.sleep(2)
-                            self.player.playMediaList()
-                # else:
+                            self.player.play()
 
-                #     title = self.player.getTitle()
-                #     if title != "NO_TITLE":
-                #         msg = title + " - " + self.player.getArtist()
-                #         self.previousTitle = title
-                #         self.titleChanged.emit(msg)
+
 
             time.sleep(1)
 

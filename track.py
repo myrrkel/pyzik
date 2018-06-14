@@ -4,10 +4,12 @@
 import re
 import os
 import sys
+import time
 import platform
 from mutagen.id3 import ID3
 from mutagen.id3 import ID3NoHeaderError
 from mutagen import MutagenError
+from mutagen import File
 from urllib.parse import unquote
 
 class track:
@@ -23,6 +25,7 @@ class track:
         self.year = 0
         self.trackNumber = 0
         self.position = 0
+        self.duration = 0 # in ms
         self.fileName = fileName
         self.subPath = subPath
         self.path = ""
@@ -65,6 +68,15 @@ class track:
             return self.radioName
         else:
             return self.title
+
+    def getDuration(self,player,dir):
+        media = player.getParsedMedia(os.path.join(dir,self.getFilePathInAlbumDir()))
+        self.duration = media.get_duration()
+        print('Duration='+str(self.duration))
+        return self.duration
+
+    def getDurationText(self):
+        return time.strftime('%H:%M:%S', time.gmtime(self.duration))
         
 
 
@@ -96,14 +108,21 @@ class track:
                 trackPath = os.path.join(dir,self.getFilePathInAlbumDir())
             else:
                 trackPath = os.path.join(self.path,self.getFilePathInAlbumDir())
-
+            '''
             audio = ID3(trackPath)
+            '''
+            #self.artist = str(audio.tags.get('TPE1'))
+            #self.album = str(audio.tags.get('TALB'))
+            #self.title = str(audio.tags.get("TIT2"))
+            #self.year = str(audio.tags.get("TDRC"))
+            #self.trackNumber = str(audio.get("TRCK"))
+            
 
-            self.artist = str(audio.get('TPE1'))
-            self.album = str(audio.get('TALB'))
-            self.title = str(audio.get("TIT2"))
-            self.year = str(audio.get("TDRC"))
-            self.trackNumber = str(audio.get("TRCK"))
+            audio = File(trackPath)
+            #["title"]
+            self.duration = audio.info.length
+            self.title = str(audio.tags.get("TIT2"))
+            self.duration = audio.info.length
 
             if self.title in("","None"): self.title = self.fileName
 
