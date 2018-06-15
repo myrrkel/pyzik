@@ -311,6 +311,7 @@ class playlistWidget(QtWidgets.QDialog):
             item.setFont(f)
             self.tableWidgetTracks.item(i,1).setFont(f)
             self.tableWidgetTracks.item(i,2).setFont(f)
+            self.tableWidgetTracks.item(i,3).setFont(f)
 
             self.tableWidgetTracks.item(i,0).setForeground(color)
             self.tableWidgetTracks.item(i,1).setForeground(color)
