@@ -241,6 +241,10 @@ class playlistWidget(QtWidgets.QDialog):
                 albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i,2,albumItem)
 
+                durationItem = QtWidgets.QTableWidgetItem(track.getDurationText())
+                durationItem.setFlags(durationItem.flags() ^ QtCore.Qt.ItemIsEditable)
+                self.tableWidgetTracks.setItem(i,3,durationItem)
+
             i+=1
 
     def showMediaList(self):
