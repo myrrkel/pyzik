@@ -6,6 +6,8 @@ from database import *
 from albumCollection import *
 from artistCollection import *
 from musicDirectoryCollection import *
+from musicGenres import *
+
 import os.path
 from PyQt5 import QtWidgets, QtGui, QtCore
 
@@ -16,7 +18,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 class musicBase:
     """
     musicBase manage albums and artists from
-     the music directories to the database'''
+    the music directories to the database'''
     """
 
     def __init__(self):
@@ -25,28 +27,46 @@ class musicBase:
         self.albumCol = albumCollection(self)
         self.artistCol = artistCollection(self)
         self.musicDirectoryCol = musicDirectoryCollection(self)
-        self.styleIDList = []
+        self.genres = musicGenres()
+        self.styleIDSet = set()
+        self.availableGenres = set()
 
     def loadMusicBase(self):
         self.db.initMemoryDB()
         self.musicDirectoryCol.loadMusicDirectories()
         self.artistCol.loadArtists()
         self.albumCol.loadAlbums()
+        self.addGenresDirToAlbums()
         self.addAlbumsToArtists()
 
+        self.styleIDSet = self.musicDirectoryCol.getStyleIDSet()
+
+        print("styleID=",self.styleIDSet)
+        self.availableGenres = self.genres.getAvailableGenresFormIDSet(self.styleIDSet)
 
 
+    def addGenresDirToAlbums(self):
+        for alb in self.albumCol.albums:
+            md = self.musicDirectoryCol.getMusicDirectory(alb.musicDirectoryID)
+            if md.styleID >=0:
+                alb.addStyle({md.styleID})
 
     def addAlbumsToArtists(self):
         for alb in self.albumCol.albums:
-            artist_found = self.artistCol.getArtistByID(alb.artistID)
-            if artist_found is not None:
-                alb.artistName = artist_found.name
-                artist_found.albums.append(alb)
+            artistFound = self.artistCol.getArtistByID(alb.artistID)
+            if artistFound is not None:
+                alb.artistName = artistFound.name
+                artistFound.addStyle(alb.styleIDSet)
+                artistFound.albums.append(alb)
 
 
     def emptyDatas(self):
         self.artistCol.artists = []
         self.albumCol.albums = []
+
+
+
+
+
 
         

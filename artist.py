@@ -3,19 +3,46 @@
 
 from operator import itemgetter, attrgetter
 import random
+from album import *
 
-
+def getSimplestTitle(title,char):
+    simple =  title.replace(".",char)
+    simple = simple.replace(",",char)
+    simple = simple.replace("'",char)
+    simple = simple.replace("!",char)
+    simple = simple.replace(":",char)
+    simple = simple.replace("?",char)
+    simple = simple.replace("  "," ")
+    simple = simple.strip()
+    return simple
+    
+def getAlternativeTitle(title):
+    alter = title
+    if " & " in alter:
+        alter = alter.replace(" & "," And ")
+    else:
+        alter = alter.replace(" And "," & ")
+    return alter
 
 
 def filterAlbumsByTitle(seq, title):
+    alb = album()
+    titleFormated = alb.formatTitle(title)
+    titleSimplifiedSpace = getSimplestTitle(titleFormated," ")
+    titleSimplified = getSimplestTitle(titleFormated,"")
+    titleAlternative = getAlternativeTitle(titleFormated)
+
     for el in seq:
-        if el.title == el.formatTitle(title):
+        if el.title == titleFormated:
             yield el
             break
-        elif el.title.replace("And","&") == el.formatTitle(title):
+        elif getSimplestTitle(el.title,"") == titleSimplified:
             yield el
             break
-        elif el.title == el.formatTitle(title).replace("And","&"):
+        elif el.title == titleAlternative:
+            yield el
+            break
+        elif getAlternativeTitle(el.title) == titleFormated:
             yield el
             break
 
@@ -29,6 +56,7 @@ class artist:
         self.name = self.formatName(name)
         self.countryID = 0
         self.categoryID = 0
+        self.styleIDSet = set()
         self.albums = []
         self.itemListViewArtist = None
         
@@ -56,6 +84,9 @@ class artist:
 
     def addAlbum(self,alb):
         self.albums.append(alb)
+
+    def addStyle(self,idSet):
+        self.styleIDSet = self.styleIDSet.union(idSet)
 
 
     def findAlbums(self,stitle):

@@ -10,6 +10,7 @@ from album import *
 
 
 def filterByTitle_ArtistID(seq, title, art_id):
+    ''' not used any more, use artist.findAlbum() '''
     for el in seq:
         if el.artistID == art_id:
             if el.title == el.formatTitle(title):

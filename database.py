@@ -28,6 +28,8 @@ class database():
         self.createTableAlbums()
         self.createTableMusicDirectories()
         self.createTablePlayHistoryAlbum()
+        self.createTablePlayHistoryTrack()
+        self.createTablePlayHistoryRadio()
 
 
     def initMemoryDB(self):
@@ -100,10 +102,10 @@ class database():
         except sqlite3.Error as e:
                 print(e)
 
-    def dropTable(self, table_name):
-        """ drop the table called table_name
+    def dropTable(self, tableName):
+        """ drop the table called tableName
         """
-        self.execSQLWithoutResult("DROP TABLE "+table_name)
+        self.execSQLWithoutResult("DROP TABLE "+tableName)
 
 
     def dropAllTables(self):
@@ -111,11 +113,11 @@ class database():
         self.dropTable("albums")
         #self.dropTable("musicDirectories")
 
-    def insertLine(self, insert_sql):
-        """ insert a line from the insert_sql statement """
+    def insertLine(self, insertSQL):
+        """ insert a line from the insertSQL statement """
         try:
             c = self.connection.cursor()
-            c.execute(insert_sql)
+            c.execute(insertSQL)
             self.connection.commit()
             return c.lastrowid
         except sqlite3.Error as e:
@@ -163,15 +165,35 @@ class database():
 
 
 
-
     def createTablePlayHistoryAlbum(self):
         sqlCreateTablePlayHistoryAlbum = """ CREATE TABLE IF NOT EXISTS playHistoryAlbum (
-                                        HistoryAlbumID integer PRIMARY KEY,
+                                        historyAlbumID integer PRIMARY KEY,
                                         albumID integer,
-                                        PlayDate datetime,
+                                        playDate datetime,
                                         FOREIGN KEY (albumID) REFERENCES albums(albumID)
                                     ); """
         self.execSQLWithoutResult(sqlCreateTablePlayHistoryAlbum)
+
+
+    def createTablePlayHistoryTrack(self):
+        sqlCreateTablePlayHistoryTrack = """ CREATE TABLE IF NOT EXISTS playHistoryTrack (
+                                        historyTrackID integer PRIMARY KEY,
+                                        albumID integer,
+                                        fileName text NOT NULL,
+                                        playDate datetime,
+                                        FOREIGN KEY (albumID) REFERENCES albums(albumID)
+                                    ); """
+        self.execSQLWithoutResult(sqlCreateTablePlayHistoryTrack)
+
+
+    def createTablePlayHistoryRadio(self):
+        sqlCreateTablePlayHistoryRadio = """ CREATE TABLE IF NOT EXISTS playHistoryRadio (
+                                        historyRadioID integer PRIMARY KEY,
+                                        radioName text NOT NULL,
+                                        title text,
+                                        playDate datetime
+                                    ); """
+        self.execSQLWithoutResult(sqlCreateTablePlayHistoryRadio)
 
 
 

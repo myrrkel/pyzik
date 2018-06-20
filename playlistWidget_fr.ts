@@ -35,5 +35,9 @@
         <source>Next</source>
         <translation>Suivant</translation>
     </message>
+    <message>
+        <source>All styles</source>
+        <translation>Tous les styles</translation>
+    </message>
 </context>
 </TS>

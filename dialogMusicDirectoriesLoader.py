@@ -3,6 +3,7 @@ import dialogMusicDirectories
 from musicBase import * 
 from musicDirectory import *
 from database import *
+from musicGenres import *
 
 
 
@@ -46,7 +47,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.ui.wRight.setEnabled(True)
         self.ui.Name.setText(md.dirName)
         self.ui.DirEdit.setText(md.dirPath)
-        print("Current Style ID="+str(md.styleID))
+        print("Current Style ID=",md.styleID)
         if md.styleID is not None :
             i = self.ui.comboStyle.findData(md.styleID)
             self.ui.comboStyle.setCurrentIndex(i)
@@ -81,13 +82,13 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
     def onChangeGenre(self):
         if self.currentDir is not None:
             self.currentDir.styleID = self.ui.comboStyle.currentData()
-            print("New Genre ID="+str(self.currentDir.styleID))
+            print("New Genre ID=",self.currentDir.styleID)
 
 
     def onChangeDirType(self):
         if self.currentDir is not None:
             self.currentDir.dirType = self.ui.comboDirType.currentIndex()
-            print("New Dir Type ID="+str(self.currentDir.dirType))
+            print("New Dir Type ID=",self.currentDir.dirType)
 
 
     def selectDir(self):
@@ -112,7 +113,8 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
     def showGenres(self):
 
         i=0
-        for genre in genresTab:
+        
+        for genre in self.musicBase.genres.genresTabSorted:
             self.ui.comboStyle.addItem(genre[0],genre[1])
             i+=1
 

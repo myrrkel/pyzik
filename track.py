@@ -26,6 +26,7 @@ class track:
         self.trackNumber = 0
         self.position = 0
         self.duration = 0 # in ms
+        self.bitrate = 0
         self.fileName = fileName
         self.subPath = subPath
         self.path = ""
@@ -41,8 +42,14 @@ class track:
     def printInfos(self):
         print("TrackTitle: "+self.title)
 
+    def getName(self):
+        return self.fileName+self.extension
+
     def getFilePathInAlbumDir(self):
-        return os.path.join(self.subPath,self.fileName+self.extension)
+        return os.path.join(self.subPath,self.getName())
+
+    def getFilePath(self):
+        return os.path.join(self.path,self.getFilePathInAlbumDir())
 
     def setPath(self,path):
         self.subPath = ""
@@ -72,7 +79,7 @@ class track:
     def getDuration(self,player,dir):
         media = player.getParsedMedia(os.path.join(dir,self.getFilePathInAlbumDir()))
         self.duration = media.get_duration()
-        print('Duration='+str(self.duration))
+        print("Duration=",self.duration)
         return self.duration
 
     def getDurationText(self):
@@ -81,15 +88,17 @@ class track:
 
 
     def extractDataFromTagsWithVLC(self,player,dir):
-        """Extract ID3 metadatas with VLC"""
+        """
+        Extract ID3 metadatas with VLC
+        Using Mutagen is faster
+        """
         parsedMedia = player.getParsedMedia(os.path.join(dir,self.getFilePathInAlbumDir()))
         self.title = parsedMedia.get_meta(0)
         self.album = parsedMedia.get_meta(4)
         self.artist = parsedMedia.get_meta(1)
         self.trackNumber = parsedMedia.get_meta(5)
         self.year = parsedMedia.get_meta(8)
-        print("title="+self.title+" album="+str(self.album)+" artist="+str(self.artist)+" N°"+str(self.trackNumber))
-
+        
 
     def setMRL(self,mrl):
         self.mrl = mrl
@@ -102,27 +111,17 @@ class track:
 
 
     def getMutagenTags(self,dir=""):
-        """Extract ID3 metadatas with Mutagen"""
+        """Extract ID3 metadatas, bitrate and duration with Mutagen"""
         try:
             if dir != "":
                 trackPath = os.path.join(dir,self.getFilePathInAlbumDir())
             else:
-                trackPath = os.path.join(self.path,self.getFilePathInAlbumDir())
-            '''
-            audio = ID3(trackPath)
-            '''
-            #self.artist = str(audio.tags.get('TPE1'))
-            #self.album = str(audio.tags.get('TALB'))
-            #self.title = str(audio.tags.get("TIT2"))
-            #self.year = str(audio.tags.get("TDRC"))
-            #self.trackNumber = str(audio.get("TRCK"))
-            
+                trackPath = self.getFilePath()
 
             audio = File(trackPath)
-            #["title"]
-            self.duration = audio.info.length
             self.title = str(audio.tags.get("TIT2"))
             self.duration = audio.info.length
+            self.bitrate = audio.info.bitrate
 
             if self.title in("","None"): self.title = self.fileName
 
@@ -133,6 +132,36 @@ class track:
             print("MutagenError:"+trackPath)
 
         except:
-            print("exception mutagen: "+str(sys.exc_info()[0]))
+            print("exception mutagen: ",sys.exc_info()[0])
+
+        if self.title in("","None"): self.title = self.fileName
+
+
+    def getMutagenFastTags(self,dir=""):
+        """Extract ID3 metadatas with Mutagen"""
+        try:
+            if dir != "":
+                trackPath = os.path.join(dir,self.getFilePathInAlbumDir())
+            else:
+                trackPath = self.getFilePath()
+            
+            audio = ID3(trackPath)
+            
+            self.artist = str(audio.tags.get('TPE1'))
+            self.album = str(audio.tags.get('TALB'))
+            self.title = str(audio.tags.get("TIT2"))
+            self.year = str(audio.tags.get("TDRC"))
+            self.trackNumber = str(audio.get("TRCK"))
+            
+            if self.title in("","None"): self.title = self.fileName
+
+        except ID3NoHeaderError:
+            print("No tags")
+
+        except MutagenError:
+            print("MutagenError:"+trackPath)
+
+        except:
+            print("exception mutagen: ",sys.exc_info()[0])
 
         if self.title in("","None"): self.title = self.fileName

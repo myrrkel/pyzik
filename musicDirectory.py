@@ -68,23 +68,28 @@ class musicDirectory:
             progressChanged.emit(iProgress)
             curAlb = album(dir)
             curAlb.musicDirectoryID = self.musicDirectoryID
+            curAlb.musicDirectory = self
             curAlb.dirPath = dir
 
             if curAlb.toVerify == False:
                 #Artist name et album title has been found
                 curArt = self.artistCol.getArtist(curAlb.artistName)
-                #GetArtist return a new artist if if doesn't exists in artistsCol
+                #GetArtist return a new artist if it doesn't exists in artistsCol
                 if curArt:                
                     curAlb.artistID = curArt.artistID
                     curAlb.artistName = curArt.name
 
                     albumList = curArt.findAlbums(curAlb.title)
                     if len(albumList)==0:
-                        print("Add "+curAlb.title+" in "+curArt.name+" discography. ArtID="+str(curArt.artistID))
+                        print("Add "+curAlb.title+" in "+curArt.name+" discography. ArtID=",curArt.artistID)
                         self.albumCol.addAlbum(curAlb)
                         curArt.addAlbum(curAlb)
-                    #else:
-                        #print("Album "+curAlb.title+" already exists for "+curArt.name+" ArtistID="+str(curArt.artistID))
+                    else:
+                        for alb in albumList:
+                            if alb.getAlbumDir() != curAlb.getAlbumDir():
+                                print("Album "+curAlb.title+" already exists and may be a duplicate. Artist="+curArt.name+" ArtistID=",curArt.artistID)
+                                print("Alb = ",alb.getAlbumDir())
+                                print("curAlb = ",curAlb.getAlbumDir())
                 else:
                     print("No artist for "+dir)
 
@@ -133,7 +138,7 @@ class musicDirectory:
 
                 albumList = artist.findAlbums(curAlb.title,curAlb.artistID)
                 if len(albumList)==0:
-                    print("Add "+curAlb.title+" in "+artist.name+" discography. ArtID="+str(artist.artistID))
+                    print("Add "+curAlb.title+" in "+artist.name+" discography. ArtID=",artist.artistID)
                     self.albumCol.addAlbum(curAlb)
                     artist.addAlbum(curAlb)
 

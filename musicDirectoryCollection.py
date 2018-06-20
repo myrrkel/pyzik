@@ -66,3 +66,8 @@ class musicDirectoryCollection:
 
 
     
+    def getStyleIDSet(self):
+        styleIDSet = set()
+        for md in self.musicDirectories:
+            styleIDSet.add(md.styleID)
+        return styleIDSet

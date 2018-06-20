@@ -22,7 +22,7 @@ def main():
 
     #Load & Set the DarkStyleSheet
     app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
-    print("Available system styles: "+str(QtWidgets.QStyleFactory.keys()))
+    print("Available system styles: ",QtWidgets.QStyleFactory.keys())
     #myStyle = QtWidgets.QStyleFactory.create('Windows')
     #app.setStyle(myStyle)
 

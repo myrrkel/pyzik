@@ -254,7 +254,7 @@ class playlistWidget(QtWidgets.QDialog):
         for i in range(self.mediaList.count()):
             m = self.mediaList.item_at_index(i)
             if m is None:
-                print("BREAK ShowMediaList media="+str(i))
+                print("BREAK ShowMediaList media=",i)
                 break
             
             mrl = m.get_mrl()
@@ -282,7 +282,7 @@ class playlistWidget(QtWidgets.QDialog):
         if self.player is None : return 
 
         index = self.player.getCurrentIndexPlaylist()
-        print("setCurrentTrack:"+str(index))
+        print("setCurrentTrack:",index)
 
         trk = self.player.getCurrentTrackPlaylist()
 
@@ -291,7 +291,7 @@ class playlistWidget(QtWidgets.QDialog):
 
             item = self.tableWidgetTracks.item(i,0)
             if item is None:
-                print("BREAK setCurrentTrack item="+str(i))
+                print("BREAK setCurrentTrack item=",i)
                 break
 
             if trk is not None and trk.radioName != "" and i==index:

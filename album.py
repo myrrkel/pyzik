@@ -88,8 +88,10 @@ class album:
         self.toVerify = False
         self.tracks = []
         self.images = []
+        self.styleIDSet = set()
         self.doStop = False
         self.musicDirectory = None
+
 
         if dirname!="":
             self.extractDataFromDirName()
@@ -279,9 +281,12 @@ class album:
     def getTracksFilePath(self):
         files =[]
         for track in self.tracks:
-            files.append(os.path.join(self.getAlbumDir(),track.getFilePathInAlbumDir()))
+            files.append(track.getFilePath())
         return files
         
+
+    def addStyle(self,idSet):
+        self.styleIDSet = self.styleIDSet.union(idSet)
 
 
 if __name__ == '__main__':

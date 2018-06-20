@@ -55,6 +55,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.initAlbumTableWidget()
         self.initTrackTableWidget()
 
+        self.showGenres()
         self.showArtists()
         self.loadSettings()
         
@@ -76,11 +77,13 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         #self.ui.nextButton.clicked.connect(self.player.mediaListPlayer.next)
         self.ui.openDirButton.clicked.connect(self.onOpenDir)
         #self.ui.previousButton.clicked.connect(self.player.mediaListPlayer.previous)
-        self.ui.searchEdit.textChanged.connect(self.onSearchChange)
+        self.ui.searchEdit.textChanged.connect(self.filterArtists)
         self.ui.searchEdit.returnPressed.connect(self.onSearchEnter)
         self.ui.tableWidgetAlbums.selectionModel().currentRowChanged.connect(self.onAlbumChange)
-        self.ui.tableWidgetAlbums.customContextMenuRequested.connect(self.handleHeaderMenu)
-        
+        self.ui.tableWidgetAlbums.customContextMenuRequested.connect(self.handleHeaderAlbumsMenu)
+
+        self.ui.comboBoxStyle.currentIndexChanged.connect(self.filterArtists)
+                
         self.shortcutRandomAlbum = QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+R"), self)
         self.shortcutRandomAlbum.activated.connect(self.ramdomAlbum)
 
@@ -223,17 +226,49 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.showArtists()
         self.initAlbumTableWidget()
 
-    def handleHeaderMenu(self, pos):
+    def handleHeaderAlbumsMenu(self, pos):
         print('column(%d)' % self.ui.tableWidgetAlbums.horizontalHeader().logicalIndexAt(pos))
         menu = QtWidgets.QMenu()
         menu.addAction('Add')
         menu.addAction('Delete')
         menu.exec(QtGui.QCursor.pos())
 
+    '''
+    Genre comboBox functions
+    '''
 
+    def showGenres(self):
+        _translate = QtCore.QCoreApplication.translate
+        self.ui.comboBoxStyle.addItem(_translate("playlist","All styles"),-1)
+
+        idSet = self.musicBase.musicDirectoryCol.getStyleIDSet()
+        for genre in self.musicBase.genres.getAvailableGenresFormIDSet(idSet):
+            self.ui.comboBoxStyle.addItem(genre[0],genre[1])
+        
+
+
+    def onChangeGenre(self):
+        genreID = self.ui.comboBoxStyle.currentData()
+            
+
+        if(genreID<0):
+            self.setHiddenAllArtistItem(False)
+        else:
+            self.setHiddenAllArtistItem(True)
+            
+            model = self.ui.listViewArtists.model()
+            for i in range(model.rowCount()):
+                itemArt = model.item(i)
+                if genreID in itemArt.artist.styleIDSet:
+                    i = itemArt.row()
+                    self.ui.listViewArtists.setRowHidden(i,False)
+
+
+            
     '''
     Artist listView functions
     '''
+
     def showArtists(self):
         # Add artists in the QListView
         model = QtGui.QStandardItemModel(self.ui.listViewArtists)
@@ -292,7 +327,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             selModel.select(item.index(), QtCore.QItemSelectionModel.Select)
             self.showArtist(item.artist)
 
-    def onSearchChange(self,item):
+    def onSearchChange(self,event):
         #When user write a search, shows only matching artists
         search = self.ui.searchEdit.text()
 
@@ -305,6 +340,25 @@ class MainWindowLoader(QtWidgets.QMainWindow):
                 i = item.row()
                 self.ui.listViewArtists.setRowHidden(i,False)
 
+
+    def filterArtists(self):
+        genreID = self.ui.comboBoxStyle.currentData()
+        search = self.ui.searchEdit.text()    
+
+        if(genreID<0 and search==""):
+            self.setHiddenAllArtistItem(False)
+        else:
+            #self.setHiddenAllArtistItem(True)
+            
+            model = self.ui.listViewArtists.model()
+            for i in range(model.rowCount()):
+                itemArt = model.item(i)
+                i = itemArt.row()
+                if ((genreID in itemArt.artist.styleIDSet or genreID<0)
+                and (search.upper() in itemArt.artist.name.upper() or search=="")): 
+                    self.ui.listViewArtists.setRowHidden(i,False)
+                else:
+                    self.ui.listViewArtists.setRowHidden(i,True)
 
 
     '''
@@ -325,7 +379,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def onAlbumChange(self,item):
         if item.row() >= 0:
-            print("OnAlbumChange:"+str(item.row()))
+            print("OnAlbumChange:",item.row())
             albumIDSel = self.ui.tableWidgetAlbums.item(item.row(),2).text()
             alb = self.musicBase.albumCol.getAlbum(albumIDSel)
             if(alb.albumID != 0):
