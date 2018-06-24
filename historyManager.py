@@ -32,7 +32,7 @@ class historyManager():
 
     def insertAlbumHistory(self,albumID):
         self.database.createConnection()
-        print("historyAlbum=",albumID)
+        #print("historyAlbum=",albumID)
 
         try:
             c = self.database.connection.cursor()
@@ -41,7 +41,7 @@ class historyManager():
                           """
             c.execute(sqlInsertHistory,(albumID,))
             self.database.connection.commit()
-            print("New historyAlbum:",c.lastrowid)
+            #print("New historyAlbum:",c.lastrowid)
 
         except sqlite3.Error as e:
             print(e)
@@ -55,7 +55,7 @@ class historyManager():
         """
         
         for rowHisto in self.database.getSelect(req):
-            print('AlbumID={0} Date={1}'.format(rowHisto[0], rowHisto[1]))
+            #print('AlbumID={0} Date={1}'.format(rowHisto[0], rowHisto[1]))
             histo = historyItem(rowHisto[1])
             histo.initHistoAlbum(rowHisto[0])
             histo.data.getAlbum(self.musicBase)
@@ -64,7 +64,7 @@ class historyManager():
 
     def insertTrackHistory(self,albumID,fileName):
         self.database.createConnection()
-        print("historyTrack="+fileName+" albID=",albumID)
+        #print("historyTrack="+fileName+" albID=",albumID)
 
         try:
             c = self.database.connection.cursor()
@@ -73,7 +73,7 @@ class historyManager():
                           """
             c.execute(sqlInsertHistory,(albumID,fileName))
             self.database.connection.commit()
-            print("New historyTrack:",c.lastrowid)
+            #print("New historyTrack:",c.lastrowid)
 
         except sqlite3.Error as e:
             print(e)
@@ -87,7 +87,7 @@ class historyManager():
         """
         
         for rowHisto in self.database.getSelect(req):
-            print('AlbumID={0} file={1} Date={2}'.format(rowHisto[0], rowHisto[1], rowHisto[2]))
+            #print('AlbumID={0} file={1} Date={2}'.format(rowHisto[0], rowHisto[1], rowHisto[2]))
             histo = historyItem(rowHisto[2])
             histo.initHistoTrack(rowHisto[0],rowHisto[1])
             histo.data.getAlbum(self.musicBase)
@@ -97,7 +97,7 @@ class historyManager():
 
     def insertRadioHistory(self,radioName,title):
         self.database.createConnection()
-        print("historyRadio="+radioName+" title=",title)
+        #print("historyRadio="+radioName+" title=",title)
 
         try:
             c = self.database.connection.cursor()
@@ -106,7 +106,7 @@ class historyManager():
                           """
             c.execute(sqlInsertHistory,(radioName,title))
             self.database.connection.commit()
-            print("New historyRadio:",c.lastrowid)
+            #print("New historyRadio:",c.lastrowid)
 
         except sqlite3.Error as e:
             print(e)
@@ -120,14 +120,14 @@ class historyManager():
         """
         
         for rowHisto in self.database.getSelect(req):
-            print('radioName={0} title={1} Date={2}'.format(rowHisto[0], rowHisto[1], rowHisto[2]))
+            #print('radioName={0} title={1} Date={2}'.format(rowHisto[0], rowHisto[1], rowHisto[2]))
             histo = historyItem(rowHisto[2])
             histo.initHistoRadio(rowHisto[0],rowHisto[1])
             self.log.append(histo)
 
 
     def printAll(self):
-        print("*** ALL HISTORY ***")
+        #print("*** ALL HISTORY ***")
         for histo in self.log:
             histo.printData()
 
@@ -138,9 +138,9 @@ class historyManager():
 if __name__ == "__main__":
     from musicBase import *
 
-    print('musicBase')
+    #print('musicBase')
     mb = musicBase()
-    print('loadMusicBase')
+    #print('loadMusicBase')
     mb.loadMusicBase(False)
 
     history = historyManager(mb)
