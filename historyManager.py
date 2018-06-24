@@ -37,7 +37,7 @@ class historyManager():
         try:
             c = self.database.connection.cursor()
             sqlInsertHistory = """    INSERT INTO playHistoryAlbum (albumID, playDate)
-                                VALUES (?,datetime());
+                                VALUES (?,datetime('now','localtime'));
                           """
             c.execute(sqlInsertHistory,(albumID,))
             self.database.connection.commit()
@@ -69,7 +69,7 @@ class historyManager():
         try:
             c = self.database.connection.cursor()
             sqlInsertHistory = """    INSERT INTO playHistoryTrack (albumID, fileName, playDate)
-                                VALUES (?,?,datetime());
+                                VALUES (?,?,datetime('now','localtime'));
                           """
             c.execute(sqlInsertHistory,(albumID,fileName))
             self.database.connection.commit()
@@ -102,7 +102,7 @@ class historyManager():
         try:
             c = self.database.connection.cursor()
             sqlInsertHistory = """    INSERT INTO playHistoryRadio (radioName, title, playDate)
-                                VALUES (?,?,datetime());
+                                VALUES (?,?,datetime('now','localtime'));
                           """
             c.execute(sqlInsertHistory,(radioName,title))
             self.database.connection.commit()

@@ -78,11 +78,17 @@ class albumCollection:
         return resAlb
 
 
-    def getRandomAlbum(self):
-        nbAlbum = len(self.albums)
+    def getRandomAlbum(self,styleID=-1):
+
+        if styleID > -1:
+            albList = [alb for alb in self.albums if styleID in alb.styleIDSet]
+        else:
+            albList = self.albums
+
+        nbAlbum = len(albList)
         if(nbAlbum > 0):
             irandom  = random.randint(0, nbAlbum-1)
-            resAlb = self.albums[irandom]
+            resAlb = albList[irandom]
             return resAlb
 
 

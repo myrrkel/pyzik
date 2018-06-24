@@ -36,16 +36,18 @@ So you can find your music quickly, and play it.
     python3 ./pyzik/pyzik.py
 
 # News
-
-+ Playing albums with vlc module
++ Played tracks and radio history
++ Music style filter
 + Playing radio without ads
-+ Displaying covers art
 + Reading tags
 + Language selector
++ Displaying covers art
+
 
 # Coming soon:
-+ Music style filter
-+ Correction folder's name acording ID3 tags
++ Full screen mode with current track and cover art.
++ Radio manager
++ Correcting folder's name acording ID3 tags
 + Collecting cover art and track list from web
 
 

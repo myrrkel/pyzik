@@ -144,7 +144,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         
 
     def ramdomAlbum(self):
-        alb = self.musicBase.albumCol.getRandomAlbum()
+        styleID = self.ui.comboBoxStyle.currentData()
+        alb = self.musicBase.albumCol.getRandomAlbum(styleID)
         self.currentAlbum = alb
         if alb is not None:
             print("RamdomAlb="+alb.title)
@@ -613,6 +614,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         
 
     def closeEvent(self, event):
+        if self.playList is not None: self.playList.close()
+        if self.histoWidget is not None: self.histoWidget.close()
         self.saveSettings()
 
     def saveSettings(self):

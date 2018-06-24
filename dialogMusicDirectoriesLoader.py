@@ -96,8 +96,9 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         return sDir
 
     def closeEvent(self,event):
-        print("close")
-        #self.musicBase.db.saveMemoryToDisc()
+        if self.currentDir is not None :
+            self.currentDir.musicBase = self.musicBase
+            self.currentDir.updateMusicDirectoryDB()
 
 
     def loadDirList(self):
