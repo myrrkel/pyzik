@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file './qt/mainwindow.ui'
 #
-# Created by: PyQt5 UI code generator 5.10
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -277,7 +277,7 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.h_mainWidget, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 854, 27))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 854, 22))
         self.menuBar.setObjectName("menuBar")
         self.menuConfiguration = QtWidgets.QMenu(self.menuBar)
         self.menuConfiguration.setObjectName("menuConfiguration")
@@ -313,6 +313,8 @@ class Ui_MainWindow(object):
         self.actionLanguageSpanish.setObjectName("actionLanguageSpanish")
         self.actionLanguageGerman = QtWidgets.QAction(MainWindow)
         self.actionLanguageGerman.setObjectName("actionLanguageGerman")
+        self.actionHistory = QtWidgets.QAction(MainWindow)
+        self.actionHistory.setObjectName("actionHistory")
         self.menuLanguage.addAction(self.actionLanguageEnglish)
         self.menuLanguage.addAction(self.actionLanguageFrench)
         self.menuLanguage.addAction(self.actionLanguageSpanish)
@@ -324,6 +326,7 @@ class Ui_MainWindow(object):
         self.menuRadios.addAction(self.actionFuzzyGroovy)
         self.menuAlbums.addAction(self.actionRandom_album)
         self.menuTools.addAction(self.actionPlaylist)
+        self.menuTools.addAction(self.actionHistory)
         self.menuBar.addAction(self.menuConfiguration.menuAction())
         self.menuBar.addAction(self.menuAlbums.menuAction())
         self.menuBar.addAction(self.menuRadios.menuAction())
@@ -368,6 +371,7 @@ class Ui_MainWindow(object):
         self.actionLanguageFrench.setText(_translate("MainWindow", "French"))
         self.actionLanguageSpanish.setText(_translate("MainWindow", "Spanish"))
         self.actionLanguageGerman.setText(_translate("MainWindow", "German"))
+        self.actionHistory.setText(_translate("MainWindow", "History"))
 
 
 if __name__ == "__main__":

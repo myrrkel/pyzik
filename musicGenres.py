@@ -56,10 +56,10 @@ class musicGenres:
 
 
     def getAvailableGenresFormIDSet(self,idSet):
-        self.printGenres()
+        #self.printGenres()
         availableGenres = set()
         for id in idSet:
             availableGenres.add(self.genresTab[id])
-            print("availableGenres=",self.genresTab[id])
+            #print("availableGenres=",self.genresTab[id])
 
         return availableGenres

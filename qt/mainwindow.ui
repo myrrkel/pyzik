@@ -616,7 +616,7 @@
      <x>0</x>
      <y>0</y>
      <width>854</width>
-     <height>27</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuConfiguration">
@@ -654,6 +654,7 @@
      <string>Tools</string>
     </property>
     <addaction name="actionPlaylist"/>
+    <addaction name="actionHistory"/>
    </widget>
    <addaction name="menuConfiguration"/>
    <addaction name="menuAlbums"/>
@@ -709,6 +710,11 @@
   <action name="actionLanguageGerman">
    <property name="text">
     <string>German</string>
+   </property>
+  </action>
+  <action name="actionHistory">
+   <property name="text">
+    <string>History</string>
    </property>
   </action>
  </widget>

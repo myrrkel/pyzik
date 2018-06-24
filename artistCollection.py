@@ -97,8 +97,8 @@ class artistCollection:
             art.printInfos()
 
     def loadArtists(self):
-        for row_art in self.musicBase.db.getSelect("SELECT artistID, name FROM artists ORDER BY name"):
-            art = artist(row_art[1],row_art[0])
+        for rowArt in self.musicBase.db.getSelect("SELECT artistID, name FROM artists ORDER BY name"):
+            art = artist(rowArt[1],rowArt[0])
             self.addArtist(art)
 
 

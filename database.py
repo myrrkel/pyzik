@@ -113,6 +113,11 @@ class database():
         self.dropTable("albums")
         #self.dropTable("musicDirectories")
 
+    def dropHistoryTables(self):
+        self.dropTable("playHistoryAlbum")
+        self.dropTable("playHistoryTrack")
+        self.dropTable("playHistoryRadio")
+
     def insertLine(self, insertSQL):
         """ insert a line from the insertSQL statement """
         try:
@@ -253,3 +258,12 @@ class database():
             print("InsertArtist error="+str(e))
 
         return artist.artistID
+
+
+
+
+
+
+if __name__ == '__main__':
+    db = database()
+    #db.dropHistoryTables()

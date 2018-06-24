@@ -2,10 +2,10 @@
 #ajouter le nom du nouveau fichier de traduction:    
 #		TRANSLATIONS += pyzik_en.ts pyzik_es.ts pyzik_fr.ts
 
-
+cd ..
 lrelease ./qt/*.ts
-lrelease ./*.ts
-cp ./qt/*.qm ./
+lrelease ./translation/*.ts
+cp ./qt/*.qm ./translation/
 
 
 

@@ -58,9 +58,9 @@ class albumCollection:
 
 
     def loadAlbums(self):
-        for row_alb in self.musicBase.db.getSelect("SELECT albumID, title, year, dirPath, artistID, musicDirectoryID FROM albums"):
+        for rowAlb in self.musicBase.db.getSelect("SELECT albumID, title, year, dirPath, artistID, musicDirectoryID FROM albums"):
             alb = album("")
-            alb.load(row_alb)
+            alb.load(rowAlb)
             self.addAlbum(alb)
 
 

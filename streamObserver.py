@@ -1,9 +1,11 @@
 import sys
-
+import time
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
 
-import time
+from historyManager import *
+
+
 
 
 class streamObserver(QThread):
@@ -19,6 +21,7 @@ class streamObserver(QThread):
     previousTitle = ""
     currentVolume = 0
     player = None
+    history = historyManager()
 
 
 

@@ -110,7 +110,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="666"/>
+        <location filename="mainwindow.ui" line="667"/>
         <source>Music directories</source>
         <translation>Dossiers musicaux</translation>
     </message>
@@ -120,7 +120,7 @@
         <translation type="obsolete">Explorer les répertoires</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="676"/>
+        <location filename="mainwindow.ui" line="677"/>
         <source>Delete database</source>
         <translation>Vider la base de données</translation>
     </message>
@@ -160,17 +160,17 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="671"/>
+        <location filename="mainwindow.ui" line="672"/>
         <source>Explore music directories</source>
         <translation>Explorer les répertoires musicaux</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="681"/>
+        <location filename="mainwindow.ui" line="682"/>
         <source>Random album</source>
         <translation>Album au hasard</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="686"/>
+        <location filename="mainwindow.ui" line="687"/>
         <source>Fuzzy and Groovy Rock Radio</source>
         <translation>Fuzzy and Groovy Rock Radio</translation>
     </message>
@@ -195,29 +195,34 @@
         <translation>Outils</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="691"/>
+        <location filename="mainwindow.ui" line="692"/>
         <source>Playlist</source>
         <translation>Liste de lecture</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="696"/>
+        <location filename="mainwindow.ui" line="697"/>
         <source>English</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="701"/>
+        <location filename="mainwindow.ui" line="702"/>
         <source>French</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="706"/>
+        <location filename="mainwindow.ui" line="707"/>
         <source>Spanish</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="711"/>
+        <location filename="mainwindow.ui" line="712"/>
         <source>German</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="717"/>
+        <source>History</source>
+        <translation>Historique</translation>
     </message>
 </context>
 </TS>

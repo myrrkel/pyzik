@@ -55,6 +55,7 @@ class playlistWidget(QtWidgets.QDialog):
 
     def __init__(self,player):
         QtWidgets.QDialog.__init__(self)
+        self.setWindowFlags(QtCore.Qt.Window)
         self.player = player
         self.mediaList = self.player.mediaList
 
@@ -109,8 +110,8 @@ class playlistWidget(QtWidgets.QDialog):
         
 
         self.tableWidgetTracks.cellDoubleClicked.connect(self.changeTrack)
-        _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("playlist", "Playlist"))
+
+        self.retranslateUi()
 
         #self.resizeEvent = self.onResize
 
@@ -162,22 +163,6 @@ class playlistWidget(QtWidgets.QDialog):
         item = QtWidgets.QTableWidgetItem()
         self.tableWidgetTracks.setHorizontalHeaderItem(4, item)
 
-        _translate = QtCore.QCoreApplication.translate
-        item = self.tableWidgetTracks.horizontalHeaderItem(0)
-        item.setText(_translate("playlist", "Title"))
-        item = self.tableWidgetTracks.horizontalHeaderItem(1)
-        item.setText(_translate("playlist", "Artist"))
-        item = self.tableWidgetTracks.horizontalHeaderItem(2)
-        item.setText(_translate("playlist", "Album"))
-        item = self.tableWidgetTracks.horizontalHeaderItem(3)
-        item.setText(_translate("playlist", "Duration"))
-        item = self.tableWidgetTracks.horizontalHeaderItem(4)
-        item.setText(_translate("playlist", "ID"))
-
-        #self.tableWidgetTracks.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
-        #self.tableWidgetTracks.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
-        #self.tableWidgetTracks.setRowCount(0)
-
         self.initColumnHeaders()
 
 
@@ -207,6 +192,13 @@ class playlistWidget(QtWidgets.QDialog):
         item.setText(_translate("playlist", "Duration"))
         item = self.tableWidgetTracks.horizontalHeaderItem(4)
         item.setText(_translate("playlist", "ID"))
+
+
+        self.playerControls.pauseButton.setText(_translate("playlist", "Pause"))
+        self.playerControls.previousButton.setText(_translate("playlist", "Previous"))
+        self.playerControls.nextButton.setText(_translate("playlist", "Next"))
+
+        self.setWindowTitle(_translate("playlist", "Playlist"))
 
     def showAlbumTracks(self,tracks):      
         self.tableWidgetTracks.setStyleSheet("selection-background-color: black;selection-color: white;") 
@@ -258,7 +250,7 @@ class playlistWidget(QtWidgets.QDialog):
                 break
             
             mrl = m.get_mrl()
-            print("ShowMediaList mrl="+mrl)
+            #print("ShowMediaList mrl="+mrl)
             t = self.player.getTrackFromMrl(mrl)
             if t is None:
                 t = track()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3translation
 # -*- coding: utf-8 -*-
 
 
@@ -14,7 +14,7 @@ class translators():
 
     def installTranslator(self,filename,locale):
         translator = QtCore.QTranslator(self.app)
-        translator.load('{0}_{1}.qm'.format(filename,locale))
+        translator.load('./translation/{0}_{1}.qm'.format(filename,locale))
         self.installedTranslators.append(translator)
         self.app.installTranslator(translator)
 
@@ -28,3 +28,4 @@ class translators():
     def installTranslators(self,locale):
         self.installTranslator("pyzik",locale)
         self.installTranslator("playlistWidget",locale)
+        self.installTranslator("historyWidget",locale)

@@ -126,7 +126,7 @@ class playerVLC:
         self.radioMode = False
         i=0
         for trk in album.tracks:
-            path = trk.getFilePath()
+            path = trk.getFullFilePath()
             media = self.instance.media_new(path)
         
             self.mediaList.add_media(media)
@@ -141,7 +141,7 @@ class playerVLC:
     def addAlbum(self,album):
           
         for trk in album.tracks:
-            path = trk.getFilePath()
+            path = trk.getFullFilePath()
             media = self.instance.media_new(path)
             trk.radioName = ""
         

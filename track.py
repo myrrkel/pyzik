@@ -51,6 +51,9 @@ class track:
     def getFilePath(self):
         return os.path.join(self.path,self.getFilePathInAlbumDir())
 
+    def getFullFilePath(self):
+        return os.path.join(self.path,self.getName())
+
     def setPath(self,path):
         self.subPath = ""
         self.path = os.path.dirname(path)
@@ -119,11 +122,11 @@ class track:
                 trackPath = self.getFilePath()
 
             audio = File(trackPath)
-            self.title = str(audio.tags.get("TIT2"))
-            self.duration = audio.info.length
-            self.bitrate = audio.info.bitrate
+            
+            if audio.tags:
+                self.title = str(audio.tags.get("TIT2"))
 
-            if self.title in("","None"): self.title = self.fileName
+            #if self.title in("","None"): self.title = self.fileName
 
         except ID3NoHeaderError:
             print("No tags")
@@ -135,6 +138,8 @@ class track:
             print("exception mutagen: ",sys.exc_info()[0])
 
         if self.title in("","None"): self.title = self.fileName
+        self.duration = audio.info.length
+        self.bitrate = audio.info.bitrate
 
 
     def getMutagenFastTags(self,dir=""):
@@ -146,14 +151,12 @@ class track:
                 trackPath = self.getFilePath()
             
             audio = ID3(trackPath)
-            
-            self.artist = str(audio.tags.get('TPE1'))
-            self.album = str(audio.tags.get('TALB'))
-            self.title = str(audio.tags.get("TIT2"))
-            self.year = str(audio.tags.get("TDRC"))
-            self.trackNumber = str(audio.get("TRCK"))
-            
-            if self.title in("","None"): self.title = self.fileName
+            if audio.tags:
+                self.artist = str(audio.tags.get('TPE1'))
+                self.album = str(audio.tags.get('TALB'))
+                self.title = str(audio.tags.get("TIT2"))
+                self.year = str(audio.tags.get("TDRC"))
+                self.trackNumber = str(audio.get("TRCK"))
 
         except ID3NoHeaderError:
             print("No tags")

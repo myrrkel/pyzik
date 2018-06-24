@@ -14,10 +14,11 @@ from streamObserver import *
 from albumThread import *
 from musicBaseThread import *
 from playlistWidget import *
+from historyWidget import *
 
 
 
-def open_file(filename):
+def openFile(filename):
     if sys.platform == "win32":
         os.startfile(filename)
     else:
@@ -39,6 +40,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.settings = QtCore.QSettings('pyzik', 'pyzik')
         self.firstShow = True
         self.playList = None
+        self.histoWidget = None
         self.currentArtist = artist("",0)
         self.currentAlbum = album("")
 
@@ -68,6 +70,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.actionDelete_database.triggered.connect(self.onMenuDeleteDatabase)
         self.ui.actionFuzzyGroovy.triggered.connect(self.onPlayFuzzyGroovy)
         self.ui.actionPlaylist.triggered.connect(self.showPlaylist)
+        self.ui.actionHistory.triggered.connect(self.showHistory)
         self.ui.actionLanguageSpanish.triggered.connect(functools.partial(self.changeLanguage, 'es'))
         self.ui.actionLanguageFrench.triggered.connect(functools.partial(self.changeLanguage, 'fr'))
         self.ui.actionLanguageEnglish.triggered.connect(functools.partial(self.changeLanguage, 'en'))
@@ -487,7 +490,9 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         '''Add tracks in playlist and start playing'''
         
         #self.player.dropMediaList()
+        self.musicBase.history.insertAlbumHistory(alb.albumID)
         self.player.playAlbum(alb)
+        
         self.setVolume(self.getVolumeFromSlider())
         self.showPlaylist(True)
 
@@ -511,14 +516,29 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         if isNew or showOnlyIfNew==False: self.playList.show()
 
 
+    def showHistory(self):
+        if self.histoWidget is None:
+            isNew = True
+            self.histoWidget = historyWidget(self.musicBase)
+             
+        self.histoWidget.show()
+
+
     def onPlayerMediaChangedVLC(self,event):
         print("onPlayerMediaChangedVLC")
+        trk = self.player.getCurrentTrackPlaylist()
+        if not self.player.radioMode:
+            self.musicBase.history.insertTrackHistory(trk.parentAlbum.albumID,trk.getFilePathInAlbumDir())
         if self.playList is not None:
             self.playList.setCurrentTrack()
 
 
     def onPlayerMediaChangedStreamObserver(self,title):
         print("onPlayerMediaChangedStreamObserver="+title)
+
+        trk = self.player.getCurrentTrackPlaylist()
+        
+        self.musicBase.history.insertRadioHistory(trk.radioName,title)
         if self.playList is not None:
             self.playList.setCurrentTrack(title)
 
@@ -538,7 +558,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.player.pauseMediaList()
 
     def onOpenDir(self):
-        open_file(self.currentAlbum.getAlbumDir())
+        openFile(self.currentAlbum.getAlbumDir())
 
 
     '''
@@ -610,6 +630,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.translator.installTranslators(locale)
         self.ui.retranslateUi(self)
         if self.playList is not None: self.playList.retranslateUi()
+        if self.histoWidget is not None: self.histoWidget.retranslateUi()
         
         self.update()
         self.setWindowTitle("PyZik")

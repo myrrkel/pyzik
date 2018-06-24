@@ -204,6 +204,7 @@ class album:
                         if("." in sfile):
                             filename, file_extension = os.path.splitext(sfile)
                             itrack = track(filename,file_extension,subdir)
+                            itrack.path = currentDir
                             #itrack.extractDataFromTags(player,currentDir)
                             itrack.getMutagenTags(self.getAlbumDir())
                             itrack.parentAlbum = self
