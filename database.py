@@ -68,8 +68,11 @@ class database():
     def saveMemoryToDisc(self):
 
         copyfile(self.dataPath,self.dataPath+'k')
-        os.remove(self.dataPath)
+        #os.remove(self.dataPath)
+        
+
         self.createConnection()
+        self.dropAll()
         with self.connection:
             for line in self.memoryConnection.iterdump():
                 if line not in ('BEGIN;', 'COMMIT;'): # let python handle the transactions
@@ -106,6 +109,16 @@ class database():
         """ drop the table called tableName
         """
         self.execSQLWithoutResult("DROP TABLE "+tableName)
+
+
+    def dropAll(self):
+        self.dropTable("artists")
+        self.dropTable("albums")
+        self.dropTable("musicDirectories")
+
+        self.dropTable("playHistoryAlbum")
+        self.dropTable("playHistoryTrack")
+        self.dropTable("playHistoryRadio")
 
 
     def dropAllTables(self):

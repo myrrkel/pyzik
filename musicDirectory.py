@@ -136,7 +136,7 @@ class musicDirectory:
             if curAlb.toVerify == False:
                 #Artist name et album title has been found
 
-                albumList = artist.findAlbums(curAlb.title,curAlb.artistID)
+                albumList = artist.findAlbums(curAlb.title)
                 if len(albumList)==0:
                     print("Add "+curAlb.title+" in "+artist.name+" discography. ArtID=",artist.artistID)
                     self.albumCol.addAlbum(curAlb)

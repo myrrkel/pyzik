@@ -63,7 +63,7 @@ class musicBase:
 
 
     def emptyDatas(self):
-        self.artistCol.artists = []
+        self.artistCol.artists = set()
         self.albumCol.albums = []
 
 

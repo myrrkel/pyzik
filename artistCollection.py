@@ -77,13 +77,8 @@ class artistCollection:
 
     def findSortedArtist(self,art):
         artistList = []
-        try:
-            artFound = self.artists.index(art)
-
-        except ValueError:
-            artFound = None
-        
-        if artFound: artistList.append(artFound)
+        if art in self.artists:
+            artistList.append(art)
 
         return artistList
 
