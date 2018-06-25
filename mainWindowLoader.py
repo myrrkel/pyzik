@@ -225,6 +225,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     
     def onMenuDeleteDatabase(self):
+        self.musicBase.db.createConnection()
         self.musicBase.db.dropAllTables()
         self.musicBase.emptyDatas()
         self.showArtists()
