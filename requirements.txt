@@ -3,3 +3,4 @@ setuptools
 python-vlc
 mutagen
 sortedcontainers
+requests
