@@ -25,6 +25,31 @@ class searchControlsWidget(QtWidgets.QWidget):
         lay.addWidget(self.searchEdit)
         lay.addWidget(self.searchButton)
 
+
+class machineSelectorControlsWidget(QtWidgets.QWidget):
+
+
+    def __init__(self,parent=None,machines=[]):
+        QtWidgets.QWidget.__init__(self,parent=parent)
+        self.checks = []
+        self.lay = QtWidgets.QHBoxLayout(self)
+        
+        for i, machine in enumerate(machines):
+
+            check = QtWidgets.QCheckBox(machine)
+            if i==0: check.setChecked(True)
+            self.checks.append(check)
+            self.lay.addWidget(check)
+
+    def getSelectedMAchines(self):
+        machines = []
+        for check in self.checks:
+            if check.isChecked():
+                print("Checked="+check.text())
+                machines.append(check.text())
+
+        return machines
+
 class playControlsWidget(QtWidgets.QWidget):
 
 
@@ -46,12 +71,13 @@ class playControlsWidget(QtWidgets.QWidget):
 class searchRadioWidget(QtWidgets.QDialog):
     
 
-    def __init__(self,musicBase):
+    def __init__(self,musicBase,player):
         QtWidgets.QDialog.__init__(self)
         self.setWindowFlags(QtCore.Qt.Window)
         
         self.radios = []
         self.radioManager = radioManager(musicBase)
+        self.player = player
         self.searchRadioThread = searchRadioThread()
                 
 
@@ -70,7 +96,7 @@ class searchRadioWidget(QtWidgets.QDialog):
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
         self.setSizePolicy(sizePolicy)
-        self.resize(550,400)
+        self.resize(600,400)
         self.initTableWidgetItems()
 
         self.searchControls = searchControlsWidget()
@@ -79,7 +105,10 @@ class searchRadioWidget(QtWidgets.QDialog):
         self.playControls = playControlsWidget()
         self.playControls.playButton.clicked.connect(self.onSearch)
 
+        self.machineSelectorControls = machineSelectorControlsWidget(None,self.radioManager.machines)
+
         layout.addWidget(self.searchControls)
+        layout.addWidget(self.machineSelectorControls)
         layout.addWidget(self.tableWidgetItems)
         layout.addWidget(self.playControls)
 
@@ -97,6 +126,7 @@ class searchRadioWidget(QtWidgets.QDialog):
         self.searchRadioThread.searchCompleted.connect(self.onSearchComplete)
         self.wProgress.progressClosed.connect(self.searchRadioThread.stop)
         self.searchRadioThread.search = search
+        self.searchRadioThread.machines = self.machineSelectorControls.getSelectedMAchines()
         self.searchRadioThread.start()
 
 
@@ -110,7 +140,7 @@ class searchRadioWidget(QtWidgets.QDialog):
 
         self.tableWidgetItems = QtWidgets.QTableWidget(self)
 
-        self.tableWidgetItems.setGeometry(0, 0, 550, 300)
+        self.tableWidgetItems.setGeometry(0, 0, 600, 300)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
@@ -184,7 +214,7 @@ class searchRadioWidget(QtWidgets.QDialog):
             durationItem = QtWidgets.QTableWidgetItem(item.stream)
             durationItem.setFlags(durationItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetItems.setItem(i,3,durationItem)
-          
+            durationItem.connect.
 
             i+=1
 
@@ -194,16 +224,19 @@ class searchRadioWidget(QtWidgets.QDialog):
 if __name__ == "__main__":
     import sys
     from musicBase import *
+    from playerVLC import *
 
     print('musicBase')
     mb = musicBase()
     print('loadMusicBase')
     mb.loadMusicBase(False)
 
+    player = playerVLC()
+
 
     app = QtWidgets.QApplication(sys.argv)
 
-    searchWidget = searchRadioWidget(mb)
+    searchWidget = searchRadioWidget(mb,player)
 
     searchWidget.show()
     sys.exit(app.exec_())

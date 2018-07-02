@@ -11,47 +11,21 @@ import json
 from collections import namedtuple
 
 from radio import *
+from globalConstants import *
 
-
-
-def keyToString(key):
-    skey = ""
-    for c in key:
-        if c.isdigit():
-            n = chr(97+int(c))
-            skey = skey+n.upper()
-        else:
-            skey = skey+c
-
-    return skey
-
-def stringToKey(s):
-    """
-    Get your oun dev api key at https://dirble.com/users/sign_in
-    """
-    key = ""
-
-    for c in s:
-        if c == c.upper():
-            n = ord(c.lower())-97
-            key = key+str(n)
-        else:
-            key = key+c
-
-    return key
 
 
 def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
 
 def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
 
-dirbleAPIKey = stringToKey("HcFaFbIfICffGcffFGHGCCBddD")
-darAPIKey = stringToKey("EDJFIIGAFA")
+
 
 class radioManager():
     """radioManager search and save web radio streams"""
     def __init__(self,musicBase=None):
         self.musicBase = musicBase
+        self.machines = ['RadioBrowser','Dirble','Dar','Tunein']
     
             
 
@@ -111,8 +85,8 @@ class radioManager():
             url = "http://www.dar.fm/uberstationurlxml.php?station_id="+str(id)+"&partner_token="+darAPIKey
             print(url)
             r = requests.get(url)
-            #print(r.text.encode("utf-8"))
-            tree = ET.fromstring(r.text)
+            rtxt = r.text.encode('utf-8')
+            tree = ET.fromstring(rtxt)
 
         except requests.exceptions.HTTPError as err:  
             print(err)
@@ -146,7 +120,7 @@ class radioManager():
 
     def searchRadioBrower(self,search):
         """
-		
+        Get radios from RadioBrowser open-source project
         http://www.radio-browser.info/webservice
         """ 
         rbRadios = []
@@ -236,3 +210,6 @@ if __name__ == "__main__":
         rad.printData()
 
 
+
+    
+ 
