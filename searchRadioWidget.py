@@ -4,6 +4,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from radioManager import *
+from searchRadioThread import *
+from progressWidget import *
 
 
 class searchControlsWidget(QtWidgets.QWidget):
@@ -23,6 +25,23 @@ class searchControlsWidget(QtWidgets.QWidget):
         lay.addWidget(self.searchEdit)
         lay.addWidget(self.searchButton)
 
+class playControlsWidget(QtWidgets.QWidget):
+
+
+    def __init__(self,parent=None):
+        QtWidgets.QWidget.__init__(self,parent=parent)
+
+        lay = QtWidgets.QHBoxLayout(self)
+        
+        _translate = QtCore.QCoreApplication.translate
+
+
+        self.playButton = QtWidgets.QPushButton("Play")
+        lay.addWidget(self.playButton)
+
+        self.addButton = QtWidgets.QPushButton("Add")
+        lay.addWidget(self.addButton)
+
 
 class searchRadioWidget(QtWidgets.QDialog):
     
@@ -30,8 +49,10 @@ class searchRadioWidget(QtWidgets.QDialog):
     def __init__(self,musicBase):
         QtWidgets.QDialog.__init__(self)
         self.setWindowFlags(QtCore.Qt.Window)
-     
+        
+        self.radios = []
         self.radioManager = radioManager(musicBase)
+        self.searchRadioThread = searchRadioThread()
                 
 
         self.initUI()
@@ -55,18 +76,35 @@ class searchRadioWidget(QtWidgets.QDialog):
         self.searchControls = searchControlsWidget()
         self.searchControls.searchButton.clicked.connect(self.onSearch)
 
+        self.playControls = playControlsWidget()
+        self.playControls.playButton.clicked.connect(self.onSearch)
 
-        layout.addWidget(self.tableWidgetItems)
         layout.addWidget(self.searchControls)
+        layout.addWidget(self.tableWidgetItems)
+        layout.addWidget(self.playControls)
 
         self.retranslateUi()
         
 
 
     def onSearch(self,event):
-        radios = self.radioManager.search(self.searchControls.searchEdit.text())
-        self.showItems(radios)
+        #self.radios = self.radioManager.search()
+        search = self.searchControls.searchEdit.text()
+
+
+        self.wProgress = progressWidget()
+        self.searchRadioThread.searchProgress.connect(self.wProgress.setValue)
+        self.searchRadioThread.searchCurrentMachine.connect(self.wProgress.setDirectoryText)
+        self.searchRadioThread.searchCompleted.connect(self.onSearchComplete)
+        self.wProgress.progressClosed.connect(self.searchRadioThread.stop)
+        self.searchRadioThread.search = search
+        self.searchRadioThread.start()
+
+
+    def onSearchComplete(self,event):
+        self.showItems(self.searchRadioThread.resRadios)
         self.initColumnHeaders()
+        self.wProgress.close()
 
 
     def initTableWidgetItems(self):
@@ -114,13 +152,13 @@ class searchRadioWidget(QtWidgets.QDialog):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         item = self.tableWidgetItems.horizontalHeaderItem(0)
-        item.setText(_translate("searchRadio", "Date"))
+        item.setText(_translate("searchRadio", "Name"))
         item = self.tableWidgetItems.horizontalHeaderItem(1)
-        item.setText(_translate("searchRadio", "Title"))
+        item.setText(_translate("searchRadio", "Country"))
         item = self.tableWidgetItems.horizontalHeaderItem(2)
-        item.setText(_translate("searchRadio", "Artist"))
+        item.setText(_translate("searchRadio", "Genre"))
         item = self.tableWidgetItems.horizontalHeaderItem(3)
-        item.setText(_translate("searchRadio", "Album"))
+        item.setText(_translate("searchRadio", "Stream"))
 
         self.setWindowTitle(_translate("searchRadio", "Search radio"))
         self.searchControls.searchButton.setText(_translate("searchRadio", "Search"))

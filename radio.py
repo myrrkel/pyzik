@@ -13,6 +13,8 @@ class radio:
         self.thumb = ""
         self.categories = []
         self.stream = ""
+        self.streamLink = ""
+        self.searchID = ""
 
 
     def addCategorie(self,cat):
@@ -37,6 +39,16 @@ class radio:
         self.stream = stream
         for cat in dRadio.categories:
             self.addCategorie(cat.title)
+
+    
+    def initWithTuneinRadio(self,tRadio):
+        self.name = tRadio.Title
+        self.country = tRadio.Subtitle
+        self.searchID = tRadio.GuideId
+
+        print(str(tRadio))
+
+        
 
     
     def printData(self):

@@ -118,10 +118,10 @@ class radioManager():
             print(err)
 
         if tree.find("url") is not None:
-            radio_url = tree.find("url").text.strip()
+            radioUrl = tree.find("url").text.strip()
             name = tree.find("callsign").text.strip()
          
-        return (radio_url,name)         
+        return (radioUrl,name)         
 
 
     def searchDirbleRadios(self,search):
@@ -143,10 +143,84 @@ class radioManager():
 
         return dirbleRadios
 
-    def search(self,search):
+
+    def searchRadioBrower(self,search):
+        """
+		
+        http://www.radio-browser.info/webservice
+        """ 
+        rbRadios = []
+        search = urllib.parse.quote_plus(search)
+
+        try:
+            headers = {'User-Agent': 'pyzik 0.1b',}
+            searchUrl = "http://www.radio-browser.info/webservice/json/stations/byname/"+search
+            r = requests.post(searchUrl,headers=headers)
+            print(r.text)
+            tradios = json2obj(r.text)
+        except requests.exceptions.HTTPError as err:  
+            print(err)
+
+        if tradios:
+            for tr in tradios:
+                rad = radio()
+                rad.name = tr.name
+                rad.stream = tr.url
+                rad.coutry = tr.country
+                rad.image = tr.favicon
+                rad.addCategorie(tr.tags)
+                rbRadios.append(rad)
+
+        return rbRadios
+
+
+
+    def searchTuneinRadios(self,search):
+        tuneinRadios = []
+        search = urllib.parse.quote_plus(search)
+
+        try:
+            r = requests.post("https://api.radiotime.com/profiles?query="+search+"&filter=s!&fullTextSearch=true&limit=20&formats=mp3,aac,ogg")
+            tradios = json2obj(r.text)
+        except requests.exceptions.HTTPError as err:  
+            print(err)
+
+        if tradios:
+            for tr in tradios.Items:
+                rad = radio()
+                rad.initWithTuneinRadio(tr)
+                rad.stream = self.getTuneinStream(rad.searchID)
+                tuneinRadios.append(rad)
+
+        return tuneinRadios
+
+
+    def getTuneinStream(self,id):
+
+        try:
+            url = "https://opml.radiotime.com/Tune.ashx?id="+id+"&render=json"
+            print(url)
+            r = requests.get(url)
+            print(r.text)
+            station = json2obj(r.text)
+
+        except requests.exceptions.HTTPError as err:  
+            print(err)
+
+        if hasattr(station,'body'):
+            if len(station.body) > 0:
+                radioUrl = station.body[0].url
+         
+        return radioUrl         
+
+
+
+    def search(self,search,machine=""):
         resRadios = []
-        resRadios = self.searchDarRadios(search)
-        resRadios.extend(self.searchDirbleRadios(search))
+        if machine=="" or machine=="Dar": resRadios.extend(self.searchDarRadios(search))
+        if machine=="" or machine=="Dirble": resRadios.extend(self.searchDirbleRadios(search))
+        if machine=="" or machine=="Tunein": resRadios.extend(self.searchTuneinRadios(search))
+        if machine=="" or machine=="RadioBrowser": resRadios.extend(self.searchRadioBrower(search))
         
 
         return resRadios
@@ -157,8 +231,8 @@ if __name__ == "__main__":
 
     rm = radioManager()
 
-    radios = rm.search("FIP")
+    radios = rm.searchRadioBrower("fip")
     for rad in radios:
         rad.printData()
 
-    rm.getDarStation(110777)
+
