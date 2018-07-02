@@ -88,9 +88,8 @@ class searchRadioWidget(QtWidgets.QDialog):
 
 
     def onSearch(self,event):
-        #self.radios = self.radioManager.search()
-        search = self.searchControls.searchEdit.text()
 
+        search = self.searchControls.searchEdit.text()
 
         self.wProgress = progressWidget()
         self.searchRadioThread.searchProgress.connect(self.wProgress.setValue)

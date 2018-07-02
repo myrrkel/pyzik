@@ -28,7 +28,7 @@ class radio:
         self.name = dRadio.name
         self.country = dRadio.country
 
-        print(str(dRadio))
+        #print(str(dRadio))
 
         if hasattr(dRadio,'image'):
             if len(dRadio.image) > 0:
@@ -46,7 +46,7 @@ class radio:
         self.country = tRadio.Subtitle
         self.searchID = tRadio.GuideId
 
-        print(str(tRadio))
+        #print(str(tRadio))
 
         
 

@@ -46,10 +46,10 @@ class searchRadioThread(QThread):
             i=i+1
             self.searchMachine(machine)
             self.emitProgress(i)
-            if self.doStop: return 1
+            if self.doStop: return
 
         self.searchCompleted.emit(1)
-        return 1
+        return
         
     def searchMachine(self,machine):
         self.emitCurrentMachine(machine)
@@ -58,5 +58,5 @@ class searchRadioThread(QThread):
 
     def stop(self):
         self.doStop = True
-        self.searchCompleted.emit(1)
+
 

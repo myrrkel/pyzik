@@ -78,7 +78,7 @@ class radioManager():
             darStation = radio()
             darStation.stream, darStation.name = self.getDarStation(id)
             darStation.stream = self.getRedirection(darStation.stream)
-            print(darStation.stream)
+            #print(darStation.stream)
             darRadios.append(darStation)
 
         return darRadios                 
@@ -111,7 +111,7 @@ class radioManager():
             url = "http://www.dar.fm/uberstationurlxml.php?station_id="+str(id)+"&partner_token="+darAPIKey
             print(url)
             r = requests.get(url)
-            print(r.text)
+            #print(r.text.encode("utf-8"))
             tree = ET.fromstring(r.text)
 
         except requests.exceptions.HTTPError as err:  
@@ -156,7 +156,7 @@ class radioManager():
             headers = {'User-Agent': 'pyzik 0.1b',}
             searchUrl = "http://www.radio-browser.info/webservice/json/stations/byname/"+search
             r = requests.post(searchUrl,headers=headers)
-            print(r.text)
+            #print(r.text)
             tradios = json2obj(r.text)
         except requests.exceptions.HTTPError as err:  
             print(err)
@@ -201,7 +201,7 @@ class radioManager():
             url = "https://opml.radiotime.com/Tune.ashx?id="+id+"&render=json"
             print(url)
             r = requests.get(url)
-            print(r.text)
+            #print(r.text)
             station = json2obj(r.text)
 
         except requests.exceptions.HTTPError as err:  
