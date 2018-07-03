@@ -15,6 +15,7 @@ class searchControlsWidget(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self,parent=parent)
 
         lay = QtWidgets.QHBoxLayout(self)
+        lay.setContentsMargins(0, 0, 0, 0)
         
         _translate = QtCore.QCoreApplication.translate
 
@@ -26,6 +27,8 @@ class searchControlsWidget(QtWidgets.QWidget):
         lay.addWidget(self.searchButton)
 
 
+
+
 class machineSelectorControlsWidget(QtWidgets.QWidget):
 
 
@@ -33,6 +36,7 @@ class machineSelectorControlsWidget(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self,parent=parent)
         self.checks = []
         self.lay = QtWidgets.QHBoxLayout(self)
+        self.lay.setContentsMargins(0, 0, 0, 9)
         
         for i, machine in enumerate(machines):
 
@@ -57,6 +61,7 @@ class playControlsWidget(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self,parent=parent)
 
         lay = QtWidgets.QHBoxLayout(self)
+        lay.setContentsMargins(0, 0, 0, 0)
         
         _translate = QtCore.QCoreApplication.translate
 
@@ -86,10 +91,13 @@ class searchRadioWidget(QtWidgets.QDialog):
 
         self.initColumnHeaders()
 
+        self.searchControls.searchEdit.setFocus()
+        self.setTabOrder(self.searchControls.searchEdit, self.searchControls.searchButton)
+
     def initUI(self):
 
-        layout = QtWidgets.QVBoxLayout()
-        self.setLayout(layout)
+        self.mainLayout = QtWidgets.QVBoxLayout()
+        self.setLayout(self.mainLayout)
 
         
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
@@ -107,10 +115,10 @@ class searchRadioWidget(QtWidgets.QDialog):
 
         self.machineSelectorControls = machineSelectorControlsWidget(None,self.radioManager.machines)
 
-        layout.addWidget(self.searchControls)
-        layout.addWidget(self.machineSelectorControls)
-        layout.addWidget(self.tableWidgetItems)
-        layout.addWidget(self.playControls)
+        self.mainLayout.addWidget(self.searchControls)
+        self.mainLayout.addWidget(self.machineSelectorControls)
+        self.mainLayout.addWidget(self.tableWidgetItems)
+        self.mainLayout.addWidget(self.playControls)
 
         self.retranslateUi()
         
@@ -129,9 +137,13 @@ class searchRadioWidget(QtWidgets.QDialog):
         self.searchRadioThread.machines = self.machineSelectorControls.getSelectedMAchines()
         self.searchRadioThread.start()
 
+    def onPlayPadio(self,item):
+        self.player.playRadio(self.radios[item])
+
 
     def onSearchComplete(self,event):
-        self.showItems(self.searchRadioThread.resRadios)
+        self.radios = self.searchRadioThread.resRadios
+        self.showItems(self.radios)
         self.initColumnHeaders()
         self.wProgress.close()
 
@@ -161,6 +173,8 @@ class searchRadioWidget(QtWidgets.QDialog):
         self.tableWidgetItems.setHorizontalHeaderItem(3, item)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidgetItems.setHorizontalHeaderItem(4, item)
+
+        self.tableWidgetItems.cellDoubleClicked.connect(self.onPlayPadio)
 
         self.initColumnHeaders()
 
@@ -214,7 +228,6 @@ class searchRadioWidget(QtWidgets.QDialog):
             durationItem = QtWidgets.QTableWidgetItem(item.stream)
             durationItem.setFlags(durationItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetItems.setItem(i,3,durationItem)
-            durationItem.connect.
 
             i+=1
 

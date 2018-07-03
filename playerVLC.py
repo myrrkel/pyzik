@@ -289,7 +289,7 @@ class playerVLC:
         self.playMediaList()
         trk = track()
         trk.radioName = radio.name
-        trk.radioStream = stream
+        trk.radioStream = radio.stream
         print(radio.name+" isPlaying=",self.isPlaying())
 
         #Wait until playing start.
@@ -309,7 +309,7 @@ class playerVLC:
 
         mrl = self.getCurrentMrlPlaylist()
         print(radio.name+" mrl="+mrl)
-        self.tracksDatas.append((mrl,stream,trk))
+        self.tracksDatas.append((mrl,radio.stream,trk))
 
     def getNowPlaying(self):
         m = self.mediaPlayer.get_media()
