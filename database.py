@@ -30,6 +30,7 @@ class database():
         self.createTablePlayHistoryAlbum()
         self.createTablePlayHistoryTrack()
         self.createTablePlayHistoryRadio()
+        self.createTableRadios()
 
 
     def initMemoryDB(self):
@@ -115,6 +116,7 @@ class database():
         self.dropTable("artists")
         self.dropTable("albums")
         self.dropTable("musicDirectories")
+        self.dropTable("radios")
 
         self.dropTable("playHistoryAlbum")
         self.dropTable("playHistoryTrack")
@@ -124,6 +126,7 @@ class database():
     def dropAllTables(self):
         self.dropTable("artists")
         self.dropTable("albums")
+        self.dropTable("radios")
         #self.dropTable("musicDirectories")
 
     def dropHistoryTables(self):
@@ -151,6 +154,19 @@ class database():
                                     categoryID integer
                                 ); """
         self.execSQLWithoutResult(sqlCreateTableArtist)
+
+
+    def createTableRadios(self):
+        sqlCreateTableRadio = """  CREATE TABLE IF NOT EXISTS radios (
+                                    radioID integer PRIMARY KEY,
+                                    name text NOT NULL,
+                                    stream text NOT NULL,
+                                    image text,
+                                    thumb text,
+                                    categoryID integer,
+                                    sortID integer
+                                ); """
+        self.execSQLWithoutResult(sqlCreateTableRadio)
 
 
     def createTableAlbums(self):
@@ -213,6 +229,11 @@ class database():
                                     ); """
         self.execSQLWithoutResult(sqlCreateTablePlayHistoryRadio)
 
+        if not self.columnExistsInTable("playHistoryRadio","radioID"):
+            sqlAddcolumnDirType = """ ALTER TABLE playHistoryRadio ADD COLUMN radioID integer default 0 """
+            self.execSQLWithoutResult(sqlAddcolumnDirType)
+
+
 
 
     def getSelect(self,select_sql,params=None):
@@ -232,8 +253,6 @@ class database():
             if column == col[1] : return True
 
         return False
-
-
 
 
 

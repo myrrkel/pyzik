@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import sqlite3
+
 class radio:
     '''
     Radio Stream
@@ -15,6 +17,7 @@ class radio:
         self.stream = ""
         self.streamLink = ""
         self.searchID = ""
+        self.sortID = 0
 
 
     def addCategorie(self,cat):
@@ -22,6 +25,47 @@ class radio:
 
     def addStream(self,stream):
         self.streams.append(stream)
+
+    def getCategorieID(self):
+        return 0
+
+
+
+    def insertRadio(self,db):
+        db.createConnection()
+
+        try:
+            c = db.connection.cursor()
+            sqlInsertHistory = """    INSERT INTO radios (name, stream)
+                                      VALUES (?,?);
+                          """
+            c.execute(sqlInsertHistory,(self.name,self.stream))
+            db.connection.commit()
+            self.radioID = c.lastrowid
+
+        except sqlite3.Error as e:
+            print(e)
+
+    def saveRadio(self,db):
+        if self.radioID == 0:
+            self.insertRadio(db)
+
+        db.createConnection()
+
+        try:
+            c = db.connection.cursor()
+            sqlInsertHistory = """    UPDATE radios SET name=?, stream=?,image=?,thumb=?,categoryID=?,sortID=?
+                                      WHERE radioID = ?;
+                          """
+            c.execute(sqlInsertHistory,(self.name,self.stream,self.image,self.thumb,self.getCategorieID(),self.sortID,self.radioID,))
+            db.connection.commit()
+
+
+        except sqlite3.Error as e:
+            print(e)
+
+
+
 
 
     def initWithDirbleRadio(self,dRadio,stream):

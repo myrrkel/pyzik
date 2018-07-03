@@ -111,7 +111,8 @@ class searchRadioWidget(QtWidgets.QDialog):
         self.searchControls.searchButton.clicked.connect(self.onSearch)
 
         self.playControls = playControlsWidget()
-        self.playControls.playButton.clicked.connect(self.onSearch)
+        self.playControls.playButton.clicked.connect(self.onClickPlayPadio)
+        self.playControls.addButton.clicked.connect(self.onAddPadio)
 
         self.machineSelectorControls = machineSelectorControlsWidget(None,self.radioManager.machines)
 
@@ -139,6 +140,15 @@ class searchRadioWidget(QtWidgets.QDialog):
 
     def onPlayPadio(self,item):
         self.player.playRadio(self.radios[item])
+
+    def onClickPlayPadio(self,event):
+        i = self.tableWidgetItems.currentRow()
+        self.player.playRadio(self.radios[i])
+
+    def onAddPadio(self,item):
+        i = self.tableWidgetItems.currentRow()
+        rad = self.radios[i]
+        rad.saveRadio(self.radioManager.musicBase.db)
 
 
     def onSearchComplete(self,event):
