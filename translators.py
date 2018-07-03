@@ -29,3 +29,4 @@ class translators():
         self.installTranslator("pyzik",locale)
         self.installTranslator("playlistWidget",locale)
         self.installTranslator("historyWidget",locale)
+        self.installTranslator("customWidget",locale)

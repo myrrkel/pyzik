@@ -220,9 +220,9 @@ class Ui_Dialog(object):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    dialog = QtWidgets.QDialog()
+    Dialog = QtWidgets.QDialog()
     ui = Ui_Dialog()
-    ui.setupUi(dialog)
-    dialog.show()
+    ui.setupUi(Dialog)
+    Dialog.show()
     sys.exit(app.exec_())
 

@@ -15,6 +15,7 @@ from albumThread import *
 from musicBaseThread import *
 from playlistWidget import *
 from historyWidget import *
+from searchRadioWidget import *
 
 
 
@@ -69,6 +70,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.actionRandom_album.triggered.connect(self.ramdomAlbum)
         self.ui.actionDelete_database.triggered.connect(self.onMenuDeleteDatabase)
         self.ui.actionFuzzyGroovy.triggered.connect(self.onPlayFuzzyGroovy)
+        self.ui.actionSearchRadio.triggered.connect(self.onPlaySearchRadio)
         self.ui.actionPlaylist.triggered.connect(self.showPlaylist)
         self.ui.actionHistory.triggered.connect(self.showHistory)
         self.ui.actionLanguageSpanish.triggered.connect(functools.partial(self.changeLanguage, 'es'))
@@ -140,6 +142,15 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.player.playFuzzyGroovy()
         self.showPlaylist(True)
         self.setVolume(self.getVolumeFromSlider())
+
+        
+    def onPlaySearchRadio(self):      
+        if self.playList is None:
+            self.searchRadio = searchRadioWidget(self.musicBase,self.player)
+            #self.searchRadio.trackChanged.connect(self.player.setPlaylistTrack)
+            #self.threadStreamObserver.titleChanged.connect(self.onPlayerMediaChangedStreamObserver)
+            
+        self.searchRadio.show()
 
         
 

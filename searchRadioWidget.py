@@ -215,6 +215,8 @@ class searchRadioWidget(QtWidgets.QDialog):
 
         self.setWindowTitle(_translate("searchRadio", "Search radio"))
         self.searchControls.searchButton.setText(_translate("searchRadio", "Search"))
+        self.playControls.playButton.setText(_translate("searchRadio", "Play"))
+        self.playControls.addButton.setText(_translate("searchRadio", "Add"))
 
     def showItems(self,items):      
         self.tableWidgetItems.setStyleSheet("selection-background-color: black;selection-color: white;") 

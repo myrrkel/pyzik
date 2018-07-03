@@ -74,6 +74,10 @@
         <translation></translation>
     </message>
     <message>
+        <source>Search</source>
+        <translation></translation>
+    </message>
+    <message>
         <source>Name</source>
         <translation></translation>
     </message>

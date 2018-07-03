@@ -71,31 +71,35 @@
     <name>searchRadio</name>
     <message>
         <source>Search radio</source>
-        <translation></translation>
+        <translation>Recherche de radio</translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation>Rechercher</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation></translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <source>Country</source>
-        <translation></translation>
+        <translation>Pays</translation>
     </message>
     <message>
         <source>Genre</source>
-        <translation></translation>
+        <translation>Genre</translation>
     </message>
     <message>
         <source>Stream</source>
-        <translation></translation>
+        <translation>Flux</translation>
     </message>
     <message>
         <source>Play</source>
-        <translation></translation>
+        <translation>Lire</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation></translation>
+        <translation>Ajouter</translation>
     </message>
 </context>
 </TS>

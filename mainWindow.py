@@ -315,6 +315,12 @@ class Ui_MainWindow(object):
         self.actionLanguageGerman.setObjectName("actionLanguageGerman")
         self.actionHistory = QtWidgets.QAction(MainWindow)
         self.actionHistory.setObjectName("actionHistory")
+        self.actionSearchRadio = QtWidgets.QAction(MainWindow)
+        self.actionSearchRadio.setObjectName("actionSearchRadio")
+        self.actionRadioList = QtWidgets.QAction(MainWindow)
+        self.actionRadioList.setObjectName("actionRadioList")
+        self.actionRadioManager = QtWidgets.QAction(MainWindow)
+        self.actionRadioManager.setObjectName("actionRadioManager")
         self.menuLanguage.addAction(self.actionLanguageEnglish)
         self.menuLanguage.addAction(self.actionLanguageFrench)
         self.menuLanguage.addAction(self.actionLanguageSpanish)
@@ -324,6 +330,9 @@ class Ui_MainWindow(object):
         self.menuConfiguration.addAction(self.actionDelete_database)
         self.menuConfiguration.addAction(self.menuLanguage.menuAction())
         self.menuRadios.addAction(self.actionFuzzyGroovy)
+        self.menuRadios.addAction(self.actionSearchRadio)
+        self.menuRadios.addAction(self.actionRadioList)
+        self.menuRadios.addAction(self.actionRadioManager)
         self.menuAlbums.addAction(self.actionRandom_album)
         self.menuTools.addAction(self.actionPlaylist)
         self.menuTools.addAction(self.actionHistory)
@@ -372,6 +381,9 @@ class Ui_MainWindow(object):
         self.actionLanguageSpanish.setText(_translate("MainWindow", "Spanish"))
         self.actionLanguageGerman.setText(_translate("MainWindow", "German"))
         self.actionHistory.setText(_translate("MainWindow", "History"))
+        self.actionSearchRadio.setText(_translate("MainWindow", "Search Radio"))
+        self.actionRadioList.setText(_translate("MainWindow", "Radio List"))
+        self.actionRadioManager.setText(_translate("MainWindow", "Radio Manager"))
 
 
 if __name__ == "__main__":

@@ -642,6 +642,9 @@
      <string>Radios</string>
     </property>
     <addaction name="actionFuzzyGroovy"/>
+    <addaction name="actionSearchRadio"/>
+    <addaction name="actionRadioList"/>
+    <addaction name="actionRadioManager"/>
    </widget>
    <widget class="QMenu" name="menuAlbums">
     <property name="title">
@@ -715,6 +718,21 @@
   <action name="actionHistory">
    <property name="text">
     <string>History</string>
+   </property>
+  </action>
+  <action name="actionSearchRadio">
+   <property name="text">
+    <string>Search Radio</string>
+   </property>
+  </action>
+  <action name="actionRadioList">
+   <property name="text">
+    <string>Radio List</string>
+   </property>
+  </action>
+  <action name="actionRadioManager">
+   <property name="text">
+    <string>Radio Manager</string>
    </property>
   </action>
  </widget>
