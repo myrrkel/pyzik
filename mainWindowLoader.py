@@ -63,6 +63,20 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.loadSettings()
         
 
+        self.ui.menuFavRadios = QtWidgets.QMenu(self.ui.menuRadios)
+
+
+        self.ui.actionFavRadio = QtWidgets.QAction(self.ui.menuFavRadios)
+        self.ui.actionFavRadio.setObjectName("actionFavRadio")
+        self.ui.actionFavRadio.setText("TEST")
+
+        self.ui.menuFavRadios.addAction(self.ui.actionFavRadio)
+        self.menuRadios.addAction(self.menuFavRadios.menuAction())
+        self.menuFavRadios.setTitle(_translate("MainWindow", "TEST MENU"))
+
+
+
+
         #Connect UI triggers
         self.ui.listViewArtists.selectionModel().currentChanged.connect(self.onArtistChange)
         self.ui.actionMusic_directories.triggered.connect(self.onMenuMusicDirectories)
