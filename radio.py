@@ -20,6 +20,16 @@ class radio:
         self.sortID = 0
 
 
+    def load(self,row):
+        self.radioID = row[0]
+        self.name = row[1]
+        self.stream = row[2]
+        self.image = row[3]
+        self.thumb = row[4]
+        self.categoryID = row[5]
+        self.sortID = row[6]
+
+
     def addCategorie(self,cat):
         self.categories.append(cat)
 

@@ -8,6 +8,7 @@ from artistCollection import *
 from musicDirectoryCollection import *
 from musicGenres import *
 from historyManager import *
+from radioManager import *
 
 import os.path
 from PyQt5 import QtWidgets, QtGui, QtCore
@@ -32,6 +33,7 @@ class musicBase:
         self.styleIDSet = set()
         self.availableGenres = set()
         self.history = historyManager()
+        self.radioMan = radioManager(self)
 
     def loadMusicBase(self,memoryDB=True):
         if memoryDB: self.db.initMemoryDB()
@@ -40,6 +42,7 @@ class musicBase:
         self.albumCol.loadAlbums()
         self.addGenresDirToAlbums()
         self.addAlbumsToArtists()
+        self.radioMan.loadFavRadios()
 
         self.styleIDSet = self.musicDirectoryCol.getStyleIDSet()
 

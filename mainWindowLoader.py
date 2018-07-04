@@ -19,6 +19,7 @@ from searchRadioWidget import *
 
 
 
+
 def openFile(filename):
     if sys.platform == "win32":
         os.startfile(filename)
@@ -62,17 +63,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.showArtists()
         self.loadSettings()
         
+        self.initRadioFavMenu()
 
-        self.ui.menuFavRadios = QtWidgets.QMenu(self.ui.menuRadios)
-
-
-        self.ui.actionFavRadio = QtWidgets.QAction(self.ui.menuFavRadios)
-        self.ui.actionFavRadio.setObjectName("actionFavRadio")
-        self.ui.actionFavRadio.setText("TEST")
-
-        self.ui.menuFavRadios.addAction(self.ui.actionFavRadio)
-        self.menuRadios.addAction(self.menuFavRadios.menuAction())
-        self.menuFavRadios.setTitle(_translate("MainWindow", "TEST MENU"))
 
 
 
@@ -224,6 +216,18 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         hHeader.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
         hHeader.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
         hHeader.hideSection(2)
+
+    def initRadioFavMenu(self):
+        self.ui.menuFavRadios = QtWidgets.QMenu(self.ui.menuRadios)
+
+
+        self.ui.actionFavRadio = QtWidgets.QAction(self.ui.menuFavRadios)
+        self.ui.actionFavRadio.setObjectName("actionFavRadio")
+        self.ui.actionFavRadio.setText("TEST")
+
+        self.ui.menuFavRadios.addAction(self.ui.actionFavRadio)
+        self.ui.menuRadios.addAction(self.ui.menuFavRadios.menuAction())
+        self.ui.menuFavRadios.setTitle("TEST MENU")
         
 
     '''

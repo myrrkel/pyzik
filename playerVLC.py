@@ -41,6 +41,8 @@ class playerVLC:
         self.mpEnventManager = self.mediaPlayer.event_manager()
         #self.mediaPlayer.audio_set_volume(100)
         self.radioMode = False
+        self.adblock = False
+
         self.nowPlaying = ""
 
         self.initMediaList()
@@ -250,6 +252,7 @@ class playerVLC:
     def playFuzzyGroovy(self):
         stream = "http://listen.radionomy.com/fuzzy-and-groovy.m3u"
         self.radioMode = True
+        self.adblock = True
         self.dropMediaList()
         media = self.instance.media_new(stream)
 
@@ -282,6 +285,7 @@ class playerVLC:
 
     def playRadio(self,radio):
         self.radioMode = True
+        self.adblock = False
         self.dropMediaList()
         media = self.instance.media_new(radio.stream)
 

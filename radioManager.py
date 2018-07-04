@@ -26,6 +26,7 @@ class radioManager():
     def __init__(self,musicBase=None):
         self.musicBase = musicBase
         self.machines = ['RadioBrowser','Dirble','Dar','Tunein']
+        self.favRadios = []
     
             
 
@@ -200,6 +201,16 @@ class radioManager():
 
         return resRadios
 
+
+    def loadFavRadios(self):
+        self.favRadios = []
+        for row in self.musicBase.db.getSelect("""
+            SELECT radioID, name, stream, image, thumb, categoryID, sortID
+            FROM radios ORDER BY sortID"""):
+            rad = radio()
+            rad.load(row)
+            rad.printData()
+            self.favRadios.append(rad)
 
 
 if __name__ == "__main__":

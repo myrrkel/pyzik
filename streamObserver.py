@@ -24,7 +24,6 @@ class streamObserver(QThread):
     history = historyManager()
 
 
-
     def run(self):
 
 
@@ -40,35 +39,29 @@ class streamObserver(QThread):
                     if title != "NO_META":
                         self.player.mute(False)
                         if (self.previousTitle != title):
-                            #if self.previousTitle == "Advert Killed!":
-                            #    self.player.setVolume(self.currentVolume)
                             print(title)
                             msg = title
                             self.previousTitle = title
                             self.titleChanged.emit(msg)
                     else:
-                        #if self.previousTitle == "Advert Killed!":
-                        #    self.currentVolume = self.player.getVolume()
-                        #    self.player.setVolume(0)
+                        if self.adblock == True:
+                            if self.previousTitle == "Advert Killed!":
+                                self.player.stop()
+                                time.sleep(2)
+                                self.player.play()
 
-
-                        if self.previousTitle == "Advert Killed!":
-                            self.player.stop()
-                            time.sleep(2)
-                            self.player.play()
-                            
-                        #elif self.previousTitle != "":
-                        else:
-                            #It's an advert!
-                            
-                            self.player.mute(True)
-                            self.player.stop()
-                            msg = "Advert Killed!"
-                            self.previousTitle = msg
-                            print(msg)
-                            self.titleChanged.emit(msg)
-                            time.sleep(2)
-                            self.player.play()
+                            else:
+                                #It's an advert!
+                                
+                                self.player.mute(True)
+                                self.player.stop()
+                                msg = "Advert Killed!"
+                                self.previousTitle = msg
+                                print(msg)
+                                self.titleChanged.emit(msg)
+                                time.sleep(2)
+                                self.player.play()
+                        
 
 
 
