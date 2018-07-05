@@ -4,6 +4,7 @@ from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
 
 from historyManager import *
+from radioManager import *
 
 
 
@@ -22,6 +23,7 @@ class streamObserver(QThread):
     currentVolume = 0
     player = None
     history = historyManager()
+    musicBase = None
 
 
     def run(self):
@@ -62,6 +64,14 @@ class streamObserver(QThread):
                                 time.sleep(2)
                                 self.player.play()
                         
+                        else:
+                            ''' No meta, no adblock'''
+                            print("NOMETA_NOADBLOCK")
+                            trk = self.player.getCurrentTrackPlaylist()
+                            print("rad:"+trk.radioName+" id:"+str(trk.radioID))
+                            if trk.radioID > 0:
+                                rad = self.musicBase.radioMan.getFavRadio(trk.radioID)
+                                print("Get RF ID:"+str(rad.getRFID()))
 
 
 

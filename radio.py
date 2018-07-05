@@ -100,7 +100,25 @@ class radio:
         self.country = tRadio.Subtitle
         self.searchID = tRadio.GuideId
 
-        #print(str(tRadio))
+
+    def getRFID(self):
+        id = -1
+        if self.name.upper() == "FIP":
+            id = 7
+        elif "FIP " in self.name.upper():
+            key = "webradio"
+            iwr = self.stream.find(key)+len(key)
+            if iwr > 0:
+                nwr = self.stream[iwr]
+                id = 63+int(nwr)
+
+        return id
+
+
+    def getCurrentTrackRF(self):
+        #https://www.fip.fr/livemeta/64
+        print("Get Current Track")
+        
 
         
 

@@ -292,6 +292,7 @@ class playerVLC:
         self.mediaList.add_media(media)
         self.playMediaList()
         trk = track()
+        trk.radioID = radio.radioID
         trk.radioName = radio.name
         trk.radioStream = radio.stream
         print(radio.name+" isPlaying=",self.isPlaying())

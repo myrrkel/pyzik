@@ -39,7 +39,7 @@ class radioManager():
 
     def getFavRadio(self,radioID):
 
-        resRad = radio()
+        resRad = None
         for rad in filterByRadioID(self.favRadios,radioID):
             resRad = rad
         return resRad

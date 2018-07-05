@@ -36,6 +36,7 @@ class track:
         self.parentAlbum = None
         self.radioName = ""
         self.radioStream = ""
+        self.radioID = 0
 
 
 
