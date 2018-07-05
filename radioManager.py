@@ -19,6 +19,13 @@ def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
 
 def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
 
+def filterByRadioID(seq, RadID):
+    for el in seq:
+        if int(el.radioID) == int(RadID):
+            yield el
+            break
+
+
 
 
 class radioManager():
@@ -29,6 +36,13 @@ class radioManager():
         self.favRadios = []
     
             
+
+    def getFavRadio(self,radioID):
+
+        resRad = radio()
+        for rad in filterByRadioID(self.favRadios,radioID):
+            resRad = rad
+        return resRad
 
 
     def getRedirection(self,url):

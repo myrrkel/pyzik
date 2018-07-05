@@ -42,6 +42,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.settings = QtCore.QSettings('pyzik', 'pyzik')
         self.firstShow = True
         self.playList = None
+        self.searchRadio = None
         self.histoWidget = None
         self.currentArtist = artist("",0)
         self.currentAlbum = album("")
@@ -151,10 +152,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
         
     def onPlaySearchRadio(self):      
-        if self.playList is None:
+        if self.searchRadio is None:
             self.searchRadio = searchRadioWidget(self.musicBase,self.player)
-            #self.searchRadio.trackChanged.connect(self.player.setPlaylistTrack)
-            #self.threadStreamObserver.titleChanged.connect(self.onPlayerMediaChangedStreamObserver)
             
         self.searchRadio.show()
 
@@ -220,14 +219,16 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def initRadioFavMenu(self):
         self.ui.menuFavRadios = QtWidgets.QMenu(self.ui.menuRadios)
 
+        for rad in self.musicBase.radioMan.favRadios:
 
-        self.ui.actionFavRadio = QtWidgets.QAction(self.ui.menuFavRadios)
-        self.ui.actionFavRadio.setObjectName("actionFavRadio")
-        self.ui.actionFavRadio.setText("TEST")
+            self.ui.actionFavRadio = QtWidgets.QAction(self.ui.menuFavRadios)
+            self.ui.actionFavRadio.setObjectName("actionFavRadio_"+rad.name)
+            self.ui.actionFavRadio.setText(rad.name)
+            self.ui.menuFavRadios.addAction(self.ui.actionFavRadio)
+            self.ui.actionFavRadio.triggered.connect(functools.partial(self.onPlayFavRadio, rad.radioID))
 
-        self.ui.menuFavRadios.addAction(self.ui.actionFavRadio)
         self.ui.menuRadios.addAction(self.ui.menuFavRadios.menuAction())
-        self.ui.menuFavRadios.setTitle("TEST MENU")
+        self.ui.menuFavRadios.setTitle("Favorite radios")
         
 
     '''
@@ -238,6 +239,10 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         dirDiag = DialogMusicDirectoriesLoader(self.musicBase)
         dirDiag.show()
         dirDiag.exec_()
+
+    def onPlayFavRadio(self,radioID):
+        rad = self.musicBase.radioMan.getFavRadio(radioID)
+        self.player.playRadio(rad)
         
     def onMenuExplore(self):
         self.exploreAlbumsDirectoriesThread.musicBase = self.musicBase 

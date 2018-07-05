@@ -44,7 +44,7 @@ class streamObserver(QThread):
                             self.previousTitle = title
                             self.titleChanged.emit(msg)
                     else:
-                        if self.adblock == True:
+                        if self.player.adblock == True:
                             if self.previousTitle == "Advert Killed!":
                                 self.player.stop()
                                 time.sleep(2)
