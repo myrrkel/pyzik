@@ -7,7 +7,13 @@ import urllib.parse
 import json
 from collections import namedtuple
 
-def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
+
+def _json_object_hook(d): 
+    for k in d.keys():
+        k = k.replace("-","_")    
+    for v in d.values():
+        if isinstance(v,str): v = v.replace("-","_")
+    return namedtuple('X', d.keys(),rename=True)(*d.values())
 
 def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
 
@@ -136,19 +142,24 @@ class radio:
         try:
             if self.isFIP(): liveUrl = "https://www.fip.fr/livemeta/"+str(self.getRFID())
             r = requests.post(liveUrl)
-            print(r.text)
+            #print(r.text)
             datas = json2obj(r.text)
         except requests.exceptions.HTTPError as err:  
             print(err)
 
+        #print(str(datas))
         if datas:
             pos = datas.levels[0].position
             stepID = datas.levels[0].items[pos]
-            step = datas.steps.find(stepID)
-            if step is not None:
-                trackTitle = step.authors+" - "+step.title
+            print("stepID="+str(stepID))
+            #print(str(datas.steps))
+            for stp in datas.steps:
+                print("stp="+str(stp.stepId))
+                if stp.stepId == stepID:
+                    trackTitle = stp.authors+" - "+stp.title
 
-        prin("trackTitle="+trackTitle)
+
+        print("trackTitle="+trackTitle)
         return trackTitle 
 
     
