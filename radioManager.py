@@ -4,10 +4,10 @@
 
 import requests
 import urllib.parse
+import json
 
 import xml.etree.ElementTree as ET
 
-import json
 from collections import namedtuple
 
 from radio import *

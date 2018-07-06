@@ -2,6 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import sqlite3
+import requests
+import urllib.parse
+import json
+from collections import namedtuple
+
+def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
+
+def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
 
 class radio:
     '''
@@ -114,13 +122,34 @@ class radio:
 
         return id
 
+    def isFIP(self):
+        return (self.name.upper() == "FIP" or "FIP " in self.name.upper())
+
 
     def getCurrentTrackRF(self):
-        #https://www.fip.fr/livemeta/64
-        print("Get Current Track")
-        
 
-        
+        """
+        Get live title from RF
+        """ 
+        trackTitle =""
+
+        try:
+            if self.isFIP(): liveUrl = "https://www.fip.fr/livemeta/"+str(self.getRFID())
+            r = requests.post(liveUrl)
+            print(r.text)
+            datas = json2obj(r.text)
+        except requests.exceptions.HTTPError as err:  
+            print(err)
+
+        if datas:
+            pos = datas.levels[0].position
+            stepID = datas.levels[0].items[pos]
+            step = datas.steps.find(stepID)
+            if step is not None:
+                trackTitle = step.authors+" - "+step.title
+
+        prin("trackTitle="+trackTitle)
+        return trackTitle 
 
     
     def printData(self):
