@@ -157,10 +157,16 @@ class radio:
             for stp in datas.steps:
                 print("stp="+str(stp.stepId))
                 if stp.stepId == stepID:
-                    trackTitle = stp.authors+" - "+stp.title
+                    if hasattr(stp,"authors"):
+                        trackTitle = stp.authors+" - "+stp.title
+                    else:
+                        trackTitle = stp.title
+                    print("trackTitle1="+str(trackTitle))
+                print("trackTitle2="+str(trackTitle))
+            print("trackTitle3="+str(trackTitle))
 
 
-        print("trackTitle="+trackTitle)
+        print("trackTitle="+str(trackTitle))
         return trackTitle 
 
     
