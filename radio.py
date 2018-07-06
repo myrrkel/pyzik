@@ -143,6 +143,7 @@ class radio:
             if self.isFIP(): liveUrl = "https://www.fip.fr/livemeta/"+str(self.getRFID())
             r = requests.post(liveUrl)
             #print(r.text)
+            if r.text == "": return ""
             datas = json2obj(r.text)
         except requests.exceptions.HTTPError as err:  
             print(err)

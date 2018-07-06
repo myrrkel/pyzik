@@ -68,10 +68,14 @@ class streamObserver(QThread):
                             ''' No meta, no adblock'''
                             print("NOMETA_NOADBLOCK")
                             trk = self.player.getCurrentTrackPlaylist()
-                            print("rad:"+trk.radioName+" id:"+str(trk.radioID))
-                            if trk.radioID > 0:
-                                rad = self.musicBase.radioMan.getFavRadio(trk.radioID)
-                                rad.getCurrentTrackRF()
+                            if trk is not None:
+                                print("rad:"+trk.radioName+" id:"+str(trk.radioID))
+                                if trk.radioID > 0:
+                                    rad = self.musicBase.radioMan.getFavRadio(trk.radioID)
+                                    msg = rad.getCurrentTrackRF()
+                                    self.previousTitle = msg
+                                    print(msg)
+                                    self.titleChanged.emit(msg)
 
 
 
