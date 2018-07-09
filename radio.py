@@ -116,7 +116,7 @@ class radio:
         self.searchID = tRadio.GuideId
 
 
-    def getRFID(self):
+    def getFIPLiveID(self):
         id = -1
         if self.name.upper() == "FIP":
             id = 7
@@ -174,40 +174,22 @@ class radio:
         return -1
 
 
-    def getCurrentTrackFip(self):
+    def getCurrentTrack(self):
+        title = ""
+        if self.isFIP():
+            liveUrl = "https://www.fip.fr/livemeta/"+str(self.getFIPLiveID())
+            title = self.getCurrentTrackRF(liveUrl)
 
-        """
-        Get live title from FIP
-        """ 
-        trackTitle =""
+        elif self.isFranceMusique():
+            liveID = str(rad.getFranceMusiqueLiveID(self.stream))
+            liveUrl = "https://www.francemusique.fr/livemeta/pull/" + liveID
+            title = self.getCurrentTrackRF(liveUrl)
 
-        try:
-            if self.isFIP(): liveUrl = "https://www.fip.fr/livemeta/"+str(self.getRFID())
-            r = requests.get(liveUrl)
-            #print(r.text)
-            if r.text == "": return ""
-            datas = json2obj(r.text)
-        except requests.exceptions.HTTPError as err:  
-            print(err)
-
-        if datas:
-            pos = datas.levels[0].position
-            stepID = datas.levels[0].items[pos]
-            #print("stepID="+str(stepID))
-            #print(str(datas.steps))
-            for stp in datas.steps:
-                #print("stp="+str(stp.stepId))
-                if stp.stepId == stepID:
-                    if hasattr(stp,"authors"):
-                        trackTitle = stp.authors+" - "+stp.title
-                    else:
-                        trackTitle = stp.title
+        return title
 
 
-        print("trackTitle="+str(trackTitle))
-        return trackTitle 
 
-    
+
     def getCurrentTrackRF(self,liveUrl):
 
         """
@@ -259,9 +241,7 @@ class radio:
 if __name__ == "__main__":
 
     rad = radio()
-    url = "https://direct.francemusique.fr/live/francemusiquelajazz-hifi.mp3"
-    #      https://direct.francemusique.fr/live/francemusiquelajazz-hifi.mp3?ID=radiofrance
-    liveUrl = "https://www.francemusique.fr/livemeta/pull/" + str(rad.getFranceMusiqueLiveID(url))
-    print("LiveURL="+liveUrl)
-    print("Rad="+rad.getCurrentTrackRF(liveUrl))
+    rad.stream = "https://direct.francemusique.fr/live/francemusiquelajazz-hifi.mp3"
+    rad.name = "France Musique La Jazz"
+    print("Rad="+rad.getCurrentTrack())
 
