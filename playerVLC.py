@@ -41,6 +41,7 @@ class playerVLC:
         self.mpEnventManager = self.mediaPlayer.event_manager()
         #self.mediaPlayer.audio_set_volume(100)
         self.radioMode = False
+        self.currentRadioTitle = ""
         self.adblock = False
 
         self.nowPlaying = ""
@@ -318,7 +319,7 @@ class playerVLC:
 
     def getNowPlaying(self):
         m = self.mediaPlayer.get_media()
-        if m is not None:
+        if m is not None and self.radioMode:
             nowPlaying = m.get_meta(12)
             if nowPlaying is not None:
                 if self.nowPlaying != nowPlaying:
@@ -326,9 +327,12 @@ class playerVLC:
                     print(nowPlaying)
                 return cleanTitle(nowPlaying)
             else:
-                return "NO_META"
+                if self.adblock:
+                    return "NO_META"
+                else:
+                    return self.currentRadioTitle
         else:
-            return "NO_MEDIA"
+            return "NO_STREAM_MEDIA"
 
     def getTitle(self):
         title = ""

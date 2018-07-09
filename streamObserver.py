@@ -36,17 +36,18 @@ class streamObserver(QThread):
 
             if self.player.isPlaying() == True:
                 if self.player.radioMode == True:
-                    title = self.player.getNowPlaying()
-                    #print("streamObserver="+title+" "+self.player.getTitle()+" "+self.player.getArtist())
-                    if title != "NO_META":
-                        self.player.mute(False)
-                        if (self.previousTitle != title):
-                            print(title)
-                            msg = title
-                            self.previousTitle = title
-                            self.titleChanged.emit(msg)
-                    else:
-                        if self.player.adblock == True:
+                    if self.player.adblock == True:
+
+                        title = self.player.getNowPlaying()
+                        #print("streamObserver="+title+" "+self.player.getTitle()+" "+self.player.getArtist())
+                        if title != "NO_META":
+                            self.player.mute(False)
+                            if (self.previousTitle != title):
+                                print(title)
+                                self.previousTitle = title
+                                self.titleChanged.emit(title)
+                        else:
+                        
                             if self.previousTitle == "Advert Killed!":
                                 self.player.stop()
                                 time.sleep(2)
@@ -64,18 +65,22 @@ class streamObserver(QThread):
                                 time.sleep(2)
                                 self.player.play()
                         
-                        else:
-                            ''' No meta, no adblock'''
-                            print("NOMETA_NOADBLOCK")
-                            trk = self.player.getCurrentTrackPlaylist()
-                            if trk is not None:
-                                print("rad:"+trk.radioName+" id:"+str(trk.radioID))
-                                if trk.radioID > 0:
-                                    rad = self.musicBase.radioMan.getFavRadio(trk.radioID)
-                                    msg = rad.getCurrentTrack()
-                                    self.previousTitle = msg
-                                    print(msg)
-                                    self.titleChanged.emit(msg)
+                    else:
+                        ''' No meta, no adblock'''
+                        #print("NOMETA_NOADBLOCK")
+                        trk = self.player.getCurrentTrackPlaylist()
+                        if trk is not None:
+                            #print("rad:"+trk.radioName+" id:"+str(trk.radioID))
+                            if trk.radioID > 0:
+                                rad = self.musicBase.radioMan.getFavRadio(trk.radioID)
+                                title = rad.getCurrentTrack()
+
+                                if (self.previousTitle != title):
+                                    print(title)
+                                    self.previousTitle = title
+                                    self.player.currentRadioTitle = title
+                                    self.titleChanged.emit(title)
+
 
 
 

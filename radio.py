@@ -34,6 +34,8 @@ class radio:
         self.searchID = ""
         self.sortID = 0
 
+        self.liveID = -1
+
 
     def load(self,row):
         self.radioID = row[0]
@@ -161,7 +163,7 @@ class radio:
     
         #for p in soup.findAll("div", {"class": "web-radio-header-wrapper-content"}):
         for radiolist in soup.findAll("ul", {"class": "web-radio-header-wrapper-list"}):
-            print("radiolist="+str(radiolist))    
+            #print("radiolist="+str(radiolist))    
             for rad in radiolist.findAll("li"):
                 url = rad.get("data-live-url")
                 print(url)
@@ -181,9 +183,10 @@ class radio:
             title = self.getCurrentTrackRF(liveUrl)
 
         elif self.isFranceMusique():
-            liveID = self.getFranceMusiqueLiveID(self.stream)
-            if int(liveID) < 0: return ""
-            liveUrl = "https://www.francemusique.fr/livemeta/pull/" + str(liveID)
+            if self.liveID < 0:
+                self.liveID = int(self.getFranceMusiqueLiveID(self.stream))
+            if self.liveID < 0: return ""
+            liveUrl = "https://www.francemusique.fr/livemeta/pull/" + str(self.liveID)
             title = self.getCurrentTrackRF(liveUrl)
 
         return title
@@ -202,7 +205,7 @@ class radio:
             r = requests.get(liveUrl)
             #print(r.text)
             if r.text == "": return ""
-            print(r.text) 
+            #print(r.text) 
             datas = json2obj(r.text)
         except requests.exceptions.HTTPError as err:  
             print(err)
@@ -215,7 +218,7 @@ class radio:
             #print(str(datas.steps))
             for stp in datas.steps:
                 if stp.stepId == stepID:
-                    if hasattr(stp,"authors"):
+                    if hasattr(stp,"authors") and stp.authors != "":
                         trackTitle = stp.authors+" - "+stp.title
                     else:
                         trackTitle = stp.title

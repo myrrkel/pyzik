@@ -123,6 +123,10 @@ class track:
                 trackPath = self.getFilePath()
 
             audio = File(trackPath)
+
+            if audio.info:
+                self.duration = audio.info.length
+                self.bitrate = audio.info.bitrate
             
             if audio.tags:
                 self.title = str(audio.tags.get("TIT2"))
@@ -139,8 +143,6 @@ class track:
             print("exception mutagen: ",sys.exc_info()[0])
 
         if self.title in("","None"): self.title = self.fileName
-        self.duration = audio.info.length
-        self.bitrate = audio.info.bitrate
 
 
     def getMutagenFastTags(self,dir=""):
