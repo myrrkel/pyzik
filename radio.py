@@ -168,7 +168,7 @@ class radio:
                 liveID = rad.get("data-station-id")
                 print(str(liveID))
 
-                if rurl in url:
+                if rurl.replace("http://","").replace("https://","") in url:
                     return liveID
 
         return -1
@@ -181,8 +181,9 @@ class radio:
             title = self.getCurrentTrackRF(liveUrl)
 
         elif self.isFranceMusique():
-            liveID = str(rad.getFranceMusiqueLiveID(self.stream))
-            liveUrl = "https://www.francemusique.fr/livemeta/pull/" + liveID
+            liveID = self.getFranceMusiqueLiveID(self.stream)
+            if int(liveID) < 0: return ""
+            liveUrl = "https://www.francemusique.fr/livemeta/pull/" + str(liveID)
             title = self.getCurrentTrackRF(liveUrl)
 
         return title
@@ -201,7 +202,7 @@ class radio:
             r = requests.get(liveUrl)
             #print(r.text)
             if r.text == "": return ""
-            #print(r.text)
+            print(r.text) 
             datas = json2obj(r.text)
         except requests.exceptions.HTTPError as err:  
             print(err)

@@ -72,7 +72,7 @@ class streamObserver(QThread):
                                 print("rad:"+trk.radioName+" id:"+str(trk.radioID))
                                 if trk.radioID > 0:
                                     rad = self.musicBase.radioMan.getFavRadio(trk.radioID)
-                                    msg = rad.getCurrentTrackRF()
+                                    msg = rad.getCurrentTrack()
                                     self.previousTitle = msg
                                     print(msg)
                                     self.titleChanged.emit(msg)
