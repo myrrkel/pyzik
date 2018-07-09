@@ -140,7 +140,7 @@ class radioManager():
         http://www.radio-browser.info/webservice
         """ 
         rbRadios = []
-        search = urllib.parse.quote_plus(search)
+        search = urllib.parse.quote_plus(search.replace(" ","_"))
 
         try:
             headers = {'User-Agent': 'pyzik 0.1b',}
@@ -201,7 +201,8 @@ class radioManager():
             if len(station.body) > 0:
                 radioUrl = station.body[0].url
          
-        return radioUrl         
+        return radioUrl     
+
 
 
 
@@ -231,9 +232,10 @@ if __name__ == "__main__":
 
     rm = radioManager()
 
-    radios = rm.searchRadioBrower("fip")
-    for rad in radios:
-        rad.printData()
+
+    #radios = rm.searchRadioBrower("fip")
+    #for rad in radios:
+    #    rad.printData()
 
 
 

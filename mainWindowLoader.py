@@ -152,11 +152,19 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.setVolume(self.getVolumeFromSlider())
 
         
-    def onPlaySearchRadio(self):      
+    def onPlaySearchRadio(self):   
+
         if self.searchRadio is None:
             self.searchRadio = searchRadioWidget(self.musicBase,self.player)
+            self.searchRadio.radioAdded.connect(self.onAddFavRadio)
             
         self.searchRadio.show()
+
+
+    def onAddFavRadio(self):
+        self.musicBase.db.initDataBase()
+        self.musicBase.radioMan.loadFavRadios()
+        self.initRadioFavMenu()
 
         
 
@@ -218,7 +226,12 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         hHeader.hideSection(2)
 
     def initRadioFavMenu(self):
-        self.ui.menuFavRadios = QtWidgets.QMenu(self.ui.menuRadios)
+
+        if not hasattr(self.ui,"menuFavRadios") :
+            self.ui.menuFavRadios = QtWidgets.QMenu(self.ui.menuRadios)
+        else:
+            for action in self.ui.menuFavRadios.actions():
+                self.ui.menuFavRadios.removeAction(action)
 
         for rad in self.musicBase.radioMan.favRadios:
 

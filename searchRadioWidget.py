@@ -75,6 +75,7 @@ class playControlsWidget(QtWidgets.QWidget):
 
 class searchRadioWidget(QtWidgets.QDialog):
     
+    radioAdded = pyqtSignal(int, name='radioAdded')
 
     def __init__(self,musicBase,player):
         QtWidgets.QDialog.__init__(self)
@@ -84,6 +85,7 @@ class searchRadioWidget(QtWidgets.QDialog):
         self.radioManager = radioManager(musicBase)
         self.player = player
         self.searchRadioThread = searchRadioThread()
+        
                 
 
         self.initUI()
@@ -149,6 +151,7 @@ class searchRadioWidget(QtWidgets.QDialog):
         i = self.tableWidgetItems.currentRow()
         rad = self.radios[i]
         rad.saveRadio(self.radioManager.musicBase.db)
+        self.radioAdded.emit(1)
 
 
     def onSearchComplete(self,event):

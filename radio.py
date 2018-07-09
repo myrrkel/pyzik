@@ -5,6 +5,7 @@ import sqlite3
 import requests
 import urllib.parse
 import json
+from bs4 import BeautifulSoup
 from collections import namedtuple
 
 
@@ -124,15 +125,90 @@ class radio:
             iwr = self.stream.find(key)+len(key)
             if iwr > 0:
                 nwr = self.stream[iwr]
-                id = 63+int(nwr)
+                if int(nwr) == 4:
+                    id = 69
+                elif int(nwr) == 5:
+                    id = 70
+                elif int(nwr) == 6:
+                    id = 71
+                elif int(nwr) == 8:
+                    id = 74
+                else:
+                    id = 63+int(nwr)
 
         return id
 
     def isFIP(self):
         return (self.name.upper() == "FIP" or "FIP " in self.name.upper())
 
+    def isFranceMusique(self):
+        radName = "FRANCE MUSIQUE"
+        return (self.name.upper() == radName or radName+" " in self.name.upper())
 
-    def getCurrentTrackRF(self):
+
+    def getFranceMusiqueLiveID(self,rurl):
+
+        try:
+            url = "http://www.francemusique.fr"
+            r = requests.get(url)
+            html = r.text
+
+        except requests.exceptions.HTTPError as err:  
+            print(err)
+            return -1
+
+        soup = BeautifulSoup(html,"html.parser")
+    
+        #for p in soup.findAll("div", {"class": "web-radio-header-wrapper-content"}):
+        for radiolist in soup.findAll("ul", {"class": "web-radio-header-wrapper-list"}):
+            print("radiolist="+str(radiolist))    
+            for rad in radiolist.findAll("li"):
+                url = rad.get("data-live-url")
+                print(url)
+                liveID = rad.get("data-station-id")
+                print(str(liveID))
+
+                if rurl in url:
+                    return liveID
+
+        return -1
+
+
+    def getCurrentTrackFip(self):
+
+        """
+        Get live title from FIP
+        """ 
+        trackTitle =""
+
+        try:
+            if self.isFIP(): liveUrl = "https://www.fip.fr/livemeta/"+str(self.getRFID())
+            r = requests.get(liveUrl)
+            #print(r.text)
+            if r.text == "": return ""
+            datas = json2obj(r.text)
+        except requests.exceptions.HTTPError as err:  
+            print(err)
+
+        if datas:
+            pos = datas.levels[0].position
+            stepID = datas.levels[0].items[pos]
+            #print("stepID="+str(stepID))
+            #print(str(datas.steps))
+            for stp in datas.steps:
+                #print("stp="+str(stp.stepId))
+                if stp.stepId == stepID:
+                    if hasattr(stp,"authors"):
+                        trackTitle = stp.authors+" - "+stp.title
+                    else:
+                        trackTitle = stp.title
+
+
+        print("trackTitle="+str(trackTitle))
+        return trackTitle 
+
+    
+    def getCurrentTrackRF(self,liveUrl):
 
         """
         Get live title from RF
@@ -140,10 +216,10 @@ class radio:
         trackTitle =""
 
         try:
-            if self.isFIP(): liveUrl = "https://www.fip.fr/livemeta/"+str(self.getRFID())
-            r = requests.post(liveUrl)
+            r = requests.get(liveUrl)
             #print(r.text)
             if r.text == "": return ""
+            #print(r.text)
             datas = json2obj(r.text)
         except requests.exceptions.HTTPError as err:  
             print(err)
@@ -152,18 +228,15 @@ class radio:
         if datas:
             pos = datas.levels[0].position
             stepID = datas.levels[0].items[pos]
-            print("stepID="+str(stepID))
+            #print("stepID="+str(stepID))
             #print(str(datas.steps))
             for stp in datas.steps:
-                print("stp="+str(stp.stepId))
                 if stp.stepId == stepID:
                     if hasattr(stp,"authors"):
                         trackTitle = stp.authors+" - "+stp.title
                     else:
                         trackTitle = stp.title
-                    print("trackTitle1="+str(trackTitle))
-                print("trackTitle2="+str(trackTitle))
-            print("trackTitle3="+str(trackTitle))
+
 
 
         print("trackTitle="+str(trackTitle))
@@ -179,3 +252,16 @@ class radio:
             if txt != "": txt = txt +"; "
             txt = txt + cat
         return txt
+
+
+
+
+if __name__ == "__main__":
+
+    rad = radio()
+    url = "https://direct.francemusique.fr/live/francemusiquelajazz-hifi.mp3"
+    #      https://direct.francemusique.fr/live/francemusiquelajazz-hifi.mp3?ID=radiofrance
+    liveUrl = "https://www.francemusique.fr/livemeta/pull/" + str(rad.getFranceMusiqueLiveID(url))
+    print("LiveURL="+liveUrl)
+    print("Rad="+rad.getCurrentTrackRF(liveUrl))
+
