@@ -42,6 +42,7 @@ class playerVLC:
         #self.mediaPlayer.audio_set_volume(100)
         self.radioMode = False
         self.currentRadioTitle = ""
+        self.currentRadioName = ""
         self.adblock = False
 
         self.nowPlaying = ""
@@ -258,9 +259,11 @@ class playerVLC:
         media = self.instance.media_new(stream)
 
         self.mediaList.add_media(media)
+        self.currentRadioName = "Fuzzy & Groovy Rock Radio"
+        self.currentRadioTitle = "..."
         self.playMediaList()
         trk = track()
-        trk.radioName = "Fuzzy & Groovy Rock Radio"
+        trk.radioName = self.currentRadioName
         trk.radioStream = stream
         print("Fuzzy & Groovy Rock Radio isPlaying=",self.isPlaying())
 
@@ -291,6 +294,8 @@ class playerVLC:
         media = self.instance.media_new(radio.stream)
 
         self.mediaList.add_media(media)
+        self.currentRadioName = radio.name
+        self.currentRadioTitle = "..."
         self.playMediaList()
         trk = track()
         trk.radioID = radio.radioID

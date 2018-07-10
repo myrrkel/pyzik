@@ -588,7 +588,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
         trk = self.player.getCurrentTrackPlaylist()
         
-        self.musicBase.history.insertRadioHistory(trk.radioName,title)
+        self.musicBase.history.insertRadioHistory(self.player.currentRadioName,title)
         if self.playList is not None:
             self.playList.setCurrentTrack(title)
 

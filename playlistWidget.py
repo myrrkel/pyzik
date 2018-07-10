@@ -225,11 +225,11 @@ class playlistWidget(QtWidgets.QDialog):
                 self.tableWidgetTracks.setItem(i,3,durationItem)
             else:
                 print("radioName="+track.radioName)
-                artistItem = QtWidgets.QTableWidgetItem(track.getTrackTitle())
+                artistItem = QtWidgets.QTableWidgetItem(self.player.currentRadioName)
                 artistItem.setFlags(artistItem.flags() ^ QtCore.Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i,1,artistItem)
 
-                albumItem = QtWidgets.QTableWidgetItem(track.getTrackTitle())
+                albumItem = QtWidgets.QTableWidgetItem(self.player.currentRadioName)
                 albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i,2,albumItem)
 
@@ -292,6 +292,10 @@ class playlistWidget(QtWidgets.QDialog):
                 else:
                     nowPlaying = self.player.getNowPlaying()
                     item.setText(nowPlaying)
+                item1 = self.tableWidgetTracks.item(i,1)
+                item1.setText(self.player.currentRadioName)
+                item2 = self.tableWidgetTracks.item(i,2)
+                item2.setText(self.player.currentRadioName)
 
 
             f = item.font()
