@@ -76,9 +76,10 @@ class streamObserver(QThread):
                                 title = rad.getCurrentTrack()
 
                                 if (self.previousTitle != title):
-                                    print(title)
+                                    
                                     self.previousTitle = title
                                     self.player.currentRadioTitle = title
+                                    print("EMIT= "+title)
                                     self.titleChanged.emit(title)
 
 

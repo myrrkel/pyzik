@@ -35,6 +35,8 @@ class radio:
         self.sortID = 0
 
         self.liveID = -1
+        self.liveTrackStart = None
+        self.liveTrackEnd = None
 
 
     def load(self,row):
@@ -202,6 +204,7 @@ class radio:
         trackTitle =""
 
         try:
+            print("LiveUrl="+liveUrl)
             r = requests.get(liveUrl)
             #print(r.text)
             if r.text == "": return ""

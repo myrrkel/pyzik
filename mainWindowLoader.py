@@ -123,6 +123,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.threadStreamObserver.player = self.player
         self.threadStreamObserver.musicBase = self.musicBase
         self.threadStreamObserver.titleChanged.connect(self.setStatus)
+        self.threadStreamObserver.titleChanged.connect(self.onPlayerMediaChangedStreamObserver)
         
         self.player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerStopped, self.threadStreamObserver.resetPreviousTitle)
 
@@ -559,7 +560,6 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             isNew = True
             self.playList = playlistWidget(self.player)
             self.playList.trackChanged.connect(self.player.setPlaylistTrack)
-            self.threadStreamObserver.titleChanged.connect(self.onPlayerMediaChangedStreamObserver)
 
         self.playList.showMediaList()
             
