@@ -7,6 +7,8 @@ import urllib.parse
 import json
 from bs4 import BeautifulSoup
 from collections import namedtuple
+import datetime
+import email.utils as eut
 
 
 def _json_object_hook(d): 
@@ -206,9 +208,12 @@ class radio:
         try:
             print("LiveUrl="+liveUrl)
             r = requests.get(liveUrl)
-            #print(r.text)
             if r.text == "": return ""
             #print(r.text) 
+            dateRequest = r.headers.__getitem__("Date")
+            dateSrv = datetime.datetime(*eut.parsedate(dateRequest)[:6])
+            print("dateSrv= "+str(dateSrv))
+            print("Headers="+str(r.headers)) 
             datas = json2obj(r.text)
         except requests.exceptions.HTTPError as err:  
             print(err)
@@ -221,6 +226,12 @@ class radio:
             #print(str(datas.steps))
             for stp in datas.steps:
                 if stp.stepId == stepID:
+                    self.liveTrackStart = stp.start
+                    self.liveTrackEnd = stp.end
+
+                    dateEnd = datetime.datetime.fromtimestamp(self.liveTrackEnd)
+                    print("dateEnd="+str(dateEnd))
+
                     if hasattr(stp,"authors") and stp.authors != "":
                         trackTitle = stp.authors+" - "+stp.title
                     else:
