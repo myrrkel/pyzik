@@ -7,7 +7,10 @@ import urllib.parse
 import json
 from bs4 import BeautifulSoup
 from collections import namedtuple
-import datetime
+#import datetime
+from datetime import datetime
+import time
+import pytz
 import email.utils as eut
 
 
@@ -39,6 +42,7 @@ class radio:
         self.liveID = -1
         self.liveTrackStart = None
         self.liveTrackEnd = None
+        self.liveTrackTitle = ""
 
 
     def load(self,row):
@@ -193,6 +197,8 @@ class radio:
             liveUrl = "https://www.francemusique.fr/livemeta/pull/" + str(self.liveID)
             title = self.getCurrentTrackRF(liveUrl)
 
+        else: return self.name
+
         return title
 
 
@@ -203,7 +209,12 @@ class radio:
         """
         Get live title from RF
         """ 
-        trackTitle =""
+
+        if self.liveTrackEnd is not None:
+            tsNow =  time.time()
+            #print("ts="+str(tsNow)+" - end="+str(self.liveTrackEnd))
+            if self.liveTrackEnd > tsNow:
+                return self.liveTrackTitle
 
         try:
             print("LiveUrl="+liveUrl)
@@ -211,7 +222,7 @@ class radio:
             if r.text == "": return ""
             #print(r.text) 
             dateRequest = r.headers.__getitem__("Date")
-            dateSrv = datetime.datetime(*eut.parsedate(dateRequest)[:6])
+            dateSrv = datetime(*eut.parsedate(dateRequest)[:6])
             print("dateSrv= "+str(dateSrv))
             print("Headers="+str(r.headers)) 
             datas = json2obj(r.text)
@@ -229,18 +240,18 @@ class radio:
                     self.liveTrackStart = stp.start
                     self.liveTrackEnd = stp.end
 
-                    dateEnd = datetime.datetime.fromtimestamp(self.liveTrackEnd)
+                    dateEnd = datetime.fromtimestamp(self.liveTrackEnd)
                     print("dateEnd="+str(dateEnd))
 
                     if hasattr(stp,"authors") and stp.authors != "":
-                        trackTitle = stp.authors+" - "+stp.title
+                        self.liveTrackTitle = stp.authors+" - "+stp.title
                     else:
-                        trackTitle = stp.title
+                        self.liveTrackTitle = stp.title
 
 
 
-        print("trackTitle="+str(trackTitle))
-        return trackTitle 
+        print("trackTitle="+str(self.liveTrackTitle))
+        return self.liveTrackTitle 
 
     
     def printData(self):
@@ -257,6 +268,24 @@ class radio:
 
 
 if __name__ == "__main__":
+
+
+
+    utc = datetime.utcnow()
+    print(str(utc))
+    dnow = datetime.now()
+    print(str(dnow))
+    print(time.mktime(dnow.timetuple()))
+
+
+    local = pytz.timezone ("Europe/Paris")
+    print(str(local))
+
+    #datetime.fromtimestamp
+
+    local_dt = local.localize(utc, is_dst=None)
+    utc_dt = local_dt.astimezone(pytz.utc)
+    print("local_dt="+str(local_dt)+" utc_dt="+str(utc_dt))
 
     rad = radio()
     rad.stream = "https://direct.francemusique.fr/live/francemusiquelajazz-hifi.mp3"

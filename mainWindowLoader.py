@@ -258,6 +258,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def onPlayFavRadio(self,radioID):
         rad = self.musicBase.radioMan.getFavRadio(radioID)
         self.player.playRadio(rad)
+        self.showPlaylist(True)
         
     def onMenuExplore(self):
         self.exploreAlbumsDirectoriesThread.musicBase = self.musicBase 
