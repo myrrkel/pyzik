@@ -20,6 +20,7 @@ class playerControlsWidget(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self,parent=parent)
 
         lay = QtWidgets.QHBoxLayout(self)
+        lay.setContentsMargins(0, 0, 0, 0)
         
         _translate = QtCore.QCoreApplication.translate
 
@@ -33,10 +34,10 @@ class playerControlsWidget(QtWidgets.QWidget):
         lay.addWidget(self.nextButton)
 
         self.volumeSlider = QtWidgets.QSlider()
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.volumeSlider.sizePolicy().hasHeightForWidth())
+        #sizePolicy.setHeightForWidth(self.volumeSlider.sizePolicy().hasHeightForWidth())
         self.volumeSlider.setSizePolicy(sizePolicy)
         self.volumeSlider.setMinimumSize(QtCore.QSize(80, 0))
         self.volumeSlider.setMaximum(100)
@@ -65,9 +66,9 @@ class playlistWidget(QtWidgets.QDialog):
 
     def initUI(self):
 
-        layout = QtWidgets.QVBoxLayout()
-        self.setLayout(layout)
-
+        self.vLayout = QtWidgets.QVBoxLayout()
+        self.vLayout.setContentsMargins(6, 6, 6, 6)
+        self.setLayout(self.vLayout)
         
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
@@ -85,7 +86,7 @@ class playlistWidget(QtWidgets.QDialog):
 
         
         self.timeSlider = QtWidgets.QSlider(self)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.timeSlider.sizePolicy().hasHeightForWidth())
@@ -104,9 +105,26 @@ class playlistWidget(QtWidgets.QDialog):
         self.timeSlider.sliderMoved.connect(self.setPlayerPosition)
         self.player.mpEnventManager.event_attach(vlcEventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
 
-        layout.addWidget(self.tableWidgetTracks)
-        layout.addWidget(self.timeSlider)
-        layout.addWidget(self.playerControls)
+
+        self.mainFrame = QtWidgets.QFrame()
+        self.hLayout = QtWidgets.QHBoxLayout()
+        self.hLayout.setContentsMargins(0, 0, 0, 0)
+        self.hLayout.setSpacing(0)
+        self.coverPixmap = QtGui.QPixmap()
+        self.cover = QtWidgets.QLabel()
+        self.mainFrame.setLayout(self.hLayout)
+        self.hLayout.addWidget(self.cover)
+        self.hLayout.addWidget(self.tableWidgetTracks)
+
+
+
+        #hLayout.addWidget(self.cover)
+
+
+        #self.vLayout.addWidget(self.tableWidgetTracks)
+        self.vLayout.addWidget(self.mainFrame)
+        self.vLayout.addWidget(self.timeSlider)
+        self.vLayout.addWidget(self.playerControls)
         
 
         self.tableWidgetTracks.cellDoubleClicked.connect(self.changeTrack)
@@ -354,3 +372,22 @@ class playlistWidget(QtWidgets.QDialog):
             #print('onPlayerPositionChanged='+str(pos))
             self.timeSlider.setValue(pos*1000)
        
+
+
+
+
+
+
+if __name__ == "__main__":
+    import sys
+    from playerVLC import *
+
+    player = playerVLC()
+
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    playlist = playlistWidget(player)
+
+    playlist.show()
+    sys.exit(app.exec_())
