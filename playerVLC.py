@@ -301,6 +301,7 @@ class playerVLC:
         trk.radioID = radio.radioID
         trk.radioName = radio.name
         trk.radioStream = radio.stream
+        trk.radio = radio
         print(radio.name+" isPlaying=",self.isPlaying())
 
         #Wait until playing start.
@@ -338,6 +339,17 @@ class playerVLC:
                     return self.currentRadioTitle
         else:
             return "NO_STREAM_MEDIA"
+
+
+    def getLiveCoverUrl(self):
+        trk = self.getCurrentTrackPlaylist()
+        print("getLiveCoverUrl")
+        if trk.radioID > 0:
+            rad = trk.radio
+            url = rad.liveCoverUrl
+            return url
+        else:
+            return ""
 
     def getTitle(self):
         title = ""

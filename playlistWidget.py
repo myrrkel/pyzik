@@ -4,6 +4,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from track import *
+import requests
+from picFromUrlThread import *
 
 from vlc import EventType as vlcEventType
 
@@ -109,23 +111,25 @@ class playlistWidget(QtWidgets.QDialog):
         self.mainFrame = QtWidgets.QFrame()
         self.hLayout = QtWidgets.QHBoxLayout()
         self.hLayout.setContentsMargins(0, 0, 0, 0)
-        self.hLayout.setSpacing(0)
+        self.hLayout.setSpacing(6)
+
+
         self.coverPixmap = QtGui.QPixmap()
         self.cover = QtWidgets.QLabel()
+        self.cover.setMinimumSize(QtCore.QSize(200, 200))
+        self.cover.setPixmap(self.coverPixmap)
         self.mainFrame.setLayout(self.hLayout)
         self.hLayout.addWidget(self.cover)
         self.hLayout.addWidget(self.tableWidgetTracks)
 
 
-
-        #hLayout.addWidget(self.cover)
-
-
-        #self.vLayout.addWidget(self.tableWidgetTracks)
         self.vLayout.addWidget(self.mainFrame)
         self.vLayout.addWidget(self.timeSlider)
         self.vLayout.addWidget(self.playerControls)
         
+        self.picFromUrlThread = picFromUrlThread()
+        self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
+        #self.picFromUrlThread.start()
 
         self.tableWidgetTracks.cellDoubleClicked.connect(self.changeTrack)
 
@@ -135,6 +139,16 @@ class playlistWidget(QtWidgets.QDialog):
 
     def onPause(self,event):
         self.player.pause()
+
+    def onPicDownloaded(self,path):
+
+        self.coverPixmap = QtGui.QPixmap(path)
+        scaledCover = self.coverPixmap.scaled(self.cover.size(),
+                                                QtCore.Qt.KeepAspectRatio,
+                                                QtCore.Qt.SmoothTransformation)
+        self.cover.setPixmap(scaledCover)
+        self.cover.show()
+
 
     
     def setVolume(self, volume):
@@ -306,10 +320,16 @@ class playlistWidget(QtWidgets.QDialog):
 
             if trk is not None and trk.radioName != "" and i==index:
                 if title != "":
+                    print("SetText="+title)
                     item.setText(title)
                 else:
                     nowPlaying = self.player.getNowPlaying()
                     item.setText(nowPlaying)
+
+                coverUrl = self.player.getLiveCoverUrl()
+                if coverUrl != '':
+                    self.picFromUrlThread.run(coverUrl)
+                
                 item1 = self.tableWidgetTracks.item(i,1)
                 item1.setText(self.player.currentRadioName)
                 item2 = self.tableWidgetTracks.item(i,2)

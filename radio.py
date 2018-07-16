@@ -43,6 +43,7 @@ class radio:
         self.liveTrackStart = None
         self.liveTrackEnd = None
         self.liveTrackTitle = ""
+        self.liveCoverUrl = ""
 
 
     def load(self,row):
@@ -127,26 +128,26 @@ class radio:
 
 
     def getFIPLiveID(self):
-        id = -1
+        fipID = -1
         if self.name.upper() == "FIP":
-            id = 7
+            fipID = 7
         elif "FIP " in self.name.upper():
             key = "webradio"
             iwr = self.stream.find(key)+len(key)
             if iwr > 0:
                 nwr = self.stream[iwr]
                 if int(nwr) == 4:
-                    id = 69
+                    fipID = 69
                 elif int(nwr) == 5:
-                    id = 70
+                    fipID = 70
                 elif int(nwr) == 6:
-                    id = 71
+                    fipID = 71
                 elif int(nwr) == 8:
-                    id = 74
+                    fipID = 74
                 else:
-                    id = 63+int(nwr)
+                    fipID = 63+int(nwr)
 
-        return id
+        return fipID
 
     def isFIP(self):
         return (self.name.upper() == "FIP" or "FIP " in self.name.upper())
@@ -242,6 +243,10 @@ class radio:
 
                     dateEnd = datetime.fromtimestamp(self.liveTrackEnd)
                     print("dateEnd="+str(dateEnd))
+
+                    if hasattr(stp,"visual"):
+                        self.liveCoverUrl = stp.visual
+                        print("visual="+self.liveCoverUrl)
 
                     if hasattr(stp,"authors") and stp.authors != "":
                         self.liveTrackTitle = stp.authors+" - "+stp.title
