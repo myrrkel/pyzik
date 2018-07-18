@@ -225,7 +225,7 @@ class radio:
             dateRequest = r.headers.__getitem__("Date")
             dateSrv = datetime(*eut.parsedate(dateRequest)[:6])
             print("dateSrv= "+str(dateSrv))
-            print("Headers="+str(r.headers)) 
+            #print("Headers="+str(r.headers)) 
             datas = json2obj(r.text)
         except requests.exceptions.HTTPError as err:  
             print(err)
