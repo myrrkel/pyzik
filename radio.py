@@ -221,6 +221,7 @@ class radio:
             print("LiveUrl="+liveUrl)
             r = requests.get(liveUrl)
             if r.text == "": return ""
+            if len(r.text) > 0 and r.text[0] != "{" : return ""
             #print(r.text) 
             dateRequest = r.headers.__getitem__("Date")
             dateSrv = datetime(*eut.parsedate(dateRequest)[:6])
@@ -273,8 +274,6 @@ class radio:
 
 
 if __name__ == "__main__":
-
-
 
     utc = datetime.utcnow()
     print(str(utc))

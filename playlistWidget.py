@@ -129,13 +129,16 @@ class playlistWidget(QtWidgets.QDialog):
         
         self.picFromUrlThread = picFromUrlThread()
         self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
-        #self.picFromUrlThread.start()
+
 
         self.tableWidgetTracks.cellDoubleClicked.connect(self.changeTrack)
 
         self.retranslateUi()
 
         #self.resizeEvent = self.onResize
+
+    def closeEvent(self,event):
+        self.picFromUrlThread.cleanLastTempFile()
 
     def onPause(self,event):
         self.player.pause()
@@ -148,6 +151,7 @@ class playlistWidget(QtWidgets.QDialog):
                                                 QtCore.Qt.SmoothTransformation)
         self.cover.setPixmap(scaledCover)
         self.cover.show()
+
 
 
     

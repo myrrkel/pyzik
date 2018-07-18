@@ -1,4 +1,5 @@
 import sys
+import os
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
@@ -14,20 +15,30 @@ class picFromUrlThread(QThread):
     """Get a pic from an url"""
 
     downloadCompleted = pyqtSignal(str, name='downloadCompleted')
+    lastTempFile = ""
 
 
     def run(self,url):
  
+        self.cleanLastTempFile()
 
         #url = 'https://cdn.radiofrance.fr/s3/cruiser-production/2017/02/a0baccc1-38c0-47c8-82e0-07b80968e592/400x400_rf_omm_0000378730_dnc.0038979639.jpg'
         #data = urllib.request.urlopen(url).read()
         response = requests.get(url)
         data = response.content
-        temp = tempfile.NamedTemporaryFile()
+        temp = tempfile.NamedTemporaryFile(delete=False)
         temp.write(data)
         print("TempPic="+str(temp.name))
+        self.lastTempFile = temp.name
         self.downloadCompleted.emit(str(temp.name))
   
+
+    def cleanLastTempFile(self):
+        if self.lastTempFile != "":
+            print("CleanTempFile:"+self.lastTempFile)
+            os.remove(self.lastTempFile)
+            self.lastTempFile = ""
+
 
 
 
