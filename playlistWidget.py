@@ -345,6 +345,11 @@ class playlistWidget(QtWidgets.QDialog):
                 coverUrl = self.player.getLiveCoverUrl()
                 if coverUrl != '':
                     self.picFromUrlThread.run(coverUrl)
+                else:
+                    rad = self.player.getCurrentRadio()
+                    if rad is not None:
+                        radPicUrl = rad.getRadioPic()
+                        self.picFromUrlThread.run(radPicUrl)
                 
                 item1 = self.tableWidgetTracks.item(i,1)
                 item1.setText(self.player.currentRadioName)

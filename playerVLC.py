@@ -342,14 +342,20 @@ class playerVLC:
 
 
     def getLiveCoverUrl(self):
+        url = ""
+        rad = self.getCurrentRadio()
+        if rad is not None:
+            url = rad.liveCoverUrl
+        return url
+
+
+    def getCurrentRadio(self):
+        rad = None
         trk = self.getCurrentTrackPlaylist()
         print("getLiveCoverUrl")
         if trk.radioID > 0:
             rad = trk.radio
-            url = rad.liveCoverUrl
-            return url
-        else:
-            return ""
+        return rad
 
     def getTitle(self):
         title = ""

@@ -263,6 +263,12 @@ class radio:
     def printData(self):
         print(self.name+" # "+self.stream+" # "+str(self.image)+" # "+str(self.thumb))
 
+    def getRadioPic(self):
+        url = self.image
+        if url == "": 
+            url = self.thumb
+        return url
+
     def getCategoriesText(self):
         txt = ""
         for cat in self.categories:
