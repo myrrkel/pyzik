@@ -115,8 +115,16 @@ class playlistWidget(QtWidgets.QDialog):
 
 
         self.coverPixmap = QtGui.QPixmap()
+
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        #sizePolicy.setWidthForHeight(True)
+        
         self.cover = QtWidgets.QLabel()
+        self.cover.setSizePolicy(sizePolicy)
         self.cover.setMinimumSize(QtCore.QSize(200, 200))
+        self.cover.setMaximumSize(QtCore.QSize(200, 200))
         self.cover.setPixmap(self.coverPixmap)
         self.mainFrame.setLayout(self.hLayout)
         self.hLayout.addWidget(self.cover)
@@ -210,9 +218,13 @@ class playlistWidget(QtWidgets.QDialog):
 
         hHeader.resizeSections(QtWidgets.QHeaderView.ResizeToContents)
         hHeader.setSectionResizeMode(QtWidgets.QHeaderView.Interactive)
-        #hHeader.hideSection(3)
         hHeader.hideSection(4)
 
+        if self.tableWidgetTracks.columnWidth(0) < 100:
+            self.tableWidgetTracks.setColumnWidth(0,100)
+        else:
+            if self.tableWidgetTracks.columnWidth(0) > 300:
+                self.tableWidgetTracks.setColumnWidth(0,300)     
 
 
 
@@ -302,7 +314,7 @@ class playlistWidget(QtWidgets.QDialog):
         
         self.setCurrentTrack()
 
-        self.initColumnHeaders()
+
 
 
     def setCurrentTrack(self,title=""):
@@ -339,6 +351,15 @@ class playlistWidget(QtWidgets.QDialog):
                 item2 = self.tableWidgetTracks.item(i,2)
                 item2.setText(self.player.currentRadioName)
 
+            if trk is not None and trk.parentAlbum is not None and trk.parentAlbum.cover != "":
+                coverPath = trk.parentAlbum.getCoverPath()
+                self.coverPixmap = QtGui.QPixmap(coverPath)
+                scaledCover = self.coverPixmap.scaled(self.cover.size(),
+                                                QtCore.Qt.KeepAspectRatio,
+                                                QtCore.Qt.SmoothTransformation)
+                self.cover.setPixmap(scaledCover)
+                self.cover.show()
+
 
             f = item.font()
             if i == index:
@@ -366,6 +387,8 @@ class playlistWidget(QtWidgets.QDialog):
 
             
         self.update()
+
+        self.initColumnHeaders()
 
 
 

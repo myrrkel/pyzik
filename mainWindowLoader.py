@@ -530,7 +530,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def showAlbumCover(self,result):
         album = self.currentAlbum
         if album.cover != "":
-            self.showCover(os.path.join(album.getAlbumDir(),album.cover)) 
+            self.showCover(album.getCoverPath()) 
         else:
             self.showCover("")
 
