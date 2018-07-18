@@ -269,6 +269,9 @@ class album:
                 print("getCover GetDefault="+self.images[0])
                 self.cover = self.images[0]
 
+    def getCoverPath(self):
+        return os.path.join(self.getAlbumDir(),self.cover)
+
     def checkDir(self):
         return os.path.exists(self.getAlbumDir())
 
