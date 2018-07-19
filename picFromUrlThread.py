@@ -21,6 +21,13 @@ class picFromUrlThread(QThread):
 
     def run(self,url):
         #url = "https://cdn.radiofrance.fr/s3/cruiser-production/2016/11/d68ecd67-6435-457e-af3c-d514864ae5f5/400x400_rf_omm_0000360132_dnc.0055215305.jpg"
+        
+        if url == "":
+            self.lastUrl = url
+            self.downloadCompleted.emit("")
+            return
+
+
         if self.lastUrl != url:
             self.lastUrl = url
             self.cleanLastTempFile()

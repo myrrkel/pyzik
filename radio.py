@@ -130,7 +130,7 @@ class radio:
 
     def getFIPLiveID(self):
         fipID = -1
-        if self.name.upper() == "FIP":
+        if self.isFIP(strict=True):
             fipID = 7
         elif "FIP " in self.name.upper():
             key = "webradio"
@@ -150,15 +150,44 @@ class radio:
 
         return fipID
 
-    def isFIP(self):
-        return (self.name.upper() == "FIP" or "FIP " in self.name.upper())
+    def isFIP(self,strict=False):
+        radName = "FIP"
+        if strict:
+            return (self.name.upper() == radName)
+        else:
+            return (self.name.upper() == radName or radName+" " in self.name.upper())
 
-    def isFranceMusique(self):
+    def isFranceMusique(self,strict=False):
         radName = "FRANCE MUSIQUE"
+        if strict:
+            return (self.name.upper() == radName)
+        else:
+            return (self.name.upper() == radName or radName+" " in self.name.upper())
+
+    def isFranceInter(self,strict=False):
+        radName = "FRANCE INTER"
+        return (self.name.upper() == radName)
+
+    def isFranceCulture(self):
+        radName = "FRANCE CULTURE"
+        return (self.name.upper() == radName)
+
+    def isFranceInfo(self):
+        radName = "FRANCE INFO"
+        return (self.name.upper() == radName)
+
+    def isTSFJazz(self):
+        radName = "TSF JAZZ"
+        return (self.name.upper() == radName)
+
+    def isKEXP(self):
+        radName = "KEXP"
         return (self.name.upper() == radName or radName+" " in self.name.upper())
 
 
     def getFranceMusiqueLiveID(self,rurl):
+        if self.isFranceMusique(strict=True):
+            return 4
 
         try:
             url = "http://www.francemusique.fr"
@@ -199,10 +228,80 @@ class radio:
             liveUrl = "https://www.francemusique.fr/livemeta/pull/" + str(self.liveID)
             title = self.getCurrentTrackRF(liveUrl)
 
+        elif self.isFranceInter():
+            liveUrl = "https://www.francemusique.fr/livemeta/pull/1"
+            title = self.getCurrentTrackRF(liveUrl)
+
+        elif self.isFranceCulture():
+            liveUrl = "https://www.francemusique.fr/livemeta/pull/5"
+            title = self.getCurrentTrackRF(liveUrl)
+
+        elif self.isFranceInfo():
+            liveUrl = "https://www.francemusique.fr/livemeta/pull/2"
+            title = self.getCurrentTrackRF(liveUrl)
+
+        elif self.isTSFJazz():
+            title = self.getCurrentTrackTSFJazz()
+
+        elif self.isKEXP():
+            title = self.getCurrentTrackKEXP()
+
         else: return self.name
 
         return title
 
+
+
+    def getCurrentTrackTSFJazz(self):
+        url = "http://www.tsfjazz.com/getSongInformations.php"
+        r = requests.get(url)
+        return r.text
+
+
+    def getCurrentTrackKEXP(self):
+        currentTrack = ""
+
+        try:
+            liveUrl = "https://legacy-api.kexp.org/play/?format=json&limit=1"
+            print("LiveUrl="+liveUrl)
+            r = requests.get(liveUrl)
+            if r.text == "": return ""
+            if len(r.text) > 0 and r.text[0] != "{" : return ""
+            #print(r.text) 
+            dateRequest = r.headers.__getitem__("Date")
+            dateSrv = datetime(*eut.parsedate(dateRequest)[:6])
+            print("dateSrv= "+str(dateSrv))
+            #print("Headers="+str(r.headers)) 
+            datas = json2obj(r.text)
+        except requests.exceptions.HTTPError as err:  
+            print(err)
+
+        if datas:
+            if datas.results[0].playtype.playtypeid == 1:
+                currentTrack = str(datas.results[0].artist.name) + " - " + str(datas.results[0].track.name)
+            else:
+                currentTrack = self.getCurrentShowKEXP()
+
+        return currentTrack
+
+
+    def getCurrentShowKEXP(self):
+        currentShow = ""
+
+        try:
+            liveUrl = "https://legacy-api.kexp.org/show/?format=json&limit=1"
+            print("LiveShowUrl="+liveUrl)
+            r = requests.get(liveUrl)
+            if r.text == "": return ""
+            if len(r.text) > 0 and r.text[0] != "{" : return ""
+            datas = json2obj(r.text)
+        except requests.exceptions.HTTPError as err:  
+            print(err)
+
+        if datas:
+            currentShow = str(datas.results[0].program.name) + " - " + str(datas.results[0].hosts[0].name)
+
+        return currentShow
 
 
 
@@ -234,8 +333,12 @@ class radio:
 
         #print(str(datas))
         if datas:
-            pos = datas.levels[0].position
-            stepID = datas.levels[0].items[pos]
+            if self.isFranceInfo():
+                level = 1
+            else:
+                level = 0
+            pos = datas.levels[level].position
+            stepID = datas.levels[level].items[pos]
             #print("stepID="+str(stepID))
             #print(str(datas.steps))
             for stp in datas.steps:
@@ -246,14 +349,29 @@ class radio:
                     dateEnd = datetime.fromtimestamp(self.liveTrackEnd)
                     print("dateEnd="+str(dateEnd))
 
-                    if hasattr(stp,"visual"):
-                        self.liveCoverUrl = stp.visual
-                        print("visual="+self.liveCoverUrl)
+                    if self.isFIP() or self.isFranceMusique():
+                        if hasattr(stp,"visual") and stp.visual[:3].lower()=="http":
+                            self.liveCoverUrl = stp.visual
+                            print("visual="+self.liveCoverUrl)
 
-                    if hasattr(stp,"authors") and stp.authors != "":
-                        self.liveTrackTitle = stp.authors+" - "+stp.title
-                    else:
-                        self.liveTrackTitle = stp.title
+                        if hasattr(stp,"authors") and isinstance(stp.authors,str):
+                            self.liveTrackTitle = stp.authors
+                            if stp.authors != "":
+                                self.liveTrackTitle = self.liveTrackTitle+" - "+stp.title
+                        else:
+                            self.liveTrackTitle = stp.title
+
+                    if self.isFranceInter() or self.isFranceInfo() or self.isFranceCulture():
+                        if hasattr(stp,"visual") and stp.visual[:3].lower()=="http":
+                            self.liveCoverUrl = stp.visual
+                            print("visual="+self.liveCoverUrl)
+
+                        if hasattr(stp,"titleConcept") and isinstance(stp.titleConcept,str):
+                            self.liveTrackTitle = stp.titleConcept
+                            if stp.titleConcept != "":
+                                self.liveTrackTitle = self.liveTrackTitle+" - "+stp.title
+                        else:
+                            self.liveTrackTitle = stp.title
 
 
 
