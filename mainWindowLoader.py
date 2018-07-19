@@ -147,8 +147,9 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             self.ramdomAlbum()
             self.firstShow = False
 
-    def onPlayFuzzyGroovy(self):      
-        self.player.playFuzzyGroovy()
+    def onPlayFuzzyGroovy(self):   
+        fg = self.musicBase.radioMan.getFuzzyGroovy()   
+        self.player.playRadio(fg)
         self.showPlaylist(True)
         self.setVolume(self.getVolumeFromSlider())
 

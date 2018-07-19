@@ -251,45 +251,9 @@ class playerVLC:
         media = self.instance.media_new(sfile)
         return media
 
-    def playFuzzyGroovy(self):
-        stream = "http://listen.radionomy.com/fuzzy-and-groovy.m3u"
-        self.radioMode = True
-        self.adblock = True
-        self.dropMediaList()
-        media = self.instance.media_new(stream)
-
-        self.mediaList.add_media(media)
-        self.currentRadioName = "Fuzzy & Groovy Rock Radio"
-        self.currentRadioTitle = "..."
-        self.playMediaList()
-        trk = track()
-        trk.radioName = self.currentRadioName
-        trk.radioStream = stream
-        print("Fuzzy & Groovy Rock Radio isPlaying=",self.isPlaying())
-
-        #Wait until playing start.
-        startSince = 0
-        while self.isPlaying() == 0:
-            time.sleep(0.05)
-            startSince = startSince +0.05
-            if startSince > 5:   
-                #Get current state.
-                state = str(player.get_state())
-                #Find out if stream is working.
-                if state == "vlc.State.Error" or state == "State.Error":
-                    print("Stream is dead. Current state = {}".format(state))
-                    player.stop()
-                    self.radioMode = False
-                    return
-
-        mrl = self.getCurrentMrlPlaylist()
-        print("playFuzzyGroovy mrl="+mrl)
-        self.tracksDatas.append((mrl,stream,trk))
-
-
     def playRadio(self,radio):
         self.radioMode = True
-        self.adblock = False
+        self.adblock = radio.adblock
         self.dropMediaList()
         media = self.instance.media_new(radio.stream)
 
@@ -311,11 +275,11 @@ class playerVLC:
             startSince = startSince +0.05
             if startSince > 5:   
                 #Get current state.
-                state = str(player.get_state())
+                state = str(self.mediaPlayer.get_state())
                 #Find out if stream is working.
                 if state == "vlc.State.Error" or state == "State.Error":
                     print("Stream is dead. Current state = {}".format(state))
-                    player.stop()
+                    self.stop()
                     self.radioMode = False
                     return
 
@@ -352,8 +316,7 @@ class playerVLC:
     def getCurrentRadio(self):
         rad = None
         trk = self.getCurrentTrackPlaylist()
-        print("getLiveCoverUrl")
-        if trk.radioID > 0:
+        if trk.radio is not None:
             rad = trk.radio
         return rad
 
@@ -415,7 +378,7 @@ class playerVLC:
 if __name__ == '__main__':
     player = playerVLC()
     player.initMediaList()
-    player.playFuzzyGroovy()
+
 
 
 

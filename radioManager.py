@@ -203,6 +203,14 @@ class radioManager():
          
         return radioUrl     
 
+    def getFuzzyGroovy(self):
+        fg = radio()
+        fg.name = "Fuzzy & Groovy Rock Radio"
+        fg.stream = "http://listen.radionomy.com/fuzzy-and-groovy.m3u"
+        fg.image = "https://i3.radionomy.com/radios/400/ce7c17ce-4b4b-4698-8ed0-c2881eaf6e6b.png"
+        fg.adblock = True
+        return fg
+
 
 
 

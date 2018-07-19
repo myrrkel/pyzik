@@ -38,6 +38,7 @@ class radio:
         self.streamLink = ""
         self.searchID = ""
         self.sortID = 0
+        self.adblock = False
 
         self.liveID = -1
         self.liveTrackStart = None

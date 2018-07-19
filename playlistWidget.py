@@ -152,12 +152,16 @@ class playlistWidget(QtWidgets.QDialog):
         self.player.pause()
 
     def onPicDownloaded(self,path):
-
+        print("onPicDownloaded="+path)
         self.coverPixmap = QtGui.QPixmap(path)
-        scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                                QtCore.Qt.KeepAspectRatio,
-                                                QtCore.Qt.SmoothTransformation)
-        self.cover.setPixmap(scaledCover)
+        if not self.coverPixmap.isNull():
+            print("Pic size="+str(self.cover.size()))
+            scaledCover = self.coverPixmap.scaled(self.cover.size(),
+                                                    QtCore.Qt.KeepAspectRatio,
+                                                    QtCore.Qt.SmoothTransformation)
+            self.cover.setPixmap(scaledCover)
+        else:
+            self.cover.setPixmap(QtGui.QPixmap())
         self.cover.show()
 
 
@@ -442,4 +446,9 @@ if __name__ == "__main__":
     playlist = playlistWidget(player)
 
     playlist.show()
+
+    #url = "C:\\Users\\MP05~1.OCT\\AppData\\Local\\Temp\\tmpp9wk96vu"
+    #playlist.onPicDownloaded(url)
+
+
     sys.exit(app.exec_())
