@@ -71,8 +71,8 @@ class streamObserver(QThread):
                         trk = self.player.getCurrentTrackPlaylist()
                         if trk is not None:
                             #print("rad:"+trk.radioName+" id:"+str(trk.radioID))
-                            if trk.radioID > 0:
-                                rad = self.musicBase.radioMan.getFavRadio(trk.radioID)
+                            if trk.radio is not None:
+                                rad = trk.radio
                                 title = rad.getCurrentTrack()
                             else:
                                 title = self.player.getNowPlaying()

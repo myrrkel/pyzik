@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from collections import namedtuple
 #import datetime
 from datetime import datetime
+from datetime import timedelta
 import time
 import pytz
 import email.utils as eut
@@ -246,21 +247,43 @@ class radio:
         elif self.isKEXP():
             title = self.getCurrentTrackKEXP()
 
-        else: return self.name
+        else: title = self.name
+
+        self.liveTrackTitle = title
 
         return title
 
 
+    def isTimeout(self,nbSec=10):
+        res = True
+        tsNow =  time.time()
+        if self.liveTrackEnd is not None:
+            if self.liveTrackEnd > tsNow:
+                res = False
+            else:
+                res = True
+                self.liveTrackEnd = tsNow+10
+        else: 
+            self.liveTrackEnd = tsNow
+
+        return res
+
 
     def getCurrentTrackTSFJazz(self):
+
+        if not self.isTimeout(): return self.liveTrackTitle
+
         url = "http://www.tsfjazz.com/getSongInformations.php"
         r = requests.get(url)
-        return r.text
+        track = r.text.replace("|"," - ")
+        return track
 
 
     def getCurrentTrackKEXP(self):
-        currentTrack = ""
+        
+        if not self.isTimeout(): return self.liveTrackTitle
 
+        currentTrack = ""
         try:
             liveUrl = "https://legacy-api.kexp.org/play/?format=json&limit=1"
             print("LiveUrl="+liveUrl)
@@ -355,11 +378,11 @@ class radio:
                             print("visual="+self.liveCoverUrl)
 
                         if hasattr(stp,"authors") and isinstance(stp.authors,str):
-                            self.liveTrackTitle = stp.authors
+                            currentTrack = stp.authors
                             if stp.authors != "":
-                                self.liveTrackTitle = self.liveTrackTitle+" - "+stp.title
+                                currentTrack = currentTrack+" - "+stp.title
                         else:
-                            self.liveTrackTitle = stp.title
+                            currentTrack = stp.title
 
                     if self.isFranceInter() or self.isFranceInfo() or self.isFranceCulture():
                         if hasattr(stp,"visual") and stp.visual[:3].lower()=="http":
@@ -367,16 +390,16 @@ class radio:
                             print("visual="+self.liveCoverUrl)
 
                         if hasattr(stp,"titleConcept") and isinstance(stp.titleConcept,str):
-                            self.liveTrackTitle = stp.titleConcept
+                            currentTrack = stp.titleConcept
                             if stp.titleConcept != "":
-                                self.liveTrackTitle = self.liveTrackTitle+" - "+stp.title
+                                currentTrack = currentTrack+" - "+stp.title
                         else:
-                            self.liveTrackTitle = stp.title
+                            currentTrack = stp.title
 
 
 
-        print("trackTitle="+str(self.liveTrackTitle))
-        return self.liveTrackTitle 
+        print("trackTitle="+str(currentTrack))
+        return currentTrack 
 
     
     def printData(self):
