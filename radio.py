@@ -373,14 +373,20 @@ class radio:
                     print("dateEnd="+str(dateEnd))
 
                     if self.isFIP() or self.isFranceMusique():
-                        if hasattr(stp,"visual") and stp.visual[:3].lower()=="http":
+                        if hasattr(stp,"visual") and stp.visual[:4].lower()=="http":
                             self.liveCoverUrl = stp.visual
                             print("visual="+self.liveCoverUrl)
 
                         if hasattr(stp,"authors") and isinstance(stp.authors,str):
-                            currentTrack = stp.authors
                             if stp.authors != "":
-                                currentTrack = currentTrack+" - "+stp.title
+                                currentTrack = stp.authors
+
+                        if hasattr(stp,"composers") and isinstance(stp.composers,str):
+                            if stp.composers != "":
+                                currentTrack = stp.composers
+
+                        if currentTrack != "":
+                            currentTrack = currentTrack+" - "+stp.title
                         else:
                             currentTrack = stp.title
 
