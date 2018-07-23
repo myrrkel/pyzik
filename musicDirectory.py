@@ -24,6 +24,7 @@ class musicDirectory:
         self.albums = []
         self.dirType = 0
         self.status = 0 # -1=Error ,0=Unknown , 1=OK
+        self.exploreEvents = []
 
 
 
@@ -47,6 +48,10 @@ class musicDirectory:
             else:
                 self.status = -1
         return self.status
+
+    def addExploreEvent(self,explEvent):
+        self.exploreEvents.append(explEvent)
+        print("ExploreEvent "+explEvent.eventCode+" : "+explEvent.text)
 
 
 
@@ -72,7 +77,7 @@ class musicDirectory:
             curAlb.dirPath = dir
 
             if curAlb.toVerify == False:
-                #Artist name et album title has been found
+                #Artist name and album title has been found
                 curArt = self.artistCol.getArtist(curAlb.artistName)
                 #GetArtist return a new artist if it doesn't exists in artistsCol
                 if curArt:                
@@ -87,9 +92,8 @@ class musicDirectory:
                     else:
                         for alb in albumList:
                             if alb.getAlbumDir() != curAlb.getAlbumDir():
-                                print("Album "+curAlb.title+" already exists and may be a duplicate. Artist="+curArt.name+" ArtistID=",curArt.artistID)
-                                print("Alb = ",alb.getAlbumDir())
-                                print("curAlb = ",curAlb.getAlbumDir())
+                                self.addExploreEvent(exploreEvent("ALBUM_DUPLICATE",curAlb.getAlbumDir(),alb.albumID,curArt.artistID))
+
                 else:
                     print("No artist for "+dir)
 
@@ -108,7 +112,7 @@ class musicDirectory:
 
             print('exploreArtistsDirectory='+dir)
             curArt = self.artistCol.getArtist(dir)
-            #GetArtist return a new artist if if doesn't exists in artistsCol
+            #GetArtist return a new artist if it doesn't exists in artistsCol
 
             self.exploreAlbumsInArtistDirectory(curArt,dir,progressChanged)
 
@@ -166,3 +170,16 @@ class musicDirectory:
                 print(e)
         
 
+
+class exploreEvent:
+
+    def __init__(self,code,dirpath,albumID=0,artistID=0):
+        self.eventCode = code
+        self.text = ""
+        self.dirPath = dirpath
+        self.artistID = artistID
+        self.albumID = albumID
+
+    def getText(self):
+        if code == "ALBUM_DUPLICATE":
+            return "Album in "+self.dirpath+" already exists for this artist"
