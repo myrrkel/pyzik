@@ -152,9 +152,10 @@ class playlistWidget(QtWidgets.QDialog):
         self.player.pause()
 
     def onPicDownloaded(self,path):
-        print("onPicDownloaded="+path)
+        
         self.coverPixmap = QtGui.QPixmap(path)
         if not self.coverPixmap.isNull():
+            print("onPicDownloaded="+path)
             print("Pic size="+str(self.cover.size()))
             scaledCover = self.coverPixmap.scaled(self.cover.size(),
                                                     QtCore.Qt.KeepAspectRatio,
