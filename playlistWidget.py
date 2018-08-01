@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
+from PyQt5 import QtCore, QtGui, QtWidgets
 from track import *
 import requests
 from picFromUrlThread import *
 
 from vlc import EventType as vlcEventType
+from svgIcon import *
 
 orange = QtGui.QColor(216, 119, 0)
 white = QtGui.QColor(255, 255, 255)
@@ -26,29 +27,16 @@ class playerControlsWidget(QtWidgets.QWidget):
         _translate = QtCore.QCoreApplication.translate
 
         self.pauseButton = QtWidgets.QPushButton(_translate("playlist", "Pause"))
-        #ico = self.style().standardIcon(getattr(QtWidgets.QStyle,"SP_MediaPause"))
-        #ico = QtGui.QIcon("img/play.svg")
-        #svg = QtSvg.QGraphicsSvgItem("img/play.svg")
-        svg = QtGui.QPixmap("img/play.svg")
-
-        mask = svg.createMaskFromColor(QtGui.QColor('white'), QtCore.Qt.MaskOutColor)
-        svg.fill(orange)
-        svg.setMask(mask)
-
-
-        ico = QtGui.QIcon(svg)
-
-
-        self.pauseButton.setIcon(ico)
+        self.pauseButton.setIcon(getSvgIcon("pause.svg"))
 
         lay.addWidget(self.pauseButton)
 
         self.previousButton = QtWidgets.QPushButton(_translate("playlist", "Previous"))
-        self.previousButton.setIcon(self.style().standardIcon(getattr(QtWidgets.QStyle,"SP_MediaSkipBackward")))
+        self.previousButton.setIcon(getSvgIcon("step-backward.svg"))
         lay.addWidget(self.previousButton)
 
         self.nextButton = QtWidgets.QPushButton(_translate("playlist", "Next"))
-        self.nextButton.setIcon(self.style().standardIcon(getattr(QtWidgets.QStyle,"SP_MediaSkipForward")))
+        self.nextButton.setIcon(getSvgIcon("step-forward.svg"))
         lay.addWidget(self.nextButton)
 
         self.volumeSlider = QtWidgets.QSlider()
