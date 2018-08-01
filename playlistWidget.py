@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSignal
+from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
 from track import *
 import requests
 from picFromUrlThread import *
@@ -27,12 +26,29 @@ class playerControlsWidget(QtWidgets.QWidget):
         _translate = QtCore.QCoreApplication.translate
 
         self.pauseButton = QtWidgets.QPushButton(_translate("playlist", "Pause"))
+        #ico = self.style().standardIcon(getattr(QtWidgets.QStyle,"SP_MediaPause"))
+        #ico = QtGui.QIcon("img/play.svg")
+        #svg = QtSvg.QGraphicsSvgItem("img/play.svg")
+        svg = QtGui.QPixmap("img/play.svg")
+
+        mask = svg.createMaskFromColor(QtGui.QColor('white'), QtCore.Qt.MaskOutColor)
+        svg.fill(orange)
+        svg.setMask(mask)
+
+
+        ico = QtGui.QIcon(svg)
+
+
+        self.pauseButton.setIcon(ico)
+
         lay.addWidget(self.pauseButton)
 
         self.previousButton = QtWidgets.QPushButton(_translate("playlist", "Previous"))
+        self.previousButton.setIcon(self.style().standardIcon(getattr(QtWidgets.QStyle,"SP_MediaSkipBackward")))
         lay.addWidget(self.previousButton)
 
         self.nextButton = QtWidgets.QPushButton(_translate("playlist", "Next"))
+        self.nextButton.setIcon(self.style().standardIcon(getattr(QtWidgets.QStyle,"SP_MediaSkipForward")))
         lay.addWidget(self.nextButton)
 
         self.volumeSlider = QtWidgets.QSlider()
