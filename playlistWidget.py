@@ -26,16 +26,19 @@ class playerControlsWidget(QtWidgets.QWidget):
         
         _translate = QtCore.QCoreApplication.translate
 
-        self.pauseButton = QtWidgets.QPushButton(_translate("playlist", "Pause"))
+        self.pauseButton = QtWidgets.QPushButton()
+        self.pauseButton.setToolTip(_translate("playlist", "Pause"))
         self.pauseButton.setIcon(getSvgIcon("pause.svg"))
 
         lay.addWidget(self.pauseButton)
 
-        self.previousButton = QtWidgets.QPushButton(_translate("playlist", "Previous"))
+        self.previousButton = QtWidgets.QPushButton()
+        self.previousButton.setToolTip(_translate("playlist", "Previous"))
         self.previousButton.setIcon(getSvgIcon("step-backward.svg"))
         lay.addWidget(self.previousButton)
 
-        self.nextButton = QtWidgets.QPushButton(_translate("playlist", "Next"))
+        self.nextButton = QtWidgets.QPushButton()
+        self.nextButton.setToolTip(_translate("playlist", "Next"))
         self.nextButton.setIcon(getSvgIcon("step-forward.svg"))
         lay.addWidget(self.nextButton)
 
@@ -251,9 +254,13 @@ class playlistWidget(QtWidgets.QDialog):
         item.setText(_translate("playlist", "ID"))
 
 
-        self.playerControls.pauseButton.setText(_translate("playlist", "Pause"))
-        self.playerControls.previousButton.setText(_translate("playlist", "Previous"))
-        self.playerControls.nextButton.setText(_translate("playlist", "Next"))
+        #self.playerControls.pauseButton.setText(_translate("playlist", "Pause"))
+        #self.playerControls.previousButton.setText(_translate("playlist", "Previous"))
+        #self.playerControls.nextButton.setText(_translate("playlist", "Next"))
+
+        self.playerControls.pauseButton.setToolTip(_translate("playlist", "Pause"))   
+        self.playerControls.previousButton.setToolTip(_translate("playlist", "Previous"))
+        self.playerControls.nextButton.setToolTip(_translate("playlist", "Next"))
 
         self.setWindowTitle(_translate("playlist", "Playlist"))
 

@@ -16,7 +16,7 @@ from musicBaseThread import *
 from playlistWidget import *
 from historyWidget import *
 from searchRadioWidget import *
-
+from svgIcon import *
 
 
 
@@ -52,6 +52,11 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
         self.ui = mainWindow.Ui_MainWindow()
         self.ui.setupUi(self)
+        self.initPlayerButtons()
+        self.ui.playButton.setIcon(getSvgIcon("play-circle.svg"))
+        self.ui.addAlbumButton.setIcon(getSvgIcon("add_music.svg"))
+        self.ui.openDirButton.setIcon(getSvgIcon("folder-open.svg"))
+        self.ui.pauseButton.setIcon(getSvgIcon("pause-circle.svg"))
 
         
         self.setTitleLabel("")
@@ -662,6 +667,18 @@ class MainWindowLoader(QtWidgets.QMainWindow):
                                                     QtCore.Qt.KeepAspectRatio,
                                                     QtCore.Qt.SmoothTransformation)
             self.ui.cover.setPixmap(scaledCover)
+
+    def initPlayerButtons(self):
+        
+        self.ui.playButton.setToolTip(self.ui.playButton.text())
+        self.ui.openDirButton.setToolTip(self.ui.openDirButton.text())
+        self.ui.addAlbumButton.setToolTip(self.ui.addAlbumButton.text())
+        self.ui.pauseButton.setToolTip(self.ui.pauseButton.text())
+
+        self.ui.playButton.setText("")
+        self.ui.openDirButton.setText("")
+        self.ui.addAlbumButton.setText("")
+        self.ui.pauseButton.setText("")
         
 
     def closeEvent(self, event):
@@ -683,6 +700,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.translator.unInstallTranslators()
         self.translator.installTranslators(locale)
         self.ui.retranslateUi(self)
+        self.initPlayerButtons()
         if self.playList is not None: self.playList.retranslateUi()
         if self.histoWidget is not None: self.histoWidget.retranslateUi()
         

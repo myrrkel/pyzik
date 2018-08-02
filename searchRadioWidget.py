@@ -6,7 +6,7 @@ from PyQt5.QtCore import pyqtSignal
 from radioManager import *
 from searchRadioThread import *
 from progressWidget import *
-
+from svgIcon import *
 
 class searchControlsWidget(QtWidgets.QWidget):
 
@@ -23,6 +23,7 @@ class searchControlsWidget(QtWidgets.QWidget):
         self.searchEdit.setText("")
 
         self.searchButton = QtWidgets.QPushButton("Search")
+        self.searchButton.setIcon(getSvgIcon("radio-tower.svg"))
         lay.addWidget(self.searchEdit)
         lay.addWidget(self.searchButton)
 
@@ -67,9 +68,11 @@ class playControlsWidget(QtWidgets.QWidget):
 
 
         self.playButton = QtWidgets.QPushButton("Play")
+        self.playButton.setIcon(getSvgIcon("play.svg"))
         lay.addWidget(self.playButton)
 
         self.addButton = QtWidgets.QPushButton("Add")
+        self.addButton.setIcon(getSvgIcon("plus.svg"))
         lay.addWidget(self.addButton)
 
 
