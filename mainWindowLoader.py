@@ -18,7 +18,7 @@ from historyWidget import *
 from searchRadioWidget import *
 from svgIcon import *
 
-
+orange = QtGui.QColor(216, 119, 0)
 
 def openFile(filename):
     if sys.platform == "win32":
@@ -48,7 +48,10 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.currentAlbum = album("")
 
         self.coverPixmap = QtGui.QPixmap()
-        self.defaultPixmap = QtGui.QPixmap()
+        self.defaultPixmap = QtGui.QPixmap("img/vinyl-record.svg")
+        self.defaultPixmap = getSvgWithColorParam("vinyl-record2.svg")
+
+        self.setWindowIcon(getLogo())
 
         self.ui = mainWindow.Ui_MainWindow()
         self.ui.setupUi(self)
@@ -57,6 +60,9 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.ui.addAlbumButton.setIcon(getSvgIcon("add_music.svg"))
         self.ui.openDirButton.setIcon(getSvgIcon("folder-open.svg"))
         self.ui.pauseButton.setIcon(getSvgIcon("pause-circle.svg"))
+
+        #self.ui.labelArtist.setStyleSheet("QLabel { color : rgb(216,119,0)}")
+
 
         
         self.setTitleLabel("")
@@ -645,16 +651,18 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
     def showCover(self,path):
         
-        if path != "":
+        if path == "":
+            self.coverPixmap = self.defaultPixmap
+        else:
             print("MyCover="+path)
             self.coverPixmap = QtGui.QPixmap(path)
-            scaledCover = self.coverPixmap.scaled(self.ui.cover.size(),
-                                                    QtCore.Qt.KeepAspectRatio,
-                                                    QtCore.Qt.SmoothTransformation)
-            self.ui.cover.setPixmap(scaledCover)
-            self.ui.cover.show()
-        else:
-            self.ui.cover.setPixmap(self.defaultPixmap)
+
+        scaledCover = self.coverPixmap.scaled(self.ui.cover.size(),
+                                                QtCore.Qt.KeepAspectRatio,
+                                                QtCore.Qt.SmoothTransformation)
+        self.ui.cover.setPixmap(scaledCover)
+        self.ui.cover.show()
+
     
 
     def resizeEvent(self,event):
