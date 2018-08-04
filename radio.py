@@ -247,12 +247,20 @@ class radio:
         elif self.isKEXP():
             title = self.getCurrentTrackKEXP()
 
-        else: title = self.name
+        else: title = ""
 
+        title = self.cleanTitle(title)
         self.liveTrackTitle = title
 
         return title
 
+
+    def cleanTitle(self,title):
+        clean = title.strip()
+        if clean =="|": clean = ""
+        if clean =="-": clean = ""
+        if "targetspot" in clean.lower(): clean = ""
+        return clean
 
     def isTimeout(self,nbSec=10):
         res = True

@@ -4,6 +4,7 @@
 from operator import itemgetter, attrgetter
 import random
 from album import *
+import formatString as FS
 
 def getSimplestTitle(title,char):
     simple =  title.replace(".",char)
@@ -26,23 +27,10 @@ def getAlternativeTitle(title):
 
 
 def filterAlbumsByTitle(seq, title):
-    alb = album()
-    titleFormated = alb.formatTitle(title)
-    titleSimplifiedSpace = getSimplestTitle(titleFormated," ")
-    titleSimplified = getSimplestTitle(titleFormated,"")
-    titleAlternative = getAlternativeTitle(titleFormated)
+    title = FS.getSearchKey(title.upper())
 
     for el in seq:
-        if el.title == titleFormated:
-            yield el
-            break
-        elif getSimplestTitle(el.title,"") == titleSimplified:
-            yield el
-            break
-        elif el.title == titleAlternative:
-            yield el
-            break
-        elif getAlternativeTitle(el.title) == titleFormated:
+        if el.getSearchKey() == title:
             yield el
             break
 
@@ -59,6 +47,7 @@ class artist:
         self.styleIDSet = set()
         self.albums = []
         self.itemListViewArtist = None
+        self.searchKey = ""
         
 
     def getName(self):
@@ -67,7 +56,10 @@ class artist:
     def formatName(self,name):
         return name.upper()
 
-
+    def getSearchKey(self):
+        if self.searchKey =="":
+            self.searchKey = FS.getSearchKey(self.name)
+        return self.searchKey
 
     def printInfos(self):
         print(self.name+" id="+str(self.artistID))

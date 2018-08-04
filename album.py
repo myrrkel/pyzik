@@ -6,7 +6,7 @@ import os
 import fnmatch
 from track import *
 from globalConstants import *
-
+import formatString as FS
 
 
 
@@ -91,6 +91,7 @@ class album:
         self.styleIDSet = set()
         self.doStop = False
         self.musicDirectory = None
+        self.searchKey = ""
 
 
         if dirname!="":
@@ -106,6 +107,12 @@ class album:
 
     def formatTitle(self,title):
         return titleExcept(title)
+
+
+    def getSearchKey(self):
+        if self.searchKey =="":
+            self.searchKey = FS.getSearchKey(self.title.upper())
+        return self.searchKey
 
     def printInfos(self):
         print("Title: "+self.title+"  # Artist: "+self.artistName\

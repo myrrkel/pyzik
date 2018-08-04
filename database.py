@@ -35,7 +35,7 @@ class database():
 
     def initMemoryDB(self):
 
-        wProgress = progressWidget()
+        #wProgress = progressWidget()
      
 
         # Read database to tempfile
@@ -46,7 +46,7 @@ class database():
         for line in self.connection.iterdump():
             tempfile.write('%s\n' % line)
             iProgress = round((i/iterCount)*100)
-            wProgress.setValue(iProgress)
+            #wProgress.setValue(iProgress)
             i+=1
 
         self.connection.close()
@@ -61,7 +61,7 @@ class database():
 
         self.connection = self.memoryConnection
 
-        wProgress.close()
+        #wProgress.close()
 
 
 

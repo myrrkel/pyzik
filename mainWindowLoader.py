@@ -66,7 +66,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
         
         self.setTitleLabel("")
-        self.setWindowTitle("PyZik")
+        self.setWindowTitle("Pyzik")
 
         self.initAlbumTableWidget()
         self.initTrackTableWidget()
@@ -172,6 +172,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             self.searchRadio.radioAdded.connect(self.onAddFavRadio)
             
         self.searchRadio.show()
+        self.searchRadio.activateWindow()
 
 
     def onAddFavRadio(self):
@@ -576,7 +577,9 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
         self.playList.showMediaList()
             
-        if isNew or showOnlyIfNew==False: self.playList.show()
+        if isNew or showOnlyIfNew==False: 
+            self.playList.show()
+            self.playList.activateWindow()
 
 
     def showHistory(self):
@@ -585,6 +588,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             self.histoWidget = historyWidget(self.musicBase)
              
         self.histoWidget.show()
+        self.histoWidget.activateWindow()
 
 
     def onPlayerMediaChangedVLC(self,event):
@@ -600,8 +604,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         print("onPlayerMediaChangedStreamObserver="+title)
 
         trk = self.player.getCurrentTrackPlaylist()
-        
-        self.musicBase.history.insertRadioHistory(self.player.currentRadioName,title)
+        if not title in ["...","","-"]:
+            self.musicBase.history.insertRadioHistory(self.player.currentRadioName,title)
         if self.playList is not None:
             self.playList.setCurrentTrack(title)
 
@@ -692,6 +696,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def closeEvent(self, event):
         if self.playList is not None: self.playList.close()
         if self.histoWidget is not None: self.histoWidget.close()
+        if self.searchRadio is not None: self.searchRadio.close()
         self.saveSettings()
 
     def saveSettings(self):
@@ -711,9 +716,10 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.initPlayerButtons()
         if self.playList is not None: self.playList.retranslateUi()
         if self.histoWidget is not None: self.histoWidget.retranslateUi()
+        if self.searchRadio is not None: self.searchRadio.retranslateUi()
         
         self.update()
-        self.setWindowTitle("PyZik")
+        self.setWindowTitle("Pyzik")
         self.setTitleLabel()
 
 

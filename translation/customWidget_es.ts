@@ -71,23 +71,23 @@
     <name>searchRadio</name>
     <message>
         <source>Search radio</source>
-        <translation></translation>
+        <translation>Buscar una radio</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation></translation>
+        <translation>Buscar</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation></translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <source>Country</source>
-        <translation></translation>
+        <translation>País</translation>
     </message>
     <message>
         <source>Genre</source>
-        <translation></translation>
+        <translation>Género</translation>
     </message>
     <message>
         <source>Stream</source>
@@ -95,11 +95,11 @@
     </message>
     <message>
         <source>Play</source>
-        <translation></translation>
+        <translation>Reproducir</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation></translation>
+        <translation>Añadir</translation>
     </message>
 </context>
 </TS>

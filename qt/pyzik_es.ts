@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="es_ES" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.1" language="es_ES">
 <context>
     <name>Dialog</name>
     <message>
@@ -203,17 +204,17 @@
     <message>
         <location filename="mainwindow.ui" line="725"/>
         <source>Search Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Buscar una radio</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="730"/>
         <source>Radio List</source>
-        <translation type="unfinished"></translation>
+        <translation>Radio Lista</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="735"/>
         <source>Radio Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Radio Administrador</translation>
     </message>
 </context>
 </TS>

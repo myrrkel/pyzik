@@ -45,7 +45,7 @@ class streamObserver(QThread):
                             if (self.previousTitle != title):
                                 print(title)
                                 self.previousTitle = title
-                                self.titleChanged.emit(title)
+                                self.titleChanged.emit(self.cleanTitle(title))
                         else:
                         
                             if self.previousTitle == "Advert Killed!":
@@ -74,8 +74,10 @@ class streamObserver(QThread):
                             if trk.radio is not None:
                                 rad = trk.radio
                                 title = rad.getCurrentTrack()
+                                if title == "": title = self.nowPlaying()
+
                             else:
-                                title = self.player.getNowPlaying()
+                                title = self.nowPlaying()
 
                             if (self.previousTitle != title):
                                 
@@ -83,6 +85,7 @@ class streamObserver(QThread):
                                 self.player.currentRadioTitle = title
                                 print("EMIT= "+title)
                                 self.titleChanged.emit(title)
+
 
 
 
@@ -98,3 +101,13 @@ class streamObserver(QThread):
         if self.previousTitle != "Advert Killed!":
             self.previousTitle = ""
 
+
+    def cleanTitle(self,title):
+        clean = title.strip()
+        if clean =="|": clean = ""
+        if clean =="-": clean = ""
+        if "targetspot" in clean.lower(): clean = ""
+        return clean
+
+    def nowPlaying(self):
+        return self.cleanTitle(self.player.getNowPlaying())

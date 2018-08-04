@@ -6,10 +6,35 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="400"
    height="400"
    id="svg2"
-   version="1.0">
+   version="1.0"
+   sodipodi:docname="vinyl-record2.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1299"
+     inkscape:window-height="713"
+     id="namedview3825"
+     showgrid="false"
+     inkscape:snap-intersection-paths="false"
+     inkscape:zoom="1.33"
+     inkscape:cx="200"
+     inkscape:cy="200"
+     inkscape:window-x="67"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2" />
   <defs
      id="defs4">
     <linearGradient
@@ -90,7 +115,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -142,4 +167,5 @@
      id="path3232"
      d="m 142.61386,190.25519 -3.88908,-0.66291 c -3.23715,19.17313 2.53847,39.5732 17.32411,54.35884 14.74595,14.74593 35.07597,20.5264 54.20416,17.34621 l -0.64082,-3.86699 c -17.92511,2.98388 -36.96183,-2.44619 -50.7791,-16.26346 -13.85228,-13.85228 -19.25338,-32.94694 -16.21927,-50.91169 z"
      style="fill:#color" />
+
 </svg>

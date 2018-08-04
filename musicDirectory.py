@@ -51,7 +51,7 @@ class musicDirectory:
 
     def addExploreEvent(self,explEvent):
         self.exploreEvents.append(explEvent)
-        print("ExploreEvent "+explEvent.eventCode+" : "+explEvent.text)
+        print("ExploreEvent "+explEvent.eventCode+" : "+explEvent.getText())
 
 
 
@@ -175,11 +175,10 @@ class exploreEvent:
 
     def __init__(self,code,dirpath,albumID=0,artistID=0):
         self.eventCode = code
-        self.text = ""
         self.dirPath = dirpath
         self.artistID = artistID
         self.albumID = albumID
 
     def getText(self):
-        if code == "ALBUM_DUPLICATE":
-            return "Album in "+self.dirpath+" already exists for this artist"
+        if self.eventCode == "ALBUM_DUPLICATE":
+            return "Album in "+self.dirPath+" already exists for this artist"

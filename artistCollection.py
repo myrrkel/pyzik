@@ -3,14 +3,20 @@
 
 
 from artist import *
+import formatString as FS
 from operator import itemgetter, attrgetter
 from sortedcontainers import SortedKeyList
 
+
 def filterByName(seq, value):
+    value = FS.getSearchKey(value)
+
     for el in seq:
-        if el.name==el.formatName(value): yield el
-        elif el.name.replace("AND","&")==el.formatName(value): yield el
-        elif el.name==el.formatName(value).replace("AND","&"): yield el
+        if el.getSearchKey() == value:
+            yield el
+            break
+        
+
 
 
 def filterByID(seq, value):
@@ -47,22 +53,19 @@ class artistCollection:
 
     def getArtist(self,artistName):
         newArt = artist(artistName,0)
-        
-        artistList = self.findSortedArtist(newArt)
-        if len(artistList) == 0 :
-            artistList = self.findArtists(newArt.name)
+    
+        artistList = self.findArtists(newArt.name)
 
         if len(artistList)==0:
             #If the artist is not found in artistCol, we add it and return the
             curArt = self.addArtist(newArt)
-            #curArt = self.artists[len(self.artists)-1] --line to delete
         elif len(artistList)==1:
             #If artists is found
             curArt = artistList[0]
         else:
             #If there is more than 1 artist, ask for the good one to user
-            #For the moment, just return None
-            curArt = None
+            #For the moment, just return the first one
+            curArt = artistList[0]
 
         return curArt
 
@@ -78,6 +81,7 @@ class artistCollection:
     def findSortedArtist(self,art):
         artistList = []
         if art in self.artists:
+            print("findSortedArtist="+art.name)
             artistList.append(art)
 
         return artistList
