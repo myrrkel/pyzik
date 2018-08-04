@@ -4,9 +4,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from historyManager import *
-from svgIcon import *
 
-class historyControlsWidget(QtWidgets.QWidget):
+
+class customControlsWidget(QtWidgets.QWidget):
 
 
     def __init__(self,parent=None):
@@ -16,26 +16,23 @@ class historyControlsWidget(QtWidgets.QWidget):
         
         _translate = QtCore.QCoreApplication.translate
 
-        self.refreshButton = QtWidgets.QPushButton(_translate("history", "Refresh"))
-        self.refreshButton.setIcon(getSvgIcon("refresh.svg"))
+        self.refreshButton = QtWidgets.QPushButton(_translate("custom", "Refresh"))
         lay.addWidget(self.refreshButton)
 
 
-class historyWidget(QtWidgets.QDialog):
+class customWidget(QtWidgets.QDialog):
     
 
-    def __init__(self,musicBase):
+    def __init__(self,mainCustomItem):
         QtWidgets.QDialog.__init__(self)
+        self.mainItem = mainCustomItem
         self.setWindowFlags(QtCore.Qt.Window)
      
-        self.history = historyManager(musicBase)
-        self.history.loadHistory(False)
         
-
         self.initUI()
 
-        self.showHistoryItems(self.history.log)
-        self.initColumnHeaders()
+        #self.showTableItems(self.mainItem.items)
+        #self.initColumnHeaders()
 
     def initUI(self):
 
@@ -48,22 +45,22 @@ class historyWidget(QtWidgets.QDialog):
         sizePolicy.setVerticalStretch(100)
         self.setSizePolicy(sizePolicy)
         self.resize(550,400)
-        self.initTableWidgetItems()
+        #self.initTableWidgetItems()
 
-        self.historyControls = historyControlsWidget()
-        self.historyControls.refreshButton.clicked.connect(self.onRefresh)
+        self.customControls = customControlsWidget()
+        self.customControls.refreshButton.clicked.connect(self.onAction)
 
 
-        layout.addWidget(self.tableWidgetItems)
-        layout.addWidget(self.historyControls)
+        #layout.addWidget(self.tableWidgetItems)
+        layout.addWidget(self.customControls)
 
-        self.retranslateUi()
+        #self.retranslateUi()
         
 
 
-    def onRefresh(self,event):
-        self.history.loadHistory(False)
-        self.showHistoryItems(self.history.log)
+    def onAction(self,event):
+        print("Action!")
+
 
 
     def initTableWidgetItems(self):
@@ -122,7 +119,7 @@ class historyWidget(QtWidgets.QDialog):
         self.setWindowTitle(_translate("history", "History"))
         self.historyControls.refreshButton.setText(_translate("history", "Refresh"))
 
-    def showHistoryItems(self,items):      
+    def showTableItems(self,items):      
         self.tableWidgetItems.setStyleSheet("selection-background-color: black;selection-color: white;") 
         self.tableWidgetItems.setColumnCount(4)
         self.tableWidgetItems.setRowCount(0)
@@ -163,9 +160,9 @@ if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
 
-    histoWidget = historyWidget(mb)
+    custWidget = customWidget(mb)
 
-    histoWidget.show()
+    custWidget.show()
     sys.exit(app.exec_())
 
 

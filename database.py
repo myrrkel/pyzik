@@ -293,6 +293,21 @@ class database():
 
 
 
+    def updateValue(self,table,column,value, columnID, rowID):
+        try:
+            c = self.connection.cursor()
+            sqlUpdate = "UPDATE "+table+" SET "+column+"=? WHERE "+columnID+"="+str(rowID)+";"
+
+            c.execute(sqlUpdate,(value,))
+
+            self.connection.commit()
+
+        except sqlite3.Error as e:
+            print(e)
+        
+
+
+
 
 
 

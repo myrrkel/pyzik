@@ -7,6 +7,7 @@ import fnmatch
 from track import *
 from globalConstants import *
 import formatString as FS
+from database import *
 
 
 
@@ -298,6 +299,19 @@ class album:
 
     def addStyle(self,idSet):
         self.styleIDSet = self.styleIDSet.union(idSet)
+
+
+    def updateTitle(self):
+        db = database()
+        db.updateValue("albums","title",self.title,"albumID",self.albumID)
+
+    def updateYear(self):
+        db = database()
+        db.updateValue("albums","year",self.year,"albumID",self.albumID)
+
+    def update(self):
+        self.updateTitle()
+        self.updateYear()
 
 
 if __name__ == '__main__':

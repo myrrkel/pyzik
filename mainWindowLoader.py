@@ -16,6 +16,7 @@ from musicBaseThread import *
 from playlistWidget import *
 from historyWidget import *
 from searchRadioWidget import *
+from albumWidget import *
 from svgIcon import *
 
 orange = QtGui.QColor(216, 119, 0)
@@ -295,11 +296,33 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.initAlbumTableWidget()
 
     def handleHeaderAlbumsMenu(self, pos):
+        _translate = QtCore.QCoreApplication.translate
         print('column(%d)' % self.ui.tableWidgetAlbums.horizontalHeader().logicalIndexAt(pos))
+
         menu = QtWidgets.QMenu()
-        menu.addAction('Add')
-        menu.addAction('Delete')
+
+
+        actionEditAlbum = QtWidgets.QAction(menu)
+        actionEditAlbum.setObjectName("actionEditAlbum")
+        actionEditAlbum.setText(_translate("playlist","Edit"))
+        menu.addAction(actionEditAlbum)
+        #actionEditAlbum.triggered.connect(functools.partial(self.onPlayFavRadio, rad.radioID))
+        actionEditAlbum.triggered.connect(self.onEditAlbum)
+
+
         menu.exec(QtGui.QCursor.pos())
+
+    def onEditAlbum(self):
+        selRows = self.ui.tableWidgetAlbums.selectionModel().selectedRows()
+        if len(selRows) >= 0:
+            albumIDSel = self.ui.tableWidgetAlbums.item(selRows[0].row(),2).text()
+            alb = self.musicBase.albumCol.getAlbum(albumIDSel)
+            if(alb.albumID != 0):
+                self.editAlbumWidget = albumWidget(alb)
+                self.editAlbumWidget.show()
+            else:
+                print("No album to edit")
+
 
     '''
     Genre comboBox functions
