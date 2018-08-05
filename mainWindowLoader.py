@@ -20,6 +20,7 @@ from albumWidget import *
 from svgIcon import *
 
 orange = QtGui.QColor(216, 119, 0)
+_translate = QtCore.QCoreApplication.translate
 
 def openFile(filename):
     if sys.platform == "win32":
@@ -257,7 +258,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             self.ui.actionFavRadio.triggered.connect(functools.partial(self.onPlayFavRadio, rad.radioID))
 
         self.ui.menuRadios.addAction(self.ui.menuFavRadios.menuAction())
-        self.ui.menuFavRadios.setTitle("Favorite radios")
+        self.ui.menuFavRadios.setTitle(_translate("radio","Favorite radios"))
         
 
     '''
@@ -296,7 +297,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.initAlbumTableWidget()
 
     def handleHeaderAlbumsMenu(self, pos):
-        _translate = QtCore.QCoreApplication.translate
+        
         print('column(%d)' % self.ui.tableWidgetAlbums.horizontalHeader().logicalIndexAt(pos))
 
         menu = QtWidgets.QMenu()
@@ -304,7 +305,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
         actionEditAlbum = QtWidgets.QAction(menu)
         actionEditAlbum.setObjectName("actionEditAlbum")
-        actionEditAlbum.setText(_translate("playlist","Edit"))
+        actionEditAlbum.setText(_translate("album","Edit"))
         menu.addAction(actionEditAlbum)
         #actionEditAlbum.triggered.connect(functools.partial(self.onPlayFavRadio, rad.radioID))
         actionEditAlbum.triggered.connect(self.onEditAlbum)
@@ -329,7 +330,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     '''
 
     def showGenres(self):
-        _translate = QtCore.QCoreApplication.translate
+
         self.ui.comboBoxStyle.addItem(_translate("playlist","All styles"),-1)
 
         idSet = self.musicBase.musicDirectoryCol.getStyleIDSet()
@@ -735,16 +736,22 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         # translator for built-in qt strings
         self.translator.unInstallTranslators()
         self.translator.installTranslators(locale)
-        self.ui.retranslateUi(self)
+        self.retranslateUi()
         self.initPlayerButtons()
         if self.playList is not None: self.playList.retranslateUi()
         if self.histoWidget is not None: self.histoWidget.retranslateUi()
         if self.searchRadio is not None: self.searchRadio.retranslateUi()
         
+
+
         self.update()
         self.setWindowTitle("Pyzik")
         self.setTitleLabel()
 
+    def retranslateUi(self):
+
+        self.ui.menuFavRadios.setTitle(_translate("radio","Favorite radios"))
+        self.ui.retranslateUi(self)
 
 
     

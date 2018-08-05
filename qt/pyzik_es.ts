@@ -139,12 +139,12 @@
     <message>
         <location filename="mainwindow.ui" line="675"/>
         <source>Explore music directories</source>
-        <translation>exploirar carpetas de música</translation>
+        <translation>explorar carpetas de música</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="685"/>
         <source>Random album</source>
-        <translation>Album aleatorio</translation>
+        <translation>Álbum aleatorio</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="690"/>

@@ -17,7 +17,7 @@
     </message>
     <message>
         <source>Album</source>
-        <translation>Album</translation>
+        <translation>Álbum</translation>
     </message>
     <message>
         <source>Date</source>
@@ -100,6 +100,36 @@
     <message>
         <source>Add</source>
         <translation>Añadir</translation>
+    </message>
+</context>
+<context>
+    <name>radio</name>
+    <message>
+        <source>Favorite radios</source>
+        <translation>Radios favoritas</translation>
+    </message>
+</context>
+<context>
+    <name>album</name>
+    <message>
+        <source>Edit</source>
+        <translation>Editar</translation>
+    </message>
+    <message>
+        <source>Album</source>
+        <translation>Álbum</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>Guardar</translation>
+    </message>
+    <message>
+        <source>Title</source>
+        <translation>Título</translation>
+    </message>
+    <message>
+        <source>Year</source>
+        <translation>Año</translation>
     </message>
 </context>
 </TS>

@@ -102,4 +102,34 @@
         <translation>Ajouter</translation>
     </message>
 </context>
+<context>
+    <name>radio</name>
+    <message>
+        <source>Favorite radios</source>
+        <translation>Radios favorites</translation>
+    </message>
+</context>
+<context>
+    <name>album</name>
+    <message>
+        <source>Edit</source>
+        <translation>Modifier</translation>
+    </message>
+    <message>
+        <source>Album</source>
+        <translation>Album</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>Enregistrer</translation>
+    </message>
+    <message>
+        <source>Title</source>
+        <translation>Titre</translation>
+    </message>
+    <message>
+        <source>Year</source>
+        <translation>Année</translation>
+    </message>
+</context>
 </TS>

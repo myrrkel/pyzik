@@ -15,10 +15,11 @@ class historyControlsWidget(QtWidgets.QWidget):
         lay = QtWidgets.QHBoxLayout(self)
         
         _translate = QtCore.QCoreApplication.translate
-
+        lay.addStretch()
         self.refreshButton = QtWidgets.QPushButton(_translate("history", "Refresh"))
         self.refreshButton.setIcon(getSvgIcon("refresh.svg"))
         lay.addWidget(self.refreshButton)
+        lay.addStretch()
 
 
 class historyWidget(QtWidgets.QDialog):

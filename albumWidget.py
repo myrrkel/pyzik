@@ -23,11 +23,22 @@ class albumControlsWidget(QtWidgets.QWidget):
         
         _translate = QtCore.QCoreApplication.translate
 
-        self.saveButton = QtWidgets.QPushButton(_translate("Album", "Save"))
+        lay.addStretch()
+
+        self.saveButton = QtWidgets.QPushButton(_translate("album", "Save"))
         self.saveButton.setMinimumSize(QtCore.QSize(70, 27))
-        self.saveButton.setMaximumSize(QtCore.QSize(70, 27))
+        #self.saveButton.setMaximumSize(QtCore.QSize(70, 27))
         self.saveButton.setIcon(getSvgIcon("save.svg"))
+
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(50)
+        sizePolicy.setVerticalStretch(0)
+
+        self.saveButton.setSizePolicy(sizePolicy)
+
         lay.addWidget(self.saveButton)
+
+        lay.addStretch()
 
 class albumInfoControlsWidget(QtWidgets.QWidget):
 
@@ -67,7 +78,7 @@ class albumInfoControlsWidget(QtWidgets.QWidget):
         lay1.setContentsMargins(0, 0, 0, 0)
 
         self.titleLabel = QtWidgets.QLabel(self.title)
-        self.titleLabel.setText(_translate("Album", "Title"))
+        self.titleLabel.setText(_translate("album", "Title"))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -106,7 +117,7 @@ class albumInfoControlsWidget(QtWidgets.QWidget):
         lay2.setContentsMargins(0, 0, 0, 0)
 
         self.yearLabel = QtWidgets.QLabel(self.year)
-        self.yearLabel.setText(_translate("Album", "Year"))
+        self.yearLabel.setText(_translate("album", "Year"))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(100)
