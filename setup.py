@@ -6,12 +6,13 @@ import sys
 import setuptools
 from cx_Freeze import setup, Executable
 
+path = sys.path.append("src")
 includes = ["PyQt5","darkStyle"]
 packages = setuptools.find_packages()
 
 
 executables = [
-        Executable("pyzik.py")
+        Executable("src/pyzik.py")
 ]
 
 
