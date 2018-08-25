@@ -1,7 +1,9 @@
-data/
-__pycache__/
-TEST/
-qt/*.qm
-qt/*.cpp
-qt/*.h
-qt/*.pro.user
+src/data/
+*/__pycache__/
+src/qt/*.qm
+src/qt/*.cpp
+src/qt/*.h
+src/qt/*.pro.user
+build
+dist
+
