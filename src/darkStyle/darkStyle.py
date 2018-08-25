@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # The MIT License (MIT)
@@ -31,7 +32,7 @@ with the correct rc file.
 """
 import logging
 import platform
-from darkStyle import pyqt5_style_rc
+#from pyqt5_style_rc import *
 
 class darkStyle:
 

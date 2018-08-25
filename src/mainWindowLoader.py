@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os, sys, subprocess, functools
 from PyQt5 import QtWidgets, QtGui, QtCore
+from darkStyle import darkStyle
 from playerVLC import *
 import mainWindow  # import of mainWindow.py made with pyuic5
 from musicBase import *
