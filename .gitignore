@@ -1,10 +1,11 @@
 src/data/
-__pycache__/
-*/__pycache__/
+__pycache__
+pyzik.egg-info
 src/qt/*.qm
 src/qt/*.cpp
 src/qt/*.h
 src/qt/*.pro.user
+*.pyc
 build
 dist
 
