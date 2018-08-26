@@ -16,8 +16,14 @@ global dataDir
 dataDir = user_data_dir(appName, appAuthor)
 
 global appDir
-appDir = os.path.dirname(os.path.realpath(sys.argv[0]))
-print("AppDir="+appDir)
+if os.path.basename(sys.executable) == "pyzik":
+    appDir = os.path.dirname(os.path.realpath(sys.executable))
+else:
+    appDir = os.path.dirname(os.path.realpath(sys.argv[0]))
+#appDir =  os.path.dirname(repr(__file__))
+#appDir = os.getcwd()
+#appDir = site_data_dir(appName, appAuthor)
+print("AppDir="+str(appDir))
 
 
 def keyToString(key):

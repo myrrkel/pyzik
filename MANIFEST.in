@@ -1,2 +1,5 @@
+include src/*.py
 include src/img/*
 include src/darkStyle/*.qss
+include src/translation/*
+

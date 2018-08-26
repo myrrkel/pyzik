@@ -9,7 +9,6 @@ from musicBase import *
 from translators import *
 
 
-
 def main():
 
     app = QtWidgets.QApplication(sys.argv)
