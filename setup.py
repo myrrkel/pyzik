@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """ Install file """
-import sys
+import sys, glob
 import setuptools
 from cx_Freeze import setup, Executable
 
 path = sys.path.append("src")
 includes = ["PyQt5","darkStyle"]
-includefiles = ["src/img","src/darkStyle"]
+includefiles = ["src/img","src/darkStyle","src/translation"]
+#includefiles = includefiles+ glob.glob("src/translation/*.qm")
 packages = setuptools.find_packages()
 packages.append("idna")
 packages.append("sqlite3")

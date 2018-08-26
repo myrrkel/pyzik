@@ -3,6 +3,7 @@
 
 
 from PyQt5 import QtCore
+from globalConstants import *
 
 class translators():
 
@@ -14,7 +15,7 @@ class translators():
 
     def installTranslator(self,filename,locale):
         translator = QtCore.QTranslator(self.app)
-        translator.load('./translation/{0}_{1}.qm'.format(filename,locale))
+        translator.load(appDir+'/translation/{0}_{1}.qm'.format(filename,locale))
         self.installedTranslators.append(translator)
         self.app.installTranslator(translator)
 
