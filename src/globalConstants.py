@@ -1,8 +1,23 @@
+from appdirs import *
+import os
+import sys
+
+global appName
+appName = "pyzik"
+global appAuthor
+appAuthor = "myrrkel"
+
 global musicFilesExtension
 musicFilesExtension = ["mp3","ogg","mpc","flac","m4a","wma"]
 global pictureFilesExtension
 imageFilesExtension = ["jpg","jpeg","png"]
 
+global dataDir
+dataDir = user_data_dir(appName, appAuthor)
+
+global appDir
+appDir = os.path.dirname(os.path.realpath(sys.argv[0]))
+print("AppDir="+appDir)
 
 
 def keyToString(key):

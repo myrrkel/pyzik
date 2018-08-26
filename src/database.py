@@ -6,6 +6,7 @@ from shutil import copyfile
 from io import StringIO
 
 from progressWidget import *
+from globalConstants import *
 
 class database():
     '''
@@ -16,7 +17,8 @@ class database():
     
 
     def __init__(self):
-        self.dataPath = "./data/pyzik.db"
+        self.dataPath = dataDir + "/data/pyzik.db"
+        print("Database in "+self.dataPath)
         self.connection = ""
         self.memoryConnection = ""
 

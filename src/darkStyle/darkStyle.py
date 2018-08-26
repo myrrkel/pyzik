@@ -32,7 +32,8 @@ with the correct rc file.
 """
 import logging
 import platform
-#from pyqt5_style_rc import *
+from globalConstants import *
+from darkStyle.pyqt5_style_rc import *
 
 class darkStyle:
 
@@ -44,7 +45,7 @@ class darkStyle:
         # Load the stylesheet content from resources
         from PyQt5.QtCore import QFile, QTextStream
 
-        f = QFile('./darkStyle/style.qss')
+        f = QFile(appDir+'/darkStyle/style.qss')
         if not f.exists():
             print('Unable to load stylesheet, file not found in '
                             'resources')

@@ -1,0 +1,2 @@
+include src/img/*
+include src/darkStyle/*.qss

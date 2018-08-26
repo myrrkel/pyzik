@@ -8,8 +8,10 @@ from cx_Freeze import setup, Executable
 
 path = sys.path.append("src")
 includes = ["PyQt5","darkStyle"]
+includefiles = ["src/img","src/darkStyle"]
 packages = setuptools.find_packages()
-
+packages.append("idna")
+packages.append("sqlite3")
 
 executables = [
         Executable("src/pyzik.py")
@@ -23,8 +25,10 @@ setup(
     description = "Music manager for big album collections and webradios",
     options = {"build_exe": {"includes": includes,
                  #"excludes": excludes,
-                 "packages": packages
-                 #"path": path
+                 "packages": packages,
+                 'include_files':includefiles,
+                 "path": path,
+
                  }
            },
     executables = executables,

@@ -4,6 +4,7 @@
 from PyQt5 import QtGui, QtSvg
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QFile, QXmlStreamReader, QByteArray, QTextStream
+from globalConstants import *
 
 orange = QtGui.QColor(216, 119, 0)
 
@@ -12,7 +13,7 @@ def getSvgIcon(fileName):
 
 
 def getColoredSvg(fileName, colorToReplace='black'):
-    svg = QtGui.QPixmap("img/"+fileName)
+    svg = QtGui.QPixmap(appDir+"/img/"+fileName)
     mask = svg.createMaskFromColor(QtGui.QColor(colorToReplace), Qt.MaskOutColor)
     svg.fill(orange)
     svg.setMask(mask)
@@ -21,7 +22,7 @@ def getColoredSvg(fileName, colorToReplace='black'):
 
 
 def getColoredSvg2(fileName, colorToReplace='black'):
-    svg = QtGui.QPixmap("img/"+fileName)
+    svg = QtGui.QPixmap(appDir+"/img/"+fileName)
     mask = svg.createMaskFromColor(QtGui.QColor(colorToReplace), Qt.MaskInColor)
 
     p = QtGui.QPainter(svg)
@@ -33,7 +34,7 @@ def getColoredSvg2(fileName, colorToReplace='black'):
 
 
 def getSvgWithColorParam(fileName):
-    file = QFile("img/"+fileName)
+    file = QFile(appDir+"/img/"+fileName)
     file.open(QFile.ReadOnly | QFile.Text)
     textStream = QTextStream(file)
     svgData = textStream.readAll()
