@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os, sys, subprocess, functools
-from PyQt5 import QtWidgets, QtGui, QtCore
+#from PyQt5 import QtWidgets, QtGui, QtCore
 from darkStyle import darkStyle
 from playerVLC import *
 import mainWindow  # import of mainWindow.py made with pyuic5
@@ -51,10 +51,11 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         self.currentAlbum = album("")
 
         self.coverPixmap = QtGui.QPixmap()
-        self.defaultPixmap = QtGui.QPixmap("img/vinyl-record.svg")
+        #self.defaultPixmap = QtGui.QPixmap("img/vinyl-record.svg")
         self.defaultPixmap = getSvgWithColorParam("vinyl-record2.svg")
 
-        self.setWindowIcon(getLogo())
+        #self.setWindowIcon(getLogo())
+        self.setWindowIcon(QtGui.QIcon(self.defaultPixmap))
 
         self.ui = mainWindow.Ui_MainWindow()
         self.ui.setupUi(self)

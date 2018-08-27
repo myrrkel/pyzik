@@ -22,9 +22,18 @@ packages = setuptools.find_packages()
 packages.append("idna")
 packages.append("sqlite3")
 
-executables = [
-        Executable("src/pyzik.py")
-]
+
+for package in packages:
+    print("package found= "+str(package))
+
+
+exe1 = Executable (
+        script="src/pyzik.py",
+        base=None,        
+        )
+
+#executables = [Executable("src/pyzik.py")]
+executables = [exe1]
 
 
 # call setup function
@@ -39,7 +48,6 @@ setup(
                  "packages": packages,
                  'include_files':includefiles,
                  "path": path,
-
                  }
            },
     executables = executables,
