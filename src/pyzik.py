@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-#from PyQt5 import QtWidgets, QtGui, QtCore
-from darkStyle import darkStyle
+import sys
+print("SYSPATH="+str(sys.path))
+import vlc
+from PyQt5 import QtWidgets, QtGui, QtCore
+from darkStyle import *
 from playerVLC import *
 from mainWindowLoader import * 
 from musicBase import *
 from translators import *
+
 
 
 def main():

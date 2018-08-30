@@ -33,7 +33,7 @@ class playerVLC:
     def __init__(self):
 
         # creating a basic vlc instance
-        self.instance = vlc.Instance()
+        self.instance = vlc.Instance("/home/myrrkel/workspace/pyzik/dist/pizik")
         # creating an empty vlc media player
         self.mediaPlayer = self.instance.media_player_new()
         self.mediaListPlayer = self.instance.media_list_player_new()
