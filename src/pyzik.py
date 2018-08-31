@@ -3,6 +3,7 @@
 import sys
 print("SYSPATH="+str(sys.path))
 import vlc
+
 from PyQt5 import QtWidgets, QtGui, QtCore
 from darkStyle import *
 from playerVLC import *

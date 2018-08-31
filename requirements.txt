@@ -6,5 +6,5 @@ sortedcontainers
 requests
 beautifulsoup4
 pytz
-cx_freeze
+pyinstaller
 appdirs

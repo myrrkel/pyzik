@@ -21,19 +21,26 @@ or
 
 
 
-
 Pyzik finds datas from albums directories name and saves it in database. 
 
 So you can find your music quickly, and play it.
 
-# Installation
+
+# To start the project use the command line: 
+
+install requirements:
 
     pip install -r requirements.txt
 
+start the project:
 
-# To start the pre project use the command line: 
+    python3 ./pyzik/src/pyzik.py
 
-    python3 ./pyzik/pyzik.py
+
+# To build on Linux or Windows: 
+
+    pyinstaller -y pyzik.spec
+
 
 # News
 + Played tracks and radio history
