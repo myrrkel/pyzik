@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+#from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtGui
+from PyQt5.QtCore import Qt, QSize, QCoreApplication
+from PyQt5.QtWidgets import QApplication, QWidget, QDialog, QPushButton, QVBoxLayout, \
+QHeaderView, QHBoxLayout, QSlider, QSizePolicy, QFrame, QLabel
 from track import *
 import requests
 from picFromUrlThread import *
+from tableWidgetDragRows import *
 
 from vlc import EventType as vlcEventType
 from svgIcon import *
@@ -12,50 +17,48 @@ from svgIcon import *
 orange = QtGui.QColor(216, 119, 0)
 white = QtGui.QColor(255, 255, 255)
 
+_translate = QCoreApplication.translate
 
-
-class playerControlsWidget(QtWidgets.QWidget):
+class playerControlsWidget(QWidget):
     
     player = None
 
     def __init__(self,parent=None):
-        QtWidgets.QWidget.__init__(self,parent=parent)
+        QWidget.__init__(self,parent=parent)
 
-        lay = QtWidgets.QHBoxLayout(self)
+        lay = QHBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         
-        _translate = QtCore.QCoreApplication.translate
-
-        self.pauseButton = QtWidgets.QPushButton()
+        self.pauseButton = QPushButton()
         self.pauseButton.setToolTip(_translate("playlist", "Pause"))
         self.pauseButton.setIcon(getSvgIcon("pause.svg"))
 
         lay.addWidget(self.pauseButton)
 
-        self.previousButton = QtWidgets.QPushButton()
+        self.previousButton = QPushButton()
         self.previousButton.setToolTip(_translate("playlist", "Previous"))
         self.previousButton.setIcon(getSvgIcon("step-backward.svg"))
         lay.addWidget(self.previousButton)
 
-        self.nextButton = QtWidgets.QPushButton()
+        self.nextButton = QPushButton()
         self.nextButton.setToolTip(_translate("playlist", "Next"))
         self.nextButton.setIcon(getSvgIcon("step-forward.svg"))
         lay.addWidget(self.nextButton)
 
-        self.volumeSlider = QtWidgets.QSlider()
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        self.volumeSlider = QSlider()
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         #sizePolicy.setHeightForWidth(self.volumeSlider.sizePolicy().hasHeightForWidth())
         self.volumeSlider.setSizePolicy(sizePolicy)
-        self.volumeSlider.setMinimumSize(QtCore.QSize(80, 0))
+        self.volumeSlider.setMinimumSize(QSize(80, 0))
         self.volumeSlider.setMaximum(100)
-        self.volumeSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.volumeSlider.setOrientation(Qt.Horizontal)
         self.volumeSlider.setObjectName("volumeSlider")
         lay.addWidget(self.volumeSlider)
 
 
-class playlistWidget(QtWidgets.QDialog):
+class playlistWidget(QDialog):
     
     mediaList = None
     player = None
@@ -64,8 +67,8 @@ class playlistWidget(QtWidgets.QDialog):
     trackChanged = pyqtSignal(int, name='trackChanged')
 
     def __init__(self,player):
-        QtWidgets.QDialog.__init__(self)
-        self.setWindowFlags(QtCore.Qt.Window)
+        QDialog.__init__(self)
+        self.setWindowFlags(Qt.Window)
         self.player = player
         self.mediaList = self.player.mediaList
 
@@ -75,11 +78,11 @@ class playlistWidget(QtWidgets.QDialog):
 
     def initUI(self):
 
-        self.vLayout = QtWidgets.QVBoxLayout()
+        self.vLayout = QVBoxLayout()
         self.vLayout.setContentsMargins(6, 6, 6, 6)
         self.setLayout(self.vLayout)
         
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
         self.setSizePolicy(sizePolicy)
@@ -94,16 +97,16 @@ class playlistWidget(QtWidgets.QDialog):
         self.playerControls.volumeSlider.valueChanged.connect(self.setVolume)
 
         
-        self.timeSlider = QtWidgets.QSlider(self)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        self.timeSlider = QSlider(self)
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.timeSlider.sizePolicy().hasHeightForWidth())
         self.timeSlider.setSizePolicy(sizePolicy)
-        self.timeSlider.setMinimumSize(QtCore.QSize(60, 0))
+        self.timeSlider.setMinimumSize(QSize(60, 0))
         self.timeSlider.setMinimum(0)
         self.timeSlider.setMaximum(1000)
-        self.timeSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.timeSlider.setOrientation(Qt.Horizontal)
         self.timeSlider.setObjectName("timeSlider")
 
         #self.timeSlider.mousePressEvent=self.setIsTimeSliderDown
@@ -115,23 +118,23 @@ class playlistWidget(QtWidgets.QDialog):
         self.player.mpEnventManager.event_attach(vlcEventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
 
 
-        self.mainFrame = QtWidgets.QFrame()
-        self.hLayout = QtWidgets.QHBoxLayout()
+        self.mainFrame = QFrame()
+        self.hLayout = QHBoxLayout()
         self.hLayout.setContentsMargins(0, 0, 0, 0)
         self.hLayout.setSpacing(6)
 
 
         self.coverPixmap = QtGui.QPixmap()
 
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         #sizePolicy.setWidthForHeight(True)
         
-        self.cover = QtWidgets.QLabel()
+        self.cover = QLabel()
         self.cover.setSizePolicy(sizePolicy)
-        self.cover.setMinimumSize(QtCore.QSize(200, 200))
-        self.cover.setMaximumSize(QtCore.QSize(200, 200))
+        self.cover.setMinimumSize(QSize(200, 200))
+        self.cover.setMaximumSize(QSize(200, 200))
         self.cover.setPixmap(self.coverPixmap)
         self.mainFrame.setLayout(self.hLayout)
         self.hLayout.addWidget(self.cover)
@@ -165,8 +168,8 @@ class playlistWidget(QtWidgets.QDialog):
             print("onPicDownloaded="+path)
             print("Pic size="+str(self.cover.size()))
             scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                                    QtCore.Qt.KeepAspectRatio,
-                                                    QtCore.Qt.SmoothTransformation)
+                                                    Qt.KeepAspectRatio,
+                                                    Qt.SmoothTransformation)
             self.cover.setPixmap(scaledCover)
         else:
             self.cover.setPixmap(QtGui.QPixmap())
@@ -190,36 +193,75 @@ class playlistWidget(QtWidgets.QDialog):
 
     def onResize(self,event):
         hHeader = self.tableWidgetTracks.horizontalHeader()
-        hHeader.resizeSections(QtWidgets.QHeaderView.Stretch)
+        hHeader.resizeSections(QHeaderView.Stretch)
         
 
     def initTableWidgetTracks(self):
 
-        self.tableWidgetTracks = QtWidgets.QTableWidget(self)
+        #self.tableWidgetTracks = QTableWidget(self)
+        self.tableWidgetTracks = TableWidgetDragRows(self)
 
         self.tableWidgetTracks.setGeometry(0, 0, 550, 300)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
         #sizePolicy.setHeightForWidth(self.tableWidgetTracks.sizePolicy().hasHeightForWidth())
         self.tableWidgetTracks.setSizePolicy(sizePolicy)
-        self.tableWidgetTracks.setMinimumSize(QtCore.QSize(50, 0))
-        self.tableWidgetTracks.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
+        self.tableWidgetTracks.setMinimumSize(QSize(50, 0))
+        self.tableWidgetTracks.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.tableWidgetTracks.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableWidgetTracks.setDragDropMode(QAbstractItemView.InternalMove)
+        self.tableWidgetTracks.viewport().setAcceptDrops(True)
+        self.tableWidgetTracks.setDragDropOverwriteMode(False)
+        self.tableWidgetTracks.setDragDropOverwriteMode(False)
+        self.tableWidgetTracks.setDragEnabled(True)
+        self.tableWidgetTracks.setAcceptDrops(True)
         self.tableWidgetTracks.setObjectName("tableWidgetTracks")
         self.tableWidgetTracks.setColumnCount(5)
         self.tableWidgetTracks.setRowCount(0)
-        item = QtWidgets.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.tableWidgetTracks.setHorizontalHeaderItem(0, item)
-        item = QtWidgets.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.tableWidgetTracks.setHorizontalHeaderItem(1, item)
-        item = QtWidgets.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.tableWidgetTracks.setHorizontalHeaderItem(2, item)
-        item = QtWidgets.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.tableWidgetTracks.setHorizontalHeaderItem(3, item)
-        item = QtWidgets.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.tableWidgetTracks.setHorizontalHeaderItem(4, item)
 
         self.initColumnHeaders()
+
+        #self.tableWidgetTracks.dropEvent = self.dropEvent
+        #self.tableWidgetTracks.supportedDropActions = self.supportedDropActions
+        #self.tableWidgetTracks.dragMoveEvent = self.drag_handler
+        #self.tableWidgetTracks.moveRows = self.moveRows
+
+    def moveRows(self,event):
+        print("MoveRows="+str(event))
+
+    def dropEvent(self, event):
+        event.setDropAction(Qt.MoveAction)
+        print('Drop: '+str(event.proposedAction()))
+        mime = event.mimeData()
+        print("Mime="+str())
+        event.accept()
+
+        return super(QTableWidget, self.tableWidgetTracks).dropEvent(event)
+
+    def drag_handler(self, event: QtGui.QDropEvent, drop: bool=False):
+        event.setDropAction(Qt.MoveAction)
+        event.accept()
+
+        if drop:
+            print(event.mimeData().urls())
+        else:
+            event.ignore()
+
+
+    def supportedDropActions(self):
+
+        return Qt.CopyAction | Qt.MoveAction
 
 
     def initColumnHeaders(self):
@@ -228,8 +270,8 @@ class playlistWidget(QtWidgets.QDialog):
         vHeader = self.tableWidgetTracks.verticalHeader()
         vHeader.hide()
 
-        hHeader.resizeSections(QtWidgets.QHeaderView.ResizeToContents)
-        hHeader.setSectionResizeMode(QtWidgets.QHeaderView.Interactive)
+        hHeader.resizeSections(QHeaderView.ResizeToContents)
+        hHeader.setSectionResizeMode(QHeaderView.Interactive)
         hHeader.hideSection(4)
 
         if self.tableWidgetTracks.columnWidth(0) < 100:
@@ -241,7 +283,7 @@ class playlistWidget(QtWidgets.QDialog):
 
 
     def retranslateUi(self):
-        _translate = QtCore.QCoreApplication.translate
+        
         item = self.tableWidgetTracks.horizontalHeaderItem(0)
         item.setText(_translate("playlist", "Title"))
         item = self.tableWidgetTracks.horizontalHeaderItem(1)
@@ -271,34 +313,34 @@ class playlistWidget(QtWidgets.QDialog):
         i=0
         for track in tracks:
             self.tableWidgetTracks.insertRow(i)
-            titleItem = QtWidgets.QTableWidgetItem(track.getTrackTitle())
-            titleItem.setFlags(titleItem.flags() ^ QtCore.Qt.ItemIsEditable)
+            titleItem = QTableWidgetItem(track.getTrackTitle())
+            titleItem.setFlags(titleItem.flags() ^ Qt.ItemIsEditable)
             self.tableWidgetTracks.setItem(i,0,titleItem)
             
             if track.radioName == "":
-                artistItem = QtWidgets.QTableWidgetItem(track.getArtistName())
-                artistItem.setFlags(artistItem.flags() ^ QtCore.Qt.ItemIsEditable)
+                artistItem = QTableWidgetItem(track.getArtistName())
+                artistItem.setFlags(artistItem.flags() ^ Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i,1,artistItem)
 
-                albumItem = QtWidgets.QTableWidgetItem(track.getAlbumTitle())
-                albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
+                albumItem = QTableWidgetItem(track.getAlbumTitle())
+                albumItem.setFlags(albumItem.flags() ^ Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i,2,albumItem)
 
-                durationItem = QtWidgets.QTableWidgetItem(track.getDurationText())
-                durationItem.setFlags(durationItem.flags() ^ QtCore.Qt.ItemIsEditable)
+                durationItem = QTableWidgetItem(track.getDurationText())
+                durationItem.setFlags(durationItem.flags() ^ Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i,3,durationItem)
             else:
                 print("radioName="+track.radioName)
-                artistItem = QtWidgets.QTableWidgetItem(self.player.currentRadioName)
-                artistItem.setFlags(artistItem.flags() ^ QtCore.Qt.ItemIsEditable)
+                artistItem = QTableWidgetItem(self.player.currentRadioName)
+                artistItem.setFlags(artistItem.flags() ^ Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i,1,artistItem)
 
-                albumItem = QtWidgets.QTableWidgetItem(self.player.currentRadioName)
-                albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
+                albumItem = QTableWidgetItem(self.player.currentRadioName)
+                albumItem.setFlags(albumItem.flags() ^ Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i,2,albumItem)
 
-                durationItem = QtWidgets.QTableWidgetItem(track.getDurationText())
-                durationItem.setFlags(durationItem.flags() ^ QtCore.Qt.ItemIsEditable)
+                durationItem = QTableWidgetItem(track.getDurationText())
+                durationItem.setFlags(durationItem.flags() ^ Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i,3,durationItem)
 
             i+=1
@@ -376,8 +418,8 @@ class playlistWidget(QtWidgets.QDialog):
                 coverPath = trk.parentAlbum.getCoverPath()
                 self.coverPixmap = QtGui.QPixmap(coverPath)
                 scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                                QtCore.Qt.KeepAspectRatio,
-                                                QtCore.Qt.SmoothTransformation)
+                                                Qt.KeepAspectRatio,
+                                                Qt.SmoothTransformation)
                 self.cover.setPixmap(scaledCover)
                 self.cover.show()
 
@@ -404,7 +446,7 @@ class playlistWidget(QtWidgets.QDialog):
 
             if i == index: self.tableWidgetTracks.setCurrentItem(item)
 
-        self.tableWidgetTracks.scrollTo(self.tableWidgetTracks.currentIndex(), QtWidgets.QAbstractItemView.PositionAtCenter)
+        self.tableWidgetTracks.scrollTo(self.tableWidgetTracks.currentIndex(), QAbstractItemView.PositionAtCenter)
 
             
         self.update()
@@ -453,9 +495,16 @@ if __name__ == "__main__":
     player = playerVLC()
 
 
-    app = QtWidgets.QApplication(sys.argv)
+    app = QApplication(sys.argv)
 
     playlist = playlistWidget(player)
+
+    playlist.tableWidgetTracks.setColumnCount(2)
+    playlist.tableWidgetTracks.setRowCount(5)
+
+    for i in range(5):
+        playlist.tableWidgetTracks.setItem(i, 0, QTableWidgetItem("test"+str(i)))
+        playlist.tableWidgetTracks.setItem(i, 1, QTableWidgetItem("toto"+str(i)))
 
     playlist.show()
 

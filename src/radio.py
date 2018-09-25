@@ -379,7 +379,7 @@ class radio:
 
                     dateEnd = datetime.fromtimestamp(self.liveTrackEnd)
                     print("dateEnd="+str(dateEnd))
-
+                    currentTrack = ""
                     if self.isFIP() or self.isFranceMusique():
                         if hasattr(stp,"visual") and stp.visual[:4].lower()=="http":
                             self.liveCoverUrl = stp.visual
