@@ -198,24 +198,16 @@ class playlistWidget(QDialog):
 
     def initTableWidgetTracks(self):
 
-        #self.tableWidgetTracks = QTableWidget(self)
         self.tableWidgetTracks = TableWidgetDragRows(self)
 
         self.tableWidgetTracks.setGeometry(0, 0, 550, 300)
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
-        #sizePolicy.setHeightForWidth(self.tableWidgetTracks.sizePolicy().hasHeightForWidth())
+
         self.tableWidgetTracks.setSizePolicy(sizePolicy)
         self.tableWidgetTracks.setMinimumSize(QSize(50, 0))
-        self.tableWidgetTracks.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.tableWidgetTracks.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tableWidgetTracks.setDragDropMode(QAbstractItemView.InternalMove)
-        self.tableWidgetTracks.viewport().setAcceptDrops(True)
-        self.tableWidgetTracks.setDragDropOverwriteMode(False)
-        self.tableWidgetTracks.setDragDropOverwriteMode(False)
-        self.tableWidgetTracks.setDragEnabled(True)
-        self.tableWidgetTracks.setAcceptDrops(True)
+
         self.tableWidgetTracks.setObjectName("tableWidgetTracks")
         self.tableWidgetTracks.setColumnCount(5)
         self.tableWidgetTracks.setRowCount(0)
@@ -232,36 +224,8 @@ class playlistWidget(QDialog):
 
         self.initColumnHeaders()
 
-        #self.tableWidgetTracks.dropEvent = self.dropEvent
-        #self.tableWidgetTracks.supportedDropActions = self.supportedDropActions
-        #self.tableWidgetTracks.dragMoveEvent = self.drag_handler
-        #self.tableWidgetTracks.moveRows = self.moveRows
+        self.tableWidgetTracks.trackMoved.connect(self.onTrackMoved)
 
-    def moveRows(self,event):
-        print("MoveRows="+str(event))
-
-    def dropEvent(self, event):
-        event.setDropAction(Qt.MoveAction)
-        print('Drop: '+str(event.proposedAction()))
-        mime = event.mimeData()
-        print("Mime="+str())
-        event.accept()
-
-        return super(QTableWidget, self.tableWidgetTracks).dropEvent(event)
-
-    def drag_handler(self, event: QtGui.QDropEvent, drop: bool=False):
-        event.setDropAction(Qt.MoveAction)
-        event.accept()
-
-        if drop:
-            print(event.mimeData().urls())
-        else:
-            event.ignore()
-
-
-    def supportedDropActions(self):
-
-        return Qt.CopyAction | Qt.MoveAction
 
 
     def initColumnHeaders(self):
@@ -281,6 +245,9 @@ class playlistWidget(QDialog):
                 self.tableWidgetTracks.setColumnWidth(0,300)     
 
 
+    def onTrackMoved(self,trackMove: (int,int)):
+        print("trackMoved="+str(trackMove))
+        #for mrl in self.tableWidgetTracks
 
     def retranslateUi(self):
         
@@ -296,17 +263,13 @@ class playlistWidget(QDialog):
         item.setText(_translate("playlist", "ID"))
 
 
-        #self.playerControls.pauseButton.setText(_translate("playlist", "Pause"))
-        #self.playerControls.previousButton.setText(_translate("playlist", "Previous"))
-        #self.playerControls.nextButton.setText(_translate("playlist", "Next"))
-
         self.playerControls.pauseButton.setToolTip(_translate("playlist", "Pause"))   
         self.playerControls.previousButton.setToolTip(_translate("playlist", "Previous"))
         self.playerControls.nextButton.setToolTip(_translate("playlist", "Next"))
 
         self.setWindowTitle(_translate("playlist", "Playlist"))
 
-    def showAlbumTracks(self,tracks):      
+    def showTracks(self,tracks):      
         self.tableWidgetTracks.setStyleSheet("selection-background-color: black;selection-color: white;") 
         self.tableWidgetTracks.setColumnCount(5)
         self.tableWidgetTracks.setRowCount(0)
@@ -368,7 +331,7 @@ class playlistWidget(QDialog):
             # t.getMutagenTags()
             tracks.append(t)
 
-        self.showAlbumTracks(tracks)
+        self.showTracks(tracks)
         
         self.setCurrentTrack()
 

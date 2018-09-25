@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-#From Scott Maxwell, https://stackoverflow.com/questions/26227885/drag-and-drop-rows-within-qtablewidget
+#Based on class From Scott Maxwell, https://stackoverflow.com/questions/26227885/drag-and-drop-rows-within-qtablewidget
 
 import sys
-
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QDropEvent
 from PyQt5.QtWidgets import QTableWidget, QAbstractItemView, QTableWidgetItem, QWidget, QHBoxLayout, \
@@ -12,6 +12,9 @@ from PyQt5.QtWidgets import QTableWidget, QAbstractItemView, QTableWidgetItem, Q
 
 
 class TableWidgetDragRows(QTableWidget):
+
+    trackMoved = pyqtSignal(object, name='trackMoved')
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -28,7 +31,7 @@ class TableWidgetDragRows(QTableWidget):
     def dropEvent(self, event: QDropEvent):
         if not event.isAccepted() and event.source() == self:
             drop_row = self.drop_on(event)
-
+            
             rows = sorted(set(item.row() for item in self.selectedItems()))
             rows_to_move = [[QTableWidgetItem(self.item(row_index, column_index)) for column_index in range(self.columnCount())]
                             for row_index in rows]
@@ -37,16 +40,21 @@ class TableWidgetDragRows(QTableWidget):
                 if row_index < drop_row:
                     drop_row -= 1
 
+            
             for row_index, data in enumerate(rows_to_move):
+                self.trackMoved.emit((rows[row_index],row_index+drop_row))
                 row_index += drop_row
                 self.insertRow(row_index)
                 for column_index, column_data in enumerate(data):
                     self.setItem(row_index, column_index, column_data)
             event.accept()
+
             for row_index in range(len(rows_to_move)):
-                self.item(drop_row + row_index, 0).setSelected(True)
-                self.item(drop_row + row_index, 1).setSelected(True)
+                for column_index in range(self.columnCount()):
+                    self.item(drop_row + row_index, column_index).setSelected(True)
+
         super().dropEvent(event)
+
 
     def drop_on(self, event):
         index = self.indexAt(event.pos())

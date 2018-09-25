@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os, sys, subprocess, functools
-#from PyQt5 import QtWidgets, QtGui, QtCore
+
+from PyQt5.QtCore import Qt, QSettings, QCoreApplication, QItemSelectionModel
+from PyQt5.QtWidgets import QTableWidgetItem, QShortcut, QHeaderView, QMenu, QAction, QAbstractItemView, QMainWindow
+from PyQt5.QtGui import QPixmap, QIcon, QKeySequence, QCursor, QStandardItemModel, QStandardItem, QColor
+
 from darkStyle import darkStyle
 from playerVLC import *
 import mainWindow  # import of mainWindow.py made with pyuic5
@@ -21,7 +25,7 @@ from albumWidget import *
 from svgIcon import *
 
 orange = QtGui.QColor(216, 119, 0)
-_translate = QtCore.QCoreApplication.translate
+_translate = QCoreApplication.translate
 
 def openFile(filename):
     if sys.platform == "win32":
@@ -32,17 +36,17 @@ def openFile(filename):
 
 
 
-class MainWindowLoader(QtWidgets.QMainWindow):
+class MainWindowLoader(QMainWindow):
 
     def __init__(self, parent=None,app=None,musicbase=None,player=None,translator=None):
-        QtWidgets.QMainWindow.__init__(self, parent)
+        QMainWindow.__init__(self, parent)
 
         self.app = app
         self.translator = translator
         self.musicBase = musicbase
         self.player = player
 
-        self.settings = QtCore.QSettings('pyzik', 'pyzik')
+        self.settings = QSettings('pyzik', 'pyzik')
         self.firstShow = True
         self.playList = None
         self.searchRadio = None
@@ -111,7 +115,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
         self.ui.comboBoxStyle.currentIndexChanged.connect(self.filterArtists)
                 
-        self.shortcutRandomAlbum = QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+R"), self)
+        self.shortcutRandomAlbum = QShortcut(QtGui.QKeySequence("Ctrl+R"), self)
         self.shortcutRandomAlbum.activated.connect(self.ramdomAlbum)
 
 
@@ -230,8 +234,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         hHeader = self.ui.tableWidgetAlbums.horizontalHeader()
         vHeader = self.ui.tableWidgetAlbums.verticalHeader()
         vHeader.hide()
-        hHeader.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        hHeader.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        hHeader.setSectionResizeMode(0, QHeaderView.Stretch)
+        hHeader.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         hHeader.hideSection(2)
 
     def initTrackTableWidget(self):
@@ -239,21 +243,21 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         hHeader = self.ui.tableWidgetTracks.horizontalHeader()
         vHeader = self.ui.tableWidgetTracks.verticalHeader()
         vHeader.hide()
-        hHeader.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        hHeader.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        hHeader.setSectionResizeMode(0, QHeaderView.Stretch)
+        hHeader.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         hHeader.hideSection(2)
 
     def initRadioFavMenu(self):
 
         if not hasattr(self.ui,"menuFavRadios") :
-            self.ui.menuFavRadios = QtWidgets.QMenu(self.ui.menuRadios)
+            self.ui.menuFavRadios = QMenu(self.ui.menuRadios)
         else:
             for action in self.ui.menuFavRadios.actions():
                 self.ui.menuFavRadios.removeAction(action)
 
         for rad in self.musicBase.radioMan.favRadios:
 
-            self.ui.actionFavRadio = QtWidgets.QAction(self.ui.menuFavRadios)
+            self.ui.actionFavRadio = QAction(self.ui.menuFavRadios)
             self.ui.actionFavRadio.setObjectName("actionFavRadio_"+rad.name)
             self.ui.actionFavRadio.setText(rad.name)
             self.ui.menuFavRadios.addAction(self.ui.actionFavRadio)
@@ -302,10 +306,10 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         
         print('column(%d)' % self.ui.tableWidgetAlbums.horizontalHeader().logicalIndexAt(pos))
 
-        menu = QtWidgets.QMenu()
+        menu = QMenu()
 
 
-        actionEditAlbum = QtWidgets.QAction(menu)
+        actionEditAlbum = QAction(menu)
         actionEditAlbum.setObjectName("actionEditAlbum")
         actionEditAlbum.setText(_translate("album","Edit"))
         menu.addAction(actionEditAlbum)
@@ -404,9 +408,9 @@ class MainWindowLoader(QtWidgets.QMainWindow):
 
         selModel = self.ui.listViewArtists.selectionModel()
         selModel.reset()
-        selModel.select(item.index(), QtCore.QItemSelectionModel.SelectCurrent)
+        selModel.select(item.index(), QItemSelectionModel.SelectCurrent)
 
-        self.ui.listViewArtists.scrollTo(item.index(), QtWidgets.QAbstractItemView.PositionAtCenter)
+        self.ui.listViewArtists.scrollTo(item.index(), QAbstractItemView.PositionAtCenter)
 
     '''
     Search artist functions
@@ -418,7 +422,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         if item is not None:
             selModel = self.ui.listViewArtists.selectionModel()
             selModel.reset()
-            selModel.select(item.index(), QtCore.QItemSelectionModel.Select)
+            selModel.select(item.index(), QItemSelectionModel.Select)
             self.showArtist(item.artist)
 
     def onSearchChange(self,event):
@@ -429,7 +433,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             self.setHiddenAllArtistItem(False)
         else:
             self.setHiddenAllArtistItem(True)
-            items = self.ui.listViewArtists.model().findItems(search,QtCore.Qt.MatchContains)
+            items = self.ui.listViewArtists.model().findItems(search,Qt.MatchContains)
             for item in items:
                 i = item.row()
                 self.ui.listViewArtists.setRowHidden(i,False)
@@ -503,16 +507,16 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         for alb in artist.albums:
             self.ui.tableWidgetAlbums.insertRow(i)
 
-            titleItem = QtWidgets.QTableWidgetItem(alb.title)
-            titleItem.setFlags(titleItem.flags() ^ QtCore.Qt.ItemIsEditable)
+            titleItem = QTableWidgetItem(alb.title)
+            titleItem.setFlags(titleItem.flags() ^ Qt.ItemIsEditable)
             self.ui.tableWidgetAlbums.setItem(i,0,titleItem)
 
-            yearItem = QtWidgets.QTableWidgetItem(str(alb.year))
-            yearItem.setFlags(yearItem.flags() ^ QtCore.Qt.ItemIsEditable)
+            yearItem = QTableWidgetItem(str(alb.year))
+            yearItem.setFlags(yearItem.flags() ^ Qt.ItemIsEditable)
             self.ui.tableWidgetAlbums.setItem(i,1,yearItem)
             
-            idItem = QtWidgets.QTableWidgetItem(str(alb.albumID))
-            idItem.setFlags(idItem.flags() ^ QtCore.Qt.ItemIsEditable)
+            idItem = QTableWidgetItem(str(alb.albumID))
+            idItem.setFlags(idItem.flags() ^ Qt.ItemIsEditable)
             self.ui.tableWidgetAlbums.setItem(i,2,idItem)
 
 
@@ -527,7 +531,7 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             i+=1
 
         self.ui.tableWidgetAlbums.selectRow(indexToSel)
-        self.ui.tableWidgetAlbums.scrollTo(self.ui.tableWidgetAlbums.currentIndex(), QtWidgets.QAbstractItemView.PositionAtCenter)
+        self.ui.tableWidgetAlbums.scrollTo(self.ui.tableWidgetAlbums.currentIndex(), QAbstractItemView.PositionAtCenter)
 
         #self.ui.tableWidgetAlbums.show()
 
@@ -556,12 +560,12 @@ class MainWindowLoader(QtWidgets.QMainWindow):
         for track in self.currentAlbum.tracks:
             self.ui.tableWidgetTracks.insertRow(i)
 
-            titleItem = QtWidgets.QTableWidgetItem(track.title)
-            titleItem.setFlags(titleItem.flags() ^ QtCore.Qt.ItemIsEditable)
+            titleItem = QTableWidgetItem(track.title)
+            titleItem.setFlags(titleItem.flags() ^ Qt.ItemIsEditable)
             self.ui.tableWidgetTracks.setItem(i,0,titleItem)
 
-            durationItem = QtWidgets.QTableWidgetItem(track.getDurationText())
-            durationItem.setFlags(durationItem.flags() ^ QtCore.Qt.ItemIsEditable)
+            durationItem = QTableWidgetItem(track.getDurationText())
+            durationItem.setFlags(durationItem.flags() ^ Qt.ItemIsEditable)
             self.ui.tableWidgetTracks.setItem(i,1,durationItem)
 
             i+=1
@@ -688,8 +692,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
             self.coverPixmap = QtGui.QPixmap(path)
 
         scaledCover = self.coverPixmap.scaled(self.ui.cover.size(),
-                                                QtCore.Qt.KeepAspectRatio,
-                                                QtCore.Qt.SmoothTransformation)
+                                                Qt.KeepAspectRatio,
+                                                Qt.SmoothTransformation)
         self.ui.cover.setPixmap(scaledCover)
         self.ui.cover.show()
 
@@ -702,8 +706,8 @@ class MainWindowLoader(QtWidgets.QMainWindow):
     def resizeCover(self):
         if (not self.coverPixmap.isNull()):
             scaledCover = self.coverPixmap.scaled(self.ui.cover.size(),
-                                                    QtCore.Qt.KeepAspectRatio,
-                                                    QtCore.Qt.SmoothTransformation)
+                                                    Qt.KeepAspectRatio,
+                                                    Qt.SmoothTransformation)
             self.ui.cover.setPixmap(scaledCover)
 
     def initPlayerButtons(self):
