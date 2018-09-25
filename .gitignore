@@ -1,4 +1,5 @@
 data/
+venv/
 src/data/
 __pycache__
 pyzik.egg-info

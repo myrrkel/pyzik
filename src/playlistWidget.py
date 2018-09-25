@@ -246,8 +246,44 @@ class playlistWidget(QDialog):
 
 
     def onTrackMoved(self,trackMove: (int,int)):
-        print("trackMoved="+str(trackMove))
-        #for mrl in self.tableWidgetTracks
+        
+        moveFrom = trackMove[0]
+        moveTo = trackMove[1]
+        currentIndex = self.player.getCurrentIndexPlaylist()
+        print("trackMoved="+str(trackMove)+" CurrentTrackIndex="+str(currentIndex))
+
+        media_moved = self.mediaList.item_at_index(moveFrom)
+
+        deleted = False
+        if currentIndex != moveFrom: 
+            deleted = True
+            self.mediaList.remove_index(moveFrom)
+        #else:
+        #   currentIndex = moveTo
+
+
+        tmp_mediaList = []
+        for i in reversed(range(self.mediaList.count())):
+            if i != currentIndex:
+                tmp_mediaList.append(self.mediaList.item_at_index(i))
+                print("remove="+str(i))
+                self.mediaList.remove_index(i)
+
+        j=0
+        for i in reversed(range(len(tmp_mediaList))):
+
+            print("listCount="+str(self.mediaList.count()))
+            if j == currentIndex+1 and deleted = False:
+                j = j + 1
+                print("current="+str(j))
+            self.mediaList.insert_media(tmp_mediaList[i],j)
+            print("insert i="+str(i)+" in j="+str(j))
+            j = j + 1
+
+        if deleted: 
+            self.mediaList.insert_media(media_moved,moveTo)
+
+
 
     def retranslateUi(self):
         
@@ -462,7 +498,7 @@ if __name__ == "__main__":
 
     playlist = playlistWidget(player)
 
-    playlist.tableWidgetTracks.setColumnCount(2)
+    playlist.tableWidgetTracks.setColumnCount(4)
     playlist.tableWidgetTracks.setRowCount(5)
 
     for i in range(5):
