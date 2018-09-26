@@ -214,6 +214,9 @@ class playerVLC:
         self.mediaListPlayer.set_media_player(self.mediaPlayer)
         self.mediaListPlayer.set_media_list(self.mediaList) 
 
+    def refreshMediaListPlayer(self):
+        self.mediaListPlayer.set_media_list(self.mediaList) 
+
     def dropMediaList(self):
         self.mediaListPlayer.stop()
         self.mediaList.unlock()

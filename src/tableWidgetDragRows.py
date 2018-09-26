@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import QTableWidget, QAbstractItemView, QTableWidgetItem, Q
 class TableWidgetDragRows(QTableWidget):
 
     trackMoved = pyqtSignal(object, name='trackMoved')
+    beforeTrackMove = pyqtSignal(int, name='beforeTrackMove')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -30,6 +31,7 @@ class TableWidgetDragRows(QTableWidget):
 
     def dropEvent(self, event: QDropEvent):
         if not event.isAccepted() and event.source() == self:
+            self.beforeTrackMove.emit(0)
             drop_row = self.drop_on(event)
             
             rows = sorted(set(item.row() for item in self.selectedItems()))
@@ -42,12 +44,14 @@ class TableWidgetDragRows(QTableWidget):
 
             
             for row_index, data in enumerate(rows_to_move):
-                self.trackMoved.emit((rows[row_index],row_index+drop_row))
+                
                 row_index += drop_row
                 self.insertRow(row_index)
                 for column_index, column_data in enumerate(data):
                     self.setItem(row_index, column_index, column_data)
             event.accept()
+
+            self.trackMoved.emit((0,0))
 
             for row_index in range(len(rows_to_move)):
                 for column_index in range(self.columnCount()):

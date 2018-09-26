@@ -94,7 +94,7 @@ class playlistWidget(QDialog):
         self.playerControls.previousButton.clicked.connect(self.player.previous)
         self.playerControls.nextButton.clicked.connect(self.player.next)
         self.playerControls.volumeSlider.setValue(self.player.getVolume())
-        self.playerControls.volumeSlider.valueChanged.connect(self.setVolume)
+        self.playerControls.volumeSlider.sliderMoved.connect(self.setVolume)
 
         
         self.timeSlider = QSlider(self)
@@ -225,6 +225,7 @@ class playlistWidget(QDialog):
         self.initColumnHeaders()
 
         self.tableWidgetTracks.trackMoved.connect(self.onTrackMoved)
+        self.tableWidgetTracks.beforeTrackMove.connect(self.onBeforeTrackMove)
 
 
 
@@ -245,49 +246,42 @@ class playlistWidget(QDialog):
                 self.tableWidgetTracks.setColumnWidth(0,300)     
 
 
+    def onBeforeTrackMove(self,param):
+        for i in range(0,self.tableWidgetTracks.rowCount()):
+            idLine = self.tableWidgetTracks.item(i,4).setText(str(i))
+
     def onTrackMoved(self,trackMove: (int,int)):
-        
-        moveFrom = trackMove[0]
-        moveTo = trackMove[1]
+
+        self.mediaList.unlock()
+        #Get new order of tracks
+        new_order = []
+        for i in range(0,self.tableWidgetTracks.rowCount()):
+            idLine = self.tableWidgetTracks.item(i,4).text()
+            print("Line="+idLine)
+            new_order.append(int(idLine))
+
+
         currentIndex = self.player.getCurrentIndexPlaylist()
-        print("trackMoved="+str(trackMove)+" CurrentTrackIndex="+str(currentIndex))
+        print("CurrentTrackIndex="+str(currentIndex))
 
-        media_moved = self.mediaList.item_at_index(moveFrom)
-
-        deleted = False
-        if currentIndex != moveFrom: 
-            deleted = True
-            self.mediaList.remove_index(moveFrom)
-        #else:
-        #   currentIndex = moveTo
-
-
+        #Backup current vlc media list
         tmp_mediaList = []
-        for i in reversed(range(0,self.mediaList.count()-1)):
-            if i != moveFrom:
-             tmp_mediaList.append(self.mediaList.item_at_index(i))
+        for i in range(0,self.mediaList.count()):
+            tmp_mediaList.append(self.mediaList.item_at_index(i))
+
+        #Remove all medias except the current track
+        for i in reversed(range(0,self.mediaList.count())):
             if i != currentIndex:  
                 print("remove="+str(i))
                 self.mediaList.remove_index(i)
 
-            if i == moveTo:
-                tmp_mediaList.append(media_moved)
+        #Add tracks in new order
+        for i, idLine in enumerate(new_order):
+            if idLine != currentIndex:
+                self.mediaList.insert_media(tmp_mediaList[idLine],i)
 
-        j=0
-        for i in reversed(range(len(tmp_mediaList))):
-
-            print("listCount="+str(self.mediaList.count()))
-            if j == currentIndex+1:
-                j = j + 1
-                print("current="+str(j))
-            if not(j == moveTo and deleted=False):
-                self.mediaList.insert_media(tmp_mediaList[i],j)
-            print("insert i="+str(i)+" in j="+str(j))
-            j = j + 1
-
-        #if deleted: 
-        #    self.mediaList.insert_media(media_moved,moveTo)
-
+        self.mediaList.unlock()   
+        self.player.refreshMediaListPlayer()    
 
 
     def retranslateUi(self):
@@ -346,6 +340,11 @@ class playlistWidget(QDialog):
                 durationItem = QTableWidgetItem(track.getDurationText())
                 durationItem.setFlags(durationItem.flags() ^ Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i,3,durationItem)
+
+
+            orderItem = QTableWidgetItem(str(i))
+            orderItem.setFlags(orderItem.flags() ^ Qt.ItemIsEditable)
+            self.tableWidgetTracks.setItem(i,4,orderItem)
 
             i+=1
 
@@ -468,6 +467,8 @@ class playlistWidget(QDialog):
 
     def onTimeSliderIsReleased(self,event=None):
         print('onTimeSliderIsReleased')
+        
+        self.player.setPosition(self.nextPosition)
         self.isTimeSliderDown = False
         #self.player.setPosition(self.nextPosition)
 
@@ -475,7 +476,7 @@ class playlistWidget(QDialog):
     def setPlayerPosition(self,pos):
         print(str(pos))
         self.nextPosition = pos/1000
-        self.player.setPosition(self.nextPosition)
+        #self.player.setPosition(self.nextPosition)
         
     
 
