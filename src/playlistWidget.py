@@ -263,25 +263,30 @@ class playlistWidget(QDialog):
 
 
         tmp_mediaList = []
-        for i in reversed(range(self.mediaList.count())):
-            if i != currentIndex:
-                tmp_mediaList.append(self.mediaList.item_at_index(i))
+        for i in reversed(range(0,self.mediaList.count()-1)):
+            if i != moveFrom:
+             tmp_mediaList.append(self.mediaList.item_at_index(i))
+            if i != currentIndex:  
                 print("remove="+str(i))
                 self.mediaList.remove_index(i)
+
+            if i == moveTo:
+                tmp_mediaList.append(media_moved)
 
         j=0
         for i in reversed(range(len(tmp_mediaList))):
 
             print("listCount="+str(self.mediaList.count()))
-            if j == currentIndex+1 and deleted = False:
+            if j == currentIndex+1:
                 j = j + 1
                 print("current="+str(j))
-            self.mediaList.insert_media(tmp_mediaList[i],j)
+            if not(j == moveTo and deleted=False):
+                self.mediaList.insert_media(tmp_mediaList[i],j)
             print("insert i="+str(i)+" in j="+str(j))
             j = j + 1
 
-        if deleted: 
-            self.mediaList.insert_media(media_moved,moveTo)
+        #if deleted: 
+        #    self.mediaList.insert_media(media_moved,moveTo)
 
 
 
@@ -384,7 +389,7 @@ class playlistWidget(QDialog):
         trk = self.player.getCurrentTrackPlaylist()
 
 
-        for i in range(self.mediaList.count()):
+        for i in range(self.mediaList.count()-1):
 
             item = self.tableWidgetTracks.item(i,0)
             if item is None:
