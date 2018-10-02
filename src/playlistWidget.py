@@ -45,6 +45,11 @@ class playerControlsWidget(QWidget):
         self.nextButton.setIcon(getSvgIcon("step-forward.svg"))
         lay.addWidget(self.nextButton)
 
+        self.deleteButton = QPushButton()
+        self.deleteButton.setToolTip(_translate("playlist", "Delete all tracks"))
+        self.deleteButton.setIcon(getSvgIcon("bin.svg"))
+        lay.addWidget(self.deleteButton)
+
         self.volumeSlider = QSlider()
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -93,6 +98,8 @@ class playlistWidget(QDialog):
         self.playerControls.pauseButton.clicked.connect(self.onPause)
         self.playerControls.previousButton.clicked.connect(self.player.previous)
         self.playerControls.nextButton.clicked.connect(self.player.next)
+        self.playerControls.deleteButton.clicked.connect(self.onClearPlaylist)
+
         self.playerControls.volumeSlider.setValue(self.player.getVolume())
         self.playerControls.volumeSlider.sliderMoved.connect(self.setVolume)
 
@@ -252,7 +259,7 @@ class playlistWidget(QDialog):
 
     def onTrackMoved(self,trackMove: (int,int)):
 
-        self.mediaList.unlock()
+        self.mediaList.lock()
         #Get new order of tracks
         new_order = []
         for i in range(0,self.tableWidgetTracks.rowCount()):
@@ -260,7 +267,7 @@ class playlistWidget(QDialog):
             print("Line="+idLine)
             new_order.append(int(idLine))
 
-
+        newCurrent = 0
         currentIndex = self.player.getCurrentIndexPlaylist()
         print("CurrentTrackIndex="+str(currentIndex))
 
@@ -269,19 +276,26 @@ class playlistWidget(QDialog):
         for i in range(0,self.mediaList.count()):
             tmp_mediaList.append(self.mediaList.item_at_index(i))
 
-        #Remove all medias except the current track
-        for i in reversed(range(0,self.mediaList.count())):
-            if i != currentIndex:  
-                print("remove="+str(i))
-                self.mediaList.remove_index(i)
-
+        self.player.removeAllTracks()
+        
         #Add tracks in new order
         for i, idLine in enumerate(new_order):
             if idLine != currentIndex:
                 self.mediaList.insert_media(tmp_mediaList[idLine],i)
+            else:
+                newCurrent = i
 
         self.mediaList.unlock()   
+
+        print("newCurrent="+str(newCurrent))
+        
         self.player.refreshMediaListPlayer()    
+        #self.player.resetCurrentItemIndex(newCurrent)
+
+    def onClearPlaylist(self,event):
+        #Remove all medias from the playlist except the current track
+        self.player.removeAllTracks()
+        self.showMediaList()
 
 
     def retranslateUi(self):

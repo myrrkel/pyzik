@@ -33,7 +33,8 @@ class playerVLC:
     def __init__(self):
 
         # creating a basic vlc instance
-        self.instance = vlc.Instance("/home/myrrkel/workspace/pyzik/dist/pizik")
+        self.instance = vlc.Instance("/home/myrrkel/workspace/pyzik/dist/pizik/")
+        print("VLC version = "+str(vlc.libvlc_get_version()))
         # creating an empty vlc media player
         self.mediaPlayer = self.instance.media_player_new()
         self.mediaListPlayer = self.instance.media_list_player_new()
@@ -195,6 +196,9 @@ class playerVLC:
     def previous(self):
         self.mediaListPlayer.previous()
 
+    def resetCurrentItemIndex(self,index):
+        self.mediaListPlayer.reset_current_item_index(index)
+
 
     def mute(self,value):
         self.mediaPlayer.audio_set_mute(value)
@@ -222,6 +226,14 @@ class playerVLC:
         self.mediaList.unlock()
         for i in reversed(range(0,self.mediaList.count())):
             self.mediaList.remove_index(i)
+
+    def removeAllTracks(self):
+        #Remove all medias from the playlist except the current track
+        currentIndex = self.getCurrentIndexPlaylist()
+        for i in reversed(range(0,self.mediaList.count())):
+            if i != currentIndex:  
+                print("remove="+str(i))
+                self.mediaList.remove_index(i)
 
 
     def getVolume(self):
