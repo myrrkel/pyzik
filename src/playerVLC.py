@@ -232,7 +232,6 @@ class playerVLC:
         currentIndex = self.getCurrentIndexPlaylist()
         for i in reversed(range(0,self.mediaList.count())):
             if i != currentIndex:  
-                print("remove="+str(i))
                 self.mediaList.remove_index(i)
 
 
