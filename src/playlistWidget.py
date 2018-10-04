@@ -397,26 +397,32 @@ class playlistWidget(QDialog):
         if self.player is None : return 
 
         index = self.player.getCurrentIndexPlaylist()
-        print("setCurrentTrack:",index)
+        #print("setCurrentTrack:",index)
 
         trk = self.player.getCurrentTrackPlaylist()
 
+        #print("Playlist count="+str(self.mediaList.count()))
 
-        for i in range(self.mediaList.count()-1):
+        for i in range(0,self.mediaList.count()):
 
             item = self.tableWidgetTracks.item(i,0)
             if item is None:
                 print("BREAK setCurrentTrack item=",i)
                 break
 
+            if trk is None:
+                print("trk is None")
+
             if trk is not None and trk.radioName != "" and i==index:
                 if title != "":
-                    print("SetText="+title)
+                    if title == "NO_META": title = trk.radioName
                     item.setText(title)
                 else:
                     nowPlaying = self.player.getNowPlaying()
+                    if nowPlaying == "NO_META": nowPlaying = trk.radioName
                     item.setText(nowPlaying)
 
+                    
                 coverUrl = self.player.getLiveCoverUrl()
                 if coverUrl != "":
                     self.picFromUrlThread.run(coverUrl)
