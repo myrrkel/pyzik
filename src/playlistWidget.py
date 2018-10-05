@@ -264,12 +264,10 @@ class playlistWidget(QDialog):
         new_order = []
         for i in range(0,self.tableWidgetTracks.rowCount()):
             idLine = self.tableWidgetTracks.item(i,4).text()
-            print("Line="+idLine)
             new_order.append(int(idLine))
 
         newCurrent = 0
         currentIndex = self.player.getCurrentIndexPlaylist()
-        print("CurrentTrackIndex="+str(currentIndex))
 
         #Backup current vlc media list
         tmp_mediaList = []
