@@ -184,7 +184,7 @@ class MainWindowLoader(QMainWindow):
 
 
     def onAddFavRadio(self):
-        self.musicBase.db.initDataBase()
+        #self.musicBase.db.initDataBase()
         self.musicBase.radioMan.loadFavRadios()
         self.initRadioFavMenu()
 

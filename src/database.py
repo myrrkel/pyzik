@@ -16,9 +16,17 @@ class database():
 
     
 
-    def __init__(self):
-        self.dataPath = dataDir + "/data/pyzik.db"
-        print("Database in "+self.dataPath)
+    def __init__(self,isHistory=False):
+        self.isHistory = isHistory
+
+        if self.isHistory: 
+            self.databaseName = "history.db"
+        else:
+            self.databaseName = "pyzik.db"
+
+        self.dataPath = dataDir + "/data/"+self.databaseName
+        self.dataPathMain = dataDir + "/data/pyzik.db"
+        #print("Database in "+self.dataPath)
         self.connection = ""
         self.memoryConnection = ""
 
@@ -26,13 +34,18 @@ class database():
         
 
     def initDataBase(self):
-        self.createTableArtists()
-        self.createTableAlbums()
-        self.createTableMusicDirectories()
-        self.createTablePlayHistoryAlbum()
-        self.createTablePlayHistoryTrack()
-        self.createTablePlayHistoryRadio()
-        self.createTableRadios()
+        if self.isHistory:
+            self.createTablePlayHistoryAlbum()
+            self.createTablePlayHistoryTrack()
+            self.createTablePlayHistoryRadio()
+            #self.execSQLWithoutResult("ATTACH DATABASE '"+self.dataPathMain+"' as maindb;")
+            #self.checkHistoryInMainDB()
+
+        else:
+            self.createTableArtists()
+            self.createTableAlbums()
+            self.createTableMusicDirectories()
+            self.createTableRadios()
 
 
     def initMemoryDB(self):
@@ -89,7 +102,6 @@ class database():
         specified by self.dataPath
         :return: Connection object or None
         """
-        print('createConnection')
         dirPath, db_file = os.path.split(self.dataPath)
         if not os.path.exists(dirPath):
             os.makedirs(dirPath)
@@ -101,28 +113,68 @@ class database():
             print(e)
             return None
 
-    def execSQLWithoutResult(self, sql):
-        try:
-            c = self.connection.cursor()
-            c.execute(sql)
-        except sqlite3.Error as e:
-                print(e)
 
-    def dropTable(self, tableName):
+
+    def vacuum(self):
+        try:    
+            c = self.connection.cursor()
+            c.execute("VACUUM")
+
+        except sqlite3.Error as e:
+            print(e)
+
+    def execSQLWithoutResult(self, sql, attachMain=False):
+        try:    
+            c = self.connection.cursor()
+            if attachMain: c.execute("ATTACH DATABASE '"+self.dataPathMain+"' as 'maindb';")
+            c.execute("BEGIN;")
+            c.execute(sql)
+            c.execute("COMMIT;")
+            if attachMain: c.execute("DETACH DATABASE 'maindb';")
+            return True
+        except sqlite3.Error as e:
+            print(e)
+            return False
+
+
+    def dropTable(self, tableName, attachMain=False):
         """ drop the table called tableName
         """
-        self.execSQLWithoutResult("DROP TABLE "+tableName)
+        print("dropTable "+tableName)
+        self.execSQLWithoutResult("DROP TABLE IF EXISTS "+tableName,attachMain)
+
+    def checkHistoryInMainDB(self):
+        if self.isHistory:
+            if self.tableExistsInMainDB("playHistoryRadio") > 0:
+                if self.getCountTableInMainDB("playHistoryRadio") > 0:
+                    query = """INSERT INTO playHistoryRadio (radioName, title, playDate) 
+                           SELECT radioName, title, playDate FROM maindb.playHistoryRadio as phr;"""
+                    if self.execSQLWithoutResult(query,True):
+                        self.dropTable("maindb.playHistoryRadio",True)
+
+            if self.tableExistsInMainDB("playHistoryAlbum") > 0:
+                if self.getCountTableInMainDB("playHistoryAlbum") > 0:
+                    query = """INSERT INTO playHistoryAlbum (albumID, playDate) 
+                           SELECT albumID, playDate FROM maindb.playHistoryAlbum as pha;"""
+                    if self.execSQLWithoutResult(query,True):
+                        self.dropTable("maindb.playHistoryAlbum",True)
+        
+            if self.tableExistsInMainDB("playHistoryTrack") > 0:
+                if self.getCountTableInMainDB("playHistoryTrack") > 0:
+                    query = """INSERT INTO playHistoryTrack (albumID, fileName, playDate) 
+                           SELECT albumID, fileName, playDate FROM maindb.playHistoryTrack as pht;"""
+                    if self.execSQLWithoutResult(query,True):
+                        self.dropTable("maindb.playHistoryTrack",True)
+
 
 
     def dropAll(self):
-        self.dropTable("artists")
-        self.dropTable("albums")
-        self.dropTable("musicDirectories")
-        self.dropTable("radios")
+        if self.isHistory:
+            self.dropHistoryTables()
+        else:
+            self.dropAllTables()
 
-        self.dropTable("playHistoryAlbum")
-        self.dropTable("playHistoryTrack")
-        self.dropTable("playHistoryRadio")
+        self.vacuum()
 
 
     def dropAllTables(self):
@@ -238,15 +290,39 @@ class database():
 
 
 
-    def getSelect(self,select_sql,params=None):
+    def getSelect(self,select_sql,attachMain=False,params=None):
         c = self.connection.cursor()
         if params is None:
+            if attachMain: c.execute("ATTACH DATABASE '"+self.dataPathMain+"' as 'maindb';")
             c.execute(select_sql)
+            rows = c.fetchall()
+            if attachMain: c.execute("DETACH DATABASE 'maindb';")
         else:
             c.execute(select_sql,params)
-        rows = c.fetchall()
+            rows = c.fetchall()
         return rows
 
+    def getCountTable(self,table):
+        result = self.getSelect("SELECT COUNT(*) FROM "+table+";")
+        print("count="+str(result))
+        return result[0][0]
+
+    def getCountTableInMainDB(self,table):
+        result = self.getSelect("SELECT COUNT(*) FROM maindb."+table+";",attachMain=True)
+        print("count="+str(result))
+        return result[0][0]
+
+    def tableExists(self,table):
+        query ="SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='"+table+"'";
+        result = self.getSelect(query)
+        print("table "+table+" exists="+str(result))
+        return result[0][0]
+
+    def tableExistsInMainDB(self,table):
+        query ="SELECT COUNT(*) FROM maindb.sqlite_master WHERE type='table' AND name='"+table+"'";
+        result = self.getSelect(query,True)
+        #print("table "+table+" exists="+str(result))
+        return result[0][0]
 
     def columnExistsInTable(self,table,column):
         sqlExists = "PRAGMA table_info("+table+");"

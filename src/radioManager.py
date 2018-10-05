@@ -232,7 +232,7 @@ class radioManager():
             FROM radios ORDER BY sortID"""):
             rad = radio()
             rad.load(row)
-            rad.printData()
+            #rad.printData()
             self.favRadios.append(rad)
 
 

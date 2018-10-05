@@ -52,7 +52,7 @@ class musicDirectoryCollection:
     def loadMusicDirectories(self):
         req = "SELECT musicDirectoryID, dirPath, dirName, ifnull(styleID,0), ifnull(dirType,0) as dirType FROM musicDirectories"
         for rowDir in self.musicBase.db.getSelect(req):
-            print('{0} : {1}'.format(rowDir[0], rowDir[1]))
+            #print('{0} : {1}'.format(rowDir[0], rowDir[1]))
             dir = musicDirectory(self.musicBase)
             dir.load(rowDir)
             self.addMusicDirectory(dir)
