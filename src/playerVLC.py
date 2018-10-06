@@ -34,7 +34,7 @@ class playerVLC:
 
         # creating a basic vlc instance
         self.instance = vlc.Instance("/home/myrrkel/workspace/pyzik/dist/pizik/")
-        print("VLC version = "+str(vlc.libvlc_get_version()))
+        
         # creating an empty vlc media player
         self.mediaPlayer = self.instance.media_player_new()
         self.mediaListPlayer = self.instance.media_list_player_new()
@@ -49,6 +49,8 @@ class playerVLC:
         self.nowPlaying = ""
 
         self.initMediaList()
+
+        print("VLC version = "+str(vlc.libvlc_get_version()))
            
     def release(self):
         self.mediaPlayer.release()

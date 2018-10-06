@@ -14,8 +14,6 @@ class database():
 
     '''
 
-    
-
     def __init__(self,isHistory=False):
         self.isHistory = isHistory
 
@@ -38,8 +36,7 @@ class database():
             self.createTablePlayHistoryAlbum()
             self.createTablePlayHistoryTrack()
             self.createTablePlayHistoryRadio()
-            #self.execSQLWithoutResult("ATTACH DATABASE '"+self.dataPathMain+"' as maindb;")
-            #self.checkHistoryInMainDB()
+            self.checkHistoryInMainDB()
 
         else:
             self.createTableArtists()
@@ -49,24 +46,15 @@ class database():
 
 
     def initMemoryDB(self):
-
-        #wProgress = progressWidget()
-     
-
         # Read database to tempfile
-        print('initMemoryDB')
+
         tempfile = StringIO()
-        i=0
-        iterCount = 1000
+
         for line in self.connection.iterdump():
             tempfile.write('%s\n' % line)
-            iProgress = round((i/iterCount)*100)
-            #wProgress.setValue(iProgress)
-            i+=1
 
         self.connection.close()
         tempfile.seek(0)
-
 
         # Create a database in memory and import from tempfile
         self.memoryConnection = sqlite3.connect(":memory:")
@@ -76,16 +64,11 @@ class database():
 
         self.connection = self.memoryConnection
 
-        #wProgress.close()
-
-
 
 
     def saveMemoryToDisc(self):
 
         copyfile(self.dataPath,self.dataPath+'k')
-        #os.remove(self.dataPath)
-        
 
         self.createConnection()
         self.dropAll()
@@ -333,8 +316,18 @@ class database():
         return False
 
 
+    def insert(self,sql):
+        ''' Execute an insert query '''
+        try:
+            c = self.connection.cursor() 
+            c.execute(sql)
+            self.connection.commit()
+            return c.lastrowid
+        except sqlite3.Error as e:
+            print(e)
+            return None
 
-
+        
     def insertAlbum(self,album):
 
         try:
@@ -349,10 +342,6 @@ class database():
             print(e)
 
         return album.albumID
-
-
-
-
 
     def insertArtist(self,artist):
         

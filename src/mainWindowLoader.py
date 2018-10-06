@@ -6,9 +6,11 @@ from PyQt5.QtCore import Qt, QSettings, QCoreApplication, QItemSelectionModel
 from PyQt5.QtWidgets import QTableWidgetItem, QShortcut, QHeaderView, QMenu, QAction, QAbstractItemView, QMainWindow
 from PyQt5.QtGui import QPixmap, QIcon, QKeySequence, QCursor, QStandardItemModel, QStandardItem, QColor
 
+import mainWindow  # import of mainWindow.py made with pyuic5
+
 from darkStyle import darkStyle
 from playerVLC import *
-import mainWindow  # import of mainWindow.py made with pyuic5
+
 from musicBase import *
 from musicDirectory import *
 from database import *
@@ -64,15 +66,7 @@ class MainWindowLoader(QMainWindow):
         self.ui = mainWindow.Ui_MainWindow()
         self.ui.setupUi(self)
         self.initPlayerButtons()
-        self.ui.playButton.setIcon(getSvgIcon("play-circle.svg"))
-        self.ui.addAlbumButton.setIcon(getSvgIcon("add_music.svg"))
-        self.ui.openDirButton.setIcon(getSvgIcon("folder-open.svg"))
-        self.ui.pauseButton.setIcon(getSvgIcon("pause-circle.svg"))
 
-        #self.ui.labelArtist.setStyleSheet("QLabel { color : rgb(216,119,0)}")
-
-
-        
         self.setTitleLabel("")
         self.setWindowTitle("Pyzik")
 
@@ -82,12 +76,8 @@ class MainWindowLoader(QMainWindow):
         self.showGenres()
         self.showArtists()
         self.loadSettings()
-        
+
         self.initRadioFavMenu()
-
-
-
-
 
         #Connect UI triggers
         self.ui.listViewArtists.selectionModel().currentChanged.connect(self.onArtistChange)
@@ -117,6 +107,10 @@ class MainWindowLoader(QMainWindow):
                 
         self.shortcutRandomAlbum = QShortcut(QtGui.QKeySequence("Ctrl+R"), self)
         self.shortcutRandomAlbum.activated.connect(self.ramdomAlbum)
+        self.shortcutPlaylist = QShortcut(QtGui.QKeySequence("Ctrl+P"), self)
+        self.shortcutPlaylist.activated.connect(self.showPlaylist)
+        self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
+        self.shortcutPause.activated.connect(self.player.pause)
 
 
         #Connect VLC triggers
@@ -128,24 +122,20 @@ class MainWindowLoader(QMainWindow):
 
 
         self.ui.volumeSlider.setMaximum(100)
-
         self.ui.volumeSlider.setValue(self.volume)
         self.player.setVolume(self.volume)
         self.ui.volumeSlider.valueChanged.connect(self.setVolume)
        
         
         #Write message in status bar
-        self.ui.statusBar.showMessage("PyZik")
-
+        self.ui.statusBar.showMessage("Pyzik")
 
         self.threadStreamObserver = streamObserver()
         self.threadStreamObserver.player = self.player
         self.threadStreamObserver.musicBase = self.musicBase
         self.threadStreamObserver.titleChanged.connect(self.setStatus)
         self.threadStreamObserver.titleChanged.connect(self.onPlayerMediaChangedStreamObserver)
-        
         self.player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerStopped, self.threadStreamObserver.resetPreviousTitle)
-
         self.threadStreamObserver.start()
 
 
@@ -155,10 +145,10 @@ class MainWindowLoader(QMainWindow):
         self.loadAlbumFilesThread.tracksLoaded.connect(self.showAlbumTracks)
 
         self.exploreAlbumsDirectoriesThread = exploreAlbumsDirectoriesThread()
-        #self.exploreAlbumsDirectoriesThread.progressChanged.connect(self.showAlbumTracks)
         self.exploreAlbumsDirectoriesThread.exploreCompleted.connect(self.showArtists)
 
         self.ui.coverWidget.resizeEvent = self.resizeEvent
+
         
     def showEvent(self,event):
         #This function is called when the mainWindow is shown
@@ -302,13 +292,11 @@ class MainWindowLoader(QMainWindow):
         self.showArtists()
         self.initAlbumTableWidget()
 
+
     def handleHeaderAlbumsMenu(self, pos):
         
-        print('column(%d)' % self.ui.tableWidgetAlbums.horizontalHeader().logicalIndexAt(pos))
-
+        #print('column(%d)' % self.ui.tableWidgetAlbums.horizontalHeader().logicalIndexAt(pos))
         menu = QMenu()
-
-
         actionEditAlbum = QAction(menu)
         actionEditAlbum.setObjectName("actionEditAlbum")
         actionEditAlbum.setText(_translate("album","Edit"))
@@ -316,8 +304,8 @@ class MainWindowLoader(QMainWindow):
         #actionEditAlbum.triggered.connect(functools.partial(self.onPlayFavRadio, rad.radioID))
         actionEditAlbum.triggered.connect(self.onEditAlbum)
 
-
         menu.exec(QtGui.QCursor.pos())
+
 
     def onEditAlbum(self):
         selRows = self.ui.tableWidgetAlbums.selectionModel().selectedRows()
@@ -502,7 +490,7 @@ class MainWindowLoader(QMainWindow):
 
         self.ui.tableWidgetAlbums.setRowCount(0)
         indexToSel = 0
-        i=0
+        i = 0
         artist.sortAlbums()
         for alb in artist.albums:
             self.ui.tableWidgetAlbums.insertRow(i)
@@ -519,21 +507,14 @@ class MainWindowLoader(QMainWindow):
             idItem.setFlags(idItem.flags() ^ Qt.ItemIsEditable)
             self.ui.tableWidgetAlbums.setItem(i,2,idItem)
 
-
-            if(i==0 and self.currentAlbum == None):
-                print("Show first album")
-                
-            elif(alb.albumID==self.currentAlbum.albumID):
-                print("showAlbums() --> Select album="+alb.title)
+            if(alb.albumID==self.currentAlbum.albumID):
                 indexToSel = i
-                #self.ui.tableWidgetAlbums.selectRow(i)
 
-            i+=1
+            i += 1
 
         self.ui.tableWidgetAlbums.selectRow(indexToSel)
         self.ui.tableWidgetAlbums.scrollTo(self.ui.tableWidgetAlbums.currentIndex(), QAbstractItemView.PositionAtCenter)
 
-        #self.ui.tableWidgetAlbums.show()
 
 
     def showAlbum(self,album):
@@ -584,7 +565,6 @@ class MainWindowLoader(QMainWindow):
     def playAlbum(self,alb):
         '''Add tracks in playlist and start playing'''
         
-        #self.player.dropMediaList()
         self.musicBase.history.insertAlbumHistory(alb.albumID)
         self.player.playAlbum(alb)
         
@@ -722,6 +702,10 @@ class MainWindowLoader(QMainWindow):
         self.ui.addAlbumButton.setText("")
         self.ui.pauseButton.setText("")
         
+        self.ui.playButton.setIcon(getSvgIcon("play-circle.svg"))
+        self.ui.addAlbumButton.setIcon(getSvgIcon("add_music.svg"))
+        self.ui.openDirButton.setIcon(getSvgIcon("folder-open.svg"))
+        self.ui.pauseButton.setIcon(getSvgIcon("pause-circle.svg"))
 
     def closeEvent(self, event):
         if self.playList is not None: self.playList.close()

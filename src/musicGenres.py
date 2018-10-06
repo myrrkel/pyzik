@@ -62,4 +62,4 @@ class musicGenres:
             availableGenres.add(self.genresTab[id])
             #print("availableGenres=",self.genresTab[id])
 
-        return availableGenres
+        return  sorted(availableGenres, key=lambda x: x[0])

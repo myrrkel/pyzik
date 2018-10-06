@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+
+print("Import modules...")
+
 import sys
-#print("SYSPATH="+str(sys.path))
-import vlc
+#import vlc
 
 from historyManager import *
-from PyQt5 import QtWidgets, QtGui, QtCore
+#from PyQt5 import QtWidgets, QtGui, QtCore
 from darkStyle import *
 from playerVLC import *
 from musicBase import *
 from translators import *
 from mainWindowLoader import * 
-
 
 
 def main():
@@ -56,11 +58,7 @@ def main():
     db = database()
     db.vacuum()
 
-
     sys.exit()
-
-
-
 
 
 

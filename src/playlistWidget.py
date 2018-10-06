@@ -5,7 +5,7 @@
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QSize, QCoreApplication
 from PyQt5.QtWidgets import QApplication, QWidget, QDialog, QPushButton, QVBoxLayout, \
-QHeaderView, QHBoxLayout, QSlider, QSizePolicy, QFrame, QLabel
+QHeaderView, QHBoxLayout, QSlider, QSizePolicy, QFrame, QLabel,QShortcut
 from track import *
 import requests
 from picFromUrlThread import *
@@ -124,6 +124,8 @@ class playlistWidget(QDialog):
         self.timeSlider.sliderMoved.connect(self.setPlayerPosition)
         self.player.mpEnventManager.event_attach(vlcEventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
 
+        self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
+        self.shortcutPause.activated.connect(self.player.pause)
 
         self.mainFrame = QFrame()
         self.hLayout = QHBoxLayout()
