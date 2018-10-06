@@ -23,6 +23,7 @@ from musicBaseThread import *
 from playlistWidget import *
 from historyWidget import *
 from searchRadioWidget import *
+from fullScreenWidget import *
 from albumWidget import *
 from svgIcon import *
 
@@ -53,6 +54,7 @@ class MainWindowLoader(QMainWindow):
         self.playList = None
         self.searchRadio = None
         self.histoWidget = None
+        self.fullScreenWidget = None
         self.currentArtist = artist("",0)
         self.currentAlbum = album("")
 
@@ -111,6 +113,8 @@ class MainWindowLoader(QMainWindow):
         self.shortcutPlaylist.activated.connect(self.showPlaylist)
         self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
         self.shortcutPause.activated.connect(self.player.pause)
+        self.shortcutFullScreen = QShortcut(QtGui.QKeySequence("Ctrl+F"), self)
+        self.shortcutFullScreen.activated.connect(self.showFullScreen)
 
 
         #Connect VLC triggers
@@ -594,12 +598,18 @@ class MainWindowLoader(QMainWindow):
 
     def showHistory(self):
         if self.histoWidget is None:
-            isNew = True
             self.histoWidget = historyWidget(self.musicBase)
              
         self.histoWidget.show()
         self.histoWidget.activateWindow()
 
+
+    def showFullScreen(self):
+        if self.fullScreenWidget is None:
+            self.fullScreenWidget = fullScreenWidget(self.player)
+             
+        self.fullScreenWidget.show()
+        self.fullScreenWidget.activateWindow()
 
     def onPlayerMediaChangedVLC(self,event):
         print("onPlayerMediaChangedVLC")

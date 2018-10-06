@@ -23,9 +23,9 @@ class customControlsWidget(QtWidgets.QWidget):
 class customWidget(QtWidgets.QDialog):
     
 
-    def __init__(self,mainCustomItem):
+    def __init__(self,parent):
         QtWidgets.QDialog.__init__(self)
-        self.mainItem = mainCustomItem
+        self.parent = parent
         self.setWindowFlags(QtCore.Qt.Window)
      
         
