@@ -5,7 +5,7 @@
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QSize, QCoreApplication
 from PyQt5.QtWidgets import QApplication, QWidget, QDialog, QPushButton, QVBoxLayout, \
-QHeaderView, QHBoxLayout, QSlider, QSizePolicy, QFrame, QLabel,QShortcut
+QHeaderView, QHBoxLayout, QSlider, QSizePolicy, QFrame, QLabel, QShortcut
 from track import *
 import requests
 from picFromUrlThread import *
@@ -131,7 +131,7 @@ class playlistWidget(QDialog):
         self.hLayout = QHBoxLayout()
         self.hLayout.setContentsMargins(0, 0, 0, 0)
         self.hLayout.setSpacing(6)
-
+        self.mainFrame.setLayout(self.hLayout)
 
         self.coverPixmap = QtGui.QPixmap()
 
@@ -145,7 +145,7 @@ class playlistWidget(QDialog):
         self.cover.setMinimumSize(QSize(200, 200))
         self.cover.setMaximumSize(QSize(200, 200))
         self.cover.setPixmap(self.coverPixmap)
-        self.mainFrame.setLayout(self.hLayout)
+
         self.hLayout.addWidget(self.cover)
         self.hLayout.addWidget(self.tableWidgetTracks)
 
@@ -469,7 +469,8 @@ class playlistWidget(QDialog):
 
             if i == index: self.tableWidgetTracks.setCurrentItem(item)
 
-        self.tableWidgetTracks.scrollTo(self.tableWidgetTracks.currentIndex(), QAbstractItemView.PositionAtCenter)
+        #self.tableWidgetTracks.scrollTo(self.tableWidgetTracks.currentIndex(), QAbstractItemView.PositionAtCenter)
+        self.tableWidgetTracks.scrollTo(self.tableWidgetTracks.currentIndex())
 
             
         self.update()
@@ -533,8 +534,8 @@ if __name__ == "__main__":
 
     playlist.show()
 
-    #url = "C:\\Users\\MP05~1.OCT\\AppData\\Local\\Temp\\tmpp9wk96vu"
-    #playlist.onPicDownloaded(url)
+    url = "/tmp/tmp8mfrufdl"
+    playlist.onPicDownloaded(url)
 
 
     sys.exit(app.exec_())

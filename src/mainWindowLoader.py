@@ -604,12 +604,13 @@ class MainWindowLoader(QMainWindow):
         self.histoWidget.activateWindow()
 
 
-    def showFullScreen(self):
+    def showFullScreen(self,):
         if self.fullScreenWidget is None:
             self.fullScreenWidget = fullScreenWidget(self.player)
              
         self.fullScreenWidget.show()
         self.fullScreenWidget.activateWindow()
+
 
     def onPlayerMediaChangedVLC(self,event):
         print("onPlayerMediaChangedVLC")
@@ -628,6 +629,8 @@ class MainWindowLoader(QMainWindow):
             self.musicBase.history.insertRadioHistory(self.player.currentRadioName,title)
         if self.playList is not None:
             self.playList.setCurrentTrack(title)
+        if self.fullScreenWidget is not None:
+            self.fullScreenWidget.setCurrentTrack(title)
 
 
 

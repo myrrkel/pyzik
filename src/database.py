@@ -156,6 +156,7 @@ class database():
             self.dropHistoryTables()
         else:
             self.dropAllTables()
+            self.dropTable("musicDirectories")
 
         self.vacuum()
 

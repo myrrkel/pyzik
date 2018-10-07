@@ -7,12 +7,13 @@ import urllib.parse
 import json
 from bs4 import BeautifulSoup
 from collections import namedtuple
-#import datetime
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 import time
 import pytz
 import email.utils as eut
+from picFromUrlThread import *
+from PyQt5.QtGui import QPixmap
+from picDownloader import *
 
 
 def _json_object_hook(d): 
@@ -46,7 +47,12 @@ class radio:
         self.liveTrackEnd = None
         self.liveTrackTitle = ""
         self.liveCoverUrl = ""
-
+        self.cover = None
+        self.coverPixmap = QPixmap()
+        self.picFromUrlThread = picFromUrlThread()
+        self.picFromUrlThread.downloadCompleted.connect(self.onCoverDownloaded)
+        self.coverDownloaded = pyqtSignal(str, name='coverDownloaded')
+        self.picDownloader = picDownloader()
 
     def load(self,row):
         self.radioID = row[0]
@@ -426,13 +432,34 @@ class radio:
         return url
 
     def getCategoriesText(self):
-        txt = ""
-        for cat in self.categories:
-            if txt != "": txt = txt +"; "
-            txt = txt + cat
-        return txt
+        s = "; "
+        return s.join(self.categories)
 
+    def getCoverUrl(self):
+        url = self.liveCoverUrl
+        if url == "" : url = self.getRadioPic()
+        return url
 
+    def getCoverPixmap(self):
+        print("RADIO - getCoverPixmap")
+        tempPath = ""
+        url = self.getCoverUrl()
+        if url:
+            print("Radio.getPic "+url)
+            tempPath = self.picDownloader.getPic(url)
+            self.coverPixmap = QPixmap(tempPath)
+
+        return self.coverPixmap
+
+    def getCover(self):
+        return self.cover
+
+    def setCover(self,cover):
+        self.cover = cover
+
+    def onCoverDownloaded(self,cover):
+        self.setCover(cover)
+        self.coverDownloaded.emit(cover)
 
 
 if __name__ == "__main__":

@@ -11,6 +11,7 @@ from mutagen.id3 import ID3NoHeaderError
 from mutagen import MutagenError
 from mutagen import File
 from urllib.parse import unquote
+from PyQt5.QtCore import pyqtSignal
 
 class track:
     """
@@ -37,6 +38,8 @@ class track:
         self.radioName = ""
         self.radioStream = ""
         self.radioID = 0
+        self.radio = None
+        self.coverDownloaded = pyqtSignal(str, name='coverDownloaded')
 
 
 
@@ -90,6 +93,8 @@ class track:
         return time.strftime('%H:%M:%S', time.gmtime(self.duration))
         
 
+    def isRadio(self):
+        return self.radioName != ""
 
     def extractDataFromTagsWithVLC(self,player,dir):
         """
@@ -171,3 +176,34 @@ class track:
             print("exception mutagen: ",sys.exc_info()[0])
 
         if self.title in("","None"): self.title = self.fileName
+
+
+    def getCover(self):
+
+        if self.isRadio():
+            if self.radio:
+                self.radio.coverDownloaded.connect(self.onCoverDownloaded)
+                self.radio.picFromUrlThread.run(coverUrl)
+         
+
+        if self.parentAlbum is not None and self.parentAlbum.cover != "":
+            coverPath = trk.parentAlbum.getCoverPath()
+            self.coverPixmap = QtGui.QPixmap(coverPath)
+            scaledCover = self.coverPixmap.scaled(self.cover.size(),
+                                            Qt.KeepAspectRatio,
+                                            Qt.SmoothTransformation)
+            self.cover.setPixmap(scaledCover)
+            self.cover.show()
+
+    def getCoverPixmap(self):
+        if self.isRadio():
+            if self.radio:
+                return self.radio.getCoverPixmap()
+        elif self.parentAlbum is not None:
+            return self.parentAlbum.getCoverPixmap()
+
+        return None
+
+    def onCoverDownloaded(self,cover):
+        self.setCover(cover)
+        self.coverDownloaded.emit(cover)
