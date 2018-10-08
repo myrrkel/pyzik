@@ -50,6 +50,11 @@ class playerControlsWidget(QWidget):
         self.deleteButton.setIcon(getSvgIcon("bin.svg"))
         lay.addWidget(self.deleteButton)
 
+        self.fullscreenButton = QPushButton()
+        self.fullscreenButton.setToolTip(_translate("playlist", "Full screen"))
+        self.fullscreenButton.setIcon(getSvgIcon("fullscreen.svg"))
+        lay.addWidget(self.fullscreenButton)
+
         self.volumeSlider = QSlider()
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -76,6 +81,7 @@ class playlistWidget(QDialog):
         self.setWindowFlags(Qt.Window)
         self.player = player
         self.mediaList = self.player.mediaList
+        self.fullScreenWidget = None
 
         
 
@@ -99,6 +105,7 @@ class playlistWidget(QDialog):
         self.playerControls.previousButton.clicked.connect(self.player.previous)
         self.playerControls.nextButton.clicked.connect(self.player.next)
         self.playerControls.deleteButton.clicked.connect(self.onClearPlaylist)
+        self.playerControls.fullscreenButton.clicked.connect(self.showFullScreen)
 
         self.playerControls.volumeSlider.setValue(self.player.getVolume())
         self.playerControls.volumeSlider.sliderMoved.connect(self.setVolume)
@@ -204,6 +211,11 @@ class playlistWidget(QDialog):
         hHeader = self.tableWidgetTracks.horizontalHeader()
         hHeader.resizeSections(QHeaderView.Stretch)
         
+
+    def showFullScreen(self):
+        if self.fullScreenWidget:
+            self.fullScreenWidget.show()
+            self.fullScreenWidget.activateWindow()
 
     def initTableWidgetTracks(self):
 

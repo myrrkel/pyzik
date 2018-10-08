@@ -54,7 +54,7 @@ class MainWindowLoader(QMainWindow):
         self.playList = None
         self.searchRadio = None
         self.histoWidget = None
-        self.fullScreenWidget = None
+        self.fullScreenWidget = fullScreenWidget(self.player)
         self.currentArtist = artist("",0)
         self.currentAlbum = album("")
 
@@ -587,6 +587,7 @@ class MainWindowLoader(QMainWindow):
         if self.playList is None:
             isNew = True
             self.playList = playlistWidget(self.player)
+            self.playList.fullScreenWidget = self.fullScreenWidget
             self.playList.trackChanged.connect(self.player.setPlaylistTrack)
 
         self.playList.showMediaList()
