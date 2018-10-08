@@ -44,6 +44,7 @@ class fullScreenWidget(QDialog):
 
         self.setCurrentTrack()
         self.setBackgroundBlack()
+        self.setTitleLabel()
         self.cover.show()
 
     def show(self):
@@ -79,6 +80,29 @@ class fullScreenWidget(QDialog):
 
         self.cover.setPixmap(self.coverPixmap)
         self.vLayout.addWidget(self.cover)
+
+        self.labelTitle = QtWidgets.QLabel()
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Ignored)
+        sizePolicy.setHorizontalStretch(100)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.labelTitle.sizePolicy().hasHeightForWidth())
+        self.labelTitle.setSizePolicy(sizePolicy)
+        self.labelTitle.setMinimumSize(QtCore.QSize(50, 70))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.labelTitle.setStyleSheet("color:white;")
+        self.labelTitle.setFont(font)
+        self.labelTitle.setAutoFillBackground(False)
+        self.labelTitle.setFrameShape(QtWidgets.QFrame.Box)
+        self.labelTitle.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.labelTitle.setLineWidth(1)
+        self.labelTitle.setMidLineWidth(0)
+        self.labelTitle.setTextFormat(QtCore.Qt.RichText)
+        self.labelTitle.setScaledContents(True)
+        self.labelTitle.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.vLayout.addWidget(self.labelTitle)
+
 
     def mousePressEvent(self, event):
         print("clicked")
@@ -132,6 +156,21 @@ class fullScreenWidget(QDialog):
         self.cover.show()
 
 
+    def setTitleLabel(self):
+        artName="ARTIST"
+        albTitle="Album"
+        year="2018"
+
+        sAlbum = albTitle
+        sYear =str(year)
+        if(not sYear in ["0",""]): sAlbum += " ("+sYear+")"
+        sTitle = '''<html><head/><body>
+        <p><span style=\" color=white font-size:14pt; font-weight:600;\">{Artist}</span></p>
+        <p><span style=\" color=white font-style:italic;\">{Album}</span></p>
+        </body></html>'''
+        sTitle = sTitle.format(Artist=artName,Album=sAlbum)
+        
+        self.labelTitle.setText(sTitle)
 
 if __name__ == "__main__":
     import sys
@@ -148,7 +187,7 @@ if __name__ == "__main__":
     pd = picDownloader()
     tempPath = pd.getPic(url)
     fs.onPicDownloaded(tempPath)
-
+    fs.setTitleLabel()
 
     #fs.showFullScreen()
 
