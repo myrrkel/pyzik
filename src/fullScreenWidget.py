@@ -43,18 +43,18 @@ class fullScreenWidget(QDialog):
         self.shortcutClose.activated.connect(self.close)
 
         self.setCurrentTrack()
+        self.setBackgroundBlack()
         self.cover.show()
 
     def show(self):
         self.showFullScreen()
+        self.setBackgroundBlack()
 
+
+    def setBackgroundBlack(self):
+        self.setStyleSheet("background-color:black;")
 
     def initUI(self):
-
-        self.setAutoFillBackground(True)
-        p = self.palette()
-        p.setColor(self.backgroundRole(), Qt.black)
-        self.setPalette(p)
 
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
@@ -62,6 +62,7 @@ class fullScreenWidget(QDialog):
 
         self.vLayout = QVBoxLayout()
         self.vLayout.setContentsMargins(6, 6, 6, 6)
+        self.vLayout.setAlignment(Qt.AlignCenter)
         self.setLayout(self.vLayout)
 
 
@@ -72,7 +73,7 @@ class fullScreenWidget(QDialog):
         self.cover = QLabel()
         self.cover.setSizePolicy(sizePolicy)
         self.cover.setMinimumSize(QSize(400, 400))
-        #self.cover.setMaximumSize(QSize(200, 200))
+        self.cover.setMaximumSize(QSize(600, 600))
         self.cover.setAlignment(Qt.AlignCenter)
         self.coverPixmap = QPixmap()
 
