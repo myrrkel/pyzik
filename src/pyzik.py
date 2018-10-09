@@ -36,7 +36,6 @@ def main():
     print("Checking history file...")
     histoManager = historyManager()
     histoManager.database.checkHistoryInMainDB()
-    #histoManager.database.dropAll()
 
 
     mb = musicBase()

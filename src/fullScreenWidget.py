@@ -30,6 +30,7 @@ class fullScreenWidget(QDialog):
     def __init__(self,player=None):
         QDialog.__init__(self)
         self.player = player
+        self.currentTrack = None
         self.setWindowFlags(
                             Qt.Window | 
                             Qt.WindowStaysOnTopHint | 
@@ -45,7 +46,7 @@ class fullScreenWidget(QDialog):
         self.setCurrentTrack()
         self.setBackgroundBlack()
         self.setTitleLabel()
-        self.cover.show()
+        #self.cover.show()
 
     def show(self):
         self.showFullScreen()
@@ -73,8 +74,7 @@ class fullScreenWidget(QDialog):
         
         self.cover = QLabel()
         self.cover.setSizePolicy(sizePolicy)
-        self.cover.setMinimumSize(QSize(400, 400))
-        self.cover.setMaximumSize(QSize(600, 600))
+        self.cover.setMinimumSize(QSize(300, 300))
         self.cover.setAlignment(Qt.AlignCenter)
         self.coverPixmap = QPixmap()
 
@@ -82,7 +82,7 @@ class fullScreenWidget(QDialog):
         self.vLayout.addWidget(self.cover)
 
         self.labelTitle = QtWidgets.QLabel()
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Ignored)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.labelTitle.sizePolicy().hasHeightForWidth())
@@ -126,9 +126,9 @@ class fullScreenWidget(QDialog):
         if self.player is None : return 
 
         #index = self.player.getCurrentIndexPlaylist()
-        trk = self.player.getCurrentTrackPlaylist()
-        if trk:
-            self.coverPixmap = trk.getCoverPixmap()
+        self.currentTrack = self.player.getCurrentTrackPlaylist()
+        if self.currentTrack:
+            self.coverPixmap = self.currentTrack.getCoverPixmap()
 
         if not self.coverPixmap.isNull():
             print("Pic size="+str(self.cover.size()))
@@ -161,14 +161,17 @@ class fullScreenWidget(QDialog):
         albTitle="Album"
         year="2018"
 
+        orange = QtGui.QColor(216, 119, 0)
+        colorName = orange.name()
+
         sAlbum = albTitle
         sYear =str(year)
         if(not sYear in ["0",""]): sAlbum += " ("+sYear+")"
         sTitle = '''<html><head/><body>
-        <p><span style=\" color=white font-size:14pt; font-weight:600;\">{Artist}</span></p>
-        <p><span style=\" color=white font-style:italic;\">{Album}</span></p>
+        <p><span style=\" color:{colorName}; font-size:28pt; font-weight:600;\">{Artist}</span></p>
+        <p><span style=\" color:{colorName}; font-size:20pt; font-style:italic;\">{Album}</span></p>
         </body></html>'''
-        sTitle = sTitle.format(Artist=artName,Album=sAlbum)
+        sTitle = sTitle.format(Artist=artName,Album=sAlbum, colorName=colorName)
         
         self.labelTitle.setText(sTitle)
 
