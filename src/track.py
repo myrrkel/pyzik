@@ -70,6 +70,11 @@ class track:
         else:
             return self.artist
 
+    def getAlbumYear(self):
+        if self.parentAlbum is not None and self.year == 0:
+            return self.parentAlbum.year
+        else:
+            return self.year
 
     def getAlbumTitle(self):
         if self.parentAlbum is not None:

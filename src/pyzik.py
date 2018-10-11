@@ -44,7 +44,7 @@ def main():
     print('Loading VLC player...')
     player = playerVLC()
 
-    print('Showing main windows...')
+    print('Showing main window...')
     window = MainWindowLoader(None,app,mb,player,tr)
     window.show()
 

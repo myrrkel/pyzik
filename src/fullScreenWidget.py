@@ -139,6 +139,7 @@ class fullScreenWidget(QDialog):
         else:
             self.cover.setPixmap(QtGui.QPixmap())
         self.cover.show()
+        self.setTitleLabel()
 
 
     def onPicDownloaded(self,path):
@@ -159,10 +160,21 @@ class fullScreenWidget(QDialog):
     def setTitleLabel(self):
         artName="ARTIST"
         albTitle="Album"
-        year="2018"
+        year=""
 
         orange = QtGui.QColor(216, 119, 0)
         colorName = orange.name()
+
+        if self.currentTrack:
+            if self.currentTrack.isRadio():
+                artName = self.currentTrack.radio.name
+                albTitle = self.currentTrack.radio.liveTrackTitle
+            else:
+                artName = self.currentTrack.getArtistName()
+                albTitle = self.currentTrack.getAlbumTitle()
+                albTitle = albTitle + " - " + self.currentTrack.getTrackTitle()
+                year = self.getAlbumYear()
+
 
         sAlbum = albTitle
         sYear =str(year)
