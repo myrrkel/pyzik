@@ -8,7 +8,7 @@ from track import *
 from globalConstants import *
 import formatString as FS
 from database import *
-
+from PyQt5.QtGui import QPixmap
 
 
 def year(s):
@@ -279,6 +279,16 @@ class album:
 
     def getCoverPath(self):
         return os.path.join(self.getAlbumDir(),self.cover)
+
+
+    def getCoverPixmap(self):
+        print("ALBUM - getCoverPixmap")
+        tempPath = ""
+        path = self.getCoverPath()
+        if path:
+            self.coverPixmap = QPixmap(path)
+
+        return self.coverPixmap
 
     def checkDir(self):
         return os.path.exists(self.getAlbumDir())

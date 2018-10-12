@@ -51,6 +51,7 @@ class fullScreenWidget(QDialog):
     def show(self):
         self.showFullScreen()
         self.setBackgroundBlack()
+        self.setCurrentTrack()
 
 
     def setBackgroundBlack(self):
@@ -130,23 +131,18 @@ class fullScreenWidget(QDialog):
         if self.currentTrack:
             self.coverPixmap = self.currentTrack.getCoverPixmap()
 
-        if not self.coverPixmap.isNull():
-            print("Pic size="+str(self.cover.size()))
-            scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                                    Qt.KeepAspectRatio,
-                                                    Qt.SmoothTransformation)
-            self.cover.setPixmap(scaledCover)
-        else:
-            self.cover.setPixmap(QtGui.QPixmap())
-        self.cover.show()
+        self.showCover()
+
         self.setTitleLabel()
 
 
     def onPicDownloaded(self,path):
-        
         self.coverPixmap = QtGui.QPixmap(path)
+        self.showCover()
+        
+
+    def showCover(self):
         if not self.coverPixmap.isNull():
-            print("onPicDownloaded="+path)
             print("Pic size="+str(self.cover.size()))
             scaledCover = self.coverPixmap.scaled(self.cover.size(),
                                                     Qt.KeepAspectRatio,
@@ -173,7 +169,7 @@ class fullScreenWidget(QDialog):
                 artName = self.currentTrack.getArtistName()
                 albTitle = self.currentTrack.getAlbumTitle()
                 albTitle = albTitle + " - " + self.currentTrack.getTrackTitle()
-                year = self.getAlbumYear()
+                year = self.currentTrack.getAlbumYear()
 
 
         sAlbum = albTitle
