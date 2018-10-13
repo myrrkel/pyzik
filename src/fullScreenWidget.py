@@ -40,6 +40,8 @@ class fullScreenWidget(QDialog):
 
         self.initUI()
 
+        self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
+        self.shortcutPause.activated.connect(self.player.pause)
         self.shortcutClose = QShortcut(QKeySequence("Escape"), self)
         self.shortcutClose.activated.connect(self.close)
 
@@ -165,6 +167,8 @@ class fullScreenWidget(QDialog):
             if self.currentTrack.isRadio():
                 artName = self.currentTrack.radio.name
                 albTitle = self.currentTrack.radio.liveTrackTitle
+                if albTitle == "":
+                    albTitle = self.player.getNowPlaying()
             else:
                 artName = self.currentTrack.getArtistName()
                 albTitle = self.currentTrack.getAlbumTitle()
@@ -176,7 +180,7 @@ class fullScreenWidget(QDialog):
         sYear =str(year)
         if(not sYear in ["0",""]): sAlbum += " ("+sYear+")"
         sTitle = '''<html><head/><body>
-        <p><span style=\" color:{colorName}; font-size:28pt; font-weight:600;\">{Artist}</span></p>
+        <p><span style=\" color:{colorName}; font-size:28pt; text-shadow:white 0px 0px 4px; font-weight:600;\">{Artist}</span></p>
         <p><span style=\" color:{colorName}; font-size:20pt; font-style:italic;\">{Album}</span></p>
         </body></html>'''
         sTitle = sTitle.format(Artist=artName,Album=sAlbum, colorName=colorName)

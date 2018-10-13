@@ -66,9 +66,7 @@ class musicDirectory:
         if self.getStatus() == -1: return
 
         dirlist = next(os.walk(self.dirPath))[1]
-        i=0
-        for dir in dirlist:
-            i+=1
+        for i, dir in enumerate(dirlist):
             iProgress = round((i/len(dirlist))*100)
             progressChanged.emit(iProgress)
             curAlb = album(dir)
@@ -76,7 +74,7 @@ class musicDirectory:
             curAlb.musicDirectory = self
             curAlb.dirPath = dir
 
-            if curAlb.toVerify == False:
+            if not curAlb.toVerify:
                 #Artist name and album title has been found
                 curArt = self.artistCol.getArtist(curAlb.artistName)
                 #GetArtist return a new artist if it doesn't exists in artistsCol
@@ -85,7 +83,7 @@ class musicDirectory:
                     curAlb.artistName = curArt.name
 
                     albumList = curArt.findAlbums(curAlb.title)
-                    if len(albumList)==0:
+                    if not albumList:
                         print("Add "+curAlb.title+" in "+curArt.name+" discography. ArtID=",curArt.artistID)
                         self.albumCol.addAlbum(curAlb)
                         curArt.addAlbum(curAlb)

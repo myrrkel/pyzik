@@ -48,7 +48,7 @@ def main():
     window = MainWindowLoader(None,app,mb,player,tr)
     window.show()
 
-    print("Go!")
+    print("Go!")    
     app.exec()
     window.threadStreamObserver.stop()
 

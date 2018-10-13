@@ -16,18 +16,12 @@ def filterByTitle_ArtistID(seq, title, art_id):
             if el.title == el.formatTitle(title):
                 yield el
                 break
-            elif el.title.replace("And","&") == el.formatTitle(title):
-                yield el
-                break
-            elif el.title == el.formatTitle(title).replace("And","&"):
+            elif el.title.replace("And","&") == el.formatTitle(title).replace("And","&"):
                 yield el
                 break
 
-def filterByAlbumID(seq, alb_id):
-    for el in seq:
-        if int(el.albumID) == int(alb_id):
-            yield el
-            break
+def findByAlbumID(seq, alb_id):
+    return next(el for el in seq if int(el.albumID) == int(alb_id))
             
 
 class albumCollection:
@@ -72,10 +66,7 @@ class albumCollection:
 
 
     def getAlbum(self,albID):
-        resAlb = album("")
-        for alb in filterByAlbumID(self.albums,albID):
-            resAlb = alb
-        return resAlb
+        return findByAlbumID(self.albums,albID) or album("")
 
 
     def getRandomAlbum(self,styleID=-1):

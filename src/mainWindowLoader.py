@@ -620,6 +620,8 @@ class MainWindowLoader(QMainWindow):
             self.musicBase.history.insertTrackHistory(trk.parentAlbum.albumID,trk.getFilePathInAlbumDir())
         if self.playList is not None:
             self.playList.setCurrentTrack()
+        if self.fullScreenWidget is not None:
+            self.fullScreenWidget.setCurrentTrack()
 
 
     def onPlayerMediaChangedStreamObserver(self,title):

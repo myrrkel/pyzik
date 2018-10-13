@@ -41,13 +41,7 @@ class musicGenres:
 
 
     def createGenreTab(self):
-        tab = []
-        i=0
-        for genre in self.musicGenres:
-            tab.append((genre,i))
-            i+=1
-        return tab
-
+        return list((genre, id) for id, genre in enumerate(self.musicGenres))
 
 
     def printGenres(self):

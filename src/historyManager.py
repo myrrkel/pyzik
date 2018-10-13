@@ -53,9 +53,11 @@ class historyManager():
 
     def insertTrackHistory(self,albumID,fileName):
         ''' Insert track in history '''
+
+        self.database.createConnection()
         sql = """    INSERT INTO playHistoryTrack ({columns})
                         VALUES ('{albumID}','{fileName}',datetime('now','localtime'));
-                  """.format(columns="albumID, fileName, playDate",albumID=albumID,fileName="track")
+                  """.format(columns="albumID, fileName, playDate",albumID=albumID,fileName=fileName)
         return self.database.insert(sql)
 
 

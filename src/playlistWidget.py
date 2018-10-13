@@ -133,6 +133,8 @@ class playlistWidget(QDialog):
 
         self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
         self.shortcutPause.activated.connect(self.player.pause)
+        self.shortcutFullScreen = QShortcut(QtGui.QKeySequence("Ctrl+F"), self)
+        self.shortcutFullScreen.activated.connect(self.showFullScreen)
 
         self.mainFrame = QFrame()
         self.hLayout = QHBoxLayout()
@@ -470,14 +472,12 @@ class playlistWidget(QDialog):
                 color = white
 
             item.setFont(f)
-            self.tableWidgetTracks.item(i,1).setFont(f)
-            self.tableWidgetTracks.item(i,2).setFont(f)
-            self.tableWidgetTracks.item(i,3).setFont(f)
 
-            self.tableWidgetTracks.item(i,0).setForeground(color)
-            self.tableWidgetTracks.item(i,1).setForeground(color)
-            self.tableWidgetTracks.item(i,2).setForeground(color)
-            self.tableWidgetTracks.item(i,3).setForeground(color)
+            for j in range(0,2):
+                self.tableWidgetTracks.item(i,j).setFont(f)
+
+            for j in range(0,3):
+                self.tableWidgetTracks.item(i,j).setForeground(color)
 
             if i == index: self.tableWidgetTracks.setCurrentItem(item)
 

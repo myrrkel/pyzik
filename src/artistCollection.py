@@ -10,21 +10,13 @@ from sortedcontainers import SortedKeyList
 
 def filterByName(seq, value):
     value = FS.getSearchKey(value)
-
-    for el in seq:
-        if el.getSearchKey() == value:
-            yield el
-            break
+    return list(el for el in seq if el.getSearchKey() == value)
         
 
 
 
-def filterByID(seq, value):
-    for el in seq:
-        if el.artistID==value:
-            yield el
-            break
-
+def findByID(seq, value):
+    return next(el for el in seq if el.artistID==value)
 
 
 
@@ -72,23 +64,11 @@ class artistCollection:
 
 
     def findArtists(self,sname):
-        artistList = []
+        return filterByName(self.artists,sname)
 
-        for art in filterByName(self.artists,sname):
-            artistList.append(art)
-        return artistList
-
-    def findSortedArtist(self,art):
-        artistList = []
-        if art in self.artists:
-            print("findSortedArtist="+art.name)
-            artistList.append(art)
-
-        return artistList
 
     def getArtistByID(self,id):
-        for art in filterByID(self.artists,id):
-            return art
+        return findByID(self.artists,id)
 
 
     def printArtists(self):
