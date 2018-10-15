@@ -19,7 +19,7 @@ class musicDirectory:
         self.artistCol = artistCollection(self.musicBase)
         self.dirPath = dirPath
         self.musicDirectoryID = 0
-        self.styleID = 0
+        self.styleID = -1
         self.dirName = ""
         self.albums = []
         self.dirType = 0
@@ -69,10 +69,7 @@ class musicDirectory:
         for i, dir in enumerate(dirlist):
             iProgress = round((i/len(dirlist))*100)
             progressChanged.emit(iProgress)
-            curAlb = album(dir)
-            curAlb.musicDirectoryID = self.musicDirectoryID
-            curAlb.musicDirectory = self
-            curAlb.dirPath = dir
+            curAlb = album(dir,self)
 
             if not curAlb.toVerify:
                 #Artist name and album title has been found
@@ -81,6 +78,7 @@ class musicDirectory:
                 if curArt:                
                     curAlb.artistID = curArt.artistID
                     curAlb.artistName = curArt.name
+                    curAlb.addStyle({self.styleID})
 
                     albumList = curArt.findAlbums(curAlb.title)
                     if not albumList:
@@ -93,7 +91,9 @@ class musicDirectory:
                                 self.addExploreEvent(exploreEvent("ALBUM_DUPLICATE",curAlb.getAlbumDir(),alb.albumID,curArt.artistID))
 
                 else:
-                    print("No artist for "+dir)
+                    print("exploreAlbumsDirectory - No artist for "+dir)
+            else:
+                self.addExploreEvent(exploreEvent("ALBUM_TO_VERIFY",curAlb.getAlbumDir()))
 
         return 
 
@@ -180,3 +180,5 @@ class exploreEvent:
     def getText(self):
         if self.eventCode == "ALBUM_DUPLICATE":
             return "Album in "+self.dirPath+" already exists for this artist"
+        if self.eventCode == "ALBUM_TO_VERIFY":
+            return "Album in "+self.dirPath+" must be verified"

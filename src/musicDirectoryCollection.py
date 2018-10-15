@@ -26,6 +26,17 @@ class musicDirectoryCollection:
         self.musicDirectories.append(musicDirectory)
         return musicDirectory.musicDirectoryID
 
+    def deleteMusicDirectory(self,musicDirectory):
+
+        self.musicBase.db.updateValue("albums","musicDirectoryID","0", "musicDirectoryID", musicDirectory.musicDirectoryID)
+
+        if self.musicBase.db.deleteWithID("musicDirectories","musicDirectoryID",musicDirectory.musicDirectoryID):
+            self.musicDirectories.remove(musicDirectory)
+            print("Directory removed")
+        else:
+            print("deleteMusicDirectory - Error")
+
+
     def printMusicDirectories(self):
         for dir in self.musicDirectories:
             dir.printInfos()

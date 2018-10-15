@@ -5,7 +5,7 @@
 class musicGenres:
 
     musicGenres = [ 
-        "Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk", 
+        "None", "Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk", 
         "Grunge", "Hip-Hop", "Jazz", "Metal", "New Age", "Oldies", "Other", 
         "Pop", "R&B", "Rap", "Reggae", "Rock", "Techno", "Industrial", 
         "Alternative", "Ska", "Death Metal", "Pranks", "Soundtrack", 
@@ -41,19 +41,22 @@ class musicGenres:
 
 
     def createGenreTab(self):
-        return list((genre, id) for id, genre in enumerate(self.musicGenres))
+        return list((genre, id) for id, genre in enumerate(self.musicGenres,-1))
 
 
     def printGenres(self):
         for genre in self.genresTab:
             print(genre[0])
 
+    def getGenreByID(self,id):
+        return next(el for el in self.genresTab if int(el[1]) == int(id))
+
 
     def getAvailableGenresFormIDSet(self,idSet):
         #self.printGenres()
         availableGenres = set()
         for id in idSet:
-            availableGenres.add(self.genresTab[id])
+            availableGenres.add(self.getGenreByID(id))
             #print("availableGenres=",self.genresTab[id])
 
         return  sorted(availableGenres, key=lambda x: x[0])

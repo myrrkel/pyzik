@@ -149,7 +149,7 @@ class MainWindowLoader(QMainWindow):
         self.loadAlbumFilesThread.tracksLoaded.connect(self.showAlbumTracks)
 
         self.exploreAlbumsDirectoriesThread = exploreAlbumsDirectoriesThread()
-        self.exploreAlbumsDirectoriesThread.exploreCompleted.connect(self.showArtists)
+        #self.exploreAlbumsDirectoriesThread.exploreCompleted.connect(self.onExploreCompleted)
 
         self.ui.coverWidget.resizeEvent = self.resizeEvent
 
@@ -166,7 +166,14 @@ class MainWindowLoader(QMainWindow):
         self.showPlaylist(True)
         self.setVolume(self.getVolumeFromSlider())
 
+    def onExploreCompleted(self,event):
+        print("onExploreCompleted")
+        self.musicBase.db = database()
+        #self.musicBase.loadMusicBase()
+        self.showArtists()
+        self.showGenres()
         
+
     def onPlaySearchRadio(self):   
 
         if self.searchRadio is None:
@@ -284,9 +291,6 @@ class MainWindowLoader(QMainWindow):
         self.exploreAlbumsDirectoriesThread.exploreCompleted.connect(self.onExploreCompleted)
         self.wProgress.progressClosed.connect(self.exploreAlbumsDirectoriesThread.stop)
         self.exploreAlbumsDirectoriesThread.start()
-    
-    def onExploreCompleted(self,event):
-        self.musicBase.db = database()
 
     
     def onMenuDeleteDatabase(self):
@@ -295,6 +299,7 @@ class MainWindowLoader(QMainWindow):
         self.musicBase.emptyDatas()
         self.showArtists()
         self.initAlbumTableWidget()
+        self.initAlbumView()
 
 
     def handleHeaderAlbumsMenu(self, pos):
@@ -329,7 +334,8 @@ class MainWindowLoader(QMainWindow):
 
     def showGenres(self):
 
-        self.ui.comboBoxStyle.addItem(_translate("playlist","All styles"),-1)
+        self.ui.comboBoxStyle.clear()
+        self.ui.comboBoxStyle.addItem(_translate("playlist","All styles"),-2)
 
         idSet = self.musicBase.musicDirectoryCol.getStyleIDSet()
         for genre in self.musicBase.genres.getAvailableGenresFormIDSet(idSet):
@@ -435,7 +441,7 @@ class MainWindowLoader(QMainWindow):
         genreID = self.ui.comboBoxStyle.currentData()
         search = self.ui.searchEdit.text()    
 
-        if(genreID<0 and search==""):
+        if((genreID is None or genreID ==-2) and search==""):
             self.setHiddenAllArtistItem(False)
         else:
             #self.setHiddenAllArtistItem(True)
@@ -444,7 +450,7 @@ class MainWindowLoader(QMainWindow):
             for i in range(model.rowCount()):
                 itemArt = model.item(i)
                 i = itemArt.row()
-                if ((genreID in itemArt.artist.styleIDSet or genreID<0)
+                if (( genreID == -2 or genreID in itemArt.artist.styleIDSet)
                 and (search.upper() in itemArt.artist.name.upper() or search=="")): 
                     self.ui.listViewArtists.setRowHidden(i,False)
                 else:
@@ -519,6 +525,11 @@ class MainWindowLoader(QMainWindow):
         self.ui.tableWidgetAlbums.selectRow(indexToSel)
         self.ui.tableWidgetAlbums.scrollTo(self.ui.tableWidgetAlbums.currentIndex(), QAbstractItemView.PositionAtCenter)
 
+    def initAlbumView(self):
+        self.currentAlbum = None
+        self.ui.labelArtist.setText("")
+        self.ui.tableWidgetTracks.setRowCount(0)
+        self.showCover("")
 
 
     def showAlbum(self,album):

@@ -326,9 +326,21 @@ class database():
             return c.lastrowid
         except sqlite3.Error as e:
             print(e)
-            return None
+            return 0
 
         
+    def deleteWithID(self,table,idName,idValue):
+        ''' Delete a row from table where the id called idName == idValue '''
+        rowcount = 0
+        try:
+            c = self.connection.cursor() 
+            c.execute("DELETE FROM "+table+" WHERE "+idName+"="+str(idValue))
+            self.connection.commit()
+            return c.rowcount
+        except sqlite3.Error as e:
+            print(e)
+            return 0
+
     def insertAlbum(self,album):
 
         try:

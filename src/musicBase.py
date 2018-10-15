@@ -43,18 +43,26 @@ class musicBase:
         self.addGenresDirToAlbums()
         self.addAlbumsToArtists()
         self.radioMan.loadFavRadios()
+        self.initAvailableGenres()
 
+
+    def refresh(self):
+        self.addGenresDirToAlbums()
+        self.addAlbumsToArtists()
+        self.initAvailableGenres()
+
+
+    def initAvailableGenres(self):
         self.styleIDSet = self.musicDirectoryCol.getStyleIDSet()
-
-        #print("styleIDSet=",self.styleIDSet)
         self.availableGenres = self.genres.getAvailableGenresFormIDSet(self.styleIDSet)
 
 
     def addGenresDirToAlbums(self):
         for alb in self.albumCol.albums:
             md = self.musicDirectoryCol.getMusicDirectory(alb.musicDirectoryID)
-            if md.styleID >=0:
-                alb.addStyle({md.styleID})
+            if (md != None):
+                if md.styleID >=-1:
+                    alb.addStyle({md.styleID})
 
     def addAlbumsToArtists(self):
         for alb in self.albumCol.albums:
@@ -64,6 +72,9 @@ class musicBase:
                 artistFound.addStyle(alb.styleIDSet)
                 artistFound.albums.append(alb)
 
+
+    def deleteMusicDirectory(self,musicDirectory):
+        self.musicDirectoryCol.deleteMusicDirectory(musicDirectory)
 
     def emptyDatas(self):
         self.artistCol.artists = set()

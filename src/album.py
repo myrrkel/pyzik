@@ -26,6 +26,12 @@ def year(s):
             #Sounds ridiculous to have 16 instead of 2016.
     return res
 
+def isYear(s):
+    return s.isdigit() and (len(s) in (4,2))
+
+def countDigitInDatas(datas):
+    return len( list(d for d in datas if d.isdigit()==True))
+
 def getFileName(path):
     
     filename = os.path.basename(path)
@@ -76,13 +82,12 @@ class album:
     Album's class, each album is in a directory name.
     """
 
-    def __init__(self,dirname=""):
+    def __init__(self,dirname="",musicDirectory=None):
         self.albumID = 0
         self.title = ""
         self.dirName = dirname
-        self.dirPath = ""
+        self.dirPath = dirname
         self.artistID = ""
-        self.musicDirectoryID = ""
         self.artistName = ""
         self.year = 0
         self.cover = ""
@@ -91,7 +96,11 @@ class album:
         self.images = []
         self.styleIDSet = set()
         self.doStop = False
-        self.musicDirectory = None
+        self.musicDirectory = musicDirectory
+        if musicDirectory:
+            self.musicDirectoryID = musicDirectory.musicDirectoryID
+        else:
+            self.musicDirectoryID = 0
         self.searchKey = ""
 
 
@@ -126,9 +135,8 @@ class album:
     def extractDataFromDirName(self):
         pos1 = self.dirName.find(" - [")
         pos2 = self.dirName.find("] - ")
-        pos_separator = self.dirName.find("@")
         
-        if 0<pos1 and pos1<pos2 and pos_separator < 0:
+        if 0<pos1 and pos1<pos2:
             #The name of the directory is correct like 'DEEP PURPLE - [1972] - Machine Head'
             self.title = self.dirName[pos2+4:]
             self.artistName = self.dirName[:pos1]
@@ -145,19 +153,25 @@ class album:
             datas = [str.strip(data) for data in datas]
             
             
+            #if len(datas)>3:
+            #    print("extractDataFromDirName: more than 3 datas = "+str(datas))
+
             if len(datas)>=3:
                 '''With 3 or more informations in the directory name,
                 we suppose that the fisrt one is the artist name,
                 If the second is a year, the third is the title'''
+                self.title = ""
+                self.artistName = datas[0]
+
+                for i in range(1,len(datas)):
                 
-                if(datas[1].isdigit()):
-                    self.title = datas[2]
-                    self.year = year(datas[1])
-                    self.artistName = datas[0]
-                elif (datas[2].isdigit()):
-                    self.title = datas[1]
-                    self.year = year(datas[2])
-                    self.artistName = datas[0]
+                    if(datas[i].isdigit()):
+                        if isYear(datas[i]):
+                            self.year = year(datas[i])
+                    else:
+                        if self.title != "": self.title += " - "
+                        self.title += datas[i]
+
 
             elif len(datas)==2:
                 '''With 2 informations in the directory name,
@@ -291,14 +305,22 @@ class album:
         return self.coverPixmap
 
     def checkDir(self):
-        return os.path.exists(self.getAlbumDir())
+        if self.musicDirectory:
+            albDir = self.getAlbumDir()
+            if albDir:
+                return os.path.exists(albDir)
+        else:
+            return False
 
     def setDoStop(self):
         self.doStop = True
 
     def getAlbumDir(self):
-        albumDir = os.path.join(self.musicDirectory.getDirPath(),self.dirPath)
-        return albumDir
+        if self.musicDirectory:
+            albumDir = os.path.join(self.musicDirectory.getDirPath(),self.dirPath)
+            return albumDir
+        else:
+            return self.dirPath
 
     def getTracksFilePath(self):
         files =[]

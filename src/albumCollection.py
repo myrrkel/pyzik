@@ -69,9 +69,9 @@ class albumCollection:
         return findByAlbumID(self.albums,albID) or album("")
 
 
-    def getRandomAlbum(self,styleID=-1):
+    def getRandomAlbum(self,styleID=-2):
 
-        if styleID > -1:
+        if styleID > -2:
             albList = [alb for alb in self.albums if styleID in alb.styleIDSet]
         else:
             albList = self.albums
