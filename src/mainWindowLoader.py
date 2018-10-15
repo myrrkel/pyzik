@@ -489,13 +489,14 @@ class MainWindowLoader(QMainWindow):
 
     def showAlbums(self,artist):
         #Add albums in the QTableView
-
+        if artist == None: 
+            return
         print("Show albums Art="+artist.name)
 
         if self.currentAlbum is None:
             self.currentAlbum = artist.getRandomAlbum()
 
-        if self.currentAlbum.artistID is not artist.artistID:
+        if self.currentAlbum.artistID != artist.artistID:
             self.currentAlbum = artist.getRandomAlbum()
 
         self.ui.tableWidgetAlbums.setRowCount(0)

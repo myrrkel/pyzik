@@ -24,7 +24,7 @@ class database():
 
         self.dataPath = dataDir + "/data/"+self.databaseName
         self.dataPathMain = dataDir + "/data/pyzik.db"
-        #print("Database in "+self.dataPath)
+        print("Database in "+self.dataPath)
         self.connection = ""
         self.memoryConnection = ""
 
@@ -222,6 +222,12 @@ class database():
                                     ); """
         self.execSQLWithoutResult(sqlCreateTableAlbum)
 
+        if not self.columnExistsInTable("albums","creationDate"):
+            print("add column creationdate")
+            sqlAddcolumnDirType = """ ALTER TABLE albums ADD COLUMN creationDate date"""
+            self.execSQLWithoutResult(sqlAddcolumnDirType)
+
+
     def createTableMusicDirectories(self):
         sqlCreateTableMusicDirectories = """ CREATE TABLE IF NOT EXISTS musicDirectories (
                                         musicDirectoryID integer PRIMARY KEY,
@@ -275,6 +281,7 @@ class database():
 
 
     def getSelect(self,select_sql,attachMain=False,params=None):
+        print('getSelect: '+select_sql)
         c = self.connection.cursor()
         if params is None:
             if attachMain: c.execute("ATTACH DATABASE '"+self.dataPathMain+"' as 'maindb';")
@@ -309,7 +316,9 @@ class database():
         return result[0][0]
 
     def columnExistsInTable(self,table,column):
-        sqlExists = "PRAGMA table_info("+table+");"
+        print('columnExistsInTable: '+table+"."+column)
+        sqlExists = "PRAGMA table_info('"+table+"');"
+        columns = []
         columns = self.getSelect(sqlExists)
         for col in columns:
             if column == col[1] : return True
@@ -345,8 +354,8 @@ class database():
 
         try:
             c = self.connection.cursor()
-            sqlInsertAlbum = """    INSERT INTO albums (title, artistID,dirPath,year,musicDirectoryID)
-                                VALUES (?,?,?,?,?);
+            sqlInsertAlbum = """    INSERT INTO albums (title, artistID,dirPath,year,musicDirectoryID,creationDate)
+                                VALUES (?,?,?,?,?,date('now'));
                           """
             c.execute(sqlInsertAlbum,(album.title,album.artistID,album.dirPath,album.year,album.musicDirectoryID))
             self.connection.commit()
