@@ -5,10 +5,7 @@
 print("Import modules...")
 
 import sys
-#import vlc
 
-from historyManager import *
-#from PyQt5 import QtWidgets, QtGui, QtCore
 from darkStyle import *
 from playerVLC import *
 from musicBase import *
@@ -32,10 +29,6 @@ def main():
     #print("Available system styles: ",QtWidgets.QStyleFactory.keys())
     #myStyle = QtWidgets.QStyleFactory.create('Windows')
     #app.setStyle(myStyle)
-
-    print("Checking history file...")
-    histoManager = historyManager()
-    histoManager.database.checkHistoryInMainDB()
 
 
     mb = musicBase()

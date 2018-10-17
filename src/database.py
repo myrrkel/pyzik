@@ -24,7 +24,6 @@ class database():
 
         self.dataPath = dataDir + "/data/"+self.databaseName
         self.dataPathMain = dataDir + "/data/pyzik.db"
-        print("Database in "+self.dataPath)
         self.connection = ""
         self.memoryConnection = ""
 
@@ -32,6 +31,7 @@ class database():
         
 
     def initDataBase(self):
+        print("Database in "+self.dataPath)
         if self.isHistory:
             self.createTablePlayHistoryAlbum()
             self.createTablePlayHistoryTrack()

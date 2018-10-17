@@ -44,6 +44,8 @@ class musicBase:
         self.addAlbumsToArtists()
         self.radioMan.loadFavRadios()
         self.initAvailableGenres()
+        self.history.initDataBase()
+
 
 
     def refresh(self):

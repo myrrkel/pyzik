@@ -18,8 +18,12 @@ class historyManager():
     def __init__(self,musicBase=None):
         self.musicBase = musicBase
         self.database = database(isHistory=True)
-        self.database.initDataBase()
         self.log = []
+
+
+    def initDataBase(self):
+        self.database.initDataBase()
+
 
 
     def loadHistory(self,withAlbums=True):
