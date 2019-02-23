@@ -39,5 +39,9 @@
         <source>All styles</source>
         <translation>Tous les styles</translation>
     </message>
+    <message>
+        <source>Full screen</source>
+        <translation>Plein écran</translation>
+    </message>
 </context>
 </TS>

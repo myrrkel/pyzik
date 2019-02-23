@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file './qt/dialogmusicdirectories.ui'
 #
-# Created by: PyQt5 UI code generator 5.10.1
+# Created by: PyQt5 UI code generator 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -204,7 +204,7 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        Dialog.setWindowTitle(_translate("Dialog", "Music directories manager"))
         self.AddButton.setText(_translate("Dialog", "Add directory"))
         self.DeleteButton.setText(_translate("Dialog", "Delete"))
         self.labelName.setText(_translate("Dialog", "Name"))

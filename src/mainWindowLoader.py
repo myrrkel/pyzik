@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import os, sys, subprocess, functools
 
-from PyQt5.QtCore import Qt, QSettings, QCoreApplication, QItemSelectionModel
+from PyQt5.QtCore import Qt, QSettings, QCoreApplication, QItemSelectionModel, pyqtSignal
 from PyQt5.QtWidgets import QTableWidgetItem, QShortcut, QHeaderView, QMenu, QAction, QAbstractItemView, QMainWindow
 from PyQt5.QtGui import QPixmap, QIcon, QKeySequence, QCursor, QStandardItemModel, QStandardItem, QColor
 
@@ -24,6 +24,8 @@ from playlistWidget import *
 from historyWidget import *
 from searchRadioWidget import *
 from fullScreenWidget import *
+from fullScreenCoverWidget import *
+from playerControlWidget import *
 from albumWidget import *
 from svgIcon import *
 
@@ -41,6 +43,9 @@ def openFile(filename):
 
 class MainWindowLoader(QMainWindow):
 
+    currentTrackChanged = pyqtSignal(str, name='currentTrackChanged')
+    showPlayerControlEmited = pyqtSignal(str, name='showPlayerControlEmited')
+
     def __init__(self, parent=None,app=None,musicbase=None,player=None,translator=None):
         QMainWindow.__init__(self, parent)
 
@@ -54,19 +59,40 @@ class MainWindowLoader(QMainWindow):
         self.playList = None
         self.searchRadio = None
         self.histoWidget = None
-        self.fullScreenWidget = fullScreenWidget(self.player)
-        self.currentArtist = artist("",0)
-        self.currentAlbum = album("")
+
 
         self.coverPixmap = QtGui.QPixmap()
         #self.defaultPixmap = QtGui.QPixmap("img/vinyl-record.svg")
         self.defaultPixmap = getSvgWithColorParam("vinyl-record2.svg")
+
+        self.fullScreenWidget = fullScreenWidget(self.player)
+        self.fullScreenWidget.defaultPixmap = self.defaultPixmap
+        self.fullScreenCoverWidget = fullScreenCoverWidget()
+        self.fullScreenCoverWidget.defaultPixmap = self.defaultPixmap
+        self.currentArtist = artist("",0)
+        self.currentAlbum = album("")
+
+
 
         #self.setWindowIcon(getLogo())
         self.setWindowIcon(QtGui.QIcon(self.defaultPixmap))
 
         self.ui = mainWindow.Ui_MainWindow()
         self.ui.setupUi(self)
+        self.playerControl = playerControlWidget(self.player,self)
+        self.playerControl.defaultPixmap = self.defaultPixmap
+        #self.playerControl.setMaximumSize(QtCore.QSize(16777215, 140))
+        self.ui.verticalMainLayout.addWidget(self.playerControl)
+        self.playerControl.hide()
+        #self.ui.playerWidget = self.playerControl
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(100)
+        sizePolicy.setVerticalStretch(0)
+        self.playerControl.setSizePolicy(sizePolicy)
+        #self.playerControl.player = self.player
+        #self.playerControl.trackChanged.connect(self.player.setPlaylistTrack)
+        #self.playerControl.height = 50
+
         self.initPlayerButtons()
 
         self.setTitleLabel("")
@@ -121,23 +147,23 @@ class MainWindowLoader(QMainWindow):
         self.player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerMediaChanged, self.onPlayerMediaChangedVLC)
         self.player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPaused, self.paused)
         self.player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPlaying, self.isPlaying)
-        #self.player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
+        self.player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
         #self.player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerAudioVolume , self.setVolumeSliderFromPlayer)
 
+        self.ui.volumeSlider.setVisible(False)
 
-        self.ui.volumeSlider.setMaximum(100)
-        self.ui.volumeSlider.setValue(self.volume)
+        self.playerControl.playerControls.volumeSlider.setMaximum(100)
+        self.playerControl.playerControls.volumeSlider.setValue(self.volume)
         self.player.setVolume(self.volume)
-        self.ui.volumeSlider.valueChanged.connect(self.setVolume)
-       
+        self.playerControl.playerControls.volumeSlider.valueChanged.connect(self.setVolume)
+        
         
         #Write message in status bar
-        self.ui.statusBar.showMessage("Pyzik")
+        #self.ui.statusBar.showMessage("Pyzik")
 
         self.threadStreamObserver = streamObserver()
         self.threadStreamObserver.player = self.player
         self.threadStreamObserver.musicBase = self.musicBase
-        self.threadStreamObserver.titleChanged.connect(self.setStatus)
         self.threadStreamObserver.titleChanged.connect(self.onPlayerMediaChangedStreamObserver)
         self.player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerStopped, self.threadStreamObserver.resetPreviousTitle)
         self.threadStreamObserver.start()
@@ -152,7 +178,19 @@ class MainWindowLoader(QMainWindow):
         #self.exploreAlbumsDirectoriesThread.exploreCompleted.connect(self.onExploreCompleted)
 
         self.ui.coverWidget.resizeEvent = self.resizeEvent
+        self.ui.coverWidget.mouseDoubleClickEvent = self.mouseDoubleClickEvent
 
+        self.currentTrackChanged.connect(self.onCurrentTrackChanged)
+        self.showPlayerControlEmited.connect(self.showPlayerControl)
+
+        self.ui.searchEdit.setFocus()
+
+    def mouseDoubleClickEvent(self,event):
+        self.showFullScreenCover()
+
+    def showFullScreenCover(self):
+        self.fullScreenCoverWidget.setPixmapFromUri(self.currentAlbum.getCoverPath())
+        self.fullScreenCoverWidget.show()
         
     def showEvent(self,event):
         #This function is called when the mainWindow is shown
@@ -163,8 +201,7 @@ class MainWindowLoader(QMainWindow):
     def onPlayFuzzyGroovy(self):   
         fg = self.musicBase.radioMan.getFuzzyGroovy()   
         self.player.playRadio(fg)
-        self.showPlaylist(True)
-        self.setVolume(self.getVolumeFromSlider())
+
 
     def onExploreCompleted(self,event):
         print("onExploreCompleted")
@@ -209,21 +246,30 @@ class MainWindowLoader(QMainWindow):
         self.player.setVolume(volume)
 
     def getVolumeFromSlider(self):
-        return self.ui.volumeSlider.value()
+        return self.playerControl.getVolume()
 
     def setVolumeSliderFromPlayer(self,event):
         volume = self.player.getVolume()
-        self.ui.volumeSlider.setValue(volume)
+        self.playerControl.setVolume(volume)
 
-    def setStatus(self,msg):
+    def onPlayerPositionChanged(self,event=None):
+        self.playerControl.onPlayerPositionChanged(event)
+        if self.playList is not None:
+            self.playList.onPlayerPositionChanged(event)
+
+    #def setStatus(self,msg):
         #self.ui.labelArtist.setText(msg)
-        self.ui.statusBar.showMessage(msg)
+        #self.ui.statusBar.showMessage(msg)
 
     def paused(self,event):
         print("Paused!")
 
+    def showPlayerControl(self,event):
+        self.playerControl.show()
+
     def isPlaying(self,event):
         print("isPlaying!")
+        self.showPlayerControlEmited.emit("")
    
 
 
@@ -585,16 +631,16 @@ class MainWindowLoader(QMainWindow):
         self.player.playAlbum(alb)
         
         self.setVolume(self.getVolumeFromSlider())
-        self.showPlaylist(True)
+
 
     def addAlbum(self,alb):
         '''Add tracks in playlist and start playing'''
         self.player.addAlbum(alb)
         self.setVolume(self.getVolumeFromSlider())
-        self.showPlaylist(True)
 
 
     def showPlaylist(self,showOnlyIfNew=False):
+
         isNew = False
         if self.playList is None:
             isNew = True
@@ -617,7 +663,8 @@ class MainWindowLoader(QMainWindow):
         self.histoWidget.activateWindow()
 
 
-    def showFullScreen(self,):
+    def showFullScreen(self):
+        print("showFullScreen")
         if self.fullScreenWidget is None:
             self.fullScreenWidget = fullScreenWidget(self.player)
              
@@ -625,27 +672,45 @@ class MainWindowLoader(QMainWindow):
         self.fullScreenWidget.activateWindow()
 
 
+    def onCurrentTrackChanged(self,event=None):
+        
+        if not self.player.radioMode:
+            title = None
+            trk = self.player.getCurrentTrackPlaylist()
+            if trk is not None:
+                self.musicBase.history.insertTrackHistory(trk.parentAlbum.albumID,trk.getFilePathInAlbumDir())
+        else:
+            title = event
+            if not title in ["...","","-"]:
+                self.musicBase.history.insertRadioHistory(self.player.currentRadioName,title)
+
+        if self.playList is not None:
+            self.playList.setCurrentTrack(title)
+        if self.fullScreenWidget is not None:
+            self.fullScreenWidget.setCurrentTrack(title)
+        if self.playerControl is not None:
+            self.playerControl.setCurrentTrack(title)
+
+
     def onPlayerMediaChangedVLC(self,event):
         print("onPlayerMediaChangedVLC")
-        trk = self.player.getCurrentTrackPlaylist()
-        if not self.player.radioMode:
-            self.musicBase.history.insertTrackHistory(trk.parentAlbum.albumID,trk.getFilePathInAlbumDir())
-        if self.playList is not None:
-            self.playList.setCurrentTrack()
-        if self.fullScreenWidget is not None:
-            self.fullScreenWidget.setCurrentTrack()
+        self.currentTrackChanged.emit("")
+
 
 
     def onPlayerMediaChangedStreamObserver(self,title):
         print("onPlayerMediaChangedStreamObserver="+title)
+        self.currentTrackChanged.emit(title)
 
-        trk = self.player.getCurrentTrackPlaylist()
+        '''trk = self.player.getCurrentTrackPlaylist()
         if not title in ["...","","-"]:
             self.musicBase.history.insertRadioHistory(self.player.currentRadioName,title)
         if self.playList is not None:
             self.playList.setCurrentTrack(title)
         if self.fullScreenWidget is not None:
-            self.fullScreenWidget.setCurrentTrack(title)
+            self.fullScreenWidget.setCurrentTrack(title)'''
+
+        #self.playerControl.setCurrentTrack(title)
 
 
 
@@ -735,6 +800,29 @@ class MainWindowLoader(QMainWindow):
         self.ui.openDirButton.setIcon(getSvgIcon("folder-open.svg"))
         self.ui.pauseButton.setIcon(getSvgIcon("pause-circle.svg"))
 
+        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(True)
+
+        self.ui.playButton.setSizePolicy(sizePolicy)
+        self.ui.openDirButton.setSizePolicy(sizePolicy)
+        self.ui.addAlbumButton.setSizePolicy(sizePolicy)
+        self.ui.pauseButton.setSizePolicy(sizePolicy)
+
+        self.ui.playButton.setMaximumSize(QtCore.QSize(40, 25))
+        self.ui.openDirButton.setMaximumSize(QtCore.QSize(40, 25))
+        self.ui.addAlbumButton.setMaximumSize(QtCore.QSize(40, 25))
+        self.ui.pauseButton.setMaximumSize(QtCore.QSize(40, 25))
+
+        self.ui.playButton.setMinimumSize(QtCore.QSize(27, 27))
+        self.ui.openDirButton.setMinimumSize(QtCore.QSize(27, 27))
+        self.ui.addAlbumButton.setMinimumSize(QtCore.QSize(27, 27))
+        self.ui.pauseButton.setMinimumSize(QtCore.QSize(27, 27))
+        
+
+
+
     def closeEvent(self, event):
         if self.playList is not None: self.playList.close()
         if self.histoWidget is not None: self.histoWidget.close()
@@ -742,7 +830,14 @@ class MainWindowLoader(QMainWindow):
         self.saveSettings()
 
     def saveSettings(self):
-        self.settings.setValue('volume', self.player.getVolume())
+
+        if self.player is not None :
+            curVolume = self.player.getVolume()
+        else:
+            curVolume = self.volume
+
+        if curVolume is not None and curVolume > 0:
+            self.settings.setValue('volume', curVolume)
 
     def loadSettings(self):
         if self.settings.contains('volume'):
@@ -759,7 +854,7 @@ class MainWindowLoader(QMainWindow):
         if self.playList is not None: self.playList.retranslateUi()
         if self.histoWidget is not None: self.histoWidget.retranslateUi()
         if self.searchRadio is not None: self.searchRadio.retranslateUi()
-        
+        if self.playerControl is not None: self.playerControl.retranslateUi()
 
 
         self.update()

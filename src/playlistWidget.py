@@ -87,6 +87,11 @@ class playlistWidget(QDialog):
 
         self.initUI()
 
+        self.cover.mouseDoubleClickEvent = self.mouseDoubleClickEvent
+
+    def mouseDoubleClickEvent(self,event):
+        self.showFullScreen()
+
     def initUI(self):
 
         self.vLayout = QVBoxLayout()
@@ -129,7 +134,7 @@ class playlistWidget(QDialog):
         self.timeSlider.sliderPressed.connect(self.setIsTimeSliderDown)
         self.timeSlider.sliderReleased.connect(self.onTimeSliderIsReleased)
         self.timeSlider.sliderMoved.connect(self.setPlayerPosition)
-        self.player.mpEnventManager.event_attach(vlcEventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
+        #self.player.mpEnventManager.event_attach(vlcEventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
 
         self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
         self.shortcutPause.activated.connect(self.player.pause)
@@ -329,6 +334,8 @@ class playlistWidget(QDialog):
         self.playerControls.pauseButton.setToolTip(_translate("playlist", "Pause"))   
         self.playerControls.previousButton.setToolTip(_translate("playlist", "Previous"))
         self.playerControls.nextButton.setToolTip(_translate("playlist", "Next"))
+        self.playerControls.fullscreenButton.setToolTip(_translate("playlist", "Full screen"))
+        self.playerControls.deleteButton.setToolTip(_translate("playlist", "Delete all tracks"))
 
         self.setWindowTitle(_translate("playlist", "Playlist"))
 
@@ -408,7 +415,16 @@ class playlistWidget(QDialog):
 
     def setCurrentTrack(self,title=""):
 
-        if self.player is None : return 
+        if title == "": 
+            trk = self.player.getCurrentTrackPlaylist()
+            if trk: title = trk.getTrackTitle()
+            
+        if title != "" :
+            self.setWindowTitle(title)
+        else:
+            self.setWindowTitle(_translate("playlist", "Playlist"))
+
+        #if self.player is None : return 
 
         index = self.player.getCurrentIndexPlaylist()
         #print("setCurrentTrack:",index)

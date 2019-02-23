@@ -289,15 +289,28 @@ class playerVLC:
         while self.isPlaying() == 0:
             time.sleep(0.05)
             startSince = startSince +0.05
+            #Get current state.
+            state = str(self.mediaPlayer.get_state())
+            if state == "State.Ended":
+                self.stop()
+                self.radioMode = False
+                return 
+
+            print("VLC state="+state)
+
             if startSince > 5:   
-                #Get current state.
-                state = str(self.mediaPlayer.get_state())
                 #Find out if stream is working.
                 if state == "vlc.State.Error" or state == "State.Error":
                     print("Stream is dead. Current state = {}".format(state))
                     self.stop()
                     self.radioMode = False
                     return
+                elif state == "State.Ended":
+                    self.stop()
+                    self.radioMode = False
+                    return
+                else:
+                    print("VLC state="+state)
 
         mrl = self.getCurrentMrlPlaylist()
         print(radio.name+" mrl="+mrl)
@@ -332,9 +345,21 @@ class playerVLC:
     def getCurrentRadio(self):
         rad = None
         trk = self.getCurrentTrackPlaylist()
-        if trk.radio is not None:
+        if trk is not None and trk.radio is not None:
             rad = trk.radio
         return rad
+
+    def getCurrentTitle(self):
+        title = ""
+        trk = self.getCurrentTrackPlaylist()
+        if trk is not None: 
+            if trk.radioName == "":
+                title = trk.getFullTitle()
+            else:
+                title =self.getNowPlaying()
+                if title == "NO_META": title = trk.radioName
+        return title
+
 
     def getTitle(self):
         title = ""

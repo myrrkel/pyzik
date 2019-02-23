@@ -281,7 +281,7 @@ class database():
 
 
     def getSelect(self,select_sql,attachMain=False,params=None):
-        print('getSelect: '+select_sql)
+        #print('getSelect: '+select_sql)
         c = self.connection.cursor()
         if params is None:
             if attachMain: c.execute("ATTACH DATABASE '"+self.dataPathMain+"' as 'maindb';")
@@ -381,6 +381,54 @@ class database():
         return artist.artistID
 
 
+
+    def insertTrackHistory(self,albumID,fileName):
+        ''' Insert track in history '''
+
+        try:
+            c = self.connection.cursor()
+            sqlInsertTrackHistory = """    INSERT INTO playHistoryTrack (albumID, fileName, playDate)
+                        VALUES (?,?,datetime('now','localtime'));"""
+
+            c.execute(sqlInsertTrackHistory,(albumID,fileName))
+            self.connection.commit()
+        except sqlite3.Error as e:
+            print("insertTrackHistory error="+str(e))
+            return -1
+
+
+    def insertRadioHistory(self,radioName,title):
+        ''' Insert radio title in history '''
+        try:
+            c = self.connection.cursor()
+            sqlInsertRadioHistory = """    INSERT INTO playHistoryRadio (radioName, title, playDate)
+                        VALUES (?,?,datetime('now','localtime'));"""
+
+            c.execute(sqlInsertRadioHistory,(radioName,title))
+            self.connection.commit()
+        except sqlite3.Error as e:
+            print("insertRadioHistory error="+str(e))
+            return -1
+
+
+
+    def insertAlbumHistory(self,albumID):
+        ''' Insert album in history '''
+        try:
+            c = self.connection.cursor()
+            sqlInsertAlbumHistory = """    INSERT INTO playHistoryAlbum (albumID, playDate)
+                        VALUES (?,datetime('now','localtime'));"""
+
+            c.execute(sqlInsertAlbumHistory,(albumID,))
+            self.connection.commit()
+        except sqlite3.Error as e:
+            print("insertAlbumHistory error="+str(e))
+            return -1
+
+        # sql = """    INSERT INTO playHistoryAlbum ({columns})
+        #                 VALUES ('{albumID}',datetime('now','localtime'));
+        #           """.format(columns="albumID, playDate",albumID=albumID)
+        # return self.database.insert(sql)
 
     def updateValue(self,table,column,value, columnID, rowID):
         try:

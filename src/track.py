@@ -82,6 +82,13 @@ class track:
         else:
             return self.album
 
+    def getFullTitle(self):
+        title = self.getTrackTitle()
+        if not self.isRadio():
+            if self.artist != "" : title = title + " - " + self.artist
+
+        return title
+
     def getTrackTitle(self):
         if self.radioName != "":
             return self.radioName

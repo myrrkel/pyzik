@@ -36,10 +36,7 @@ class historyManager():
 
     def insertAlbumHistory(self,albumID):
         ''' Insert album in history '''
-        sql = """    INSERT INTO playHistoryAlbum ({columns})
-                        VALUES ('{albumID}',datetime('now','localtime'));
-                  """.format(columns="albumID, playDate",albumID=albumID)
-        return self.database.insert(sql)
+        self.database.insertAlbumHistory(albumID)
 
 
     def loadAlbumHistory(self):
@@ -57,12 +54,7 @@ class historyManager():
 
     def insertTrackHistory(self,albumID,fileName):
         ''' Insert track in history '''
-
-        self.database.createConnection()
-        sql = """    INSERT INTO playHistoryTrack ({columns})
-                        VALUES ('{albumID}','{fileName}',datetime('now','localtime'));
-                  """.format(columns="albumID, fileName, playDate",albumID=albumID,fileName=fileName)
-        return self.database.insert(sql)
+        self.database.insertTrackHistory(albumID,fileName)
 
 
     def loadTrackHistory(self):
@@ -81,11 +73,7 @@ class historyManager():
 
     def insertRadioHistory(self,radioName,title):
         ''' Insert radio title in history '''
-        sql = """    INSERT INTO playHistoryRadio ({columns})
-                        VALUES ('{radioName}','{title}',datetime('now','localtime'));"""
-        sql = sql.format(columns="radioName, title, playDate",radioName=radioName,title=title)
-        return self.database.insert(sql)
-
+        self.database.insertRadioHistory(radioName,title)
 
 
     def loadRadioHistory(self):

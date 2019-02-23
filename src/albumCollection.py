@@ -20,9 +20,14 @@ def filterByTitle_ArtistID(seq, title, art_id):
                 yield el
                 break
 
-def findByAlbumID(seq, alb_id):
+def findByAlbumID2(seq, alb_id):
     return next(el for el in seq if int(el.albumID) == int(alb_id))
-            
+   
+
+
+
+def findByAlbumID(seq, alb_id):
+    return next((el for el in seq if int(el.albumID) == int(alb_id)),None)      
 
 class albumCollection:
     """

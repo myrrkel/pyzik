@@ -26,6 +26,7 @@ class customControlsWidget(QWidget):
 
 class fullScreenWidget(QDialog):
     
+    coverPixmap = None
 
     def __init__(self,player=None):
         QDialog.__init__(self)
@@ -45,9 +46,9 @@ class fullScreenWidget(QDialog):
         self.shortcutClose = QShortcut(QKeySequence("Escape"), self)
         self.shortcutClose.activated.connect(self.close)
 
-        self.setCurrentTrack()
-        self.setBackgroundBlack()
-        self.setTitleLabel()
+        #self.setCurrentTrack()
+        #self.setBackgroundBlack()
+        #self.setTitleLabel()
         #self.cover.show()
 
     def show(self):
@@ -132,6 +133,8 @@ class fullScreenWidget(QDialog):
         self.currentTrack = self.player.getCurrentTrackPlaylist()
         if self.currentTrack:
             self.coverPixmap = self.currentTrack.getCoverPixmap()
+            if self.coverPixmap is None:
+                self.coverPixmap = self.defaultPixmap
 
         self.showCover()
 
@@ -151,13 +154,41 @@ class fullScreenWidget(QDialog):
                                                     Qt.SmoothTransformation)
             self.cover.setPixmap(scaledCover)
         else:
+            self.coverPixmap = self.defaultPixmap
             self.cover.setPixmap(QtGui.QPixmap())
         self.cover.show()
 
 
+    def showCover_test(self,trk):
+
+        if self.player.radioMode:
+            coverUrl = self.player.getLiveCoverUrl()
+            if coverUrl != "":
+                self.picFromUrlThread.run(coverUrl)
+            else:
+                rad = self.player.getCurrentRadio()
+                if rad is not None:
+                    radPicUrl = rad.getRadioPic()
+                    self.picFromUrlThread.run(radPicUrl)
+        else:
+            self.picFromUrlThread.resetLastURL()
+            if trk is not None and trk.parentAlbum is not None:
+                print("showCover trk.parentAlbum.cover="+trk.parentAlbum.cover)
+                if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
+                    self.coverPixmap = self.defaultPixmap
+                else:
+                    coverPath = trk.parentAlbum.getCoverPath()
+                    self.coverPixmap = QtGui.QPixmap(coverPath)
+                    
+                scaledCover = self.coverPixmap.scaled(self.cover.size(),
+                                                Qt.KeepAspectRatio,
+                                                Qt.SmoothTransformation)
+                self.cover.setPixmap(scaledCover)
+                self.cover.show()
+
     def setTitleLabel(self):
-        artName="ARTIST"
-        albTitle="Album"
+        artName="Pyzik"
+        albTitle=""
         year=""
 
         orange = QtGui.QColor(216, 119, 0)

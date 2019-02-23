@@ -47,6 +47,8 @@ class picFromUrlThread(QThread):
         #else:
         #    self.downloadCompleted.emit(str(self.lastTempFile))
   
+    def resetLastURL(self):
+        self.lastUrl = ""
 
     def cleanLastTempFile(self):
         if self.lastTempFile != "":
