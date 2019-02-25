@@ -119,6 +119,13 @@ class album:
         return titleExcept(title)
 
 
+    def getCoverSearchText(self):
+        txt = self.artistName
+        if int(self.year) > 0 : txt = txt + " " + str(self.year)
+        txt = txt + " " + self.title
+        return txt
+
+
     def getSearchKey(self):
         if self.searchKey =="":
             self.searchKey = FS.getSearchKey(self.title.upper())
@@ -350,8 +357,6 @@ if __name__ == '__main__':
 
 
     alb = album("ACDC - [1975] - TNT")
-    print(alb.title)
-    alb = album("ACDC - [1981] - Back In Black")
     print(alb.title)  
     alb = album("ACDC - [1983] - a tribute to")
     print(alb.title)        

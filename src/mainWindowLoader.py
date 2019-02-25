@@ -27,6 +27,7 @@ from fullScreenWidget import *
 from fullScreenCoverWidget import *
 from playerControlWidget import *
 from albumWidget import *
+from coverArtFinderDialog import *
 from svgIcon import *
 
 orange = QtGui.QColor(216, 119, 0)
@@ -122,7 +123,7 @@ class MainWindowLoader(QMainWindow):
         self.ui.actionLanguageEnglish.triggered.connect(functools.partial(self.changeLanguage, 'en'))
         self.ui.playButton.clicked.connect(self.onPlayAlbum)
         self.ui.addAlbumButton.clicked.connect(self.onAddAlbum)
-        self.ui.pauseButton.clicked.connect(self.onPauseAlbum)
+        self.ui.searchCoverButton.clicked.connect(self.onSearchCoverAlbum)
         #self.ui.nextButton.clicked.connect(self.player.mediaListPlayer.next)
         self.ui.openDirButton.clicked.connect(self.onOpenDir)
         #self.ui.previousButton.clicked.connect(self.player.mediaListPlayer.previous)
@@ -702,17 +703,6 @@ class MainWindowLoader(QMainWindow):
         print("onPlayerMediaChangedStreamObserver="+title)
         self.currentTrackChanged.emit(title)
 
-        '''trk = self.player.getCurrentTrackPlaylist()
-        if not title in ["...","","-"]:
-            self.musicBase.history.insertRadioHistory(self.player.currentRadioName,title)
-        if self.playList is not None:
-            self.playList.setCurrentTrack(title)
-        if self.fullScreenWidget is not None:
-            self.fullScreenWidget.setCurrentTrack(title)'''
-
-        #self.playerControl.setCurrentTrack(title)
-
-
 
     def onPlayAlbum(self,item):
         print("onPlayAlbum "+self.currentAlbum.getAlbumDir())
@@ -724,8 +714,11 @@ class MainWindowLoader(QMainWindow):
         self.addAlbum(self.currentAlbum)
 
 
-    def onPauseAlbum(self):
-        self.player.pauseMediaList()
+    def onSearchCoverAlbum(self):
+
+        self.coverFinder = coverArtFinderDialog(self.currentAlbum)
+        self.coverFinder.show()
+        
 
     def onOpenDir(self):
         openFile(self.currentAlbum.getAlbumDir())
@@ -788,17 +781,17 @@ class MainWindowLoader(QMainWindow):
         self.ui.playButton.setToolTip(self.ui.playButton.text())
         self.ui.openDirButton.setToolTip(self.ui.openDirButton.text())
         self.ui.addAlbumButton.setToolTip(self.ui.addAlbumButton.text())
-        self.ui.pauseButton.setToolTip(self.ui.pauseButton.text())
+        self.ui.searchCoverButton.setToolTip(self.ui.searchCoverButton.text())
 
         self.ui.playButton.setText("")
         self.ui.openDirButton.setText("")
         self.ui.addAlbumButton.setText("")
-        self.ui.pauseButton.setText("")
+        self.ui.searchCoverButton.setText("")
         
         self.ui.playButton.setIcon(getSvgIcon("play-circle.svg"))
         self.ui.addAlbumButton.setIcon(getSvgIcon("add_music.svg"))
         self.ui.openDirButton.setIcon(getSvgIcon("folder-open.svg"))
-        self.ui.pauseButton.setIcon(getSvgIcon("pause-circle.svg"))
+        self.ui.searchCoverButton.setIcon(getSvgIcon("picture.svg"))
 
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -808,17 +801,17 @@ class MainWindowLoader(QMainWindow):
         self.ui.playButton.setSizePolicy(sizePolicy)
         self.ui.openDirButton.setSizePolicy(sizePolicy)
         self.ui.addAlbumButton.setSizePolicy(sizePolicy)
-        self.ui.pauseButton.setSizePolicy(sizePolicy)
+        self.ui.searchCoverButton.setSizePolicy(sizePolicy)
 
         self.ui.playButton.setMaximumSize(QtCore.QSize(40, 25))
         self.ui.openDirButton.setMaximumSize(QtCore.QSize(40, 25))
         self.ui.addAlbumButton.setMaximumSize(QtCore.QSize(40, 25))
-        self.ui.pauseButton.setMaximumSize(QtCore.QSize(40, 25))
+        self.ui.searchCoverButton.setMaximumSize(QtCore.QSize(40, 25))
 
         self.ui.playButton.setMinimumSize(QtCore.QSize(27, 27))
         self.ui.openDirButton.setMinimumSize(QtCore.QSize(27, 27))
         self.ui.addAlbumButton.setMinimumSize(QtCore.QSize(27, 27))
-        self.ui.pauseButton.setMinimumSize(QtCore.QSize(27, 27))
+        self.ui.searchCoverButton.setMinimumSize(QtCore.QSize(27, 27))
         
 
 

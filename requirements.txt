@@ -8,3 +8,4 @@ beautifulsoup4
 pytz
 pyinstaller
 appdirs
+google_images_download

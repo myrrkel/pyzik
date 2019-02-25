@@ -602,7 +602,7 @@
                                </widget>
                               </item>
                               <item>
-                               <widget class="QPushButton" name="pauseButton">
+                               <widget class="QPushButton" name="searchCoverButton">
                                 <property name="sizePolicy">
                                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                                   <horstretch>0</horstretch>

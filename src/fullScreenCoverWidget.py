@@ -34,8 +34,9 @@ class fullScreenCoverWidget(QDialog):
         #self.cover.show()
 
     def show(self):
-        self.showFullScreen()
+        QDialog.show(self)
         self.setBackgroundBlack()
+        self.showFullScreen()
 
 
     def setBackgroundBlack(self):

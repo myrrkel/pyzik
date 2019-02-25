@@ -21,6 +21,7 @@ class picFromUrlThread(QThread):
     lastUrl = ""
 
 
+
     def run(self,url):
         #url = "https://cdn.radiofrance.fr/s3/cruiser-production/2016/11/d68ecd67-6435-457e-af3c-d514864ae5f5/400x400_rf_omm_0000360132_dnc.0055215305.jpg"
         
@@ -32,7 +33,7 @@ class picFromUrlThread(QThread):
 
         if self.lastUrl != url:
             self.lastUrl = url
-            self.cleanLastTempFile()
+            self.removeLastTempFile()
             response = requests.get(url)
             print("GET Status="+str(response.status_code))
             #response.raw.decode_content = True
@@ -44,15 +45,15 @@ class picFromUrlThread(QThread):
             temp.close()
             self.lastTempFile = temp.name
             self.downloadCompleted.emit(str(temp.name))
-        #else:
-        #    self.downloadCompleted.emit(str(self.lastTempFile))
+        else:
+            self.downloadCompleted.emit(str(self.lastTempFile))
   
     def resetLastURL(self):
         self.lastUrl = ""
 
-    def cleanLastTempFile(self):
+    def removeLastTempFile(self):
         if self.lastTempFile != "":
-            print("CleanTempFile:"+self.lastTempFile)
+            print("removeLastTempFile:"+self.lastTempFile)
             os.remove(self.lastTempFile)
             self.lastTempFile = ""
 
