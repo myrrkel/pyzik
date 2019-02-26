@@ -16,6 +16,8 @@ _translate = QCoreApplication.translate
 
 
 class coverArtFinderDialog(QDialog):
+
+    signalCoverSaved = pyqtSignal(int, name='coverSaved')
     
     def __init__(self,album=None):
         QDialog.__init__(self)
@@ -72,17 +74,19 @@ class coverArtFinderDialog(QDialog):
             if self.selectedFile == "":
                 self.picFromUrlThread.run(url)
             else:
-                self.album.cutCoverFromPath(self.selectedFile)
-                self.coverSaved = True
-                self.close()
+                self.saveSelectedCover()
 
         
         
 
     def onSelectedPicDownloaded(self,uri):
         self.selectedFile = uri
+        self.saveSelectedCover()
+
+    def saveSelectedCover(self):
         self.album.cutCoverFromPath(self.selectedFile)
         self.coverSaved = True
+        self.signalCoverSaved.emit(1)
         self.close()
 
 

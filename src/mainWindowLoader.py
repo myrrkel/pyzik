@@ -717,6 +717,7 @@ class MainWindowLoader(QMainWindow):
     def onSearchCoverAlbum(self):
 
         self.coverFinder = coverArtFinderDialog(self.currentAlbum)
+        self.coverFinder.signalCoverSaved.connect(self.showAlbumCover)
         self.coverFinder.show()
         
 
