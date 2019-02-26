@@ -35,19 +35,22 @@ class thumbnailIcon(QtGui.QIcon):
         self.path = ""
         self.picFromUrlThread = picFromUrlThread()
         self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
-        self.picFromUrlThread.run(url)
+        self.picFromUrlThread.url = url
+        self.picFromUrlThread.start()
 
     def onPicDownloaded(self,path):
         self.path = path
         self.parent.path = self.path
         self.parent.addTempFile(path)
         self.addFile(path)
+        self.parent.setIcon(self)
+        self.parent.parent.thumbWidget.setSpacing(4)
 
 
-class thumbnailViewerWidget(QDialog):
+class thumbnailViewerWidget(QWidget):
     
     def __init__(self,items):
-        QDialog.__init__(self)
+        QWidget.__init__(self)
         self.items = items
         self.tempFiles = []
         self.selectedFile = ""
@@ -59,7 +62,7 @@ class thumbnailViewerWidget(QDialog):
 
         self.setWindowFlags(Qt.Window)
         self.initUI()
-        self.show()
+        #self.show()
 
     def resetSelection(self):
         self.selectedFile = ""
@@ -78,7 +81,7 @@ class thumbnailViewerWidget(QDialog):
         self.resize(550,400)
 
         self.thumbWidget = QListWidget(self)
-        #self.thumbWidget.setViewMode(QListWidget.IconMode)
+        self.thumbWidget.setViewMode(QListWidget.IconMode)
         self.thumbWidget.setIconSize(QSize(200,200))
 
         self.vLayout.addWidget(self.thumbWidget)

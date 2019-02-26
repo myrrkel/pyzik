@@ -9,3 +9,4 @@ pytz
 pyinstaller
 appdirs
 google_images_download
+musicbrainzngs

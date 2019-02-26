@@ -54,9 +54,6 @@ class CoverArtFinder:
 
         print(items)
 
-
-        #paths[pky + search_keyword[i] + sky] = abs_path
-
         #paths = response.download(arguments)   #passing the arguments to the function
         #print(paths)   #printing absolute paths of the downloaded images
     

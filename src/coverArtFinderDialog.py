@@ -14,6 +14,31 @@ from svgIcon import *
 
 _translate = QCoreApplication.translate
 
+import sys
+
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import QThread
+
+import time
+
+
+class coverFinderSearchThread(QThread):
+
+
+    """Read datas from files in the album folder"""
+
+    doStop = False 
+    musicBase = None
+    resultFound = pyqtSignal(int, name='resultFound')
+
+    coverFinder = None
+    keyword = ""
+
+    def run(self):
+        self.coverFinder.search(self.keyword)
+        self.resultFound.emit(1)
+        self.quit()  
+
 
 class coverArtFinderDialog(QDialog):
 
@@ -26,18 +51,18 @@ class coverArtFinderDialog(QDialog):
         self.coverSaved = False
         
         self.coverFinder = CoverArtFinder()
-        self.search()
+        self.coverFinderThread = coverFinderSearchThread()
+        self.coverFinderThread.resultFound.connect(self.onCoverFinderResult)
+        
 
-        self.thumbViewer = thumbnailViewerWidget(self.items)
         self.picFromUrlThread = picFromUrlThread()
         self.picFromUrlThread.downloadCompleted.connect(self.onSelectedPicDownloaded)
 
-    
-    
+   
         self.setWindowFlags(Qt.Window)
         self.initUI()
-        self.show()
-        self.showThumbnails()
+
+      
 
     def initUI(self):
 
@@ -51,12 +76,14 @@ class coverArtFinderDialog(QDialog):
         self.setSizePolicy(sizePolicy)
         self.resize(550,400)
 
+        self.thumbViewer = thumbnailViewerWidget(self.items)
+
         self.vLayout.addWidget(self.thumbViewer)
 
-        layBt = QHBoxLayout(self)
+        layBt = QHBoxLayout()
         
         #layBt.addStretch()
-        self.saveButton = QPushButton(_translate("history", "Save cover"))
+        self.saveButton = QPushButton(_translate("coverArtFinder", "Save cover"))
         self.saveButton.setIcon(getSvgIcon("save.svg"))
         self.saveButton.clicked.connect(self.saveCover)
         self.vLayout.addWidget(self.saveButton)
@@ -65,6 +92,22 @@ class coverArtFinderDialog(QDialog):
 
         self.retranslateUi()
 
+        
+
+    def showEvent(self,event):
+        print("Show coverArtFinderDialog")
+        self.search()
+
+
+
+    def search(self):
+
+        if self.album is not None:
+            keyword = self.album.getCoverSearchText()+ " album"
+            #self.coverFinder.search(keyword)
+            self.coverFinderThread.coverFinder = self.coverFinder
+            self.coverFinderThread.keyword = keyword
+            self.coverFinderThread.start()
 
 
     def saveCover(self):
@@ -90,12 +133,9 @@ class coverArtFinderDialog(QDialog):
         self.close()
 
 
-    def search(self):
-
-        if self.album is not None:
-            keyword = self.album.getCoverSearchText()+ " album"
-            self.coverFinder.search(keyword)
+    def onCoverFinderResult(self,result):
             self.items = self.coverFinder.items
+            self.showThumbnails()
 
 
     def closeEvent(self,event):
@@ -123,8 +163,8 @@ class coverArtFinderDialog(QDialog):
 
     def retranslateUi(self):
 
-        self.saveButton.setText(_translate("history", "Save cover"))
-        self.setWindowTitle(_translate("history", "Cover finder"))
+        self.saveButton.setText(_translate("coverArtFinder", "Save cover"))
+        self.setWindowTitle(_translate("coverArtFinder", "Cover finder"))
 
 
 

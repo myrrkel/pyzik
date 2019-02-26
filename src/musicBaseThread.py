@@ -3,8 +3,6 @@ import sys
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
 from database import *
-from progressWidget import *
-
 
 
 import time
