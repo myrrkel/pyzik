@@ -10,6 +10,7 @@ from picFromUrlThread import *
 from fullScreenCoverWidget import *
 from thumbnailViewerWidget import *
 from coverArtFinder import *
+from svgIcon import *
 
 _translate = QCoreApplication.translate
 
@@ -46,6 +47,17 @@ class coverArtFinderDialog(QDialog):
         self.resize(550,400)
 
         self.vLayout.addWidget(self.thumbViewer)
+
+        layBt = QHBoxLayout(self)
+        
+        #layBt.addStretch()
+        self.saveButton = QPushButton(_translate("history", "Save cover"))
+        self.saveButton.setIcon(getSvgIcon("save.svg"))
+        self.vLayout.addWidget(self.saveButton)
+
+
+    def saveCover(self):
+        
 
     def search(self):
 

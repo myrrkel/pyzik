@@ -78,6 +78,11 @@ class thumbnailViewerWidget(QDialog):
 
         self.thumbWidget.itemDoubleClicked.connect(self.showItem)
 
+        self.thumbWidget.itemSelected.connect(self.showItem)
+
+    def onSelectedItem(self,item):
+        self.selectedFile = item.path
+
     def showItem(self,item):
         self.fullScreenCover.show()
         self.picFromUrlThread.run(item.getURL())

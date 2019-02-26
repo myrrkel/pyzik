@@ -353,6 +353,10 @@ class album:
         self.updateYear()
 
 
+    def cutCoverFromPath(self,path):
+        os.rename(path, os.path.join(self.getAlbumDir(),"cover.jpg"))
+
+
 if __name__ == '__main__':
 
 
