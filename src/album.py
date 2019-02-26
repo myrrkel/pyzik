@@ -354,7 +354,11 @@ class album:
 
 
     def cutCoverFromPath(self,path):
-        os.rename(path, os.path.join(self.getAlbumDir(),"cover.jpg"))
+        destFile = os.path.join(self.getAlbumDir(),"cover.jpg")
+        if os.path.isfile(destFile):
+            os.replace(path,destFile)
+        else:
+            os.rename(path,destFile)
 
 
 if __name__ == '__main__':

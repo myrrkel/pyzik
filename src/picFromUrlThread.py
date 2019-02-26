@@ -43,8 +43,11 @@ class picFromUrlThread(QThread):
             temp.write(data)
             print("TempPic="+str(temp.name))
             temp.close()
-            self.lastTempFile = temp.name
-            self.downloadCompleted.emit(str(temp.name))
+            if  os.path.isfile(temp.name):
+                self.lastTempFile = str(temp.name)
+                self.downloadCompleted.emit(str(temp.name))
+            else:
+                print(print("ERROR NO FILE TempPic="+str(temp.name)))
         else:
             self.downloadCompleted.emit(str(self.lastTempFile))
   

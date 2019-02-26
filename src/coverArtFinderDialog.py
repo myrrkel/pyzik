@@ -21,11 +21,14 @@ class coverArtFinderDialog(QDialog):
         QDialog.__init__(self)
         self.items = []
         self.album = album
-        self.selectedFile = ""
+        self.coverSaved = False
+        
         self.coverFinder = CoverArtFinder()
         self.search()
 
         self.thumbViewer = thumbnailViewerWidget(self.items)
+        self.picFromUrlThread = picFromUrlThread()
+        self.picFromUrlThread.downloadCompleted.connect(self.onSelectedPicDownloaded)
 
     
     
@@ -53,11 +56,35 @@ class coverArtFinderDialog(QDialog):
         #layBt.addStretch()
         self.saveButton = QPushButton(_translate("history", "Save cover"))
         self.saveButton.setIcon(getSvgIcon("save.svg"))
+        self.saveButton.clicked.connect(self.saveCover)
         self.vLayout.addWidget(self.saveButton)
+
+        self.thumbViewer.resetSelection()
+
+        self.retranslateUi()
+
 
 
     def saveCover(self):
+        url = self.thumbViewer.selectedURL
+        if url != "":
+            self.selectedFile = self.thumbViewer.selectedFile
+            if self.selectedFile == "":
+                self.picFromUrlThread.run(url)
+            else:
+                self.album.cutCoverFromPath(self.selectedFile)
+                self.coverSaved = True
+                self.close()
+
         
+        
+
+    def onSelectedPicDownloaded(self,uri):
+        self.selectedFile = uri
+        self.album.cutCoverFromPath(self.selectedFile)
+        self.coverSaved = True
+        self.close()
+
 
     def search(self):
 
@@ -67,8 +94,12 @@ class coverArtFinderDialog(QDialog):
             self.items = self.coverFinder.items
 
 
-    def close(self):
-        self.removeTempFiles()
+    def closeEvent(self,event):
+        self.thumbViewer.thumbWidget.clear()
+        self.thumbViewer.removeTempFiles(self.coverSaved)
+        self.thumbViewer.resetSelection()
+        self.close()
+
 
     def addThumbnailItem(self,url,thumbURL,name):
         self.thumbViewer.addThumbnailItem(url,thumbURL,name)
@@ -84,6 +115,12 @@ class coverArtFinderDialog(QDialog):
             print("thumbURL="+thumbURL)
             self.addThumbnailItem(url,thumbURL,name)
 
+
+
+    def retranslateUi(self):
+
+        self.saveButton.setText(_translate("history", "Save cover"))
+        self.setWindowTitle(_translate("history", "Cover finder"))
 
 
 
