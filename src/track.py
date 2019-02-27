@@ -39,7 +39,7 @@ class track:
         self.radioStream = ""
         self.radioID = 0
         self.radio = None
-        self.coverDownloaded = pyqtSignal(str, name='coverDownloaded')
+        #self.coverDownloaded = pyqtSignal(str, name='coverDownloaded')
 
 
 
@@ -190,13 +190,11 @@ class track:
         if self.title in("","None"): self.title = self.fileName
 
 
-    def getCover(self):
+    '''def getCover(self):
 
         if self.isRadio():
             if self.radio:
-                self.radio.coverDownloaded.connect(self.onCoverDownloaded)
-                self.radio.picFromUrlThread.url = coverUrl
-                self.radio.picFromUrlThread.start()
+                url = self.radio.getCoverUrl()
          
 
         if self.parentAlbum is not None and self.parentAlbum.cover != "":
@@ -206,7 +204,7 @@ class track:
                                             Qt.KeepAspectRatio,
                                             Qt.SmoothTransformation)
             self.cover.setPixmap(scaledCover)
-            self.cover.show()
+            self.cover.show()'''
 
     def getCoverPixmap(self):
         if self.isRadio():

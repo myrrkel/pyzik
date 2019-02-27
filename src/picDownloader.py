@@ -20,7 +20,6 @@ class picDownloader:
 
 
     def getPic(self,url):
-        #url = "https://cdn.radiofrance.fr/s3/cruiser-production/2016/11/d68ecd67-6435-457e-af3c-d514864ae5f5/400x400_rf_omm_0000360132_dnc.0055215305.jpg"
         
         if url == "":
             self.lastUrl = url
@@ -31,7 +30,7 @@ class picDownloader:
             
             self.cleanLastTempFile()
             self.lastUrl = url
-            response = requests.get(url)
+            response = requests.get(url,headers={'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; rv:2.2) Gecko/20110201'})
             print("GET Status="+str(response.status_code))
             #response.raw.decode_content = True
             #data = response.raw
@@ -52,3 +51,9 @@ class picDownloader:
 
 
 
+if __name__ == "__main__":
+
+    pDL = picDownloader()
+    url = "http://jamesostafford.files.wordpress.com/2012/03/41-edgar-broughton-band-inside-out.jpg"
+        
+    pDL.getPic(url)

@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QDialog, QWidget, QShortcut, QAction, QWidget, QMain
 from PyQt5.QtGui import QPixmap, QIcon, QKeySequence
 
 from historyManager import *
-
+from picFromUrlThread import *
 
 class customControlsWidget(QWidget):
 
@@ -27,6 +27,7 @@ class customControlsWidget(QWidget):
 class fullScreenWidget(QDialog):
     
     coverPixmap = None
+    picFromUrlThread = None
 
     def __init__(self,player=None):
         QDialog.__init__(self)
@@ -40,6 +41,9 @@ class fullScreenWidget(QDialog):
 
 
         self.initUI()
+
+        if self.picFromUrlThread is None:
+            self.picFromUrlThread = picFromUrlThread()
 
         self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
         self.shortcutPause.activated.connect(self.player.pause)
@@ -129,14 +133,10 @@ class fullScreenWidget(QDialog):
 
         if self.player is None : return 
 
-        #index = self.player.getCurrentIndexPlaylist()
         self.currentTrack = self.player.getCurrentTrackPlaylist()
-        if self.currentTrack:
-            self.coverPixmap = self.currentTrack.getCoverPixmap()
-            if self.coverPixmap is None:
-                self.coverPixmap = self.defaultPixmap
+    
 
-        self.showCover()
+        self.showCover(self.currentTrack)
 
         self.setTitleLabel()
 
@@ -146,20 +146,9 @@ class fullScreenWidget(QDialog):
         self.showCover()
         
 
-    def showCover(self):
-        if not self.coverPixmap.isNull():
-            print("Pic size="+str(self.cover.size()))
-            scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                                    Qt.KeepAspectRatio,
-                                                    Qt.SmoothTransformation)
-            self.cover.setPixmap(scaledCover)
-        else:
-            self.coverPixmap = self.defaultPixmap
-            self.cover.setPixmap(QtGui.QPixmap())
-        self.cover.show()
 
 
-    def showCover_test(self,trk):
+    def showCover(self,trk):
 
         if self.player.radioMode:
             coverUrl = self.player.getLiveCoverUrl()
@@ -187,6 +176,7 @@ class fullScreenWidget(QDialog):
                                                 Qt.SmoothTransformation)
                 self.cover.setPixmap(scaledCover)
                 self.cover.show()
+
 
     def setTitleLabel(self):
         artName="Pyzik"

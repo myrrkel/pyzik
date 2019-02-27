@@ -29,6 +29,7 @@ from playerControlWidget import *
 from albumWidget import *
 from coverArtFinderDialog import *
 from svgIcon import *
+from picFromUrlThread import *
 
 orange = QtGui.QColor(216, 119, 0)
 _translate = QCoreApplication.translate
@@ -54,6 +55,8 @@ class MainWindowLoader(QMainWindow):
         self.translator = translator
         self.musicBase = musicbase
         self.player = player
+
+        self.picFromUrlThread = picFromUrlThread()
 
         self.settings = QSettings('pyzik', 'pyzik')
         self.firstShow = True
@@ -81,6 +84,7 @@ class MainWindowLoader(QMainWindow):
         self.ui = mainWindow.Ui_MainWindow()
         self.ui.setupUi(self)
         self.playerControl = playerControlWidget(self.player,self)
+        self.playerControl.picFromUrlThread = self.picFromUrlThread
         self.playerControl.defaultPixmap = self.defaultPixmap
         #self.playerControl.setMaximumSize(QtCore.QSize(16777215, 140))
         self.ui.verticalMainLayout.addWidget(self.playerControl)
@@ -647,6 +651,7 @@ class MainWindowLoader(QMainWindow):
             isNew = True
             self.playList = playlistWidget(self.player)
             self.playList.fullScreenWidget = self.fullScreenWidget
+            self.playList.picFromUrlThread = self.picFromUrlThread
             self.playList.trackChanged.connect(self.player.setPlaylistTrack)
 
         self.playList.showMediaList()
@@ -717,6 +722,7 @@ class MainWindowLoader(QMainWindow):
     def onSearchCoverAlbum(self):
 
         self.coverFinder = coverArtFinderDialog(self.currentAlbum)
+        self.coverFinder.picFromUrlThread = self.picFromUrlThread
         self.coverFinder.signalCoverSaved.connect(self.showAlbumCover)
         self.coverFinder.show()
         

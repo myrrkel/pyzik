@@ -45,6 +45,7 @@ class coverFinderSearchThread(QThread):
 class coverArtFinderDialog(QDialog):
 
     signalCoverSaved = pyqtSignal(int, name='coverSaved')
+    picFromUrlThread = None
     
     def __init__(self,album=None):
         QDialog.__init__(self)
@@ -57,7 +58,8 @@ class coverArtFinderDialog(QDialog):
         self.coverFinderThread.resultFound.connect(self.onCoverFinderResult)
         
 
-        self.picFromUrlThread = picFromUrlThread()
+        if self.picFromUrlThread is None:
+            self.picFromUrlThread = picFromUrlThread()
         self.picFromUrlThread.downloadCompleted.connect(self.onSelectedPicDownloaded)
 
    
@@ -67,36 +69,66 @@ class coverArtFinderDialog(QDialog):
       
 
     def initUI(self):
+        #self.resize(650,400)
+
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(100)
+        sizePolicy.setVerticalStretch(100)
+
+
+        self.centralWidget = QWidget(self)
+
+
+
+        self.overlay = waitOverlay(self)
 
 
         self.vLayout = QVBoxLayout()
+        #self.vLayout = QGridLayout()
         self.vLayout.setContentsMargins(6, 6, 6, 6)
-        self.setLayout(self.vLayout)
+        self.centralWidget.setLayout(self.vLayout)
         
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
-        self.setSizePolicy(sizePolicy)
-        self.resize(650,400)
+        self.centralWidget.setSizePolicy(sizePolicy)
+        self.centralWidget.resize(652,400)
 
         self.thumbViewer = thumbnailViewerWidget(self.items)
+        self.thumbViewer.thumbWidget.setSpacing(4)
 
         self.vLayout.addWidget(self.thumbViewer)
+        
 
-        layBt = QHBoxLayout()
+        self.btWidget = QWidget()
+        self.vLayout.addWidget(self.btWidget)
+        layBt = QHBoxLayout(self.btWidget)
+
 
         self.saveButton = QPushButton(_translate("coverArtFinder", "Save cover"))
         self.saveButton.setIcon(getSvgIcon("save.svg"))
         self.saveButton.clicked.connect(self.saveCover)
-        self.vLayout.addWidget(self.saveButton)
+        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.saveButton.setSizePolicy(sizePolicy)
+
+        layBt.addStretch()
+        layBt.addWidget(self.saveButton)
+        layBt.addStretch()
 
         self.thumbViewer.resetSelection()
 
         self.retranslateUi()
 
+        self.overlay.show()
 
 
 
+    def resizeEvent(self, event):
+    
+        self.overlay.resize(event.size())
+        self.centralWidget.resize(event.size())
+        
+        event.accept()
         
 
     def showEvent(self,event):
@@ -142,6 +174,7 @@ class coverArtFinderDialog(QDialog):
     def onCoverFinderResult(self,result):
             self.items = self.coverFinder.items
             self.showThumbnails()
+            self.overlay.hide()
 
 
     def closeEvent(self,event):

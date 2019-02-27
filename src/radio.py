@@ -49,10 +49,11 @@ class radio:
         self.liveCoverUrl = ""
         self.cover = None
         self.coverPixmap = QPixmap()
-        self.picFromUrlThread = picFromUrlThread()
-        self.picFromUrlThread.downloadCompleted.connect(self.onCoverDownloaded)
-        self.coverDownloaded = pyqtSignal(str, name='coverDownloaded')
-        self.picDownloader = picDownloader()
+        #if self.picFromUrlThread is None:
+        #    self.picFromUrlThread = picFromUrlThread()
+        #self.picFromUrlThread.downloadCompleted.connect(self.onCoverDownloaded)
+        #self.coverDownloaded = pyqtSignal(str, name='coverDownloaded')
+        #self.picDownloader = picDownloader()
 
     def load(self,row):
         self.radioID = row[0]
@@ -141,19 +142,19 @@ class radio:
             fipID = 7
         elif "FIP " in self.name.upper():
             key = "webradio"
-            iwr = self.stream.find(key)+len(key)
-            if iwr > 0:
-                nwr = self.stream[iwr]
-                if int(nwr) == 4:
+            iwr = str(self.stream.find(key)+len(key))
+            if iwr.isdigit():
+                nwr = int(self.stream[int(iwr)])
+                if nwr == 4:
                     fipID = 69
-                elif int(nwr) == 5:
+                elif nwr == 5:
                     fipID = 70
-                elif int(nwr) == 6:
+                elif nwr == 6:
                     fipID = 71
-                elif int(nwr) == 8:
+                elif nwr == 8:
                     fipID = 74
                 else:
-                    fipID = 63+int(nwr)
+                    fipID = 63+nwr
 
         return fipID
 
@@ -214,7 +215,14 @@ class radio:
                 url = rad.get("data-live-url")
                 print(url)
                 liveID = rad.get("data-station-id")
-                print(str(liveID))
+                
+
+                pos1 = rurl.rfind("/")
+                pos2 = rurl.rfind("-")
+                station = rurl[pos1+1:pos2]
+                print(station+" LiveID="+str(liveID))
+                if station in url:
+                    return liveID
 
                 if rurl.replace("http://","").replace("https://","") in url:
                     return liveID
@@ -464,6 +472,24 @@ class radio:
 
 if __name__ == "__main__":
 
+
+    import sys
+    from PyQt5.QtWidgets import QApplication
+    app = QApplication(sys.argv)
+
+
+
+
+    url = "https://direct.francemusique.fr/live/francemusiqueeasyclassique-hifi.aac"
+
+    pos1 = url.rfind("/")
+    pos2 = url.rfind("-")
+    print(str(pos1)+" - "+str(pos2))
+    station = url[pos1:pos2]
+    print(station)
+
+
+
     utc = datetime.utcnow()
     print(str(utc))
     dnow = datetime.now()
@@ -485,3 +511,5 @@ if __name__ == "__main__":
     rad.name = "France Musique La Jazz"
     print("Rad="+rad.getCurrentTrack())
 
+
+    sys.exit(app.exec_())

@@ -93,6 +93,7 @@ class playerControlWidget(QWidget):
     
     mediaList = None
     player = None
+    picFromUrlThread = None
     nextPosition = 0
     isTimeSliderDown = False
     trackChanged = pyqtSignal(int, name='trackChanged')
@@ -209,7 +210,8 @@ class playerControlWidget(QWidget):
         self.mainFrame.setLayout(self.vLayout)
         self.hMainLayout.addWidget(self.mainFrame)
         
-        self.picFromUrlThread = picFromUrlThread()
+        if self.picFromUrlThread is None:
+            self.picFromUrlThread = picFromUrlThread()
         self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
 
 
@@ -217,8 +219,7 @@ class playerControlWidget(QWidget):
 
         #self.resizeEvent = self.onResize
 
-    def closeEvent(self,event):
-        self.picFromUrlThread.cleanLastTempFile()
+
 
     def onPause(self,event):
         self.player.pause()

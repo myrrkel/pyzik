@@ -17,14 +17,20 @@ class thumbnailItem(QListWidgetItem):
         self.url = url
         self.path = ""
         self.parent = parent
+        self.title = name
         self.thumbIcon = thumbnailIcon(self,thumb_url)
-        QListWidgetItem.__init__(self,self.thumbIcon,name)
+        QListWidgetItem.__init__(self,self.thumbIcon,"")
+        self.setHidden(True)
+        self.setSizeHint(QSize(200,220))
 
     def getURL(self):
         return self.url
 
     def addTempFile(self,path):
         self.parent.addTempFile(path)
+
+    def setTitle(self):
+        self.setText(self.title)
         
 
 class thumbnailIcon(QtGui.QIcon):
@@ -38,13 +44,17 @@ class thumbnailIcon(QtGui.QIcon):
         self.picFromUrlThread.url = url
         self.picFromUrlThread.start()
 
+        
+
     def onPicDownloaded(self,path):
         self.path = path
         self.parent.path = self.path
         self.parent.addTempFile(path)
         self.addFile(path)
         self.parent.setIcon(self)
-        self.parent.parent.thumbWidget.setSpacing(4)
+        self.parent.setTitle()
+        #self.parent.parent.thumbWidget.setSpacing(4)
+        self.parent.setHidden(False)
 
 
 class thumbnailViewerWidget(QWidget):
@@ -71,7 +81,7 @@ class thumbnailViewerWidget(QWidget):
 
     def initUI(self):
         self.vLayout = QVBoxLayout()
-        self.vLayout.setContentsMargins(6, 6, 6, 6)
+        self.vLayout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.vLayout)
         
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)

@@ -16,7 +16,6 @@ class waitOverlay(QWidget):
         self.setPalette(palette)
     
     def paintEvent(self, event=None):
-        print("paintEvent")
         painter = QPainter()
         painter.begin(self)
         painter.setRenderHint(QPainter.Antialiasing)

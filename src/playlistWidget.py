@@ -70,6 +70,7 @@ class playerControlsWidget(QWidget):
 
 class playlistWidget(QDialog):
     
+    picFromUrlThread = None
     mediaList = None
     player = None
     nextPosition = 0
@@ -83,16 +84,22 @@ class playlistWidget(QDialog):
         self.mediaList = self.player.mediaList
         self.fullScreenWidget = None
 
+        if self.picFromUrlThread is None:
+            self.picFromUrlThread = picFromUrlThread()
+
+
         
 
         self.initUI()
-
+        self.tableWidgetTracks.cellDoubleClicked.connect(self.changeTrack)
         self.cover.mouseDoubleClickEvent = self.mouseDoubleClickEvent
 
     def mouseDoubleClickEvent(self,event):
         self.showFullScreen()
 
     def initUI(self):
+
+        self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
 
         self.vLayout = QVBoxLayout()
         self.vLayout.setContentsMargins(6, 6, 6, 6)
@@ -168,18 +175,12 @@ class playlistWidget(QDialog):
         self.vLayout.addWidget(self.timeSlider)
         self.vLayout.addWidget(self.playerControls)
         
-        self.picFromUrlThread = picFromUrlThread()
-        self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
 
-
-        self.tableWidgetTracks.cellDoubleClicked.connect(self.changeTrack)
 
         self.retranslateUi()
 
         #self.resizeEvent = self.onResize
 
-    def closeEvent(self,event):
-        self.picFromUrlThread.cleanLastTempFile()
 
     def onPause(self,event):
         self.player.pause()
