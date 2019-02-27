@@ -23,18 +23,24 @@ class fullScreenCoverWidget(QDialog):
                             Qt.FramelessWindowHint )
 
 
-        self.initUI()
-
+        
         #self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
         #self.shortcutPause.activated.connect(self.player.pause)
         self.shortcutClose = QShortcut(QKeySequence("Escape"), self)
         self.shortcutClose.activated.connect(self.close)
 
+        self.vLayout = QVBoxLayout()
+        self.vLayout.setContentsMargins(6, 6, 6, 6)
+        self.vLayout.setAlignment(Qt.AlignCenter)
+        self.setLayout(self.vLayout)
+
+        self.initUI()
+
         self.setBackgroundBlack()
-        #self.cover.show()
+
 
     def show(self):
-        QDialog.show(self)
+
         self.setBackgroundBlack()
         self.showFullScreen()
 
@@ -44,14 +50,6 @@ class fullScreenCoverWidget(QDialog):
 
     def initUI(self):
 
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(100)
-        sizePolicy.setVerticalStretch(100)
-
-        self.vLayout = QVBoxLayout()
-        self.vLayout.setContentsMargins(6, 6, 6, 6)
-        self.vLayout.setAlignment(Qt.AlignCenter)
-        self.setLayout(self.vLayout)
 
 
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -101,7 +99,11 @@ class fullScreenCoverWidget(QDialog):
         else:
             self.cover.setPixmap(QPixmap())
         self.cover.show()
+        
 
+    def initCover(self):
+        self.coverPixmap = QPixmap()
+        self.showCover()
 
 
 if __name__ == "__main__":

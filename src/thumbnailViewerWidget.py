@@ -98,8 +98,10 @@ class thumbnailViewerWidget(QWidget):
     def showItem(self,item):
         if self.isDownloading == False:
             self.fullScreenCover.show()
+            self.fullScreenCover.initCover()
             self.picFromUrlThread.url = item.getURL()
             self.picFromUrlThread.start()
+
 
 
     def onPicDownloaded(self,uri):
@@ -108,7 +110,9 @@ class thumbnailViewerWidget(QWidget):
         self.isDownloading = False
 
         self.fullScreenCover.setPixmapFromUri(uri)
-        self.fullScreenCover.show()
+        #self.fullScreenCover.setBackgroundBlack()
+        self.fullScreenCover.showFullScreen()
+        #self.fullScreenCover.show()
 
     def addTempFile(self,path):
         self.tempFiles.append(path)
@@ -116,11 +120,12 @@ class thumbnailViewerWidget(QWidget):
     def removeTempFiles(self,fileSaved=False):
         print("Remove temp thumb files:"+str(range(len(self.tempFiles))))
         for i in reversed(range(len(self.tempFiles))):
-
-            print("File n°"+str(i)+" ="+self.tempFiles[i])
-            if not (self.tempFiles[i] == self.selectedFile and fileSaved):
-                print("remove File="+self.tempFiles[i])
-                os.remove(self.tempFiles[i])
+            uri = self.tempFiles[i]
+            print("File n°"+str(i)+" ="+uri)
+            if not (uri == self.selectedFile and fileSaved):
+                if os.path.isfile(uri):
+                    print("remove File="+uri)
+                    os.remove(uri)
                 del self.tempFiles[i]
                 
 
