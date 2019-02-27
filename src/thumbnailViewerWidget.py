@@ -78,7 +78,7 @@ class thumbnailViewerWidget(QWidget):
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
         self.setSizePolicy(sizePolicy)
-        self.resize(550,400)
+        self.resize(600,400)
 
         self.thumbWidget = QListWidget(self)
         self.thumbWidget.setViewMode(QListWidget.IconMode)

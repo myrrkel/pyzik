@@ -19,6 +19,8 @@ import sys
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
 
+from waitOverlayWidget import *
+
 import time
 
 
@@ -66,6 +68,7 @@ class coverArtFinderDialog(QDialog):
 
     def initUI(self):
 
+
         self.vLayout = QVBoxLayout()
         self.vLayout.setContentsMargins(6, 6, 6, 6)
         self.setLayout(self.vLayout)
@@ -74,15 +77,14 @@ class coverArtFinderDialog(QDialog):
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
         self.setSizePolicy(sizePolicy)
-        self.resize(550,400)
+        self.resize(650,400)
 
         self.thumbViewer = thumbnailViewerWidget(self.items)
 
         self.vLayout.addWidget(self.thumbViewer)
 
         layBt = QHBoxLayout()
-        
-        #layBt.addStretch()
+
         self.saveButton = QPushButton(_translate("coverArtFinder", "Save cover"))
         self.saveButton.setIcon(getSvgIcon("save.svg"))
         self.saveButton.clicked.connect(self.saveCover)
@@ -91,6 +93,9 @@ class coverArtFinderDialog(QDialog):
         self.thumbViewer.resetSelection()
 
         self.retranslateUi()
+
+
+
 
         
 
