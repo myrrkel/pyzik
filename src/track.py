@@ -195,7 +195,8 @@ class track:
         if self.isRadio():
             if self.radio:
                 self.radio.coverDownloaded.connect(self.onCoverDownloaded)
-                self.radio.picFromUrlThread.run(coverUrl)
+                self.radio.picFromUrlThread.url = coverUrl
+                self.radio.picFromUrlThread.start()
          
 
         if self.parentAlbum is not None and self.parentAlbum.cover != "":

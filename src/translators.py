@@ -31,3 +31,4 @@ class translators():
         self.installTranslator("playlistWidget",locale)
         self.installTranslator("historyWidget",locale)
         self.installTranslator("customWidget",locale)
+        self.installTranslator("widgets",locale)

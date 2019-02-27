@@ -115,7 +115,8 @@ class coverArtFinderDialog(QDialog):
         if url != "":
             self.selectedFile = self.thumbViewer.selectedFile
             if self.selectedFile == "":
-                self.picFromUrlThread.run(url)
+                self.picFromUrlThread.url = url
+                self.picFromUrlThread.start()
             else:
                 self.saveSelectedCover()
 

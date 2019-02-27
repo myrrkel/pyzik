@@ -164,12 +164,14 @@ class fullScreenWidget(QDialog):
         if self.player.radioMode:
             coverUrl = self.player.getLiveCoverUrl()
             if coverUrl != "":
-                self.picFromUrlThread.run(coverUrl)
+                self.picFromUrlThread.url = coverUrl
+                self.picFromUrlThread.start()
             else:
                 rad = self.player.getCurrentRadio()
                 if rad is not None:
                     radPicUrl = rad.getRadioPic()
-                    self.picFromUrlThread.run(radPicUrl)
+                    self.picFromUrlThread.url = radPicUrl
+                    self.picFromUrlThread.start()
         else:
             self.picFromUrlThread.resetLastURL()
             if trk is not None and trk.parentAlbum is not None:

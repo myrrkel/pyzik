@@ -98,7 +98,8 @@ class thumbnailViewerWidget(QWidget):
     def showItem(self,item):
         if self.isDownloading == False:
             self.fullScreenCover.show()
-            self.picFromUrlThread.run(item.getURL())
+            self.picFromUrlThread.url = item.getURL()
+            self.picFromUrlThread.start()
 
 
     def onPicDownloaded(self,uri):
