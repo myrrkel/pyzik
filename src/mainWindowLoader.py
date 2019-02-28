@@ -544,6 +544,9 @@ class MainWindowLoader(QMainWindow):
         if artist == None: 
             return
         print("Show albums Art="+artist.name)
+        self.ui.tableWidgetAlbums.setRowCount(0)
+        if len(artist.albums) == 0: return
+
 
         if self.currentAlbum is None:
             self.currentAlbum = artist.getRandomAlbum()
@@ -551,7 +554,7 @@ class MainWindowLoader(QMainWindow):
         if self.currentAlbum.artistID != artist.artistID:
             self.currentAlbum = artist.getRandomAlbum()
 
-        self.ui.tableWidgetAlbums.setRowCount(0)
+
         indexToSel = 0
         i = 0
         artist.sortAlbums()
@@ -621,6 +624,7 @@ class MainWindowLoader(QMainWindow):
 
     def showAlbumCover(self,result):
         album = self.currentAlbum
+        if album is None: return
         if album.cover != "":
             self.showCover(album.getCoverPath()) 
         else:
@@ -723,7 +727,6 @@ class MainWindowLoader(QMainWindow):
     def onSearchCoverAlbum(self):
 
         self.coverFinder = coverArtFinderDialog(self.currentAlbum)
-        self.coverFinder.picFromUrlThread = self.picFromUrlThread
         self.coverFinder.signalCoverSaved.connect(self.showAlbumCover)
         self.coverFinder.show()
         

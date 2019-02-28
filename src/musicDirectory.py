@@ -103,34 +103,40 @@ class musicDirectory:
         if self.getStatus() == -1: return
         dirlist = next(os.walk(self.dirPath))[1]
         i=0
-        for dir in dirlist:
+        for dirArt in dirlist:
             i+=1
             iProgress = round((i/len(dirlist))*100)
             progressChanged.emit(iProgress)
 
-            print('exploreArtistsDirectory='+dir)
-            curArt = self.artistCol.getArtist(dir)
+            print('exploreArtistsDirectory='+dirArt)
+            curArt = self.artistCol.getArtist(dirArt)
             #GetArtist return a new artist if it doesn't exists in artistsCol
 
-            self.exploreAlbumsInArtistDirectory(curArt,dir,progressChanged)
+            self.exploreAlbumsInArtistDirectory(curArt,dirArt,progressChanged)
 
 
         return 
 
 
 
-    def exploreAlbumsInArtistDirectory(self,artist,artDir,progressChanged=None):
+    def exploreAlbumsInArtistDirectory(self,artist,dirArt,progressChanged=None):
         
-        artPath = os.path.join(self.dirPath,artDir)
+        artPath = os.path.join(self.dirPath,dirArt)
         dirlist = next(os.walk(artPath))[1]
         i=0
-        for dir in dirlist:
+
+        if len(dirlist)==0 :
+            print("This artist directory has no sub directory : "+artPath)
+            return False
+
+        for dirAlb in dirlist:
             i+=1
             iProgress = round((i/len(dirlist))*100)
             progressChanged.emit(iProgress)
-            curAlb = album(dir)
+            albPath = os.path.join(dirArt,dirAlb)
+            curAlb = album(albPath)
             curAlb.musicDirectoryID = self.musicDirectoryID
-            curAlb.dirPath = artDir
+            #curAlb.dirPath = dirArt
 
             curAlb.artistID = artist.artistID
             curAlb.artistName = artist.name
@@ -145,7 +151,7 @@ class musicDirectory:
                     artist.addAlbum(curAlb)
 
 
-        return 
+        return True
 
 
     def updateMusicDirectoryDB(self):
