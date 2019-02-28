@@ -52,9 +52,8 @@ class picFromUrlThread(QThread):
             else:
                 print(print("ERROR NO FILE TempPic="+str(temp.name)))
         else:
-            while self.lastTempFile == "":
-                time.sleep(0.05)
-            self.downloadCompleted.emit(str(self.lastTempFile))
+            if self.lastTempFile != "":
+                self.downloadCompleted.emit(str(self.lastTempFile))
   
     def resetLastURL(self):
         self.lastUrl = ""

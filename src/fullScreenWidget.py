@@ -149,6 +149,9 @@ class fullScreenWidget(QDialog):
     def onPicDownloaded(self,path):
         print("fullscreenWidget onPicDownloaded="+path)
         self.coverPixmap = QtGui.QPixmap(path)
+        scaledCover = self.coverPixmap.scaled(self.cover.size(),
+                                                Qt.KeepAspectRatio,
+                                                Qt.SmoothTransformation)
         self.cover.setPixmap(scaledCover)
         self.cover.show()
         

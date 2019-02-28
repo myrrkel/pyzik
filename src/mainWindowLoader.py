@@ -70,6 +70,7 @@ class MainWindowLoader(QMainWindow):
         self.defaultPixmap = getSvgWithColorParam("vinyl-record2.svg")
 
         self.fullScreenWidget = fullScreenWidget(self.player)
+        self.fullScreenWidget.connectPicDownloader(self.picFromUrlThread)
         self.fullScreenWidget.defaultPixmap = self.defaultPixmap
         self.fullScreenCoverWidget = fullScreenCoverWidget()
         self.fullScreenCoverWidget.defaultPixmap = self.defaultPixmap
@@ -673,7 +674,6 @@ class MainWindowLoader(QMainWindow):
         print("showFullScreen")
         if self.fullScreenWidget is None:
             self.fullScreenWidget = fullScreenWidget(self.player)
-            self.fullScreenWidget.connectPicDownloader(self.picFromUrlThread)
              
         self.fullScreenWidget.show()
         self.fullScreenWidget.activateWindow()
