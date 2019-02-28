@@ -84,7 +84,7 @@ class MainWindowLoader(QMainWindow):
         self.ui = mainWindow.Ui_MainWindow()
         self.ui.setupUi(self)
         self.playerControl = playerControlWidget(self.player,self)
-        self.playerControl.picFromUrlThread = self.picFromUrlThread
+        self.playerControl.connectPicDownloader(self.picFromUrlThread)
         self.playerControl.defaultPixmap = self.defaultPixmap
         #self.playerControl.setMaximumSize(QtCore.QSize(16777215, 140))
         self.ui.verticalMainLayout.addWidget(self.playerControl)
@@ -651,7 +651,7 @@ class MainWindowLoader(QMainWindow):
             isNew = True
             self.playList = playlistWidget(self.player)
             self.playList.fullScreenWidget = self.fullScreenWidget
-            self.playList.picFromUrlThread = self.picFromUrlThread
+            self.playList.connectPicDownloader(self.picFromUrlThread)
             self.playList.trackChanged.connect(self.player.setPlaylistTrack)
 
         self.playList.showMediaList()
@@ -673,6 +673,7 @@ class MainWindowLoader(QMainWindow):
         print("showFullScreen")
         if self.fullScreenWidget is None:
             self.fullScreenWidget = fullScreenWidget(self.player)
+            self.fullScreenWidget.connectPicDownloader(self.picFromUrlThread)
              
         self.fullScreenWidget.show()
         self.fullScreenWidget.activateWindow()

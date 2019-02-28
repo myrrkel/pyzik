@@ -23,6 +23,7 @@ class picFromUrlThread(QThread):
 
 
 
+
     def run(self):
         #url = "https://cdn.radiofrance.fr/s3/cruiser-production/2016/11/d68ecd67-6435-457e-af3c-d514864ae5f5/400x400_rf_omm_0000360132_dnc.0055215305.jpg"
         print("run picFromUrlThread url="+self.url)
@@ -34,6 +35,7 @@ class picFromUrlThread(QThread):
 
         if self.lastUrl != self.url:
             self.lastUrl = self.url
+            self.lastTempFile = ""
             self.removeLastTempFile()
             response = requests.get(self.url,headers={'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; rv:2.2) Gecko/20110201'})
             print("GET Status="+str(response.status_code))

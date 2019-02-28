@@ -185,11 +185,17 @@ class playlistWidget(QDialog):
     def onPause(self,event):
         self.player.pause()
 
+
+    def connectPicDownloader(self,picDl):
+        self.picFromUrlThread = picDl
+        self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
+
+
     def onPicDownloaded(self,path):
         
         self.coverPixmap = QtGui.QPixmap(path)
         if not self.coverPixmap.isNull():
-            print("onPicDownloaded="+path)
+            print("playlistWidget onPicDownloaded="+path)
             print("Pic size="+str(self.cover.size()))
             scaledCover = self.coverPixmap.scaled(self.cover.size(),
                                                     Qt.KeepAspectRatio,

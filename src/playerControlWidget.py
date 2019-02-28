@@ -212,6 +212,7 @@ class playerControlWidget(QWidget):
         
         if self.picFromUrlThread is None:
             self.picFromUrlThread = picFromUrlThread()
+
         self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
 
 
@@ -219,20 +220,21 @@ class playerControlWidget(QWidget):
 
         #self.resizeEvent = self.onResize
 
-
+    def connectPicDownloader(self,picDl):
+        self.picFromUrlThread = picDl
+        self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
 
     def onPause(self,event):
         self.player.pause()
 
     def onPicDownloaded(self,path):
-
+        print("PlayerControlWidget onPicDownloaded="+path)
         if path == "":
             self.coverPixmap = self.defaultPixmap
             return
         
         self.coverPixmap = QtGui.QPixmap(path)
         if not self.coverPixmap.isNull():
-            print("onPicDownloaded="+path)
             print("Pic size="+str(self.cover.size()))
             scaledCover = self.coverPixmap.scaled(self.cover.size(),
                                                     Qt.KeepAspectRatio,
@@ -258,10 +260,6 @@ class playerControlWidget(QWidget):
         self.isTimeSliderDown = False
         if event is not None: return event.accept()
 
-    def onResize(self,event):
-        hHeader = self.tableWidgetTracks.horizontalHeader()
-        hHeader.resizeSections(QHeaderView.Stretch)
-        
 
     def showFullScreen(self):
         if self.parent.fullScreenWidget:

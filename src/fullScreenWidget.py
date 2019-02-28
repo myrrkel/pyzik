@@ -117,6 +117,11 @@ class fullScreenWidget(QDialog):
         self.close()
 
 
+    def connectPicDownloader(self,picDl):
+        self.picFromUrlThread = picDl
+        self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
+
+
     def resizeEvent(self,event):
         self.resizeCover()
 
@@ -142,8 +147,10 @@ class fullScreenWidget(QDialog):
 
 
     def onPicDownloaded(self,path):
+        print("fullscreenWidget onPicDownloaded="+path)
         self.coverPixmap = QtGui.QPixmap(path)
-        self.showCover()
+        self.cover.setPixmap(scaledCover)
+        self.cover.show()
         
 
 
