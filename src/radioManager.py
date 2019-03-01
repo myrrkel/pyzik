@@ -117,7 +117,6 @@ class radioManager():
     def searchDirbleRadios(self,search):
         dirbleRadios = []
         search = urllib.parse.quote_plus(search)
-
         try:
             r = requests.post("http://api.dirble.com/v2/search?token="+dirbleAPIKey, data={'query': search, 'page': 1})
             dradios = json2obj(r.text)
@@ -126,6 +125,7 @@ class radioManager():
 
         if dradios:
             for dr in dradios:
+                if dr.streams is None: return []
                 for strm in dr.streams:
                         rad = radio()
                         rad.initWithDirbleRadio(dr,strm.stream)

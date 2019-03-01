@@ -63,6 +63,7 @@ class MainWindowLoader(QMainWindow):
         self.playList = None
         self.searchRadio = None
         self.histoWidget = None
+        self.coverFinder = None
 
 
         self.coverPixmap = QtGui.QPixmap()
@@ -332,7 +333,7 @@ class MainWindowLoader(QMainWindow):
     def onPlayFavRadio(self,radioID):
         rad = self.musicBase.radioMan.getFavRadio(radioID)
         self.player.playRadio(rad)
-        self.showPlaylist(True)
+
         
     def onMenuExplore(self):
         self.exploreAlbumsDirectoriesThread.musicBase = self.musicBase 
@@ -788,7 +789,7 @@ class MainWindowLoader(QMainWindow):
             self.ui.cover.setPixmap(scaledCover)
 
     def initPlayerButtons(self):
-        
+        self.ui.searchCoverButton.setText(_translate("coverArtFinder", "Cover finder"))
         self.ui.playButton.setToolTip(self.ui.playButton.text())
         self.ui.openDirButton.setToolTip(self.ui.openDirButton.text())
         self.ui.addAlbumButton.setToolTip(self.ui.addAlbumButton.text())
@@ -831,6 +832,7 @@ class MainWindowLoader(QMainWindow):
         if self.playList is not None: self.playList.close()
         if self.histoWidget is not None: self.histoWidget.close()
         if self.searchRadio is not None: self.searchRadio.close()
+        if self.coverFinder is not None: self.coverFinder.close()
         self.saveSettings()
 
     def saveSettings(self):
@@ -859,6 +861,7 @@ class MainWindowLoader(QMainWindow):
         if self.histoWidget is not None: self.histoWidget.retranslateUi()
         if self.searchRadio is not None: self.searchRadio.retranslateUi()
         if self.playerControl is not None: self.playerControl.retranslateUi()
+        if self.coverFinder is not None: self.coverFinder.retranslateUi()
 
 
         self.update()
@@ -868,6 +871,7 @@ class MainWindowLoader(QMainWindow):
     def retranslateUi(self):
 
         self.ui.menuFavRadios.setTitle(_translate("radio","Favorite radios"))
+        self.ui.searchCoverButton.setText(_translate("coverArtFinder", "Cover finder"))
         self.ui.retranslateUi(self)
 
 
