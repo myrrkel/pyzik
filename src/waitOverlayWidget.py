@@ -8,53 +8,89 @@ from PyQt5.QtWidgets import *
 
 class waitOverlay(QWidget):
 
-    def __init__(self, parent = None):
+    timer = 0
+
+    def __init__(self, parent = None,nbDots = 15,circleSize = 30,color = None,backgroundOpacity = 40):
     
         QWidget.__init__(self, parent)
+        self.parent = parent
+        self.nbDots = nbDots
+        self.circleSize = circleSize
+
+        if color is None:
+            self.color = QColor(100, 100, 100)
+        else:
+            self.color = color
+
+        self.colorLight = self.color.lighter(150)
+        self.colorLight.setAlpha(200)
+
+        self.backgroundOpacity = backgroundOpacity
+
+
         palette = QPalette(self.palette())
         palette.setColor(palette.Background, Qt.transparent)
         self.setPalette(palette)
+
+        '''
+        self.lay = QGridLayout(self)
+        self.lay.setContentsMargins(0, 0, 0, 0)
+
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(100)
+        sizePolicy.setVerticalStretch(100)
+        self.setSizePolicy(sizePolicy)
+        '''
     
     def paintEvent(self, event=None):
         painter = QPainter()
         painter.begin(self)
         painter.setRenderHint(QPainter.Antialiasing)
 
-        colorGreen = QColor(100, 100, 100)
-        colorLightGreen =      QColor(130, 130, 130)
 
-        painter.fillRect(event.rect(), QBrush(QColor(255, 255, 255, 127)))
-        painter.setPen(QPen(Qt.NoPen))
+        painter.fillRect(event.rect(), QBrush(QColor(255, 255, 255, self.backgroundOpacity)))
+        #painter.setPen(QPen(Qt.NoPen))
 
-        nbDots = 15
-        circleSize = 30
+        print("waitoverlay size="+str(self.size()))
         
-        for i in range(nbDots):
-            if self.counter % nbDots == i:
-                painter.setBrush(QBrush(colorGreen))
+        for i in range(self.nbDots):
+            if self.counter % self.nbDots == i:
+                painter.setBrush(QBrush(self.color))
             else:
-                painter.setBrush(QBrush(colorLightGreen))
+                painter.setBrush(QBrush(self.colorLight))
 
             painter.drawEllipse(
-                self.width()/2 + circleSize * math.cos(2 * math.pi * i / nbDots) - 10,
-                self.height()/2 + circleSize * math.sin(2 * math.pi * i / nbDots) - 10,
+                (self.width()-0) /2 + self.circleSize * math.cos(2 * math.pi * i / self.nbDots) - 5,
+                (self.height()-0)/2 + self.circleSize * math.sin(2 * math.pi * i / self.nbDots) - 5,
                 10, 10)
         
         painter.end()
     
     def showEvent(self, event):
-    
-        self.timer = self.startTimer(50)
         self.counter = 0
+        print("start timer overlay")
+        if self.timer == 0:
+            self.timer = self.startTimer(800/self.nbDots)
+        event.accept()
+
+    def showOverlay(self):
+        self.counter = 0
+        #if self.timer > 0: 
+        #     self.killTimer(self.timer)
+        #     self.timer = 0
+
+        #self.showEvent(None)
+        self.show()
+        
     
     def timerEvent(self, event):
 
        
         self.counter += 1
         self.update()
-        if self.counter == 500:
-            self.killTimer(self.timer)
-            self.hide()
+        #if self.counter == 500:
+        #    self.killTimer(self.timer)
+        #    self.hide()
 
 
 class MainWindow(QMainWindow):

@@ -31,7 +31,7 @@ from coverArtFinderDialog import *
 from svgIcon import *
 from picFromUrlThread import *
 
-orange = QtGui.QColor(216, 119, 0)
+#orange = QtGui.QColor(216, 119, 0)
 _translate = QCoreApplication.translate
 
 def openFile(filename):
@@ -47,6 +47,7 @@ class MainWindowLoader(QMainWindow):
 
     currentTrackChanged = pyqtSignal(str, name='currentTrackChanged')
     showPlayerControlEmited = pyqtSignal(str, name='showPlayerControlEmited')
+    isPlayingSignal = pyqtSignal(int, name='isPlayingSignal')
 
     def __init__(self, parent=None,app=None,musicbase=None,player=None,translator=None):
         QMainWindow.__init__(self, parent)
@@ -90,7 +91,7 @@ class MainWindowLoader(QMainWindow):
         self.playerControl.defaultPixmap = self.defaultPixmap
         #self.playerControl.setMaximumSize(QtCore.QSize(16777215, 140))
         self.ui.verticalMainLayout.addWidget(self.playerControl)
-        self.playerControl.hide()
+        #self.playerControl.hide()
         #self.ui.playerWidget = self.playerControl
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(100)
@@ -157,6 +158,10 @@ class MainWindowLoader(QMainWindow):
         self.player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
         #self.player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerAudioVolume , self.setVolumeSliderFromPlayer)
 
+
+
+
+
         self.ui.volumeSlider.setVisible(False)
 
         self.playerControl.playerControls.volumeSlider.setMaximum(100)
@@ -207,7 +212,8 @@ class MainWindowLoader(QMainWindow):
 
     def onPlayFuzzyGroovy(self):   
         fg = self.musicBase.radioMan.getFuzzyGroovy()   
-        self.player.playRadio(fg)
+        #self.player.playRadio(fg)
+        self.player.playRadioThread.run(fg)
 
 
     def onExploreCompleted(self,event):
@@ -276,6 +282,7 @@ class MainWindowLoader(QMainWindow):
 
     def isPlaying(self,event):
         print("isPlaying!")
+        self.isPlayingSignal.emit(self.player.isPlaying())
         self.showPlayerControlEmited.emit("")
    
 
@@ -303,7 +310,7 @@ class MainWindowLoader(QMainWindow):
 
     def initRadioFavMenu(self):
 
-        if not hasattr(self.ui,"menuFavRadios") :
+        if not hasattr(self.ui,"menuFavRadios"):
             self.ui.menuFavRadios = QMenu(self.ui.menuRadios)
         else:
             for action in self.ui.menuFavRadios.actions():
@@ -332,7 +339,9 @@ class MainWindowLoader(QMainWindow):
 
     def onPlayFavRadio(self,radioID):
         rad = self.musicBase.radioMan.getFavRadio(radioID)
-        self.player.playRadio(rad)
+        self.playerControl.showWaitingOverlay()
+        #self.player.playRadio(rad)
+        self.player.playRadioInThread(rad)
 
         
     def onMenuExplore(self):
@@ -700,8 +709,8 @@ class MainWindowLoader(QMainWindow):
             self.playList.setCurrentTrack(title)
         if self.fullScreenWidget is not None:
             self.fullScreenWidget.setCurrentTrack(title)
-        if self.playerControl is not None:
-            self.playerControl.setCurrentTrack(title)
+        #if self.playerControl is not None:
+        #    self.playerControl.setCurrentTrackInThread(title)
 
 
     def onPlayerMediaChangedVLC(self,event):

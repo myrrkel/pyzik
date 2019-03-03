@@ -140,8 +140,7 @@ class coverArtFinderDialog(QDialog):
     def search(self):
 
         if self.album is not None:
-            keyword = self.album.getCoverSearchText()+ " album"
-            #self.coverFinder.search(keyword)
+            keyword = self.album.getCoverSearchText()
             self.coverFinderThread.coverFinder = self.coverFinder
             self.coverFinderThread.keyword = keyword
             self.coverFinderThread.start()

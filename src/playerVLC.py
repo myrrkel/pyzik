@@ -11,8 +11,9 @@ import sys
 import time
 import vlc
 import os
+import threading
 from track import *
-from PyQt5 import QtCore
+from PyQt5.QtCore import pyqtSignal
 
 
 dirtySymbols = ["@","+","*","#"]
@@ -29,6 +30,8 @@ def cleanTitle(title):
 class playerVLC:
 
     tracksDatas = []
+    
+
 
     def __init__(self):
 
@@ -48,9 +51,14 @@ class playerVLC:
 
         self.nowPlaying = ""
 
+        #self.playRadioThread = threading.Thread()
+        #self.playRadioThread.run = self.playRadio
+
         self.initMediaList()
 
         print("VLC version = "+str(vlc.libvlc_get_version()))
+
+
            
     def release(self):
         self.mediaPlayer.release()
@@ -86,6 +94,7 @@ class playerVLC:
 
     def isPlaying(self):
         return self.mediaPlayer.is_playing()
+
 
     def getCurrentIndexPlaylist(self):
         m = self.mediaPlayer.get_media()
@@ -267,6 +276,10 @@ class playerVLC:
         media = self.instance.media_new(sfile)
         return media
 
+    def playRadioInThread(self,radio):
+        processThread = threading.Thread(target=self.playRadio, args=[radio])
+        processThread.start()
+
     def playRadio(self,radio):
         self.radioMode = True
         self.adblock = radio.adblock
@@ -287,10 +300,11 @@ class playerVLC:
         #Wait until playing start.
         startSince = 0
         while self.isPlaying() == 0:
+
             time.sleep(0.05)
             startSince = startSince +0.05
             #Get current state.
-            state = str(self.mediaPlayer.get_state())
+            state = self.getState()
             if state == "State.Ended":
                 self.stop()
                 self.radioMode = False
@@ -315,6 +329,9 @@ class playerVLC:
         mrl = self.getCurrentMrlPlaylist()
         print(radio.name+" mrl="+mrl)
         self.tracksDatas.append((mrl,radio.stream,trk))
+
+    def getState(self):
+        return str(self.mediaPlayer.get_state())
 
     def getNowPlaying(self):
         m = self.mediaPlayer.get_media()
@@ -413,6 +430,9 @@ class playerVLC:
         print("radioMode=",self.radioMode)
 
         self.mediaListPlayer.play_item_at_index(index)
+
+
+
 
 
 

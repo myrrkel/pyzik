@@ -10,11 +10,13 @@ from track import *
 import requests
 from picFromUrlThread import *
 from tableWidgetDragRows import *
+from waitOverlayWidget import *
 
+import threading
 from vlc import EventType as vlcEventType
 from svgIcon import *
 
-orange = QtGui.QColor(216, 119, 0)
+#orange = QtGui.QColor(216, 119, 0)
 white = QtGui.QColor(255, 255, 255)
 
 _translate = QCoreApplication.translate
@@ -105,15 +107,48 @@ class playerControlWidget(QWidget):
         self.player = player
         self.mediaList = self.player.mediaList
         self.fullScreenWidget = None
+        self.isWaitingCover = False
 
         
 
         self.initUI()
 
-        self.cover.mouseDoubleClickEvent = self.mouseDoubleClickEvent
+        self.parent.isPlayingSignal.connect(self.isPlaying)
+        self.parent.currentTrackChanged.connect(self.onCurrentTrackChanged)
+        #self.player.mpEnventManager.event_attach(vlcEventType.MediaPlayerPlaying, self.isPlaying)
+        #self.cover.mouseDoubleClickEvent = self.mouseDoubleClickEvent
+
+    def isPlaying(self,event):
+        print("PlayerControlWidget isPlaying!")
+        if self.isWaitingCover or self.player.isPlaying() == False:
+            self.showWaitingOverlay()
+        else:
+            print("isPlaying state="+self.player.getState())
+            self.hideWaitOverlay()
+
+    def onCurrentTrackChanged(self,event):
+        print("PlayerControlWidget Currenttrack changed!")
+        if self.isWaitingCover or self.player.isPlaying() == False:
+            self.coverPixmap = self.defaultPixmap
+            self.showWaitingOverlay()
+        else:
+            print("onCurrentTrackChanged state="+self.player.getState())
+            if self.player.radioMode : 
+                self.isWaitingCover = True
+            else:
+                self.hideWaitOverlay()
+
+        self.setCurrentTrack(event)
 
     def mouseDoubleClickEvent(self,event):
         self.showFullScreen()
+
+    def resizeEvent(self, event):
+    
+        if self.waitOverlay is not None:
+            self.waitOverlay.resize(self.cover.size())
+        
+        event.accept()
 
     def initUI(self):
         print("initUI playerControlWidget")
@@ -188,6 +223,10 @@ class playerControlWidget(QWidget):
         self.cover.setMinimumSize(QSize(100, 100))
         self.cover.setMaximumSize(QSize(100, 100))
         self.cover.setPixmap(self.coverPixmap)
+        self.cover.show()
+
+        self.waitOverlay = waitOverlay(self.cover,12,25,orange,0)
+        #self.hideWaitOverlay()
 
         self.labelTitle = QLabel()
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -227,25 +266,39 @@ class playerControlWidget(QWidget):
     def onPause(self,event):
         self.player.pause()
 
+    def showDefaultPixmap(self):
+        self.coverPixmap = self.defaultPixmap
+        self.showScaledCover()
+
+
     def onPicDownloaded(self,path):
         print("PlayerControlWidget onPicDownloaded="+path)
         if path == "":
-            self.coverPixmap = self.defaultPixmap
+            self.showDefaultPixmap()
+            self.hideWaitOverlay()
             return
         
         self.coverPixmap = QtGui.QPixmap(path)
+        self.showScaledCover()
+
+        
+        self.hideWaitOverlay()
+
+
+    def hideWaitOverlay(self):
+        print("hideWaitOverlay")
+        self.waitOverlay.hide()
+
+    def showScaledCover(self):
         if not self.coverPixmap.isNull():
             print("Pic size="+str(self.cover.size()))
             scaledCover = self.coverPixmap.scaled(self.cover.size(),
                                                     Qt.KeepAspectRatio,
                                                     Qt.SmoothTransformation)
             self.cover.setPixmap(scaledCover)
+            
         else:
-            self.cover.setPixmap(QtGui.QPixmap())
-        self.cover.show()
-
-
-
+            self.showDefaultPixmap()
     
     def setVolume(self, volume):
         self.player.setVolume(volume)
@@ -287,9 +340,17 @@ class playerControlWidget(QWidget):
 
 
 
+    def setCurrentTrackInThread(self,title):
+        processThread = threading.Thread(target=self.setCurrentTrack, args=[title])
+        processThread.start()
+
+
+
     def setCurrentTrack(self,title=""):
 
         if self.player is None : return 
+
+        #self.showWaitingOverlay()
 
         index = self.player.getCurrentIndexPlaylist()
         print("setCurrentTrack PlayerControl:",index)
@@ -299,23 +360,49 @@ class playerControlWidget(QWidget):
 
         self.setTitleLabel()
 
-        self.showCover(trk)
+        #self.showCoverInThread(trk)
+
+    def showWaitingOverlay(self):
+        print("showWaitingOverlay")
+        self.isWaitingCover = True
+        self.showDefaultPixmap()
+        self.waitOverlay.showOverlay()
+        self.waitOverlay.resize(self.cover.size())
+        self.show()
+
+    def showCoverInThread(self,trk):
+        processThread = threading.Thread(target=self.showCover, args=[trk])
+        processThread.start()
 
 
     def showCover(self,trk):
 
+        
+
         if self.player.radioMode:
+            self.isWaitingCover = True
             coverUrl = self.player.getLiveCoverUrl()
             if coverUrl != "":
                 self.picFromUrlThread.url = coverUrl
                 self.picFromUrlThread.start()
+                self.isWaitingCover = True
             else:
                 rad = self.player.getCurrentRadio()
                 if rad is not None:
                     radPicUrl = rad.getRadioPic()
-                    self.picFromUrlThread.url = radPicUrl
-                    self.picFromUrlThread.start()
+                    if radPicUrl != "":
+                        self.picFromUrlThread.url = radPicUrl
+                        self.picFromUrlThread.start()
+                        self.isWaitingCover = True
+                    else:
+                        self.isWaitingCover = False
+                else:
+                    self.isWaitingCover = False
+
+            
+
         else:
+            self.isWaitingCover = False
             self.picFromUrlThread.resetLastURL()
             if trk is not None and trk.parentAlbum is not None:
                 print("showCover trk.parentAlbum.cover="+trk.parentAlbum.cover)
@@ -325,11 +412,7 @@ class playerControlWidget(QWidget):
                     coverPath = trk.parentAlbum.getCoverPath()
                     self.coverPixmap = QtGui.QPixmap(coverPath)
                     
-                scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                                Qt.KeepAspectRatio,
-                                                Qt.SmoothTransformation)
-                self.cover.setPixmap(scaledCover)
-                self.cover.show()
+                self.showScaledCover()
 
 
     def setTitleLabel(self):

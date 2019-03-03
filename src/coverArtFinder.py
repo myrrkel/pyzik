@@ -15,14 +15,23 @@ class CoverArtFinder:
 
     items = []
 
+
     def search(self,keyword):
+
+        items = self.searchWithParam(keyword,4,"large")
+
+        items = items + self.searchWithParam(keyword,8,"medium")
+
+        self.items = items
+
+
+    def searchWithParam(self,keyword,limit=4,size="medium"):
 
 
         response = gid.googleimagesdownload()   #class instantiation
 
         records = gid.user_input()
 
-        limit = 4
         main_directory = ""
         dir_name = ""
 
@@ -30,8 +39,8 @@ class CoverArtFinder:
         arguments["keywords"]       = keyword
         arguments["no_download"]    = True
         arguments["limit"]          = limit
-        arguments["size"]           = "large"
-        arguments["print_urls"]     = True
+        arguments["size"]           = size
+        arguments["print_urls"]     = False
         arguments["thumbnail"]      = True
         arguments["aspect_ratio"]   = "square"
 
@@ -50,9 +59,13 @@ class CoverArtFinder:
 
         items,errorCount,abs_path = response._get_all_items(raw_html,main_directory,dir_name,limit,arguments)    #get all image items and download images
         
-        self.items = items
+  
 
-        print(items)
+        #print(items)
+
+        return items
+
+        
 
         #paths = response.download(arguments)   #passing the arguments to the function
         #print(paths)   #printing absolute paths of the downloaded images

@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QFile, QXmlStreamReader, QByteArray, QTextStream
 from globalConstants import *
 
-orange = QtGui.QColor(216, 119, 0)
+#orange = QtGui.QColor(216, 119, 0)
 
 def getSvgIcon(fileName):
     return QtGui.QIcon(getColoredSvg(fileName))

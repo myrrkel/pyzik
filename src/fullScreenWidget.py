@@ -193,7 +193,7 @@ class fullScreenWidget(QDialog):
         albTitle=""
         year=""
 
-        orange = QtGui.QColor(216, 119, 0)
+        #orange = QtGui.QColor(216, 119, 0)
         colorName = orange.name()
 
         if self.currentTrack:

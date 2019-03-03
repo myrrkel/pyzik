@@ -14,7 +14,7 @@ from tableWidgetDragRows import *
 from vlc import EventType as vlcEventType
 from svgIcon import *
 
-orange = QtGui.QColor(216, 119, 0)
+#orange = QtGui.QColor(216, 119, 0)
 white = QtGui.QColor(255, 255, 255)
 
 _translate = QCoreApplication.translate
