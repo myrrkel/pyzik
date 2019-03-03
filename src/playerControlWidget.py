@@ -99,6 +99,7 @@ class playerControlWidget(QWidget):
     nextPosition = 0
     isTimeSliderDown = False
     trackChanged = pyqtSignal(int, name='trackChanged')
+    coverChanged = pyqtSignal(int, name='coverChanged')
 
     def __init__(self,player,parent):
         QDialog.__init__(self)
@@ -109,36 +110,33 @@ class playerControlWidget(QWidget):
         self.fullScreenWidget = None
         self.isWaitingCover = False
 
-        
+        self.defaultRadioPix = QPixmap("img/radio2.svg")        
 
         self.initUI()
 
         self.parent.isPlayingSignal.connect(self.isPlaying)
         self.parent.currentTrackChanged.connect(self.onCurrentTrackChanged)
-        #self.player.mpEnventManager.event_attach(vlcEventType.MediaPlayerPlaying, self.isPlaying)
-        #self.cover.mouseDoubleClickEvent = self.mouseDoubleClickEvent
+        self.parent.currentRadioChanged.connect(self.onCurrentRadioChanged)
 
     def isPlaying(self,event):
-        print("PlayerControlWidget isPlaying!")
-        if self.isWaitingCover or self.player.isPlaying() == False:
+        #print("PlayerControlWidget isPlaying!")
+        if self.player.radioMode and (self.isWaitingCover or self.player.isPlaying() == False):
             self.showWaitingOverlay()
         else:
             print("isPlaying state="+self.player.getState())
             self.hideWaitOverlay()
 
     def onCurrentTrackChanged(self,event):
-        print("PlayerControlWidget Currenttrack changed!")
-        if self.isWaitingCover or self.player.isPlaying() == False:
-            self.coverPixmap = self.defaultPixmap
-            self.showWaitingOverlay()
-        else:
-            print("onCurrentTrackChanged state="+self.player.getState())
-            if self.player.radioMode : 
-                self.isWaitingCover = True
-            else:
-                self.hideWaitOverlay()
-
+        #print("PlayerControlWidget Currenttrack changed!")
         self.setCurrentTrack(event)
+
+
+    def onCurrentRadioChanged(self,event):
+        #print("PlayerControlWidget CurrentRadio changed!")
+        if self.player.radioMode and (self.isWaitingCover or self.player.isPlaying() == False):
+            self.showWaitingOverlay()
+
+
 
     def mouseDoubleClickEvent(self,event):
         self.showFullScreen()
@@ -151,7 +149,7 @@ class playerControlWidget(QWidget):
         event.accept()
 
     def initUI(self):
-        print("initUI playerControlWidget")
+        
         self.hMainLayout = QHBoxLayout()
         self.hMainLayout.setContentsMargins(0, 4, 0, 0)
         self.hMainLayout.setSpacing(0)
@@ -193,13 +191,9 @@ class playerControlWidget(QWidget):
         self.timeSlider.setOrientation(Qt.Horizontal)
         self.timeSlider.setObjectName("timeSlider")
 
-        #self.timeSlider.mousePressEvent=self.setIsTimeSliderDown
-        #self.timeSlider.mouseReleaseEvent=self.onTimeSliderIsReleased
-
         self.timeSlider.sliderPressed.connect(self.setIsTimeSliderDown)
         self.timeSlider.sliderReleased.connect(self.onTimeSliderIsReleased)
         self.timeSlider.sliderMoved.connect(self.setPlayerPosition)
-        #self.player.mpEnventManager.event_attach(vlcEventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
 
 
         self.hMainFrame = QWidget()
@@ -252,12 +246,9 @@ class playerControlWidget(QWidget):
         if self.picFromUrlThread is None:
             self.picFromUrlThread = picFromUrlThread()
 
-        self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
-
 
         self.retranslateUi()
 
-        #self.resizeEvent = self.onResize
 
     def connectPicDownloader(self,picDl):
         self.picFromUrlThread = picDl
@@ -267,38 +258,39 @@ class playerControlWidget(QWidget):
         self.player.pause()
 
     def showDefaultPixmap(self):
-        self.coverPixmap = self.defaultPixmap
+        if self.player.radioMode:
+            self.coverPixmap = self.defaultRadioPix
+        else:
+            self.coverPixmap = self.defaultPixmap
         self.showScaledCover()
 
 
     def onPicDownloaded(self,path):
-        print("PlayerControlWidget onPicDownloaded="+path)
+        
         if path == "":
             self.showDefaultPixmap()
             self.hideWaitOverlay()
             return
-        
+       
         self.coverPixmap = QtGui.QPixmap(path)
-        self.showScaledCover()
-
-        
-        self.hideWaitOverlay()
+        if self.player.isPlaying():
+            self.showScaledCover()
+            self.hideWaitOverlay()
 
 
     def hideWaitOverlay(self):
-        print("hideWaitOverlay")
         self.waitOverlay.hide()
 
     def showScaledCover(self):
         if not self.coverPixmap.isNull():
-            print("Pic size="+str(self.cover.size()))
             scaledCover = self.coverPixmap.scaled(self.cover.size(),
                                                     Qt.KeepAspectRatio,
                                                     Qt.SmoothTransformation)
             self.cover.setPixmap(scaledCover)
             
         else:
-            self.showDefaultPixmap()
+            self.cover.clear()
+            #self.showDefaultPixmap()
     
     def setVolume(self, volume):
         self.player.setVolume(volume)
@@ -350,8 +342,6 @@ class playerControlWidget(QWidget):
 
         if self.player is None : return 
 
-        #self.showWaitingOverlay()
-
         index = self.player.getCurrentIndexPlaylist()
         print("setCurrentTrack PlayerControl:",index)
 
@@ -360,12 +350,18 @@ class playerControlWidget(QWidget):
 
         self.setTitleLabel()
 
-        #self.showCoverInThread(trk)
+        if not self.player.radioMode:
+            self.showCover(trk)
+
 
     def showWaitingOverlay(self):
         print("showWaitingOverlay")
         self.isWaitingCover = True
-        self.showDefaultPixmap()
+
+        pix = QPixmap(100,100)
+        pix.fill(QtGui.QColor("transparent"))
+        self.cover.setPixmap(pix)
+
         self.waitOverlay.showOverlay()
         self.waitOverlay.resize(self.cover.size())
         self.show()
@@ -380,7 +376,6 @@ class playerControlWidget(QWidget):
         
 
         if self.player.radioMode:
-            self.isWaitingCover = True
             coverUrl = self.player.getLiveCoverUrl()
             if coverUrl != "":
                 self.picFromUrlThread.url = coverUrl
@@ -398,9 +393,6 @@ class playerControlWidget(QWidget):
                         self.isWaitingCover = False
                 else:
                     self.isWaitingCover = False
-
-            
-
         else:
             self.isWaitingCover = False
             self.picFromUrlThread.resetLastURL()

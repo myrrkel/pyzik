@@ -13,6 +13,9 @@ class waitOverlay(QWidget):
     def __init__(self, parent = None,nbDots = 15,circleSize = 30,color = None,backgroundOpacity = 40):
     
         QWidget.__init__(self, parent)
+
+        self.counter = 0
+
         self.parent = parent
         self.nbDots = nbDots
         self.circleSize = circleSize
@@ -32,15 +35,6 @@ class waitOverlay(QWidget):
         palette.setColor(palette.Background, Qt.transparent)
         self.setPalette(palette)
 
-        '''
-        self.lay = QGridLayout(self)
-        self.lay.setContentsMargins(0, 0, 0, 0)
-
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(100)
-        sizePolicy.setVerticalStretch(100)
-        self.setSizePolicy(sizePolicy)
-        '''
     
     def paintEvent(self, event=None):
         painter = QPainter()
@@ -49,9 +43,7 @@ class waitOverlay(QWidget):
 
 
         painter.fillRect(event.rect(), QBrush(QColor(255, 255, 255, self.backgroundOpacity)))
-        #painter.setPen(QPen(Qt.NoPen))
-
-        print("waitoverlay size="+str(self.size()))
+        painter.setPen(QPen(Qt.NoPen))
         
         for i in range(self.nbDots):
             if self.counter % self.nbDots == i:
@@ -67,19 +59,13 @@ class waitOverlay(QWidget):
         painter.end()
     
     def showEvent(self, event):
-        self.counter = 0
-        print("start timer overlay")
-        if self.timer == 0:
-            self.timer = self.startTimer(800/self.nbDots)
+ 
         event.accept()
 
     def showOverlay(self):
-        self.counter = 0
-        #if self.timer > 0: 
-        #     self.killTimer(self.timer)
-        #     self.timer = 0
+        if self.timer == 0: 
+             self.timer = self.startTimer(800/self.nbDots)
 
-        #self.showEvent(None)
         self.show()
         
     

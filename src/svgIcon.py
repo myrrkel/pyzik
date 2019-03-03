@@ -55,7 +55,18 @@ def getSvgWithColorParam(fileName):
 
     pix.save("img/logo.png")
     return  pix
+
+
+def getColoredPixmapSvg(fileName, colorToReplace='black'):
+    svg = QtGui.QPixmap(50,50)
+    svg.fill(QtGui.QColor("transparent"))
+    svg.load(appDir+"/img/"+fileName)
+    mask = svg.createMaskFromColor(QtGui.QColor(colorToReplace), Qt.MaskOutColor)
+    svg.fill(orange)
+    svg.setMask(mask)
+
+    return svg
  
 
 def getLogo():
-    return QtGui.QIcon(getSvgWithColorParam("vinyl-record2.svg"))
+    return QtGui.QIcon(getSvgWithColorParam("vinyl-record.svg"))

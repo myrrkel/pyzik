@@ -46,6 +46,7 @@ def openFile(filename):
 class MainWindowLoader(QMainWindow):
 
     currentTrackChanged = pyqtSignal(str, name='currentTrackChanged')
+    currentRadioChanged = pyqtSignal(int, name='currentRadioChanged')
     showPlayerControlEmited = pyqtSignal(str, name='showPlayerControlEmited')
     isPlayingSignal = pyqtSignal(int, name='isPlayingSignal')
 
@@ -80,8 +81,6 @@ class MainWindowLoader(QMainWindow):
         self.currentAlbum = album("")
 
 
-
-        #self.setWindowIcon(getLogo())
         self.setWindowIcon(QtGui.QIcon(self.defaultPixmap))
 
         self.ui = mainWindow.Ui_MainWindow()
@@ -89,17 +88,13 @@ class MainWindowLoader(QMainWindow):
         self.playerControl = playerControlWidget(self.player,self)
         self.playerControl.connectPicDownloader(self.picFromUrlThread)
         self.playerControl.defaultPixmap = self.defaultPixmap
-        #self.playerControl.setMaximumSize(QtCore.QSize(16777215, 140))
         self.ui.verticalMainLayout.addWidget(self.playerControl)
-        #self.playerControl.hide()
-        #self.ui.playerWidget = self.playerControl
+        self.playerControl.hide()
+
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(0)
         self.playerControl.setSizePolicy(sizePolicy)
-        #self.playerControl.player = self.player
-        #self.playerControl.trackChanged.connect(self.player.setPlaylistTrack)
-        #self.playerControl.height = 50
 
         self.initPlayerButtons()
 
@@ -212,8 +207,11 @@ class MainWindowLoader(QMainWindow):
 
     def onPlayFuzzyGroovy(self):   
         fg = self.musicBase.radioMan.getFuzzyGroovy()   
-        #self.player.playRadio(fg)
-        self.player.playRadioThread.run(fg)
+        
+        self.player.playRadioInThread(fg)
+        self.currentRadioChanged.emit(1)
+
+        
 
 
     def onExploreCompleted(self,event):
@@ -342,6 +340,7 @@ class MainWindowLoader(QMainWindow):
         self.playerControl.showWaitingOverlay()
         #self.player.playRadio(rad)
         self.player.playRadioInThread(rad)
+        self.currentRadioChanged.emit(1)
 
         
     def onMenuExplore(self):

@@ -36,14 +36,14 @@ class playerVLC:
     def __init__(self):
 
         # creating a basic vlc instance
-        self.instance = vlc.Instance("/home/myrrkel/workspace/pyzik/dist/pizik/")
+        self.instance = vlc.Instance()
         
         # creating an empty vlc media player
         self.mediaPlayer = self.instance.media_player_new()
         self.mediaListPlayer = self.instance.media_list_player_new()
         self.mediaList = self.instance.media_list_new()
         self.mpEnventManager = self.mediaPlayer.event_manager()
-        #self.mediaPlayer.audio_set_volume(100)
+
         self.radioMode = False
         self.currentRadioTitle = ""
         self.currentRadioName = ""
@@ -51,8 +51,6 @@ class playerVLC:
 
         self.nowPlaying = ""
 
-        #self.playRadioThread = threading.Thread()
-        #self.playRadioThread.run = self.playRadio
 
         self.initMediaList()
 
@@ -310,7 +308,7 @@ class playerVLC:
                 self.radioMode = False
                 return 
 
-            print("VLC state="+state)
+            if state != "State.Opening":  print("VLC state="+state)
 
             if startSince > 5:   
                 #Find out if stream is working.
