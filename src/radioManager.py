@@ -118,10 +118,17 @@ class radioManager():
         dirbleRadios = []
         search = urllib.parse.quote_plus(search)
         try:
-            r = requests.post("http://api.dirble.com/v2/search?token="+dirbleAPIKey, data={'query': search, 'page': 1})
+            r = requests.post("http://api.dirble.com/v2/search?token="+dirbleAPIKey, data={'query': search}, timeout = 2)
             dradios = json2obj(r.text)
+            print("Dirble results="+str(dradios))
+            print("Status code="+str(r.status_code))
+            r.raise_for_status()
         except requests.exceptions.HTTPError as err:  
             print(err)
+            return []
+        except requests.exceptions.ReadTimeout as err:
+            print("searchDirbleRadios Timeout")
+            return []
 
         if dradios:
             for dr in dradios:
@@ -240,6 +247,8 @@ if __name__ == "__main__":
 
     rm = radioManager()
 
+
+    rm.searchDirbleRadios("fip")
 
     #radios = rm.searchRadioBrower("fip")
     #for rad in radios:

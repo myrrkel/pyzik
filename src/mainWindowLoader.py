@@ -185,14 +185,16 @@ class MainWindowLoader(QMainWindow):
         #self.exploreAlbumsDirectoriesThread.exploreCompleted.connect(self.onExploreCompleted)
 
         self.ui.coverWidget.resizeEvent = self.resizeEvent
-        self.ui.coverWidget.mouseDoubleClickEvent = self.mouseDoubleClickEvent
+        self.ui.coverWidget.mouseDoubleClickEvent = self.coverMouseDoubleClickEvent
 
         self.currentTrackChanged.connect(self.onCurrentTrackChanged)
         self.showPlayerControlEmited.connect(self.showPlayerControl)
 
         self.ui.searchEdit.setFocus()
 
-    def mouseDoubleClickEvent(self,event):
+
+
+    def coverMouseDoubleClickEvent(self,event):
         self.showFullScreenCover()
 
     def showFullScreenCover(self):
@@ -601,6 +603,7 @@ class MainWindowLoader(QMainWindow):
         print("showAlbum: "+album.title)
         self.currentAlbum = album
         self.setTitleLabel(self.currentArtist.name,album.title,album.year)
+        self.ui.tableWidgetTracks.setRowCount(0)
         
         #Start a thread to load album datas from directory
         #When updated, triggers launch showAlbumCover and showAlbumTracks

@@ -15,13 +15,14 @@ from svgIcon import *
 _translate = QCoreApplication.translate
 
 import sys
+import time
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
 
 from waitOverlayWidget import *
 
-import time
+
 
 
 class coverFinderSearchThread(QThread):

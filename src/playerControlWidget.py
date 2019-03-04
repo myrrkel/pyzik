@@ -138,7 +138,7 @@ class playerControlWidget(QWidget):
 
 
 
-    def mouseDoubleClickEvent(self,event):
+    def coverMouseDoubleClickEvent(self,event):
         self.showFullScreen()
 
     def resizeEvent(self, event):
@@ -219,7 +219,7 @@ class playerControlWidget(QWidget):
         self.cover.setAlignment(Qt.AlignCenter)
         self.cover.setPixmap(self.coverPixmap)
         self.cover.show()
-
+        self.cover.mouseDoubleClickEvent = self.coverMouseDoubleClickEvent
         self.waitOverlay = waitOverlay(self.cover,12,25,orange,0)
         #self.hideWaitOverlay()
 

@@ -13,20 +13,21 @@ class loadAlbumFilesThread(QThread):
 
     doStop = False 
     album = None
-    player = None
+
     imagesLoaded = pyqtSignal(int, name='imagesLoaded')
     tracksLoaded = pyqtSignal(int, name='tracksLoaded')
 
     def run(self):
         self.doStop = False
         self.album.getImages()
-        if self.doStop: self.quit()
+        if self.doStop: return
         self.album.getCover()
-        if self.doStop: self.quit()
-        self.imagesLoaded.emit(1)
-        self.album.getTracks(self.player)
-        if self.doStop: self.quit()
+        if self.doStop: return
+        
+        self.album.getTracks()
+        if self.doStop: return
         self.tracksLoaded.emit(1)
+        self.imagesLoaded.emit(1)
         self.quit()
         
          

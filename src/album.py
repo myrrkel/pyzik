@@ -3,6 +3,7 @@
 
 import re
 import os
+import shutil
 import fnmatch
 from track import *
 from globalConstants import *
@@ -199,7 +200,7 @@ class album:
         self.title = self.formatTitle(self.title)
 
 
-    def getTracks(self,player,subdir=""):
+    def getTracks(self,subdir=""):
         self.doStop = False
         if(not self.checkDir()): return False
 
@@ -219,22 +220,19 @@ class album:
             if self.doStop: break
             if os.path.isdir(os.path.join(currentDir,str(file))):
                 #file is a directory
-                self.getTracks(player,os.path.join(subdir,str(file)))
+                self.getTracks(os.path.join(subdir,str(file)))
             else:
 
                 for ext in musicFilesExtension:
                     if fnmatch.fnmatch(file.lower(), '*.'+ext):
-                        #if subdir != "":
-                        #    sfile = os.path.join(currentDir,file)
-                        #else:
-                        #    sfile = str(file)
+
                         sfile = str(file)
 
                         if("." in sfile):
                             filename, file_extension = os.path.splitext(sfile)
                             itrack = track(filename,file_extension,subdir)
                             itrack.path = currentDir
-                            #itrack.extractDataFromTags(player,currentDir)
+
                             itrack.getMutagenTags(self.getAlbumDir())
                             itrack.parentAlbum = self
                             self.tracks.append(itrack)
@@ -282,7 +280,7 @@ class album:
             for keyword in keywords:
                 coverFound = next((x for x in self.images if keyword == getFileName(x.lower())), "")
                 if (coverFound!=""):
-                    print("Image found equal="+keyword)
+                    #print("Image found equal="+keyword)
                     self.cover = coverFound
                     break
 
@@ -295,7 +293,7 @@ class album:
             #print("getCover cover="+self.cover)
 
             if self.cover == "":
-                print("getCover GetDefault="+self.images[0])
+                #print("getCover GetDefault="+self.images[0])
                 self.cover = self.images[0]
 
     def getCoverPath(self):
@@ -358,7 +356,7 @@ class album:
         if os.path.isfile(destFile):
             os.replace(path,destFile)
         else:
-            os.rename(path,destFile)
+            shutil.move(path,destFile)
 
 
 if __name__ == '__main__':
