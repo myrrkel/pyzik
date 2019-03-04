@@ -39,6 +39,11 @@ class picFromUrlThread(QThread):
             self.removeLastTempFile()
             response = requests.get(self.url,headers={'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; rv:2.2) Gecko/20110201'})
             print("GET Status="+str(response.status_code))
+            if response.status_code == 404:
+                self.lastTempFile = ""
+                self.downloadCompleted.emit("")
+                return
+
             #response.raw.decode_content = True
             #data = response.raw
             data = response.content

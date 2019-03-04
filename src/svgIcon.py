@@ -33,12 +33,12 @@ def getColoredSvg2(fileName, colorToReplace='black'):
     return svg
 
 
-def getSvgWithColorParam(fileName):
+def getSvgWithColorParam(fileName,destName="logo.svg",colorToReplace="#color",newColor="#D87700"):
     file = QFile(appDir+"/img/"+fileName)
     file.open(QFile.ReadOnly | QFile.Text)
     textStream = QTextStream(file)
     svgData = textStream.readAll()
-    svgData = svgData.replace("#color","#D87700")
+    svgData = svgData.replace(colorToReplace,newColor)
 
     file.close()
 
@@ -53,7 +53,8 @@ def getSvgWithColorParam(fileName):
     img = rend.render(painter)
     painter.end()
 
-    pix.save("img/logo.png")
+    if destName != "" : pix.save(appDir+"/img/"+destName)
+
     return  pix
 
 
@@ -64,6 +65,7 @@ def getColoredPixmapSvg(fileName, colorToReplace='black'):
     mask = svg.createMaskFromColor(QtGui.QColor(colorToReplace), Qt.MaskOutColor)
     svg.fill(orange)
     svg.setMask(mask)
+    svg.load(appDir+"/img/"+fileName)
 
     return svg
  

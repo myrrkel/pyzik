@@ -110,7 +110,7 @@ class playerControlWidget(QWidget):
         self.fullScreenWidget = None
         self.isWaitingCover = False
 
-        self.defaultRadioPix = QPixmap("img/radio2.svg")        
+        self.defaultRadioPix = getSvgWithColorParam("radio.svg","","#000000")        
 
         self.initUI()
 
@@ -216,6 +216,7 @@ class playerControlWidget(QWidget):
         self.cover.setSizePolicy(sizePolicy)
         self.cover.setMinimumSize(QSize(100, 100))
         self.cover.setMaximumSize(QSize(100, 100))
+        self.cover.setAlignment(Qt.AlignCenter)
         self.cover.setPixmap(self.coverPixmap)
         self.cover.show()
 
@@ -262,7 +263,8 @@ class playerControlWidget(QWidget):
             self.coverPixmap = self.defaultRadioPix
         else:
             self.coverPixmap = self.defaultPixmap
-        self.showScaledCover()
+        
+        self.showSizedCover()
 
 
     def onPicDownloaded(self,path):
@@ -284,6 +286,17 @@ class playerControlWidget(QWidget):
     def showScaledCover(self):
         if not self.coverPixmap.isNull():
             scaledCover = self.coverPixmap.scaled(self.cover.size(),
+                                                    Qt.KeepAspectRatio,
+                                                    Qt.SmoothTransformation)
+            self.cover.setPixmap(scaledCover)
+            
+        else:
+            self.cover.clear()
+            #self.showDefaultPixmap()
+
+    def showSizedCover(self,width=50,height=50):
+        if not self.coverPixmap.isNull():
+            scaledCover = self.coverPixmap.scaled(width,height,
                                                     Qt.KeepAspectRatio,
                                                     Qt.SmoothTransformation)
             self.cover.setPixmap(scaledCover)
