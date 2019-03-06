@@ -3,6 +3,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import Qt
 
 class progressWidget(QtWidgets.QDialog):
 
@@ -27,7 +28,12 @@ class progressWidget(QtWidgets.QDialog):
         sizePolicy.setVerticalStretch(0)
         self.directory.setSizePolicy(sizePolicy)
         self.directory.setGeometry(0, 30, 250, 20)
+
+        #self.setWindowFlags(Qt.Window)
+        self.setWindowFlags(Qt.Window | Qt.WindowStaysOnTopHint | Qt.WindowTitleHint)
         self.show()
+
+        
 
     def setValue(self,value):
         self.progress.setValue(value)

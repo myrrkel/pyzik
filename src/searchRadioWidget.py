@@ -7,6 +7,7 @@ from radioManager import *
 from searchRadioThread import *
 from progressWidget import *
 from svgIcon import *
+from waitOverlayWidget import *
 
 class searchControlsWidget(QtWidgets.QWidget):
 
@@ -27,6 +28,7 @@ class searchControlsWidget(QtWidgets.QWidget):
         lay.addWidget(self.searchEdit)
         lay.addWidget(self.searchButton)
 
+        
 
 
 
@@ -126,12 +128,18 @@ class searchRadioWidget(QtWidgets.QDialog):
         self.mainLayout.addWidget(self.tableWidgetItems)
         self.mainLayout.addWidget(self.playControls)
 
+        self.overlay = waitOverlay(self)
+        self.overlay.hide()
+
         self.retranslateUi()
         
 
+    def resizeEvent(self, event):
+    
+        self.overlay.resize(event.size())
 
     def onSearch(self,event):
-
+        self.overlay.showOverlay()
         search = self.searchControls.searchEdit.text()
 
         self.wProgress = progressWidget()
@@ -162,6 +170,7 @@ class searchRadioWidget(QtWidgets.QDialog):
         self.showItems(self.radios)
         self.initColumnHeaders()
         self.wProgress.close()
+        self.overlay.hide()
 
 
     def initTableWidgetItems(self):
@@ -257,6 +266,8 @@ if __name__ == "__main__":
     from musicBase import *
     from playerVLC import *
 
+    app = QtWidgets.QApplication(sys.argv)
+
     print('musicBase')
     mb = musicBase()
     print('loadMusicBase')
@@ -265,7 +276,7 @@ if __name__ == "__main__":
     player = playerVLC()
 
 
-    app = QtWidgets.QApplication(sys.argv)
+    
 
     searchWidget = searchRadioWidget(mb,player)
 

@@ -120,7 +120,7 @@ class coverArtFinderDialog(QDialog):
 
         self.retranslateUi()
 
-        self.overlay.show()
+        self.overlay.showOverlay()
 
 
 

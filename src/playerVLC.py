@@ -14,6 +14,18 @@ import os
 import threading
 from track import *
 from PyQt5.QtCore import pyqtSignal
+import ctypes as c
+
+
+c_int_p = c.POINTER(c.c_int)
+c_int_pp = c.POINTER(c_int_p)
+c_int8_p = c.POINTER(c.c_int8)
+c_int8_pp = c.POINTER(c_int8_p)
+c_ubyte_p = c.POINTER(c.c_ubyte)
+c_float_p = c.POINTER(c.c_float)
+c_double_p = c.POINTER(c.c_double)
+c_void_p_p = c.POINTER(c.c_void_p)
+c_short_p = c.POINTER(c.c_short)
 
 
 dirtySymbols = ["@","+","*","#"]
@@ -36,7 +48,12 @@ class playerVLC:
     def __init__(self):
 
         # creating a basic vlc instance
-        self.instance = vlc.Instance()
+        #self.instance = vlc.Instance("--quiet")
+
+
+        #cmp_handleStream = c.CMPFUNC(self.handleStream)
+        #cmp_prepareRender = c.CMPFUNC(self.prepareRender)
+        self.instance = vlc.Instance("--sout #transcode{acodec=s16l}:smem{audio-postrender-callback="+str(int(c.addressof(self.prepareRender)))+",audio-prerender-callback="+str(int(c.addressof(self.handleStream))))
         
         # creating an empty vlc media player
         self.mediaPlayer = self.instance.media_player_new()
@@ -57,7 +74,17 @@ class playerVLC:
         print("VLC version = "+str(vlc.libvlc_get_version()))
 
 
-           
+        #void prepareRender(void* p_audio_data, uint8_t** pp_pcm_buffer , size_t size); // Audio prerender callback
+        #void handleStream(void* p_audio_data, uint8_t* p_pcm_buffer, unsigned int channels, unsigned int rate, unsigned int nb_samples, unsigned int bits_per_sample, size_t size, int64_t pts); // Audio postrender callback
+
+    @c.CFUNCTYPE(None, c.c_void_p      , c_int8_p    , c.c_uint, c.c_uint, c.c_uint  , c.c_uint       , c.c_size_t, c.c_uint64 )
+    def handleStream(self, p_audio_data, p_pcm_buffer, channels, rate,     nb_samples, bits_per_sample, size,       pts):
+        print("HandleStream")
+
+    @c.CFUNCTYPE(None, c.c_void_p      , c_int8_pp    , c.c_size_t)  # Audio postrender callback
+    def prepareRender(self, p_audio_data, pp_pcm_buffer , size):     # Audio prerender callback
+        print("prepareRender")
+
     def release(self):
         self.mediaPlayer.release()
         self.mediaListPlayer.release()
