@@ -3,6 +3,7 @@
 
 import re
 import os
+import math
 import shutil
 import fnmatch
 from track import *
@@ -10,6 +11,29 @@ from globalConstants import *
 import formatString as FS
 from database import *
 from PyQt5.QtGui import QPixmap
+
+
+
+def getFolderSize(folder):
+    if not os.path.isdir(folder): return 0
+    total_size = os.path.getsize(folder)
+    for item in os.listdir(folder):
+        itempath = os.path.join(folder, item)
+        if os.path.isfile(itempath):
+            total_size += os.path.getsize(itempath)
+        elif os.path.isdir(itempath):
+            total_size += getFolderSize(itempath)
+    return total_size
+
+
+def convert_size(size_bytes):
+   if size_bytes == 0:
+       return "0B"
+   size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+   i = int(math.floor(math.log(size_bytes, 1024)))
+   p = math.pow(1024, i)
+   s = round(size_bytes / p, 2)
+   return "%s %s" % (s, size_name[i])
 
 
 def year(s):
@@ -92,12 +116,15 @@ class album:
         self.artistName = ""
         self.year = 0
         self.cover = ""
+        self.size = 0
+        self.length = 0
         self.toVerify = False
         self.tracks = []
         self.images = []
         self.styleIDSet = set()
         self.doStop = False
         self.musicDirectory = musicDirectory
+        self.coverPixmap = None #QPixmap()
         if musicDirectory:
             self.musicDirectoryID = musicDirectory.musicDirectoryID
         else:
@@ -115,6 +142,8 @@ class album:
         self.dirPath = row[3]
         self.artistID = row[4]
         self.musicDirectoryID = row[5]
+        self.size = row[6]
+        self.length = row[7]
 
     def formatTitle(self,title):
         return titleExcept(title)
@@ -201,6 +230,7 @@ class album:
 
 
     def getTracks(self,subdir=""):
+        if subdir == "": self.tracks = []
         self.doStop = False
         if(not self.checkDir()): return False
 
@@ -299,15 +329,19 @@ class album:
     def getCoverPath(self):
         return os.path.join(self.getAlbumDir(),self.cover)
 
-
+    '''
     def getCoverPixmap(self):
         print("ALBUM - getCoverPixmap")
-        tempPath = ""
+
+        if self.coverPixmap is not None: return self.coverPixmap
         path = self.getCoverPath()
         if path:
             self.coverPixmap = QPixmap(path)
+        else:
+            self.coverPixmap = QPixmap()
 
         return self.coverPixmap
+    '''
 
     def checkDir(self):
         if self.musicDirectory:
@@ -346,6 +380,14 @@ class album:
         db = database()
         db.updateValue("albums","year",self.year,"albumID",self.albumID)
 
+    def updateSize(self):
+        db = database()
+        db.updateValue("albums","size",self.size,"albumID",self.albumID)
+
+    def updateLength(self):
+        db = database()
+        db.updateValue("albums","length",self.length,"albumID",self.albumID)
+
     def update(self):
         self.updateTitle()
         self.updateYear()
@@ -357,6 +399,31 @@ class album:
             os.replace(path,destFile)
         else:
             shutil.move(path,destFile)
+
+     
+
+
+    def getAlbumSize(self):
+        size = getFolderSize(self.getAlbumDir())
+        print(self.title+" size="+convert_size(self.size))
+        if size > 0 and size != self.size:
+            self.size = size
+            print(self.title+" size="+convert_size(self.size))
+            self.updateSize()
+
+
+
+    def getLength(self):
+        
+        if len(self.tracks) == 0 : self.getTracks()
+        alb_length = 0
+        for trk in self.tracks:
+            alb_length += trk.duration
+
+        print("album length="+str(alb_length))
+        if alb_length > 0 and (alb_length != self.length or self.length is None):
+            self.length = int(alb_length)
+            self.updateLength()
 
 
 if __name__ == '__main__':

@@ -52,6 +52,7 @@ class coverArtFinderDialog(QDialog):
         QDialog.__init__(self)
         self.items = []
         self.album = album
+        self.keyword = ""
         self.coverSaved = False
         
         self.coverFinder = CoverArtFinder()
@@ -142,6 +143,9 @@ class coverArtFinderDialog(QDialog):
 
         if self.album is not None:
             keyword = self.album.getCoverSearchText()
+        else:
+            keyword = self.keyword
+
             self.coverFinderThread.coverFinder = self.coverFinder
             self.coverFinderThread.keyword = keyword
             self.coverFinderThread.start()

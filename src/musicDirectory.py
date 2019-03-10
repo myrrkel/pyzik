@@ -83,6 +83,8 @@ class musicDirectory:
                     albumList = curArt.findAlbums(curAlb.title)
                     if not albumList:
                         print("Add "+curAlb.title+" in "+curArt.name+" discography. ArtID=",curArt.artistID)
+                        #curAlb.getAlbumSize()
+                        #curAlb.getLength()
                         self.albumCol.addAlbum(curAlb)
                         curArt.addAlbum(curAlb)
                     else:
@@ -134,8 +136,9 @@ class musicDirectory:
             iProgress = round((i/len(dirlist))*100)
             progressChanged.emit(iProgress)
             albPath = os.path.join(dirArt,dirAlb)
-            curAlb = album(albPath)
-            curAlb.musicDirectoryID = self.musicDirectoryID
+            curAlb = album(albPath,self)
+            #curAlb.musicDirectoryID = self.musicDirectoryID
+            #curAlb.musicDirectory = self
             #curAlb.dirPath = dirArt
 
             curAlb.artistID = artist.artistID
@@ -147,6 +150,8 @@ class musicDirectory:
                 albumList = artist.findAlbums(curAlb.title)
                 if len(albumList)==0:
                     print("Add "+curAlb.title+" in "+artist.name+" discography. ArtID=",artist.artistID)
+                    curAlb.getAlbumSize()
+                    #curAlb.getLength()
                     self.albumCol.addAlbum(curAlb)
                     artist.addAlbum(curAlb)
 
@@ -172,8 +177,7 @@ class musicDirectory:
 
             except sqlite3.Error as e:
                 print(e)
-        
-
+   
 
 class exploreEvent:
 

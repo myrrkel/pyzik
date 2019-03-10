@@ -26,9 +26,11 @@ class playerControlsWidget(QWidget):
     player = None
     defaultPixmap = None
 
+
     def __init__(self,parent=None):
         QWidget.__init__(self,parent=parent)
         self.parent = parent
+
         lay = QHBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
 
@@ -104,10 +106,14 @@ class playerControlWidget(QWidget):
     def __init__(self,player,parent):
         QDialog.__init__(self)
         self.parent = parent
+        self.picBufferManager = parent.picBufferManager
+
+        self.currentCoverPath = ""
+        
         self.setWindowFlags(Qt.Window)
         self.player = player
         self.mediaList = self.player.mediaList
-        self.fullScreenWidget = None
+
         self.isWaitingCover = False
 
         self.defaultRadioPix = getSvgWithColorParam("radio.svg","","#000000")        
@@ -119,23 +125,39 @@ class playerControlWidget(QWidget):
         self.parent.currentRadioChanged.connect(self.onCurrentRadioChanged)
 
     def isPlaying(self,event):
-        #print("PlayerControlWidget isPlaying!")
-        if self.player.radioMode and (self.isWaitingCover or self.player.isPlaying() == False):
-            self.showWaitingOverlay()
-        else:
-            print("isPlaying state="+self.player.getState())
-            self.hideWaitOverlay()
+        print("PlayerControlWidget isPlaying")
+        self.refreshWaitOverlay()
+        
+
 
     def onCurrentTrackChanged(self,event):
-        #print("PlayerControlWidget Currenttrack changed!")
+        print("PlayerControlWidget Currenttrack changed!")
         self.setCurrentTrack(event)
+
+    def refreshWaitOverlay(self):
+        if self.player.radioMode:
+            if (self.isWaitingCover == False and self.player.isPlayingRadio() == True) :
+                print("PlayerControlWidget refresh show wait")
+                self.hideWaitOverlay()
+            else:
+                self.showWaitingOverlay()
+
+        else:
+            print("PlayerControlWidget refresh show wait")
+            self.hideWaitOverlay()
+
 
 
     def onCurrentRadioChanged(self,event):
-        #print("PlayerControlWidget CurrentRadio changed!")
-        if self.player.radioMode and (self.isWaitingCover or self.player.isPlaying() == False):
-            self.showWaitingOverlay()
+        print("PlayerControlWidget CurrentRadio changed!")
 
+        sTitle = self.getRadioLabeLText()
+
+        self.labelTitle.setText(sTitle)
+
+        self.currentCoverPath = ""
+        #self.showWaitingOverlay()
+        self.refreshWaitOverlay()
 
 
     def coverMouseDoubleClickEvent(self,event):
@@ -268,20 +290,35 @@ class playerControlWidget(QWidget):
 
 
     def onPicDownloaded(self,path):
-        
+        #self.isWaitingCover = False
         if path == "":
             self.showDefaultPixmap()
-            self.hideWaitOverlay()
-            return
-       
-        self.coverPixmap = QtGui.QPixmap(path)
-        if self.player.isPlaying():
+            self.isWaitingCover = False
+            #self.hideWaitOverlay()
+        else:
+            self.coverPixmap = self.picBufferManager.getPic(path,"playerControl")
+            self.isWaitingCover = False
             self.showScaledCover()
-            self.hideWaitOverlay()
+
+        self.refreshWaitOverlay()
 
 
     def hideWaitOverlay(self):
         self.waitOverlay.hide()
+        self.showScaledCover()
+
+
+    def showWaitingOverlay(self):
+        #print("showWaitingOverlay")
+
+        pix = QPixmap(100,100)
+        pix.fill(QtGui.QColor("transparent"))
+        self.cover.setPixmap(pix)
+
+        self.waitOverlay.showOverlay()
+        self.waitOverlay.resize(self.cover.size())
+        #self.show()
+
 
     def showScaledCover(self):
         if not self.coverPixmap.isNull():
@@ -292,7 +329,7 @@ class playerControlWidget(QWidget):
             
         else:
             self.cover.clear()
-            #self.showDefaultPixmap()
+
 
     def showSizedCover(self,width=50,height=50):
         if not self.coverPixmap.isNull():
@@ -303,7 +340,7 @@ class playerControlWidget(QWidget):
             
         else:
             self.cover.clear()
-            #self.showDefaultPixmap()
+
     
     def setVolume(self, volume):
         self.player.setVolume(volume)
@@ -356,39 +393,51 @@ class playerControlWidget(QWidget):
         if self.player is None : return 
 
         index = self.player.getCurrentIndexPlaylist()
-        print("setCurrentTrack PlayerControl:",index)
+        print("PlayerControl setCurrentTrack:",index)
 
         trk = self.player.getCurrentTrackPlaylist()
         self.currentTrack = trk
 
         self.setTitleLabel()
 
-        if not self.player.radioMode:
-            self.showCover(trk)
+        #if not self.player.radioMode:
+        self.showCover(trk)
 
 
-    def showWaitingOverlay(self):
-        print("showWaitingOverlay")
-        self.isWaitingCover = True
 
-        pix = QPixmap(100,100)
-        pix.fill(QtGui.QColor("transparent"))
-        self.cover.setPixmap(pix)
-
-        self.waitOverlay.showOverlay()
-        self.waitOverlay.resize(self.cover.size())
-        self.show()
-
+    '''
     def showCoverInThread(self,trk):
+        self.isWaitingCover = True
         processThread = threading.Thread(target=self.showCover, args=[trk])
         processThread.start()
-
+    '''
 
     def showCover(self,trk):
-
+        #self.refreshWaitOverlay()
         
 
         if self.player.radioMode:
+
+            coverUrl = self.player.getLiveCoverUrl()
+            if coverUrl == "":
+                rad = self.player.getCurrentRadio()
+                if rad is not None:
+                    coverUrl = rad.getRadioPic()
+
+            if coverUrl is None: coverUrl = ""
+
+            if self.currentCoverPath == coverUrl:
+                self.isWaitingCover = False
+                self.refreshWaitOverlay()
+                return
+
+            if coverUrl != "":
+                self.currentCoverPath = coverUrl
+                self.picFromUrlThread.url = coverUrl
+                self.isWaitingCover = True
+                self.picFromUrlThread.start()
+
+            '''
             coverUrl = self.player.getLiveCoverUrl()
             if coverUrl != "":
                 self.picFromUrlThread.url = coverUrl
@@ -406,33 +455,43 @@ class playerControlWidget(QWidget):
                         self.isWaitingCover = False
                 else:
                     self.isWaitingCover = False
+            '''
+
         else:
             self.isWaitingCover = False
-            self.picFromUrlThread.resetLastURL()
+            #self.picFromUrlThread.resetLastURL()
             if trk is not None and trk.parentAlbum is not None:
-                print("showCover trk.parentAlbum.cover="+trk.parentAlbum.cover)
+                #print("showCover trk.parentAlbum.cover="+trk.parentAlbum.cover)
                 if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
                     self.coverPixmap = self.defaultPixmap
                 else:
                     coverPath = trk.parentAlbum.getCoverPath()
-                    self.coverPixmap = QtGui.QPixmap(coverPath)
+                    self.coverPixmap = self.picBufferManager.getPic(coverPath,"playerControl")
                     
                 self.showScaledCover()
 
+            self.refreshWaitOverlay()
 
-    def setTitleLabel(self):
+
+
+    def setTitleLabel(self,title=""):
+
+        if title != "":
+            self.setRadioLabeLText(title)
+            return
+
         if self.currentTrack:
             if self.currentTrack.isRadio():
-               sTitle = self.getRadioLabeLText()
+               self.setRadioLabeLText()
                self.timeSlider.setVisible(False)
             else:
-                sTitle = self.getTrackLabelText()
+                self.setTrackLabelText()
                 self.timeSlider.setVisible(True)
         
-            self.labelTitle.setText(sTitle)
+            
 
 
-    def getTrackLabelText(self):
+    def setTrackLabelText(self):
         artName = self.currentTrack.getArtistName()
         albTitle = self.currentTrack.getAlbumTitle()
         trkTitle = self.currentTrack.getTrackTitle()
@@ -448,21 +507,29 @@ class playerControlWidget(QWidget):
         <span style=\" font-size:12pt; font-style:bold;\">{Album}</span></p>
         </body></html>'''
         sTitle = sTitle.format(artName=artName,trkTitle=trkTitle,Album=sAlbum)
-        return sTitle
+        
+        self.labelTitle.setText(sTitle)
 
 
-    def getRadioLabeLText(self):
-        radioName = self.currentTrack.radio.name
-        trkTitle = self.currentTrack.radio.liveTrackTitle
-        if trkTitle == "":
-            trkTitle = self.player.getNowPlaying()
+    def setRadioLabeLText(self,title=""):
+
+        if title == "":
+            radioName = self.currentTrack.radio.name
+            trkTitle = self.currentTrack.radio.liveTrackTitle
+            if trkTitle == "":
+                trkTitle = self.player.getNowPlaying()
+            if trkTitle == "NO_META": trkTitle = ""
+        else:
+            radioName = title
+            trkTitle = ""
 
         sTitle = '''<html><head/><body>
         <p><span style=\" font-size:15pt; text-shadow:white 0px 0px 4px; font-weight:600;\">{radioName}</span>
         <span style=\" font-size:12pt; font-style:italic;\">{trkTitle}</span></p>
         </body></html>'''
         sTitle = sTitle.format(radioName=radioName,trkTitle=trkTitle)
-        return sTitle
+
+        self.labelTitle.setText(sTitle)
 
 
 

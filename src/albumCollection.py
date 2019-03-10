@@ -57,7 +57,7 @@ class albumCollection:
 
 
     def loadAlbums(self):
-        for rowAlb in self.musicBase.db.getSelect("SELECT albumID, title, year, dirPath, artistID, musicDirectoryID FROM albums"):
+        for rowAlb in self.musicBase.db.getSelect("SELECT albumID, title, year, dirPath, artistID, musicDirectoryID, size, length FROM albums"):
             alb = album("")
             alb.load(rowAlb)
             self.addAlbum(alb)
@@ -87,6 +87,10 @@ class albumCollection:
             resAlb = albList[irandom]
             return resAlb
 
+    def getAlbumsSize(self):
+        for alb in self.albums:
+            alb.getAlbumSize()
+    
 
     
 if __name__ == '__main__':

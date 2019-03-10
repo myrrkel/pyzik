@@ -75,14 +75,18 @@ class CoverArtFinder:
 if __name__ == '__main__':
 
     import sys
-    from thumbnailViewerWidget import *
+    from coverArtFinderDialog import *
 
     app = QApplication(sys.argv)
-    caf = CoverArtFinder()
-    caf.search("jerusalem 1972 she came like a bat from hell")
 
-    thumbViewer = thumbnailViewerWidget(caf.items)
-    thumbViewer.show()
+    keyword = "jerusalem 1972"
+    caf = CoverArtFinder()
+    caf.search(keyword)
+
+    caf_diag = coverArtFinderDialog()
+    caf_diag.keyword = keyword
+
+    caf_diag.show()
 
 
     sys.exit(app.exec_())

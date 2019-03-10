@@ -448,6 +448,7 @@ class radio:
         if url == "" : url = self.getRadioPic()
         return url
 
+    '''
     def getCoverPixmap(self):
         print("RADIO - getCoverPixmap")
         tempPath = ""
@@ -458,7 +459,8 @@ class radio:
             self.coverPixmap = QPixmap(tempPath)
 
         return self.coverPixmap
-
+    '''
+    
     def getCover(self):
         return self.cover
 

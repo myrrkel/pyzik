@@ -25,6 +25,7 @@ class track:
         self.artist = ""
         self.year = 0
         self.trackNumber = 0
+        self.discNumber = ""
         self.position = 0
         self.duration = 0 # in ms
         self.bitrate = 0
@@ -44,7 +45,7 @@ class track:
 
 
     def printInfos(self):
-        print("TrackTitle: "+self.title)
+        print("TrackTitle: "+self.title+" No="+str(self.trackNumber)+" DiscNo="+str(self.discNumber))
 
     def getName(self):
         return self.fileName+self.extension
@@ -141,12 +142,16 @@ class track:
 
             audio = File(trackPath)
 
+
             if audio.info:
                 self.duration = audio.info.length
                 self.bitrate = audio.info.bitrate
             
             if audio.tags:
                 self.title = str(audio.tags.get("TIT2"))
+                self.trackNumber = int(str(audio.tags.get("TRCK")))
+                self.discNumber = str(audio.tags.get("TPOS"))
+                self.printInfos()
 
             #if self.title in("","None"): self.title = self.fileName
 
@@ -190,7 +195,8 @@ class track:
         if self.title in("","None"): self.title = self.fileName
 
 
-    '''def getCover(self):
+    '''
+    def getCover(self):
 
         if self.isRadio():
             if self.radio:
@@ -204,8 +210,10 @@ class track:
                                             Qt.KeepAspectRatio,
                                             Qt.SmoothTransformation)
             self.cover.setPixmap(scaledCover)
-            self.cover.show()'''
+            self.cover.show()
+    '''
 
+    '''
     def getCoverPixmap(self):
         if self.isRadio():
             if self.radio:
@@ -214,6 +222,7 @@ class track:
             return self.parentAlbum.getCoverPixmap()
 
         return None
+    '''
 
     def onCoverDownloaded(self,cover):
         self.setCover(cover)

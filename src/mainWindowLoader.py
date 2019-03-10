@@ -30,6 +30,7 @@ from albumWidget import *
 from coverArtFinderDialog import *
 from svgIcon import *
 from picFromUrlThread import *
+from picBufferManager import *
 
 #orange = QtGui.QColor(216, 119, 0)
 _translate = QCoreApplication.translate
@@ -59,6 +60,7 @@ class MainWindowLoader(QMainWindow):
         self.player = player
 
         self.picFromUrlThread = picFromUrlThread()
+        self.picBufferManager = picBufferManager()
 
         self.settings = QSettings('pyzik', 'pyzik')
         self.firstShow = True
@@ -75,6 +77,7 @@ class MainWindowLoader(QMainWindow):
         self.fullScreenWidget = fullScreenWidget(self.player)
         self.fullScreenWidget.connectPicDownloader(self.picFromUrlThread)
         self.fullScreenWidget.defaultPixmap = self.defaultPixmap
+        self.fullScreenWidget.picBufferManager = self.picBufferManager
         self.fullScreenCoverWidget = fullScreenCoverWidget()
         self.fullScreenCoverWidget.defaultPixmap = self.defaultPixmap
         self.currentArtist = artist("",0)
@@ -190,6 +193,7 @@ class MainWindowLoader(QMainWindow):
         self.currentTrackChanged.connect(self.onCurrentTrackChanged)
         self.showPlayerControlEmited.connect(self.showPlayerControl)
 
+
         self.ui.searchEdit.setFocus()
 
 
@@ -207,13 +211,7 @@ class MainWindowLoader(QMainWindow):
             self.ramdomAlbum()
             self.firstShow = False
 
-    def onPlayFuzzyGroovy(self):   
-        fg = self.musicBase.radioMan.getFuzzyGroovy()   
-        
-        self.player.playRadioInThread(fg)
-        self.currentRadioChanged.emit(1)
 
-        
 
 
     def onExploreCompleted(self,event):
@@ -337,8 +335,18 @@ class MainWindowLoader(QMainWindow):
         dirDiag.show()
         dirDiag.exec_()
 
+
+    def onPlayFuzzyGroovy(self):   
+        fg = self.musicBase.radioMan.getFuzzyGroovy()
+        self.playerControl.setTitleLabel(fg.name)
+        self.playerControl.showWaitingOverlay()   
+        self.player.playRadioInThread(fg)
+        self.currentRadioChanged.emit(1)
+
+
     def onPlayFavRadio(self,radioID):
         rad = self.musicBase.radioMan.getFavRadio(radioID)
+        self.playerControl.setTitleLabel(rad.name)
         self.playerControl.showWaitingOverlay()
         #self.player.playRadio(rad)
         self.player.playRadioInThread(rad)
@@ -600,7 +608,8 @@ class MainWindowLoader(QMainWindow):
 
 
     def showAlbum(self,album):
-        print("showAlbum: "+album.title)
+
+        print("showAlbum: "+album.title+" size="+str(album.size)+" length="+str(album.length))
         self.currentAlbum = album
         self.setTitleLabel(self.currentArtist.name,album.title,album.year)
         self.ui.tableWidgetTracks.setRowCount(0)
@@ -638,6 +647,7 @@ class MainWindowLoader(QMainWindow):
         album = self.currentAlbum
         if album is None: return
         if album.cover != "":
+            #coverPixmap = album.getCoverPixmap()
             self.showCover(album.getCoverPath()) 
         else:
             self.showCover("")
@@ -700,7 +710,7 @@ class MainWindowLoader(QMainWindow):
         if not self.player.radioMode:
             title = None
             trk = self.player.getCurrentTrackPlaylist()
-            if trk is not None:
+            if trk is not None and trk.parentAlbum is not None:
                 self.musicBase.history.insertTrackHistory(trk.parentAlbum.albumID,trk.getFilePathInAlbumDir())
         else:
             title = event
@@ -772,13 +782,14 @@ class MainWindowLoader(QMainWindow):
 
 
 
-    def showCover(self,path):
+    def showCover(self,path,pCoverPixmap=None):
         
+
         if path == "":
             self.coverPixmap = self.defaultPixmap
         else:
             print("MyCover="+path)
-            self.coverPixmap = QtGui.QPixmap(path)
+            self.coverPixmap = self.picBufferManager.getPic(path,"main.albCover")
 
         scaledCover = self.coverPixmap.scaled(self.ui.cover.size(),
                                                 Qt.KeepAspectRatio,
@@ -885,9 +896,10 @@ class MainWindowLoader(QMainWindow):
         self.ui.searchCoverButton.setText(_translate("coverArtFinder", "Cover finder"))
         self.ui.retranslateUi(self)
 
-
-    
+ 
 
 if __name__ == '__main__':
+
+
     from pyzik import *
     main()

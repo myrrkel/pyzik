@@ -33,6 +33,8 @@ class fullScreenWidget(QDialog):
         QDialog.__init__(self)
         self.player = player
         self.currentTrack = None
+        self.currentCoverPath = ""
+        self.picBufferManager = None
         self.setWindowFlags(
                             Qt.Window | 
                             Qt.WindowStaysOnTopHint | 
@@ -46,7 +48,8 @@ class fullScreenWidget(QDialog):
             self.picFromUrlThread = picFromUrlThread()
 
         self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
-        self.shortcutPause.activated.connect(self.player.pause)
+        if self.player is not None:
+            self.shortcutPause.activated.connect(self.player.pause)
         self.shortcutClose = QShortcut(QKeySequence("Escape"), self)
         self.shortcutClose.activated.connect(self.close)
 
@@ -113,7 +116,6 @@ class fullScreenWidget(QDialog):
 
 
     def mousePressEvent(self, event):
-        print("clicked")
         self.close()
 
 
@@ -148,12 +150,7 @@ class fullScreenWidget(QDialog):
 
     def onPicDownloaded(self,path):
         print("fullscreenWidget onPicDownloaded="+path)
-        self.coverPixmap = QtGui.QPixmap(path)
-        scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                                Qt.KeepAspectRatio,
-                                                Qt.SmoothTransformation)
-        self.cover.setPixmap(scaledCover)
-        self.cover.show()
+        self.showCoverPixmap(path)
         
 
 
@@ -162,30 +159,41 @@ class fullScreenWidget(QDialog):
 
         if self.player.radioMode:
             coverUrl = self.player.getLiveCoverUrl()
-            if coverUrl != "":
-                self.picFromUrlThread.url = coverUrl
-                self.picFromUrlThread.start()
-            else:
+            if coverUrl == "":
                 rad = self.player.getCurrentRadio()
                 if rad is not None:
-                    radPicUrl = rad.getRadioPic()
-                    self.picFromUrlThread.url = radPicUrl
-                    self.picFromUrlThread.start()
+                    coverUrl = rad.getRadioPic()
+
+            if self.currentCoverPath == coverUrl:
+                return
+
+            if coverUrl != "":
+                self.currentCoverPath = coverUrl
+                self.picFromUrlThread.url = coverUrl
+                self.picFromUrlThread.start()
+
         else:
-            self.picFromUrlThread.resetLastURL()
+            #self.picFromUrlThread.resetLastURL()
             if trk is not None and trk.parentAlbum is not None:
-                print("showCover trk.parentAlbum.cover="+trk.parentAlbum.cover)
+                print("fullscreenWidget trk.parentAlbum.cover="+trk.parentAlbum.cover)
                 if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
                     self.coverPixmap = self.defaultPixmap
                 else:
                     coverPath = trk.parentAlbum.getCoverPath()
-                    self.coverPixmap = QtGui.QPixmap(coverPath)
                     
-                scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                                Qt.KeepAspectRatio,
-                                                Qt.SmoothTransformation)
-                self.cover.setPixmap(scaledCover)
-                self.cover.show()
+                    self.showCoverPixmap(coverPath)
+                    
+
+
+    def showCoverPixmap(self,path):
+
+        self.coverPixmap = self.picBufferManager.getPic(path,"fullscreenWidget")
+        scaledCover = self.coverPixmap.scaled(self.cover.size(),
+                                Qt.KeepAspectRatio,
+                                Qt.SmoothTransformation)
+        self.cover.setPixmap(scaledCover)
+        self.cover.show()
+
 
 
     def setTitleLabel(self):

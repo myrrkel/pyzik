@@ -227,6 +227,16 @@ class database():
             sqlAddcolumnDirType = """ ALTER TABLE albums ADD COLUMN creationDate date"""
             self.execSQLWithoutResult(sqlAddcolumnDirType)
 
+        if not self.columnExistsInTable("albums","length"):
+            print("add column length")
+            sqlAddcolumnDirType = """ ALTER TABLE albums ADD COLUMN length int"""
+            self.execSQLWithoutResult(sqlAddcolumnDirType)
+
+        if not self.columnExistsInTable("albums","size"):
+            print("add column size")
+            sqlAddcolumnDirType = """ ALTER TABLE albums ADD COLUMN size int"""
+            self.execSQLWithoutResult(sqlAddcolumnDirType)
+
 
     def createTableMusicDirectories(self):
         sqlCreateTableMusicDirectories = """ CREATE TABLE IF NOT EXISTS musicDirectories (
@@ -316,7 +326,7 @@ class database():
         return result[0][0]
 
     def columnExistsInTable(self,table,column):
-        print('columnExistsInTable: '+table+"."+column)
+        #print('columnExistsInTable: '+table+"."+column)
         sqlExists = "PRAGMA table_info('"+table+"');"
         columns = []
         columns = self.getSelect(sqlExists)

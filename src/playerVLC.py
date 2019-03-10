@@ -69,6 +69,8 @@ class playerVLC:
         self.currentRadioTitle = ""
         self.currentRadioName = ""
         self.adblock = False
+        self.adKilled = False
+        self.loadingRadio = False
 
         self.nowPlaying = ""
 
@@ -123,6 +125,9 @@ class playerVLC:
 
     def isPlaying(self):
         return self.mediaPlayer.is_playing()
+
+    def isPlayingRadio(self):
+        return (self.adKilled == False and self.isPlaying() and self.loadingRadio == False)
 
 
     def getCurrentIndexPlaylist(self):
@@ -311,6 +316,7 @@ class playerVLC:
 
     def playRadio(self,radio):
         self.radioMode = True
+        self.loadingRadio = True
         self.adblock = radio.adblock
         self.dropMediaList()
         media = self.instance.media_new(radio.stream)
@@ -341,7 +347,7 @@ class playerVLC:
 
             if state != "State.Opening":  print("VLC state="+state)
 
-            if startSince > 5:   
+            if startSince > 5:
                 #Find out if stream is working.
                 if state == "vlc.State.Error" or state == "State.Error":
                     print("Stream is dead. Current state = {}".format(state))
@@ -355,16 +361,20 @@ class playerVLC:
                 else:
                     print("VLC state="+state)
 
+        self.loadingRadio = False
         mrl = self.getCurrentMrlPlaylist()
         print(radio.name+" mrl="+mrl)
         self.tracksDatas.append((mrl,radio.stream,trk))
+
+
 
     def getState(self):
         return str(self.mediaPlayer.get_state())
 
     def getNowPlaying(self):
+        if not self.radioMode: return self.currentRadioTitle
         m = self.mediaPlayer.get_media()
-        if m is not None and self.radioMode:
+        if m is not None:
             nowPlaying = m.get_meta(12)
             if nowPlaying is not None:
                 if self.nowPlaying != nowPlaying:
