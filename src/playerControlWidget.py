@@ -16,7 +16,6 @@ import threading
 from vlc import EventType as vlcEventType
 from svgIcon import *
 
-#orange = QtGui.QColor(216, 119, 0)
 white = QtGui.QColor(255, 255, 255)
 
 _translate = QCoreApplication.translate
@@ -151,12 +150,11 @@ class playerControlWidget(QWidget):
     def onCurrentRadioChanged(self,event):
         print("PlayerControlWidget CurrentRadio changed!")
 
-        sTitle = self.getRadioLabeLText()
+        self.setRadioLabeLText()
 
         self.labelTitle.setText(sTitle)
 
         self.currentCoverPath = ""
-        #self.showWaitingOverlay()
         self.refreshWaitOverlay()
 
 
@@ -175,12 +173,11 @@ class playerControlWidget(QWidget):
         self.hMainLayout = QHBoxLayout()
         self.hMainLayout.setContentsMargins(0, 4, 0, 0)
         self.hMainLayout.setSpacing(0)
-        #self.setLayout(self.hMainLayout)
+
 
         self.vLayout = QVBoxLayout()
         self.vLayout.setContentsMargins(4, 0, 0, 0)
         self.vLayout.setSpacing(4)
-        #self.setLayout(self.vLayout)
         
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(100)
@@ -400,21 +397,10 @@ class playerControlWidget(QWidget):
 
         self.setTitleLabel()
 
-        #if not self.player.radioMode:
         self.showCover(trk)
 
 
-
-    '''
-    def showCoverInThread(self,trk):
-        self.isWaitingCover = True
-        processThread = threading.Thread(target=self.showCover, args=[trk])
-        processThread.start()
-    '''
-
     def showCover(self,trk):
-        #self.refreshWaitOverlay()
-        
 
         if self.player.radioMode:
 
@@ -437,31 +423,11 @@ class playerControlWidget(QWidget):
                 self.isWaitingCover = True
                 self.picFromUrlThread.start()
 
-            '''
-            coverUrl = self.player.getLiveCoverUrl()
-            if coverUrl != "":
-                self.picFromUrlThread.url = coverUrl
-                self.picFromUrlThread.start()
-                self.isWaitingCover = True
-            else:
-                rad = self.player.getCurrentRadio()
-                if rad is not None:
-                    radPicUrl = rad.getRadioPic()
-                    if radPicUrl != "":
-                        self.picFromUrlThread.url = radPicUrl
-                        self.picFromUrlThread.start()
-                        self.isWaitingCover = True
-                    else:
-                        self.isWaitingCover = False
-                else:
-                    self.isWaitingCover = False
-            '''
+   
 
         else:
             self.isWaitingCover = False
-            #self.picFromUrlThread.resetLastURL()
             if trk is not None and trk.parentAlbum is not None:
-                #print("showCover trk.parentAlbum.cover="+trk.parentAlbum.cover)
                 if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
                     self.coverPixmap = self.defaultPixmap
                 else:

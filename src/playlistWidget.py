@@ -71,6 +71,8 @@ class playerControlsWidget(QWidget):
 class playlistWidget(QDialog):
     
     picFromUrlThread = None
+    currentCoverPath = ""
+    picBufferManager = None
     mediaList = None
     player = None
     nextPosition = 0
@@ -193,18 +195,7 @@ class playlistWidget(QDialog):
 
     def onPicDownloaded(self,path):
         
-        self.coverPixmap = QtGui.QPixmap(path)
-        if not self.coverPixmap.isNull():
-            print("playlistWidget onPicDownloaded="+path)
-            print("Pic size="+str(self.cover.size()))
-            scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                                    Qt.KeepAspectRatio,
-                                                    Qt.SmoothTransformation)
-            self.cover.setPixmap(scaledCover)
-        else:
-            self.cover.setPixmap(QtGui.QPixmap())
-        self.cover.show()
-
+        self.showCoverPixmap(path)
 
 
     
@@ -459,7 +450,9 @@ class playlistWidget(QDialog):
                     if nowPlaying == "NO_META": nowPlaying = trk.radioName
                     item.setText(nowPlaying)
 
-                    
+                self.showCover(trk)
+
+                '''
                 coverUrl = self.player.getLiveCoverUrl()
                 if coverUrl != "":
                     if self.picFromUrlThread.url != coverUrl:
@@ -480,6 +473,7 @@ class playlistWidget(QDialog):
                     else:
                         if self.picFromUrlThread.lastTempFile != "" :
                             self.onPicDownloaded(self.picFromUrlThread.lastTempFile)
+                '''
                 
                 item1 = self.tableWidgetTracks.item(i,1)
                 item1.setText(self.player.currentRadioName)
@@ -523,6 +517,48 @@ class playlistWidget(QDialog):
         self.update()
 
         self.initColumnHeaders()
+
+
+
+    def showCover(self,trk):
+
+        if self.player.radioMode:
+            coverUrl = self.player.getLiveCoverUrl()
+            if coverUrl == "":
+                rad = self.player.getCurrentRadio()
+                if rad is not None:
+                    coverUrl = rad.getRadioPic()
+
+            if self.currentCoverPath == coverUrl:
+                return
+
+            if coverUrl != "":
+                self.currentCoverPath = coverUrl
+                self.picFromUrlThread.url = coverUrl
+                self.picFromUrlThread.start()
+
+        else:
+            #self.picFromUrlThread.resetLastURL()
+            if trk is not None and trk.parentAlbum is not None:
+                print("fullscreenWidget trk.parentAlbum.cover="+trk.parentAlbum.cover)
+                if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
+                    self.coverPixmap = self.defaultPixmap
+                else:
+                    coverPath = trk.parentAlbum.getCoverPath()
+                    
+                    self.showCoverPixmap(coverPath)
+                    
+
+
+
+    def showCoverPixmap(self,path):
+
+        self.coverPixmap = self.picBufferManager.getPic(path,"fullscreenWidget")
+        scaledCover = self.coverPixmap.scaled(self.cover.size(),
+                                Qt.KeepAspectRatio,
+                                Qt.SmoothTransformation)
+        self.cover.setPixmap(scaledCover)
+        self.cover.show()
 
 
 

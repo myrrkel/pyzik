@@ -677,6 +677,7 @@ class MainWindowLoader(QMainWindow):
         if self.playList is None:
             isNew = True
             self.playList = playlistWidget(self.player)
+            self.playList.picBufferManager = self.picBufferManager
             self.playList.fullScreenWidget = self.fullScreenWidget
             self.playList.connectPicDownloader(self.picFromUrlThread)
             self.playList.trackChanged.connect(self.player.setPlaylistTrack)
