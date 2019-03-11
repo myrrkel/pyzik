@@ -197,6 +197,7 @@ class albumWidget(QtWidgets.QDialog):
         self.album.title = self.albumInfoControls.titleEdit.text()
         self.album.year = self.albumInfoControls.yearSpin.value()
         self.album.update()
+        self.close()
 
 
 

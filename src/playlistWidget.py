@@ -412,6 +412,7 @@ class playlistWidget(QDialog):
 
 
     def setCurrentTrack(self,title=""):
+        if self.isVisible() == False: return
 
         if title == "": 
             trk = self.player.getCurrentTrackPlaylist()
@@ -421,8 +422,6 @@ class playlistWidget(QDialog):
             self.setWindowTitle(title)
         else:
             self.setWindowTitle(_translate("playlist", "Playlist"))
-
-        #if self.player is None : return 
 
         index = self.player.getCurrentIndexPlaylist()
         #print("setCurrentTrack:",index)
@@ -450,48 +449,15 @@ class playlistWidget(QDialog):
                     if nowPlaying == "NO_META": nowPlaying = trk.radioName
                     item.setText(nowPlaying)
 
-                self.showCover(trk)
-
-                '''
-                coverUrl = self.player.getLiveCoverUrl()
-                if coverUrl != "":
-                    if self.picFromUrlThread.url != coverUrl:
-                        self.picFromUrlThread.url = coverUrl
-                        self.picFromUrlThread.start()
-                    else:
-                        if self.picFromUrlThread.lastTempFile != "" :
-                            self.onPicDownloaded(self.picFromUrlThread.lastTempFile)
-                else:
-                    rad = self.player.getCurrentRadio()
-                    if rad is not None:
-                        radPicUrl = rad.getRadioPic()
-                        #self.picFromUrlThread.url = radPicUrl
-                        #self.picFromUrlThread.start()
-                    if self.picFromUrlThread.url != radPicUrl:
-                        self.picFromUrlThread.url = radPicUrl
-                        self.picFromUrlThread.start()
-                    else:
-                        if self.picFromUrlThread.lastTempFile != "" :
-                            self.onPicDownloaded(self.picFromUrlThread.lastTempFile)
-                '''
-                
                 item1 = self.tableWidgetTracks.item(i,1)
                 item1.setText(self.player.currentRadioName)
                 item2 = self.tableWidgetTracks.item(i,2)
                 item2.setText(self.player.currentRadioName)
 
-            if trk is not None and trk.parentAlbum is not None and trk.parentAlbum.cover != "":
-                coverPath = trk.parentAlbum.getCoverPath()
-                self.coverPixmap = QtGui.QPixmap(coverPath)
-                scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                                Qt.KeepAspectRatio,
-                                                Qt.SmoothTransformation)
-                self.cover.setPixmap(scaledCover)
-                self.cover.show()
-
 
             f = item.font()
             if i == index:
+                if trk is not None: self.showCover(trk)
                 f.setBold(True)
                 f.setItalic(True)
                 color = orange
@@ -510,7 +476,7 @@ class playlistWidget(QDialog):
 
             if i == index: self.tableWidgetTracks.setCurrentItem(item)
 
-        #self.tableWidgetTracks.scrollTo(self.tableWidgetTracks.currentIndex(), QAbstractItemView.PositionAtCenter)
+
         self.tableWidgetTracks.scrollTo(self.tableWidgetTracks.currentIndex())
 
             

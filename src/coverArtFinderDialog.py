@@ -146,9 +146,11 @@ class coverArtFinderDialog(QDialog):
         else:
             keyword = self.keyword
 
-            self.coverFinderThread.coverFinder = self.coverFinder
-            self.coverFinderThread.keyword = keyword
-            self.coverFinderThread.start()
+        print("CoverArtFinder search="+keyword)
+
+        self.coverFinderThread.coverFinder = self.coverFinder
+        self.coverFinderThread.keyword = keyword
+        self.coverFinderThread.start()
 
 
     def saveCover(self):

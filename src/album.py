@@ -329,19 +329,7 @@ class album:
     def getCoverPath(self):
         return os.path.join(self.getAlbumDir(),self.cover)
 
-    '''
-    def getCoverPixmap(self):
-        print("ALBUM - getCoverPixmap")
 
-        if self.coverPixmap is not None: return self.coverPixmap
-        path = self.getCoverPath()
-        if path:
-            self.coverPixmap = QPixmap(path)
-        else:
-            self.coverPixmap = QPixmap()
-
-        return self.coverPixmap
-    '''
 
     def checkDir(self):
         if self.musicDirectory:

@@ -40,20 +40,35 @@ class picBufferManager:
     items = []
 
 
-    def getPic(self,url,user):
+    def getPic(self,path,user):
         
         
-        if url in self.items:
-            i = self.items.index(url)
-            pix = self.items[i].pix
-            self.items[i].addUser(user)
-        else:
-            item = picBufferItem(url,user)
+        item = self.findItem(path)
+        if item is not None:
             pix = item.pix
+            item.addUser(user)
+        else:
+            item = picBufferItem(path,user)
+            pix = item.pix
+            item.addUser(user)
             self.items.append(item)
-
+            self.checkBufferSize()
 
         return pix
+
+    def findItem(self,path):
+        items = []
+        items += [el for el in self.items if el.path==path]
+        if len(items) > 0:
+            return items[0]
+        else:
+            return None
+
+
+    def checkBufferSize(self):
+        ''' Remove oldest pixmap from the buffer if 5 are in ram '''
+        if len(self.items) >= 5:
+            self.items.remove(self.items[0])
 
 
 if __name__ == "__main__":

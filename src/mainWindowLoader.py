@@ -80,6 +80,7 @@ class MainWindowLoader(QMainWindow):
         self.fullScreenWidget.picBufferManager = self.picBufferManager
         self.fullScreenCoverWidget = fullScreenCoverWidget()
         self.fullScreenCoverWidget.defaultPixmap = self.defaultPixmap
+        self.fullScreenCoverWidget.picBufferManager = self.picBufferManager
         self.currentArtist = artist("",0)
         self.currentAlbum = album("")
 

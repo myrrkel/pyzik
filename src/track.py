@@ -13,6 +13,7 @@ from mutagen import File
 from urllib.parse import unquote
 from PyQt5.QtCore import pyqtSignal
 
+
 class track:
     """
     Track's class, each track is music a file such mp3, ogg, wma (sic), mpc, flac...
@@ -25,7 +26,9 @@ class track:
         self.artist = ""
         self.year = 0
         self.trackNumber = 0
-        self.discNumber = ""
+        self.trackCount = 0
+        self.discNumber = 0
+        self.discCount = 0
         self.position = 0
         self.duration = 0 # in ms
         self.bitrate = 0
@@ -45,7 +48,9 @@ class track:
 
 
     def printInfos(self):
-        print("TrackTitle: "+self.title+" No="+str(self.trackNumber)+" DiscNo="+str(self.discNumber))
+        txt = "TrackTitle="+self.title+" No="+str(self.trackNumber)+" DiscNo="+str(self.discNumber)
+        txt += " TrackCount="+str(self.trackCount)+" DiscCount="+str(self.discCount)
+        print(txt)
 
     def getName(self):
         return self.fileName+self.extension
@@ -132,6 +137,25 @@ class track:
         self.setPath(path)
 
 
+    def getValidTrackNumberFromTAG(self,sTrackNo):
+        if sTrackNo in ["","None"]: return
+        if "/" in sTrackNo:
+            pos = sTrackNo.index("/")
+            self.trackNumber = int(sTrackNo[:pos])
+            self.trackCount = int(sTrackNo[pos+1:])
+        else:
+            self.trackNumber = int(sTrackNo)
+
+    def getValidDiscNumberFromTAG(self,sDiscNo):
+        if sDiscNo in ["","None"]: return
+        if "/" in sDiscNo:
+            pos = sDiscNo.index("/")
+            self.discNumber = int(sDiscNo[:pos])
+            self.discCount = int(sDiscNo[pos+1:])
+        else:
+            self.discNumber = int(sDiscNo)
+            
+
     def getMutagenTags(self,dir=""):
         """Extract ID3 metadatas, bitrate and duration with Mutagen"""
         try:
@@ -149,11 +173,9 @@ class track:
             
             if audio.tags:
                 self.title = str(audio.tags.get("TIT2"))
-                self.trackNumber = int(str(audio.tags.get("TRCK")))
-                self.discNumber = str(audio.tags.get("TPOS"))
-                self.printInfos()
+                self.getValidTrackNumberFromTAG(str(audio.tags.get("TRCK")))
+                self.getValidDiscNumberFromTAG(str(audio.tags.get("TPOS")))
 
-            #if self.title in("","None"): self.title = self.fileName
 
         except ID3NoHeaderError:
             print("No tags")
@@ -162,9 +184,11 @@ class track:
             print("MutagenError:"+trackPath)
 
         except:
-            print("exception mutagen: ",sys.exc_info()[0])
+            print("exception mutagen: ",sys.exc_info()[1])
+            
 
         if self.title in("","None"): self.title = self.fileName
+        self.printInfos()
 
 
     def getMutagenFastTags(self,dir=""):
@@ -195,34 +219,6 @@ class track:
         if self.title in("","None"): self.title = self.fileName
 
 
-    '''
-    def getCover(self):
-
-        if self.isRadio():
-            if self.radio:
-                url = self.radio.getCoverUrl()
-         
-
-        if self.parentAlbum is not None and self.parentAlbum.cover != "":
-            coverPath = trk.parentAlbum.getCoverPath()
-            self.coverPixmap = QtGui.QPixmap(coverPath)
-            scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                            Qt.KeepAspectRatio,
-                                            Qt.SmoothTransformation)
-            self.cover.setPixmap(scaledCover)
-            self.cover.show()
-    '''
-
-    '''
-    def getCoverPixmap(self):
-        if self.isRadio():
-            if self.radio:
-                return self.radio.getCoverPixmap()
-        elif self.parentAlbum is not None:
-            return self.parentAlbum.getCoverPixmap()
-
-        return None
-    '''
 
     def onCoverDownloaded(self,cover):
         self.setCover(cover)

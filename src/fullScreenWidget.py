@@ -140,6 +140,8 @@ class fullScreenWidget(QDialog):
 
         if self.player is None : return 
 
+        if self.isVisible() == False: return
+
         self.currentTrack = self.player.getCurrentTrackPlaylist()
     
 
@@ -180,7 +182,9 @@ class fullScreenWidget(QDialog):
                     self.coverPixmap = self.defaultPixmap
                 else:
                     coverPath = trk.parentAlbum.getCoverPath()
-                    
+                    if self.currentCoverPath == coverPath:
+                        return
+                    self.currentCoverPath = coverPath
                     self.showCoverPixmap(coverPath)
                     
 
@@ -227,6 +231,7 @@ class fullScreenWidget(QDialog):
         sTitle = sTitle.format(Artist=artName,Album=sAlbum, colorName=colorName)
         
         self.labelTitle.setText(sTitle)
+
 
 if __name__ == "__main__":
     import sys
