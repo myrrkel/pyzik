@@ -94,6 +94,7 @@ class thumbnailViewerWidget(QWidget):
         self.thumbWidget.setViewMode(QListWidget.IconMode)
         self.thumbWidget.setResizeMode(QListWidget.Adjust)
         self.thumbWidget.setIconSize(QSize(200,200))
+        self.thumbWidget.setMovement(QListWidget.Static)
 
         self.vLayout.addWidget(self.thumbWidget)
 

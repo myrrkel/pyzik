@@ -518,8 +518,11 @@ class playlistWidget(QDialog):
 
 
     def showCoverPixmap(self,path):
+        if self.picBufferManager is None:
+            self.coverPixmap = QtGui.QPixmap(path)
+        else:
+            self.coverPixmap = self.picBufferManager.getPic(path,"fullscreenWidget")
 
-        self.coverPixmap = self.picBufferManager.getPic(path,"fullscreenWidget")
         scaledCover = self.coverPixmap.scaled(self.cover.size(),
                                 Qt.KeepAspectRatio,
                                 Qt.SmoothTransformation)
@@ -568,7 +571,6 @@ if __name__ == "__main__":
     from playerVLC import *
 
     player = playerVLC()
-
 
     app = QApplication(sys.argv)
 
