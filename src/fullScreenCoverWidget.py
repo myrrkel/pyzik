@@ -88,7 +88,11 @@ class fullScreenCoverWidget(QDialog):
 
 
     def setPixmapFromUri(self,path):
-        self.coverPixmap = self.picBufferManager.getPic(path,"fullscreenCoverWidget")
+        if self.picBufferManager is None:
+            self.coverPixmap = QPixmap(path)
+        else:
+            self.coverPixmap = self.picBufferManager.getPic(path,"fullscreenCoverWidget")
+
         self.showCover()
         
 

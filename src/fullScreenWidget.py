@@ -190,8 +190,11 @@ class fullScreenWidget(QDialog):
 
 
     def showCoverPixmap(self,path):
+        if self.picBufferManager is None:
+            self.coverPixmap = QPixmap(path)
+        else:
+            self.coverPixmap = self.picBufferManager.getPic(path,"fullscreenWidget")
 
-        self.coverPixmap = self.picBufferManager.getPic(path,"fullscreenWidget")
         scaledCover = self.coverPixmap.scaled(self.cover.size(),
                                 Qt.KeepAspectRatio,
                                 Qt.SmoothTransformation)
