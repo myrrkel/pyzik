@@ -339,20 +339,18 @@ class MainWindowLoader(QMainWindow):
 
     def onPlayFuzzyGroovy(self):   
         fg = self.musicBase.radioMan.getFuzzyGroovy()
-        self.playerControl.setTitleLabel(fg.name)
-        self.playerControl.showWaitingOverlay()   
-        self.player.playRadioInThread(fg)
-        self.currentRadioChanged.emit(1)
+        self.playRadio(fg)
 
 
     def onPlayFavRadio(self,radioID):
         rad = self.musicBase.radioMan.getFavRadio(radioID)
-        self.playerControl.setTitleLabel(rad.name)
-        self.playerControl.showWaitingOverlay()
-        #self.player.playRadio(rad)
-        self.player.playRadioInThread(rad)
-        self.currentRadioChanged.emit(1)
+        self.playRadio(rad)
 
+    def playRadio(self,radio):
+        self.playerControl.setTitleLabel(radio.name)
+        self.playerControl.showWaitingOverlay()
+        self.player.playRadioInThread(radio)
+        self.currentRadioChanged.emit(1)
         
     def onMenuExplore(self):
         self.exploreAlbumsDirectoriesThread.musicBase = self.musicBase 

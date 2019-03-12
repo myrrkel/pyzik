@@ -99,6 +99,8 @@ class playerControlWidget(QWidget):
     picFromUrlThread = None
     nextPosition = 0
     isTimeSliderDown = False
+    currentTrack = None
+    currentCoverPath = ""
     trackChanged = pyqtSignal(int, name='trackChanged')
     coverChanged = pyqtSignal(int, name='coverChanged')
 
@@ -107,7 +109,6 @@ class playerControlWidget(QWidget):
         self.parent = parent
         self.picBufferManager = parent.picBufferManager
 
-        self.currentCoverPath = ""
         
         self.setWindowFlags(Qt.Window)
         self.player = player
@@ -151,9 +152,6 @@ class playerControlWidget(QWidget):
         print("PlayerControlWidget CurrentRadio changed!")
 
         self.setRadioLabeLText()
-
-        self.labelTitle.setText(sTitle)
-
         self.currentCoverPath = ""
         self.refreshWaitOverlay()
 
@@ -458,6 +456,9 @@ class playerControlWidget(QWidget):
 
 
     def setTrackLabelText(self):
+
+        if self.currentTrack is None: return
+
         artName = self.currentTrack.getArtistName()
         albTitle = self.currentTrack.getAlbumTitle()
         trkTitle = self.currentTrack.getTrackTitle()
@@ -480,6 +481,7 @@ class playerControlWidget(QWidget):
     def setRadioLabeLText(self,title=""):
 
         if title == "":
+            if self.currentTrack is None: return
             radioName = self.currentTrack.radio.name
             trkTitle = self.currentTrack.radio.liveTrackTitle
             if trkTitle == "":
