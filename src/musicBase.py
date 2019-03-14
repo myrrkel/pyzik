@@ -85,7 +85,37 @@ class musicBase:
 
 
 
+    def generateRandomAlbumList(self,nb_alb,styleID=-2):
+        randomAlbList = []
+
+        for i in range(nb_alb):
+            try_count = 0
+            alb = self.albumCol.getRandomAlbum(styleID)
+            while alb in randomAlbList and try_count < 3:
+                alb = self.albumCol.getRandomAlbum(styleID)
+                try_count += 1
+
+            if alb not in randomAlbList: randomAlbList.append(alb)
+
+        return randomAlbList
 
 
 
-        
+
+
+if __name__ == "__main__":
+
+    import sys
+    from PyQt5.QtWidgets import QApplication
+    app = QApplication(sys.argv)
+
+
+    mb = musicBase()
+    mb.loadMusicBase()
+    randAlbumList = mb.generateRandomAlbumList(20)
+
+    for alb in randAlbumList:
+        print(alb.title)
+
+
+    sys.exit(app.exec_())
