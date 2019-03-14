@@ -113,6 +113,7 @@ class MainWindowLoader(QMainWindow):
         self.loadSettings()
 
         self.initRadioFavMenu()
+        self.initExtraMenu()
 
         #Connect UI triggers
         self.ui.listViewArtists.selectionModel().currentChanged.connect(self.onArtistChange)
@@ -253,6 +254,24 @@ class MainWindowLoader(QMainWindow):
             #self.showAlbum(alb)
 
 
+    def playRandomPlaylist(self):
+        print("playRandomPlaylist")
+        index = self.player.mediaList.count()
+        styleID = self.ui.comboBoxStyle.currentData()
+        albs = self.musicBase.generateRandomAlbumList(10,styleID)
+        i=0
+        for alb in albs:
+            print("playRandomPlaylist="+alb.title)
+            alb.getImages()
+            alb.getCover()
+            alb.getTracks()
+            self.addAlbum(alb)
+
+        
+        self.player.mediaListPlayer.play_item_at_index(index)
+
+
+
 
     def setVolume(self, volume):
         self.player.setVolume(volume)
@@ -307,6 +326,16 @@ class MainWindowLoader(QMainWindow):
         hHeader.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         hHeader.hideSection(2)
 
+    def initExtraMenu(self):
+
+        actionRandomPlaylist = QAction(self.ui.menuAlbums)
+        actionRandomPlaylist.setText(_translate("menu","Random playlist"))
+        actionRandomPlaylist.triggered.connect(self.playRandomPlaylist)
+        self.ui.menuAlbums.addAction(actionRandomPlaylist)
+
+
+
+
     def initRadioFavMenu(self):
 
         if not hasattr(self.ui,"menuFavRadios"):
@@ -351,6 +380,7 @@ class MainWindowLoader(QMainWindow):
         self.playerControl.showWaitingOverlay()
         self.player.playRadioInThread(radio)
         self.currentRadioChanged.emit(1)
+
         
     def onMenuExplore(self):
         self.exploreAlbumsDirectoriesThread.musicBase = self.musicBase 

@@ -12,4 +12,11 @@
         <translation>Cover finder</translation>
     </message>
 </context>
+<context>
+    <name>menu</name>
+    <message>
+        <source>Random playlist</source>
+        <translation>Random playlist</translation>
+    </message>
+</context>
 </TS>

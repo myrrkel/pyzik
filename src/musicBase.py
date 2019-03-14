@@ -85,7 +85,7 @@ class musicBase:
 
 
 
-    def generateRandomAlbumList(self,nb_alb,styleID=-2):
+    def generateRandomAlbumList(self,nb_alb=20,styleID=-2):
         randomAlbList = []
 
         for i in range(nb_alb):
