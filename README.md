@@ -51,19 +51,20 @@ start the project:
     ( install NSIS from https://nsis.sourceforge.io )
 
 # News
++ Grab covers from Google Image
++ Full screen mode with current track and cover art
++ Radio finder (from RadioBrower, Tunein, Dar and Dirble)
 + Played tracks and radio history
 + Music style filter
 + Playing radio without ads
 + Reading tags
 + Language selector
-+ Displaying covers art
 
 
 # Coming soon:
-+ Full screen mode with current track and cover art.
-+ Radio manager
++ Generating random M3U playlist
 + Correcting folder's name acording ID3 tags
-+ Collecting cover art and track list from web
++ Collecting track title and lyrics from web
 
 
 
