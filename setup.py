@@ -16,8 +16,11 @@ path = sys.path.append("src")
 includes = []
 #includes = ["PyQt5","darkStyle"]
 includefiles = ["src/img","src/darkStyle","src/translation"]
-#includefiles = includefiles+ glob.glob("src/translation/*.qm")
-#excludes = ["setuptools","cx_Freeze"]
+includefiles = includefiles+ glob.glob("src/translation/*.qm")
+excludes = ["setuptools","cx_Freeze",
+                        "PyQt5.QtWebEngine",
+                        "PyQt5.QtWebEngineCore",
+                        "PyQt5.QtWebEngineWidgets",]
 packages = setuptools.find_packages()
 packages.append("idna")
 packages.append("sqlite3")
@@ -29,7 +32,7 @@ for package in packages:
 
 exe1 = Executable (
         script="src/pyzik.py",
-        base=None,        
+        base="Win32GUI",        
         )
 
 #executables = [Executable("src/pyzik.py")]
@@ -39,7 +42,7 @@ executables = [exe1]
 # call setup function
 setup(
     name = "pyzik",
-    version = "0.2",
+    version = "0.3",
     url = "https://github.com/myrrkel/pyzik",
     author = "myrrkel",
     description = "Music manager for big album collections and webradios",
