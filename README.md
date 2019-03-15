@@ -34,19 +34,27 @@ install requirements:
 
 start the project:
 
-    python3 ./pyzik/src/pyzik.py
+    python3 ./src/pyzik.py
 
 
-# To build on Linux or Windows: 
+# Install on Linux
+
+    wget https://github.com/myrrkel/pyzik/releases/download/v0.3-beta/pyzik-0.3.linux-86_64-standalone.tar.gz
+    tar -zxvf pyzik-0.3.linux-86_64-standalone.tar.gz
+
+
+# To build on Linux: 
 
     pyinstaller -y pyzik.spec
+    tar -zcvf dist/pyzik-0.3.linux-86_64-standalone.tar.gz dist/pyzik
 
-#To make an MSI Installer
+#To make an Windows MSI Installer
 
     python setup.py bdist_msi
 
-#To make an EXE Installer
+#To make an Windows EXE Installer
 
+    pyinstaller -y pyzik.spec
     "C:\Program Files (x86)\NSIS\makensisw.exe" pyzik.nsi
     ( install NSIS from https://nsis.sourceforge.io )
 
