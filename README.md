@@ -42,9 +42,11 @@ start the project:
     pyinstaller -y pyzik.spec
 
 #To make an MSI Installer
+
     python setup.py bdist_msi
 
 #To make an EXE Installer
+
     "C:\Program Files (x86)\NSIS\makensisw.exe" pyzik.nsi
     ( install NSIS from https://nsis.sourceforge.io )
 
