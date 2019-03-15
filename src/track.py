@@ -97,6 +97,8 @@ class track:
 
     def getTrackTitle(self):
         if self.radioName != "":
+            if self.title != "":
+                return self.title
             return self.radioName
         else:
             return self.title

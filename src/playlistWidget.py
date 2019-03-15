@@ -381,6 +381,9 @@ class playlistWidget(QDialog):
 
             i+=1
 
+    def showEvent(self,event):
+        self.showMediaList()
+
     def showMediaList(self):
         tracks = []
 
@@ -416,7 +419,11 @@ class playlistWidget(QDialog):
 
         if title == "": 
             trk = self.player.getCurrentTrackPlaylist()
-            if trk: title = trk.getTrackTitle()
+            if trk: 
+                if trk.isRadio():
+                    title = self.player.getNowPlaying()
+                else:
+                    title = trk.getTrackTitle()
             
         if title != "" :
             self.setWindowTitle(title)
@@ -506,7 +513,7 @@ class playlistWidget(QDialog):
         else:
             #self.picFromUrlThread.resetLastURL()
             if trk is not None and trk.parentAlbum is not None:
-                print("fullscreenWidget trk.parentAlbum.cover="+trk.parentAlbum.cover)
+                print("playlistWidget trk.parentAlbum.cover="+trk.parentAlbum.cover)
                 if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
                     self.coverPixmap = self.defaultPixmap
                 else:
@@ -521,7 +528,7 @@ class playlistWidget(QDialog):
         if self.picBufferManager is None:
             self.coverPixmap = QtGui.QPixmap(path)
         else:
-            self.coverPixmap = self.picBufferManager.getPic(path,"fullscreenWidget")
+            self.coverPixmap = self.picBufferManager.getPic(path,"playlistWidget")
 
         scaledCover = self.coverPixmap.scaled(self.cover.size(),
                                 Qt.KeepAspectRatio,
