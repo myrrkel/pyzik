@@ -46,26 +46,16 @@ start the project:
 # To build the project: 
 
 For Linux:
-<<<<<<< HEAD
 
     pyinstaller -y pyzik.spec
     tar -zcvf dist/pyzik-0.3.linux-86_64-standalone.tar.gz dist/pyzik
 
-To make an Windows MSI Installer:
+
+To make a Windows MSI Installer:
 
     python setup.py bdist_msi
 
-To make an Windows EXE Installer:
-=======
-    pyinstaller -y pyzik.spec
-    tar -zcvf dist/pyzik-0.3.linux-86_64-standalone.tar.gz dist/pyzik
-
-To make an Windows MSI Installer
-
-    python setup.py bdist_msi
-
-To make an Windows EXE Installer
->>>>>>> ebcdb1f769a8b007407402c893fdfe872eaefe1c
+To make a Windows EXE Installer:
 
     pyinstaller -y pyzik.spec
     "C:\Program Files (x86)\NSIS\makensisw.exe" pyzik.nsi
