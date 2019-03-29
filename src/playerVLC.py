@@ -40,6 +40,11 @@ def cleanTitle(title):
         s = s[:-2]
     return s.strip()
 
+def print(txt):
+    if True == False:
+        _print(txt)
+
+
 
 class playerVLC:
 
@@ -134,7 +139,6 @@ class playerVLC:
         m = self.mediaPlayer.get_media()
         index = self.mediaList.index_of_item(m)
         if index == -1:
-            print("count PlayList=",self.mediaList.count())
             if self.mediaList.count() > 0: 
                 index = self.findItemIndexInPlaylist(m.get_mrl())
 
@@ -330,7 +334,6 @@ class playerVLC:
         trk.radioName = radio.name
         trk.radioStream = radio.stream
         trk.radio = radio
-        print(radio.name+" isPlaying=",self.isPlaying())
 
         #Wait until playing start.
         startSince = 0
@@ -379,14 +382,17 @@ class playerVLC:
             if nowPlaying is not None:
                 if self.nowPlaying != nowPlaying:
                     self.nowPlaying = nowPlaying
-                    print(nowPlaying)
+                    print("PlayerVLC NowPlaying = "+nowPlaying)
                 return cleanTitle(nowPlaying)
             else:
                 if self.adblock:
+                    print("PlayerVLC NowPlaying = NO_META")
                     return "NO_META"
                 else:
+                    print("PlayerVLC NowPlaying = "+currentRadioTitle)
                     return self.currentRadioTitle
         else:
+            print("PlayerVLC NowPlaying = NO_STREAM_MEDIA")
             return "NO_STREAM_MEDIA"
 
 

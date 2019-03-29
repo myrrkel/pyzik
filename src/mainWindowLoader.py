@@ -575,7 +575,7 @@ class MainWindowLoader(QMainWindow):
 
     def onAlbumChange(self,item):
         if item.row() >= 0:
-            print("OnAlbumChange:",item.row())
+
             albumIDSel = self.ui.tableWidgetAlbums.item(item.row(),2).text()
             alb = self.musicBase.albumCol.getAlbum(albumIDSel)
             if(alb.albumID != 0):
