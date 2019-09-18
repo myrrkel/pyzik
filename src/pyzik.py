@@ -16,6 +16,8 @@ from mainWindowLoader import *
 def main():
     print("Pyzik starting...")
     app = QtWidgets.QApplication(sys.argv)
+    app.setApplicationName("Pyzik")
+
 
     print("Loading translations...")
     tr = translators(app)      
