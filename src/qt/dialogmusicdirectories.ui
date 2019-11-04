@@ -467,6 +467,11 @@
              <string>Song directory</string>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>Dirty directory</string>
+            </property>
+           </item>
           </widget>
          </item>
         </layout>

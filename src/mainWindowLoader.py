@@ -673,6 +673,7 @@ class MainWindowLoader(QMainWindow):
             i+=1
 
     def showAlbumCover(self,result):
+        print("showAlbumCover= "+str(result)+" - "+self.currentAlbum.cover)
         album = self.currentAlbum
         if album is None: return
         if album.cover != "":

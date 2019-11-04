@@ -175,6 +175,12 @@ class track:
             
             if audio.tags:
                 self.title = str(audio.tags.get("TIT2"))
+                self.artist = str(audio.tags.get('TPE1'))
+                self.album = str(audio.tags.get('TALB'))
+                y = audio.tags.get("TYER")
+                if y: self.year = int(y)
+                y = audio.tags.get("TDRC")
+                if y: self.year = int(str(y))
                 self.getValidTrackNumberFromTAG(str(audio.tags.get("TRCK")))
                 self.getValidDiscNumberFromTAG(str(audio.tags.get("TPOS")))
 
@@ -206,7 +212,10 @@ class track:
                 self.artist = str(audio.tags.get('TPE1'))
                 self.album = str(audio.tags.get('TALB'))
                 self.title = str(audio.tags.get("TIT2"))
-                self.year = str(audio.tags.get("TDRC"))
+                y = audio.tags.get("TYER")
+                if y: self.year = int(y)
+                y = audio.tags.get("TDRC")
+                if y: self.year = int(str(y))
                 self.trackNumber = str(audio.get("TRCK"))
 
         except ID3NoHeaderError:

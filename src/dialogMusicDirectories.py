@@ -195,6 +195,7 @@ class Ui_Dialog(object):
         self.comboDirType.addItem("")
         self.comboDirType.addItem("")
         self.comboDirType.addItem("")
+        self.comboDirType.addItem("")
         self.verticalLayout_2.addWidget(self.comboDirType)
         self.horizontalLayout_2.addWidget(self.wDirEdits)
         self.horizontalLayout.addWidget(self.wRight)
@@ -215,6 +216,7 @@ class Ui_Dialog(object):
         self.comboDirType.setItemText(0, _translate("Dialog", "Album directory"))
         self.comboDirType.setItemText(1, _translate("Dialog", "Artist/Album directory"))
         self.comboDirType.setItemText(2, _translate("Dialog", "Song directory"))
+        self.comboDirType.setItemText(3, _translate("Dialog", "Dirty directory"))
 
 
 if __name__ == "__main__":

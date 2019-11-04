@@ -174,6 +174,7 @@ class coverArtFinderDialog(QDialog):
         self.album.cutCoverFromPath(self.selectedFile)
         self.coverSaved = True
         self.signalCoverSaved.emit(1)
+        print("saveSelectedCover")
         self.close()
 
 

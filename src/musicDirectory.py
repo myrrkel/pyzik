@@ -56,12 +56,14 @@ class musicDirectory:
 
 
     def exploreDirectory(self,progressChanged=None):
+            self.exploreEvents = []
             if self.dirType in (0,None) : self.exploreAlbumsDirectory(progressChanged)
             elif self.dirType == 1 : self.exploreArtistsDirectory(progressChanged)
             elif self.dirType == 2 : print("Song directory not managed yet!")
+            elif self.dirType == 3 : self.exploreAlbumsDirectory(progressChanged,forceTAGCheck=True)
         
 
-    def exploreAlbumsDirectory(self,progressChanged=None):
+    def exploreAlbumsDirectory(self,progressChanged=None,forceTAGCheck=False):
         
         if self.getStatus() == -1: return
 
@@ -71,7 +73,13 @@ class musicDirectory:
             progressChanged.emit(iProgress)
             curAlb = album(dir,self)
 
-            if not curAlb.toVerify:
+            if not curAlb.toVerify or forceTAGCheck:
+
+                if forceTAGCheck:
+                    curAlb.getTagsFromFirstFile()
+                    if not (curAlb.artistName and curAlb.title):
+                        self.addExploreEvent(exploreEvent("ALBUM_TO_VERIFY_NO_TAG",curAlb.getAlbumDir()))
+
                 #Artist name and album title has been found
                 curArt = self.artistCol.getArtist(curAlb.artistName)
                 #GetArtist return a new artist if it doesn't exists in artistsCol
@@ -83,6 +91,7 @@ class musicDirectory:
                     albumList = curArt.findAlbums(curAlb.title)
                     if not albumList:
                         print("Add "+curAlb.title+" in "+curArt.name+" discography. ArtID=",curArt.artistID)
+                        self.addExploreEvent(exploreEvent("ALBUM_ADDED",curAlb.getAlbumDir()))
                         #curAlb.getAlbumSize()
                         #curAlb.getLength()
                         self.albumCol.addAlbum(curAlb)
@@ -189,6 +198,11 @@ class exploreEvent:
 
     def getText(self):
         if self.eventCode == "ALBUM_DUPLICATE":
-            return "Album in "+self.dirPath+" already exists for this artist"
+            return "Album in "+self.dirPath+" already exists for this artist."
         if self.eventCode == "ALBUM_TO_VERIFY":
             return "Album in "+self.dirPath+" must be verified"
+        if self.eventCode == "ALBUM_TO_VERIFY_NO_TAG":
+            return "Album in "+self.dirPath+" must be verified. No tag found."
+        if self.eventCode == "ALBUM_ADDED":
+            return "Album in "+self.dirPath+" added."
+        return ""

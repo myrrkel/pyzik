@@ -25,6 +25,13 @@ def getFolderSize(folder):
             total_size += getFolderSize(itempath)
     return total_size
 
+def unvalidAlbumName():
+    return ['Unknown album',
+    'Album inconnu',]
+
+def unvalidArtistName():
+    return ['Unknown artist',
+    'Artiste inconnu',]
 
 def convert_size(size_bytes):
    if size_bytes == 0:
@@ -228,12 +235,45 @@ class album:
         self.artistName.strip()
         self.title = self.formatTitle(self.title)
 
+    def getTagsFromFirstFile(self):
+        track = self.getTracks(firstFileOnly=True)
+        if track:
+            if track.artist and self.isValidArtistName(track.artist)  :
+                track.artist = self.artistName = track.artist
+            else:
+                return
+            if track.album and self.isValidAlbumName(track.album) : 
+                self.title = track.album
+            if track.year: self.year = track.year
+        print("getTagsFromFirstFile="+self.artistName+" - "+self.title+" - "+str(track.year))
 
-    def getTracks(self,subdir=""):
+    def isValidAlbumName(self,name):
+        name = name.lower()
+        if name:
+            if name not in [x.lower() for x in unvalidAlbumName()]:
+                if name != 'none':
+                    for invalid in unvalidAlbumName():
+                        if invalid in name:
+                            return False
+                    return True
+
+
+    def isValidArtistName(self,name):
+        name = name.lower()
+        if name:
+            if name not in [x.lower() for x in unvalidArtistName()]:
+                if name != 'none':
+                    for invalid in unvalidArtistName():
+                        if invalid in name:
+                            return False
+                    return True
+
+
+    def getTracks(self,subdir="",firstFileOnly=False):
         if subdir == "": self.tracks = []
         self.doStop = False
         if(not self.checkDir()): return False
-
+        res = False
         if(subdir==""): 
             self.tracks = []
             currentDir = self.getAlbumDir()
@@ -245,12 +285,12 @@ class album:
         files.sort()
         
         nTrack = track("","")
-    
+        
         for file in files:
             if self.doStop: break
             if os.path.isdir(os.path.join(currentDir,str(file))):
                 #file is a directory
-                self.getTracks(os.path.join(subdir,str(file)))
+                res = self.getTracks(os.path.join(subdir,str(file)),firstFileOnly=firstFileOnly)
             else:
 
                 for ext in musicFilesExtension:
@@ -262,11 +302,17 @@ class album:
                             filename, file_extension = os.path.splitext(sfile)
                             itrack = track(filename,file_extension,subdir)
                             itrack.path = currentDir
-
-                            itrack.getMutagenTags(self.getAlbumDir())
                             itrack.parentAlbum = self
-                            self.tracks.append(itrack)
+                            
+                            if firstFileOnly:
+                                itrack.getMutagenTags(self.getAlbumDir())
+                                self.tracks.append(itrack)
+                                return itrack
+                            else:
+                                itrack.getMutagenTags(self.getAlbumDir())
+                                self.tracks.append(itrack)
                             break
+        return res
 
 
     def getImages(self,subdir=""):
@@ -387,6 +433,7 @@ class album:
             os.replace(path,destFile)
         else:
             shutil.move(path,destFile)
+        self.cover = "cover.jpg"
 
      
 
