@@ -9,8 +9,10 @@ src/qt/*.h
 src/qt/*.pro.user
 src/.eric6project
 *.e4p
+*.tar.gz
 *.pyc
 build
 dist
 *.idea
-
+deb_dist
+debian
