@@ -245,7 +245,7 @@ class album:
             if track.album and self.isValidAlbumName(track.album) : 
                 self.title = track.album
             if track.year: self.year = track.year
-        print("getTagsFromFirstFile="+self.artistName+" - "+self.title+" - "+str(track.year))
+            print("getTagsFromFirstFile="+self.artistName+" - "+self.title+" - "+str(track.year))
 
     def isValidAlbumName(self,name):
         name = name.lower()
