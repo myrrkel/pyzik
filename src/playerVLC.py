@@ -472,7 +472,7 @@ class playerVLC:
 
         trk = self.getTrackAtIndex(index)
         self.radioMode = (trk.radioName != "")
-        print("radioMode=",self.radioMode)
+        print("radioMode="+str(self.radioMode))
 
         self.mediaListPlayer.play_item_at_index(index)
 

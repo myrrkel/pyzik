@@ -267,7 +267,7 @@ class MainWindowLoader(QMainWindow):
             alb.getTracks()
             self.addAlbum(alb)
 
-        
+        self.player.radioMode = False
         self.player.mediaListPlayer.play_item_at_index(index)
 
 
