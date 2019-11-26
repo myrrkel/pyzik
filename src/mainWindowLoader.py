@@ -397,6 +397,7 @@ class MainWindowLoader(QMainWindow):
         self.musicBase.db.createConnection()
         self.musicBase.db.dropAllTables()
         self.musicBase.emptyDatas()
+        self.musicBase.db.initDataBase()
         self.showArtists()
         self.initAlbumTableWidget()
         self.initAlbumView()
