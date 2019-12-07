@@ -147,8 +147,8 @@ class albumInfoControlsWidget(QtWidgets.QWidget):
 class albumWidget(QtWidgets.QDialog):
     
 
-    def __init__(self,album):
-        QtWidgets.QDialog.__init__(self)
+    def __init__(self, album, parent):
+        QtWidgets.QDialog.__init__(self, parent)
         self.album = album
         self.setWindowFlags(QtCore.Qt.Window)
      

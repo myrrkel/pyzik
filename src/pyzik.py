@@ -40,7 +40,7 @@ def main():
     player = playerVLC()
 
     print('Showing main window...')
-    window = MainWindowLoader(None,app,mb,player,tr)
+    window = MainWindowLoader(None, app, mb, player, tr)
     window.show()
 
     print("Go!")    

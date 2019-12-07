@@ -10,8 +10,8 @@ class progressWidget(QtWidgets.QDialog):
     progressClosed = pyqtSignal(int, name='progressClosed')
         
 
-    def __init__(self):
-        QtWidgets.QDialog.__init__(self)
+    def __init__(self, parent):
+        QtWidgets.QDialog.__init__(self, parent)
         #self.setAttribute()
         self.initUI()
 

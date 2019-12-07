@@ -48,8 +48,8 @@ class coverArtFinderDialog(QDialog):
     signalCoverSaved = pyqtSignal(int, name='coverSaved')
     picFromUrlThread = None
     
-    def __init__(self,album=None):
-        QDialog.__init__(self)
+    def __init__(self, album=None, parent=None):
+        QDialog.__init__(self, parent)
         self.items = []
         self.album = album
         self.keyword = ""
@@ -179,9 +179,11 @@ class coverArtFinderDialog(QDialog):
 
 
     def onCoverFinderResult(self,result):
-            self.items = self.coverFinder.items
-            self.showThumbnails()
-            self.overlay.hide()
+        if not self.items:
+            return
+        self.items = self.coverFinder.items
+        self.showThumbnails()
+        self.overlay.hide()
 
 
     def closeEvent(self,event):

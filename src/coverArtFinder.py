@@ -17,16 +17,15 @@ class CoverArtFinder:
 
 
     def search(self,keyword):
+        params = [(4,"large"), (8,"medium")]
 
-        items = self.searchWithParam(keyword,4,"large")
-
-        items = items + self.searchWithParam(keyword,8,"medium")
-
-        self.items = items
+        for param in params:
+            items = self.searchWithParam(keyword,param[0],param[1])
+            if items:
+                self.items |= items
 
 
     def searchWithParam(self,keyword,limit=4,size="medium"):
-
 
         response = gid.googleimagesdownload()   #class instantiation
 
@@ -44,24 +43,18 @@ class CoverArtFinder:
         arguments["thumbnail"]      = True
         arguments["aspect_ratio"]   = "square"
 
-        print(records[0])
-
-
-
-        #arguments = {"keywords":keyword,"no_download":True,"limit":4,"size":"large","print_urls":True,"thumbnail":True,"aspect_ratio":"square"}   #creating list of arguments
-        
-
         params = response.build_url_parameters(arguments)     #building URL with params
 
-        url = response.build_search_url(keyword,params,arguments['url'],arguments['similar_images'],arguments['specific_site'],arguments['safe_search'])      #building main search url
+        url = response.build_search_url(keyword, params, arguments['url'], arguments['similar_images'], arguments['specific_site'], arguments['safe_search'])      #building main search url
 
-        raw_html = response.download_page(url)  # download page
+        try:
+            raw_html = response.download_page(url)  # download page
+        except Exception as e:
+            print(e)
+            return False
 
-        items,errorCount,abs_path = response._get_all_items(raw_html,main_directory,dir_name,limit,arguments)    #get all image items and download images
-        
-  
 
-        #print(items)
+        items, errorCount, abs_path = response._get_all_items(raw_html, main_directory, dir_name, limit, arguments)    #get all image items and download images
 
         return items
 

@@ -79,9 +79,11 @@ class playlistWidget(QDialog):
     isTimeSliderDown = False
     trackChanged = pyqtSignal(int, name='trackChanged')
 
-    def __init__(self,player):
-        QDialog.__init__(self)
+    def __init__(self, player, parent=None):
+        QDialog.__init__(self, parent)
         self.setWindowFlags(Qt.Window)
+        if parent:
+            self.parent = parent
         self.player = player
         self.mediaList = self.player.mediaList
         self.fullScreenWidget = None
@@ -102,6 +104,8 @@ class playlistWidget(QDialog):
     def initUI(self):
 
         self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
+
+        #self.setWindowIcon(QtGui.QIcon(self.parent.defaultPixmap))
 
         self.vLayout = QVBoxLayout()
         self.vLayout.setContentsMargins(6, 6, 6, 6)

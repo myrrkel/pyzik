@@ -104,7 +104,7 @@ class playerControlWidget(QWidget):
     trackChanged = pyqtSignal(int, name='trackChanged')
     coverChanged = pyqtSignal(int, name='coverChanged')
 
-    def __init__(self,player,parent):
+    def __init__(self, player, parent):
         QDialog.__init__(self)
         self.parent = parent
         self.picBufferManager = parent.picBufferManager

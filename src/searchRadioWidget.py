@@ -82,8 +82,8 @@ class searchRadioWidget(QtWidgets.QDialog):
     
     radioAdded = pyqtSignal(int, name='radioAdded')
 
-    def __init__(self,musicBase,player):
-        QtWidgets.QDialog.__init__(self)
+    def __init__(self, musicBase, player, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
         self.setWindowFlags(QtCore.Qt.Window)
         
         self.radios = []
@@ -142,7 +142,7 @@ class searchRadioWidget(QtWidgets.QDialog):
         self.overlay.showOverlay()
         search = self.searchControls.searchEdit.text()
 
-        self.wProgress = progressWidget()
+        self.wProgress = progressWidget(self)
         self.searchRadioThread.searchProgress.connect(self.wProgress.setValue)
         self.searchRadioThread.searchCurrentMachine.connect(self.wProgress.setDirectoryText)
         self.searchRadioThread.searchCompleted.connect(self.onSearchComplete)

@@ -50,6 +50,7 @@ class MainWindowLoader(QMainWindow):
     currentRadioChanged = pyqtSignal(int, name='currentRadioChanged')
     showPlayerControlEmited = pyqtSignal(str, name='showPlayerControlEmited')
     isPlayingSignal = pyqtSignal(int, name='isPlayingSignal')
+    defaultPixmap = None
 
     def __init__(self, parent=None,app=None,musicbase=None,player=None,translator=None):
         QMainWindow.__init__(self, parent)
@@ -71,8 +72,8 @@ class MainWindowLoader(QMainWindow):
 
 
         self.coverPixmap = QtGui.QPixmap()
-        #self.defaultPixmap = QtGui.QPixmap("img/vinyl-record.svg")
-        self.defaultPixmap = getSvgWithColorParam("vinyl-record2.svg")
+        if not self.defaultPixmap:
+            self.defaultPixmap = getSvgWithColorParam("vinyl-record2.svg")
 
         self.fullScreenWidget = fullScreenWidget(self.player)
         self.fullScreenWidget.connectPicDownloader(self.picFromUrlThread)
@@ -227,7 +228,7 @@ class MainWindowLoader(QMainWindow):
     def onPlaySearchRadio(self):   
 
         if self.searchRadio is None:
-            self.searchRadio = searchRadioWidget(self.musicBase,self.player)
+            self.searchRadio = searchRadioWidget(self.musicBase, self.player, self)
             self.searchRadio.radioAdded.connect(self.onAddFavRadio)
             
         self.searchRadio.show()
@@ -361,7 +362,7 @@ class MainWindowLoader(QMainWindow):
     '''
     def onMenuMusicDirectories(self):
         self.musicBase.db = database()
-        dirDiag = DialogMusicDirectoriesLoader(self.musicBase)
+        dirDiag = DialogMusicDirectoriesLoader(self.musicBase, self)
         dirDiag.show()
         dirDiag.exec_()
 
@@ -384,7 +385,7 @@ class MainWindowLoader(QMainWindow):
         
     def onMenuExplore(self):
         self.exploreAlbumsDirectoriesThread.musicBase = self.musicBase 
-        self.wProgress = progressWidget()
+        self.wProgress = progressWidget(self)
         self.exploreAlbumsDirectoriesThread.progressChanged.connect(self.wProgress.setValue)
         self.exploreAlbumsDirectoriesThread.directoryChanged.connect(self.wProgress.setDirectoryText)
         self.exploreAlbumsDirectoriesThread.exploreCompleted.connect(self.wProgress.close)
@@ -423,7 +424,7 @@ class MainWindowLoader(QMainWindow):
             albumIDSel = self.ui.tableWidgetAlbums.item(selRows[0].row(),2).text()
             alb = self.musicBase.albumCol.getAlbum(albumIDSel)
             if(alb.albumID != 0):
-                self.editAlbumWidget = albumWidget(alb)
+                self.editAlbumWidget = albumWidget(alb, self)
                 self.editAlbumWidget.show()
             else:
                 print("No album to edit")
@@ -707,7 +708,7 @@ class MainWindowLoader(QMainWindow):
         isNew = False
         if self.playList is None:
             isNew = True
-            self.playList = playlistWidget(self.player)
+            self.playList = playlistWidget(self.player, self)
             self.playList.picBufferManager = self.picBufferManager
             self.playList.fullScreenWidget = self.fullScreenWidget
             self.playList.connectPicDownloader(self.picFromUrlThread)
@@ -722,7 +723,7 @@ class MainWindowLoader(QMainWindow):
 
     def showHistory(self):
         if self.histoWidget is None:
-            self.histoWidget = historyWidget(self.musicBase)
+            self.histoWidget = historyWidget(self.musicBase, self)
              
         self.histoWidget.show()
         self.histoWidget.activateWindow()
@@ -780,7 +781,7 @@ class MainWindowLoader(QMainWindow):
 
     def onSearchCoverAlbum(self):
 
-        self.coverFinder = coverArtFinderDialog(self.currentAlbum)
+        self.coverFinder = coverArtFinderDialog(self.currentAlbum, self)
         self.coverFinder.signalCoverSaved.connect(self.showAlbumCover)
         self.coverFinder.show()
         

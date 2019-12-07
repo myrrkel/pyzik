@@ -25,8 +25,8 @@ class historyControlsWidget(QtWidgets.QWidget):
 class historyWidget(QtWidgets.QDialog):
     
 
-    def __init__(self,musicBase):
-        QtWidgets.QDialog.__init__(self)
+    def __init__(self, musicBase, parent):
+        QtWidgets.QDialog.__init__(self, parent)
         self.setWindowFlags(QtCore.Qt.Window)
      
         self.history = historyManager(musicBase)

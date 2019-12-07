@@ -13,8 +13,8 @@ from musicGenres import *
 
 class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
 
-    def __init__(self,musicBase):
-        QtWidgets.QDialog.__init__(self)
+    def __init__(self, musicBase, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
         self.musicBase = musicBase
         self.currentDir = None
         self.ui = dialogMusicDirectories.Ui_Dialog()
