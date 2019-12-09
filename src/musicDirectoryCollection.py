@@ -42,7 +42,10 @@ class musicDirectoryCollection:
             dir.printInfos()
 
     def getExploreEvents(self):
-        return [md.exploreEvents for md in self.musicDirectories]
+        events = []
+        for md in self.musicDirectories:
+            events = events + md.exploreEvents
+        return events
 
 
 
