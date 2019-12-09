@@ -31,7 +31,8 @@ from coverArtFinderDialog import *
 from svgIcon import *
 from picFromUrlThread import *
 from picBufferManager import *
-
+import logging
+logger = logging.getLogger(__name__)
 #orange = QtGui.QColor(216, 119, 0)
 _translate = QCoreApplication.translate
 
@@ -218,7 +219,9 @@ class MainWindowLoader(QMainWindow):
 
 
     def onExploreCompleted(self,event):
-        print("onExploreCompleted")
+        logger.info("onExploreCompleted")
+        events = self.musicBase.musicDirectoryCol.getExploreEvents()
+        logger.info("EXPLORE EVENTS="+str(events))
         self.musicBase.db = database()
         #self.musicBase.loadMusicBase()
         self.showArtists()

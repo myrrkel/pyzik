@@ -38,7 +38,10 @@ class coverFinderSearchThread(QThread):
     keyword = ""
 
     def run(self):
-        self.coverFinder.search(self.keyword)
+        try:
+            self.coverFinder.search(self.keyword)
+        except:
+            self.quit()
         self.resultFound.emit(1)
         self.quit()  
 

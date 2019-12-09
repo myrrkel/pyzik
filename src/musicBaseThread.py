@@ -3,7 +3,8 @@ import sys
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
 from database import *
-
+import logging
+logger = logging.getLogger(__name__)
 
 import time
 
@@ -28,7 +29,7 @@ class exploreAlbumsDirectoriesThread(QThread):
         self.musicBase.musicDirectoryCol.db = db
        
         for mdir in self.musicBase.musicDirectoryCol.musicDirectories:
-            print("explore="+mdir.dirName)
+            logger.info("explore="+mdir.dirName)
             self.directoryChanged.emit(mdir.dirName)
             mdir.db = db
             mdir.artistCol = self.musicBase.artistCol
