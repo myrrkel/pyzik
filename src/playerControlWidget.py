@@ -136,7 +136,7 @@ class playerControlWidget(QWidget):
     def refreshWaitOverlay(self):
         if self.player.radioMode:
             if (self.isWaitingCover == False and self.player.isPlayingRadio() == True) :
-                print("PlayerControlWidget refresh show wait")
+                print("PlayerControlWidget refreshWaitOverlay hide")
                 self.hideWaitOverlay()
             else:
                 self.showWaitingOverlay()
@@ -400,7 +400,6 @@ class playerControlWidget(QWidget):
     def showCover(self,trk):
 
         if self.player.radioMode:
-            self.coverPixmap = QPixmap()
             coverUrl = self.player.getLiveCoverUrl()
             if coverUrl == "":
                 rad = self.player.getCurrentRadio()
@@ -415,6 +414,8 @@ class playerControlWidget(QWidget):
                 return
 
             if coverUrl != "":
+                self.coverPixmap = QPixmap()
+                self.cover.setPixmap(self.coverPixmap)
                 self.currentCoverPath = coverUrl
                 self.picFromUrlThread.url = coverUrl
                 self.isWaitingCover = True
@@ -426,10 +427,11 @@ class playerControlWidget(QWidget):
             self.isWaitingCover = False
             if trk is not None and trk.parentAlbum is not None:
                 if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
+                    self.currentCoverPath = ""
                     self.coverPixmap = self.defaultPixmap
                 else:
-                    coverPath = trk.parentAlbum.getCoverPath()
-                    self.coverPixmap = self.picBufferManager.getPic(coverPath,"playerControl")
+                    self.currentCoverPath = trk.parentAlbum.getCoverPath()
+                    self.coverPixmap = self.picBufferManager.getPic(self.currentCoverPath,"playerControl")
                     
                 self.showScaledCover()
 
