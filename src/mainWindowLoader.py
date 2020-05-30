@@ -62,7 +62,6 @@ class MainWindowLoader(QMainWindow):
         self.translator = translator
         self.musicBase = musicbase
         self.player = player
-        self.player.playlistChangedEvent = pyqtSignal(int, name='playlistChanged')
 
         self.picFromUrlThread = picFromUrlThread()
         self.picBufferManager = picBufferManager()
@@ -215,6 +214,7 @@ class MainWindowLoader(QMainWindow):
     def showEvent(self,event):
         #This function is called when the mainWindow is shown
         if self.firstShow == True:
+            self.player.playlistChangedEvent = self.playlistChanged
             self.ramdomAlbum()
             self.firstShow = False
 
