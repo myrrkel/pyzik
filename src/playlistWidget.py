@@ -6,6 +6,7 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QSize, QCoreApplication
 from PyQt5.QtWidgets import QApplication, QWidget, QDialog, QPushButton, QVBoxLayout, \
 QHeaderView, QHBoxLayout, QSlider, QSizePolicy, QFrame, QLabel, QShortcut
+from PyQt5.QtGui import QPixmap
 from track import *
 import requests
 from picFromUrlThread import *
@@ -78,6 +79,7 @@ class playlistWidget(QDialog):
     nextPosition = 0
     isTimeSliderDown = False
     trackChanged = pyqtSignal(int, name='trackChanged')
+    currentRadioChanged = pyqtSignal(int, name='currentRadioChanged')
 
     def __init__(self, player, parent=None):
         QDialog.__init__(self, parent)
@@ -97,6 +99,7 @@ class playlistWidget(QDialog):
         self.initUI()
         self.tableWidgetTracks.cellDoubleClicked.connect(self.changeTrack)
         self.cover.mouseDoubleClickEvent = self.mouseDoubleClickEvent
+        self.parent.playlistChanged.connect(self.onPlaylistChanged)
 
     def mouseDoubleClickEvent(self,event):
         self.showFullScreen()
@@ -198,7 +201,7 @@ class playlistWidget(QDialog):
 
 
     def onPicDownloaded(self,path):
-        
+        print('Playlist onPicDownloaded')
         self.showCoverPixmap(path)
 
 
@@ -500,18 +503,21 @@ class playlistWidget(QDialog):
     def showCover(self,trk):
 
         if self.player.radioMode:
-            coverUrl = self.player.getLiveCoverUrl()
-            if coverUrl == "":
+            self.coverPixmap = QPixmap()
+            cover_url = self.player.getLiveCoverUrl()
+            if cover_url == "":
                 rad = self.player.getCurrentRadio()
                 if rad is not None:
-                    coverUrl = rad.getRadioPic()
+                    cover_url = rad.getRadioPic()
 
-            if self.currentCoverPath == coverUrl:
+            if cover_url is None: cover_url = ""
+
+            if self.currentCoverPath == cover_url:
                 return
 
-            if coverUrl != "":
-                self.currentCoverPath = coverUrl
-                self.picFromUrlThread.url = coverUrl
+            if cover_url != "":
+                self.currentCoverPath = cover_url
+                self.picFromUrlThread.url = cover_url
                 self.picFromUrlThread.start()
 
         else:
@@ -572,8 +578,9 @@ class playlistWidget(QDialog):
             self.timeSlider.setValue(pos*1000)
        
 
-
-
+    def onPlaylistChanged(self,event):
+        print("PlayerControlWidget playlist changed!")
+        self.showMediaList()
 
 
 

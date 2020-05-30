@@ -49,6 +49,8 @@ class MainWindowLoader(QMainWindow):
 
     currentTrackChanged = pyqtSignal(str, name='currentTrackChanged')
     currentRadioChanged = pyqtSignal(int, name='currentRadioChanged')
+    playlistChanged = pyqtSignal(int, name='playlistChanged')
+
     showPlayerControlEmited = pyqtSignal(str, name='showPlayerControlEmited')
     isPlayingSignal = pyqtSignal(int, name='isPlayingSignal')
     defaultPixmap = None
@@ -60,6 +62,7 @@ class MainWindowLoader(QMainWindow):
         self.translator = translator
         self.musicBase = musicbase
         self.player = player
+        self.player.playlistChangedEvent = pyqtSignal(int, name='playlistChanged')
 
         self.picFromUrlThread = picFromUrlThread()
         self.picBufferManager = picBufferManager()
@@ -382,8 +385,7 @@ class MainWindowLoader(QMainWindow):
     def playRadio(self,radio):
         self.playerControl.setTitleLabel(radio.name)
         self.playerControl.showWaitingOverlay()
-        self.player.playRadioInThread(radio)
-        self.currentRadioChanged.emit(1)
+        self.player.playRadioInThread(radio, self.currentRadioChanged)
 
         
     def onMenuExplore(self):
@@ -716,6 +718,9 @@ class MainWindowLoader(QMainWindow):
             self.playList.fullScreenWidget = self.fullScreenWidget
             self.playList.connectPicDownloader(self.picFromUrlThread)
             self.playList.trackChanged.connect(self.player.setPlaylistTrack)
+            self.playList.currentRadioChanged = self.currentRadioChanged
+            self.player.playlistChangedEvent = self.playlistChanged
+            self.playList.playlistChanged = self.playlistChanged
 
         self.playList.showMediaList()
             

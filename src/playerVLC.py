@@ -16,7 +16,6 @@ from track import *
 from PyQt5.QtCore import pyqtSignal
 import ctypes as c
 
-
 c_int_p = c.POINTER(c.c_int)
 c_uint8_p = c.POINTER(c.c_uint8)
 c_int_pp = c.POINTER(c_int_p)
@@ -73,9 +72,11 @@ class playerVLC:
         self.radioMode = False
         self.currentRadioTitle = ""
         self.currentRadioName = ""
+        self.currentRadio = False
         self.adblock = False
         self.adKilled = False
         self.loadingRadio = False
+        self.playlistChangedEvent = pyqtSignal(int, name='playlistChanged')
 
         self.nowPlaying = ""
 
@@ -156,6 +157,7 @@ class playerVLC:
 
     def getTrackAtIndex(self,index):
         item = self.getItemAtIndex(index)
+        print(str("getTrackAtIndex "+str(item)))
         return self.getTrackFromMrl(item.get_mrl())
 
 
@@ -190,6 +192,7 @@ class playerVLC:
                 index = self.mediaList.count()-1
                 self.mediaListPlayer.play_item_at_index(index)
             i+=1
+        self.playlistChangedEvent.emit(1)
 
 
     def addAlbum(self,album):
@@ -201,6 +204,7 @@ class playerVLC:
         
             self.mediaList.add_media(media)
             self.tracksDatas.append((media.get_mrl(),"",trk))
+        self.playlistChangedEvent.emit(1)
 
 
     def playFile(self,sfile):
@@ -221,6 +225,7 @@ class playerVLC:
         media = self.instance.media_new(sfile)
         media.parse()
         self.mediaList.add_media(media)
+        self.playlistChangedEvent.emit(1)
 
     def addFileList(self,fileList):
         for sfile in fileList:
@@ -275,6 +280,7 @@ class playerVLC:
         self.mediaList.unlock()
         for i in reversed(range(0,self.mediaList.count())):
             self.mediaList.remove_index(i)
+        self.playlistChangedEvent.emit(1)
 
     def removeAllTracks(self):
         #Remove all medias from the playlist except the current track
@@ -282,6 +288,7 @@ class playerVLC:
         for i in reversed(range(0,self.mediaList.count())):
             if i != currentIndex:  
                 self.mediaList.remove_index(i)
+        self.playlistChangedEvent.emit(1)
 
 
     def getVolume(self):
@@ -314,18 +321,20 @@ class playerVLC:
         media = self.instance.media_new(sfile)
         return media
 
-    def playRadioInThread(self,radio):
-        processThread = threading.Thread(target=self.playRadio, args=[radio])
+    def playRadioInThread(self,radio, currentRadioChanged):
+        processThread = threading.Thread(target=self.playRadio, args=[radio, currentRadioChanged])
         processThread.start()
 
-    def playRadio(self,radio):
+    def playRadio(self,radio, currentRadioChanged):
         self.radioMode = True
+        self.currentRadio = radio
         self.loadingRadio = True
         self.adblock = radio.adblock
         self.dropMediaList()
         media = self.instance.media_new(radio.stream)
 
         self.mediaList.add_media(media)
+        self.playlistChangedEvent.emit(1)
         self.currentRadioName = radio.name
         self.currentRadioTitle = "..."
         self.playMediaList()
@@ -368,7 +377,7 @@ class playerVLC:
         mrl = self.getCurrentMrlPlaylist()
         print(radio.name+" mrl="+mrl)
         self.tracksDatas.append((mrl,radio.stream,trk))
-
+        currentRadioChanged.emit(1)
 
 
     def getState(self):
@@ -469,7 +478,7 @@ class playerVLC:
         return year    
 
     def setPlaylistTrack(self,index):
-
+        print("setPlaylistTrack=" + str(index))
         trk = self.getTrackAtIndex(index)
         self.radioMode = (trk.radioName != "")
         print("radioMode="+str(self.radioMode))
