@@ -11,7 +11,7 @@ import requests
 from picFromUrlThread import *
 from tableWidgetDragRows import *
 from waitOverlayWidget import *
-
+from PyQt5.QtGui import QPixmap
 import threading
 from vlc import EventType as vlcEventType
 from svgIcon import *
@@ -127,7 +127,6 @@ class playerControlWidget(QWidget):
     def isPlaying(self,event):
         print("PlayerControlWidget isPlaying")
         self.refreshWaitOverlay()
-        
 
 
     def onCurrentTrackChanged(self,event):
@@ -401,7 +400,7 @@ class playerControlWidget(QWidget):
     def showCover(self,trk):
 
         if self.player.radioMode:
-
+            self.coverPixmap = QPixmap()
             coverUrl = self.player.getLiveCoverUrl()
             if coverUrl == "":
                 rad = self.player.getCurrentRadio()
