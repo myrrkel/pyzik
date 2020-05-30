@@ -6,10 +6,12 @@ import os
 
 from PyQt5.QtCore import pyqtSignal, QThread
 import requests
+import urllib3
 import tempfile
 
 import time
 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class picFromUrlThread(QThread):
 
@@ -37,7 +39,8 @@ class picFromUrlThread(QThread):
             self.lastUrl = self.url
             self.lastTempFile = ""
             self.removeLastTempFile()
-            response = requests.get(self.url,headers={'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; rv:2.2) Gecko/20110201'})
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; rv:2.2) Gecko/20110201'}
+            response = requests.get(self.url, headers=headers, verify=False)
             print("GET Status="+str(response.status_code))
             if response.status_code == 404:
                 self.lastTempFile = ""
