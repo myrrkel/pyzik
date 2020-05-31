@@ -1,4 +1,2 @@
-
-
 def main():
-    from pyzik import * 
+    from pyzik import *
