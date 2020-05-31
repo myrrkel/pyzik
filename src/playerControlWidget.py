@@ -13,7 +13,7 @@ from tableWidgetDragRows import *
 from waitOverlayWidget import *
 from PyQt5.QtGui import QPixmap
 import threading
-from vlc import EventType as vlcEventType
+# from vlc import EventType as vlcEventType
 from svgIcon import *
 import logging
 
@@ -24,7 +24,7 @@ white = QtGui.QColor(255, 255, 255)
 _translate = QCoreApplication.translate
 
 
-class playerControlsWidget(QWidget):
+class PlayerControlsWidget(QWidget):
     player = None
     defaultPixmap = None
 
@@ -175,7 +175,7 @@ class playerControlWidget(QWidget):
         self.setSizePolicy(sizePolicy)
         # self.resize(550,400)
 
-        self.playerControls = playerControlsWidget()
+        self.playerControls = PlayerControlsWidget()
         self.playerControls.pauseButton.clicked.connect(self.onPause)
         self.playerControls.previousButton.clicked.connect(self.player.previous)
         self.playerControls.nextButton.clicked.connect(self.player.next)
@@ -430,46 +430,46 @@ class playerControlWidget(QWidget):
 
         if self.currentTrack is None: return
 
-        artName = self.currentTrack.getArtistName()
-        albTitle = self.currentTrack.getAlbumTitle()
-        trkTitle = self.currentTrack.getTrackTitle()
+        art_name = self.currentTrack.getArtistName()
+        alb_title = self.currentTrack.getAlbumTitle()
+        trk_title = self.currentTrack.getTrackTitle()
         year = self.currentTrack.getAlbumYear()
 
-        if albTitle != "":
-            sAlbum = " - " + albTitle
-        sYear = str(year)
-        if (not sYear in ["0", ""]): sAlbum += " (" + sYear + ")"
-        sTitle = '''<html><head/><body>
-        <p><span style=\" font-size:15pt; text-shadow:white 0px 0px 4px; font-weight:600;\">{artName}</span>
-        <span style=\" font-size:12pt; font-style:italic;\">{trkTitle}</span></p>
-        <span style=\" font-size:12pt; font-style:bold;\">{Album}</span></p>
+        if alb_title != "":
+            alb_title = " - " + alb_title
+        s_year = str(year)
+        if (not s_year in ["0", ""]): alb_title += " (" + s_year + ")"
+        title_html = '''<html><head/><body>
+        <p><span style=\" font-size:15pt; text-shadow:white 0px 0px 4px; font-weight:600;\">{art_name}</span>
+        <span style=\" font-size:12pt; font-style:italic;\">{trk_title}</span></p>
+        <span style=\" font-size:12pt; font-style:bold;\">{album}</span></p>
         </body></html>'''
-        sTitle = sTitle.format(artName=artName, trkTitle=trkTitle, Album=sAlbum)
+        title_html = title_html.format(art_name=art_name, trk_title=trk_title, album=alb_title)
 
-        self.labelTitle.setText(sTitle)
+        self.labelTitle.setText(title_html)
 
     def setRadioLabeLText(self, title=""):
-        trkTitle = ""
+        trk_title = ""
         radioName = ""
         if title == "":
             if self.currentTrack is None: return
             if self.currentTrack.radio:
                 radioName = self.currentTrack.radio.name
-                trkTitle = self.currentTrack.radio.liveTrackTitle
-            if trkTitle == "":
-                trkTitle = self.player.getNowPlaying()
-            if trkTitle == "NO_META":trkTitle = ""
+                trk_title = self.currentTrack.radio.liveTrackTitle
+            if trk_title == "":
+                trk_title = self.player.getNowPlaying()
+            if trk_title == "NO_META":trk_title = ""
         else:
             radioName = title
-            trkTitle = ""
+            trk_title = ""
 
-        sTitle = '''<html><head/><body>
+        title_html = '''<html><head/><body>
         <p><span style=\" font-size:15pt; text-shadow:white 0px 0px 4px; font-weight:600;\">{radioName}</span>
-        <span style=\" font-size:12pt; font-style:italic;\">{trkTitle}</span></p>
+        <span style=\" font-size:12pt; font-style:italic;\">{trk_title}</span></p>
         </body></html>'''
-        sTitle = sTitle.format(radioName=radioName, trkTitle=trkTitle)
+        title_html = title_html.format(radioName=radioName, trk_title=trk_title)
 
-        self.labelTitle.setText(sTitle)
+        self.labelTitle.setText(title_html)
 
     def onTimeSliderIsReleased(self, event=None):
         print('onTimeSliderIsReleased')
