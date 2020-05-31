@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-#from PyQt5 import QtCore, QtGui, QtWidgets
+# from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QSize, QCoreApplication
 from PyQt5.QtWidgets import QApplication, QWidget, QDialog, QPushButton, QVBoxLayout, \
-QHeaderView, QHBoxLayout, QSlider, QSizePolicy, QFrame, QLabel, QShortcut
+    QHeaderView, QHBoxLayout, QSlider, QSizePolicy, QFrame, QLabel, QShortcut
 from track import *
 import requests
 from picFromUrlThread import *
@@ -23,14 +23,13 @@ white = QtGui.QColor(255, 255, 255)
 
 _translate = QCoreApplication.translate
 
+
 class playerControlsWidget(QWidget):
-    
     player = None
     defaultPixmap = None
 
-
-    def __init__(self,parent=None):
-        QWidget.__init__(self,parent=parent)
+    def __init__(self, parent=None):
+        QWidget.__init__(self, parent=parent)
         self.parent = parent
 
         lay = QHBoxLayout(self)
@@ -45,9 +44,8 @@ class playerControlsWidget(QWidget):
         sizePolicy.setVerticalStretch(0)
         self.frameBt.setSizePolicy(sizePolicy)
 
-
         self.currentTrack = None
-        
+
         self.pauseButton = QPushButton()
         self.pauseButton.setToolTip(_translate("playlist", "Pause"))
         self.pauseButton.setIcon(getSvgIcon("pause.svg"))
@@ -74,7 +72,6 @@ class playerControlsWidget(QWidget):
         self.playlistButton.setIcon(getSvgIcon("playlist.svg"))
         layBt.addWidget(self.playlistButton)
 
-
         self.frameBt.setMaximumSize(QSize(300, 40))
         lay.addWidget(self.frameBt)
 
@@ -82,7 +79,7 @@ class playerControlsWidget(QWidget):
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        #sizePolicy.setHeightForWidth(self.volumeSlider.sizePolicy().hasHeightForWidth())
+        # sizePolicy.setHeightForWidth(self.volumeSlider.sizePolicy().hasHeightForWidth())
         self.volumeSlider.setSizePolicy(sizePolicy)
         self.volumeSlider.setMinimumSize(QSize(80, 0))
         self.volumeSlider.setMaximumSize(QSize(200, 40))
@@ -96,7 +93,6 @@ class playerControlsWidget(QWidget):
 
 
 class playerControlWidget(QWidget):
-    
     mediaList = None
     player = None
     picFromUrlThread = None
@@ -112,14 +108,13 @@ class playerControlWidget(QWidget):
         self.parent = parent
         self.picBufferManager = parent.picBufferManager
 
-        
         self.setWindowFlags(Qt.Window)
         self.player = player
         self.mediaList = self.player.mediaList
 
         self.isWaitingCover = False
 
-        self.defaultRadioPix = getSvgWithColorParam("radio.svg","","#000000")        
+        self.defaultRadioPix = getSvgWithColorParam("radio.svg", "", "#000000")
 
         self.initUI()
 
@@ -127,18 +122,17 @@ class playerControlWidget(QWidget):
         self.parent.currentTrackChanged.connect(self.onCurrentTrackChanged)
         self.parent.currentRadioChanged.connect(self.onCurrentRadioChanged)
 
-    def isPlaying(self,event):
+    def isPlaying(self, event):
         print("PlayerControlWidget isPlaying")
         self.refreshWaitOverlay()
 
-
-    def onCurrentTrackChanged(self,event):
+    def onCurrentTrackChanged(self, event):
         print("PlayerControlWidget Currenttrack changed!")
         self.setCurrentTrack(event)
 
     def refreshWaitOverlay(self):
         if self.player.radioMode:
-            if (self.isWaitingCover == False and self.player.isPlayingRadio() == True) :
+            if (self.isWaitingCover == False and self.player.isPlayingRadio() == True):
                 print("PlayerControlWidget refreshWaitOverlay hide")
                 self.hideWaitOverlay()
             else:
@@ -148,56 +142,50 @@ class playerControlWidget(QWidget):
             print("PlayerControlWidget refresh show wait")
             self.hideWaitOverlay()
 
-
-
-    def onCurrentRadioChanged(self,event):
+    def onCurrentRadioChanged(self, event):
         print("PlayerControlWidget CurrentRadio changed!")
 
         self.setRadioLabeLText()
         self.currentCoverPath = ""
         self.refreshWaitOverlay()
 
-
-    def coverMouseDoubleClickEvent(self,event):
+    def coverMouseDoubleClickEvent(self, event):
         self.showFullScreen()
 
     def resizeEvent(self, event):
-    
+
         if self.waitOverlay is not None:
             self.waitOverlay.resize(self.cover.size())
-        
+
         event.accept()
 
     def initUI(self):
-        
+
         self.hMainLayout = QHBoxLayout()
         self.hMainLayout.setContentsMargins(0, 4, 0, 0)
         self.hMainLayout.setSpacing(0)
 
-
         self.vLayout = QVBoxLayout()
         self.vLayout.setContentsMargins(4, 0, 0, 0)
         self.vLayout.setSpacing(4)
-        
+
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(0)
         self.setSizePolicy(sizePolicy)
-        #self.resize(550,400)
-
+        # self.resize(550,400)
 
         self.playerControls = playerControlsWidget()
         self.playerControls.pauseButton.clicked.connect(self.onPause)
         self.playerControls.previousButton.clicked.connect(self.player.previous)
         self.playerControls.nextButton.clicked.connect(self.player.next)
         self.playerControls.playlistButton.clicked.connect(self.parent.showPlaylist)
-        #self.playerControls.deleteButton.clicked.connect(self.onClearPlaylist)
+        # self.playerControls.deleteButton.clicked.connect(self.onClearPlaylist)
         self.playerControls.fullscreenButton.clicked.connect(self.showFullScreen)
 
         self.playerControls.volumeSlider.setValue(self.player.getVolume())
         self.playerControls.volumeSlider.sliderMoved.connect(self.setVolume)
 
-        
         self.timeSlider = QSlider(self)
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -214,10 +202,8 @@ class playerControlWidget(QWidget):
         self.timeSlider.sliderReleased.connect(self.onTimeSliderIsReleased)
         self.timeSlider.sliderMoved.connect(self.setPlayerPosition)
 
-
         self.hMainFrame = QWidget()
         self.hMainFrame.setLayout(self.hMainLayout)
-
 
         self.mainFrame = QWidget()
         self.hLayout = QHBoxLayout()
@@ -230,7 +216,6 @@ class playerControlWidget(QWidget):
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
 
-        
         self.cover = QLabel()
         self.cover.setSizePolicy(sizePolicy)
         self.cover.setMinimumSize(QSize(100, 100))
@@ -239,8 +224,8 @@ class playerControlWidget(QWidget):
         self.cover.setPixmap(self.coverPixmap)
         self.cover.show()
         self.cover.mouseDoubleClickEvent = self.coverMouseDoubleClickEvent
-        self.waitOverlay = waitOverlay(self.cover,12,25,orange,0)
-        #self.hideWaitOverlay()
+        self.waitOverlay = waitOverlay(self.cover, 12, 25, orange, 0)
+        # self.hideWaitOverlay()
 
         self.labelTitle = QLabel()
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -255,26 +240,24 @@ class playerControlWidget(QWidget):
 
         self.setLayout(self.hMainLayout)
 
-        #self.vLayout.addWidget(self.mainFrame)
-        
+        # self.vLayout.addWidget(self.mainFrame)
+
         self.vLayout.addWidget(self.labelTitle)
         self.vLayout.addWidget(self.playerControls)
         self.vLayout.addWidget(self.timeSlider)
         self.mainFrame.setLayout(self.vLayout)
         self.hMainLayout.addWidget(self.mainFrame)
-        
+
         if self.picFromUrlThread is None:
             self.picFromUrlThread = picFromUrlThread()
 
-
         self.retranslateUi()
 
-
-    def connectPicDownloader(self,picDl):
+    def connectPicDownloader(self, picDl):
         self.picFromUrlThread = picDl
         self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
 
-    def onPause(self,event):
+    def onPause(self, event):
         self.player.pause()
 
     def showDefaultPixmap(self):
@@ -282,115 +265,98 @@ class playerControlWidget(QWidget):
             self.coverPixmap = self.defaultRadioPix
         else:
             self.coverPixmap = self.defaultPixmap
-        
+
         self.showSizedCover()
 
-
-    def onPicDownloaded(self,path):
-        #self.isWaitingCover = False
+    def onPicDownloaded(self, path):
+        # self.isWaitingCover = False
         if path == "":
             self.showDefaultPixmap()
             self.isWaitingCover = False
-            #self.hideWaitOverlay()
+            # self.hideWaitOverlay()
         else:
-            self.coverPixmap = self.picBufferManager.getPic(path,"playerControl")
+            self.coverPixmap = self.picBufferManager.getPic(path, "playerControl")
             self.isWaitingCover = False
             self.showScaledCover()
 
         self.refreshWaitOverlay()
 
-
     def hideWaitOverlay(self):
         self.waitOverlay.hide()
         self.showScaledCover()
 
-
     def showWaitingOverlay(self):
-        #print("showWaitingOverlay")
+        # print("showWaitingOverlay")
 
-        pix = QPixmap(100,100)
+        pix = QPixmap(100, 100)
         pix.fill(QtGui.QColor("transparent"))
         self.cover.setPixmap(pix)
 
         self.waitOverlay.showOverlay()
         self.waitOverlay.resize(self.cover.size())
-        #self.show()
-
+        # self.show()
 
     def showScaledCover(self):
         if not self.coverPixmap.isNull():
             scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                                    Qt.KeepAspectRatio,
-                                                    Qt.SmoothTransformation)
+                                                  Qt.KeepAspectRatio,
+                                                  Qt.SmoothTransformation)
             self.cover.setPixmap(scaledCover)
-            
+
         else:
             self.cover.clear()
 
-
-    def showSizedCover(self,width=50,height=50):
+    def showSizedCover(self, width=50, height=50):
         if not self.coverPixmap.isNull():
-            scaledCover = self.coverPixmap.scaled(width,height,
-                                                    Qt.KeepAspectRatio,
-                                                    Qt.SmoothTransformation)
+            scaledCover = self.coverPixmap.scaled(width, height,
+                                                  Qt.KeepAspectRatio,
+                                                  Qt.SmoothTransformation)
             self.cover.setPixmap(scaledCover)
-            
+
         else:
             self.cover.clear()
 
-    
     def setVolume(self, volume):
         self.player.setVolume(volume)
 
-    def setIsTimeSliderDown(self,event=None):
+    def setIsTimeSliderDown(self, event=None):
         print('setIsTimeSliderDown')
         self.isTimeSliderDown = True
         if event is not None: return event.accept()
 
-    def setIsTimeSliderReleased(self,event=None):
+    def setIsTimeSliderReleased(self, event=None):
         print('setIsTimeSliderReleased')
         self.isTimeSliderDown = False
         if event is not None: return event.accept()
-
 
     def showFullScreen(self):
         if self.parent.fullScreenWidget:
             self.parent.fullScreenWidget.show()
             self.parent.fullScreenWidget.activateWindow()
 
-
-
-
-    def onClearPlaylist(self,event):
-        #Remove all medias from the playlist except the current track
+    def onClearPlaylist(self, event):
+        # Remove all medias from the playlist except the current track
         self.player.removeAllTracks()
         self.showMediaList()
 
-
     def retranslateUi(self):
-        
 
-        self.playerControls.pauseButton.setToolTip(_translate("playlist", "Pause"))   
+        self.playerControls.pauseButton.setToolTip(_translate("playlist", "Pause"))
         self.playerControls.previousButton.setToolTip(_translate("playlist", "Previous"))
         self.playerControls.nextButton.setToolTip(_translate("playlist", "Next"))
         self.playerControls.playlistButton.setToolTip(_translate("playlist", "Playlist"))
         self.playerControls.fullscreenButton.setToolTip(_translate("playlist", "Full screen"))
 
-
-
-
-    def setCurrentTrackInThread(self,title):
+    def setCurrentTrackInThread(self, title):
         processThread = threading.Thread(target=self.setCurrentTrack, args=[title])
         processThread.start()
 
+    def setCurrentTrack(self, title=""):
 
+        if self.player is None: return
 
-    def setCurrentTrack(self,title=""):
-
-        if self.player is None : return 
-
-        index = self.player.getCurrentIndexPlaylist()
-        print("PlayerControl setCurrentTrack:",index)
+        index = self.player.get_current_index_playlist()
+        print("PlayerControl setCurrentTrack:", index)
 
         trk = self.player.getCurrentTrackPlaylist()
         if trk is None and title:
@@ -404,8 +370,7 @@ class playerControlWidget(QWidget):
 
         self.showCover(trk)
 
-
-    def showCover(self,trk=None):
+    def showCover(self, trk=None):
 
         if self.player.radioMode:
             coverUrl = self.player.getLiveCoverUrl()
@@ -431,7 +396,7 @@ class playerControlWidget(QWidget):
             else:
                 self.showDefaultPixmap()
                 self.refreshWaitOverlay()
-   
+
 
         else:
             self.isWaitingCover = False
@@ -441,15 +406,13 @@ class playerControlWidget(QWidget):
                     self.coverPixmap = self.defaultPixmap
                 else:
                     self.currentCoverPath = trk.parentAlbum.getCoverPath()
-                    self.coverPixmap = self.picBufferManager.getPic(self.currentCoverPath,"playerControl")
-                    
+                    self.coverPixmap = self.picBufferManager.getPic(self.currentCoverPath, "playerControl")
+
                 self.showScaledCover()
 
             self.refreshWaitOverlay()
 
-
-
-    def setTitleLabel(self,title=""):
+    def setTitleLabel(self, title=""):
         logger.info("setTitleLabel %s", title)
         if title != "":
             self.setRadioLabeLText(title)
@@ -457,14 +420,11 @@ class playerControlWidget(QWidget):
 
         if self.currentTrack:
             if self.currentTrack.isRadio():
-               self.setRadioLabeLText()
-               self.timeSlider.setVisible(False)
+                self.setRadioLabeLText()
+                self.timeSlider.setVisible(False)
             else:
                 self.setTrackLabelText()
                 self.timeSlider.setVisible(True)
-        
-            
-
 
     def setTrackLabelText(self):
 
@@ -476,28 +436,29 @@ class playerControlWidget(QWidget):
         year = self.currentTrack.getAlbumYear()
 
         if albTitle != "":
-            sAlbum = " - "+albTitle
-        sYear =str(year)
-        if(not sYear in ["0",""]): sAlbum += " ("+sYear+")"
+            sAlbum = " - " + albTitle
+        sYear = str(year)
+        if (not sYear in ["0", ""]): sAlbum += " (" + sYear + ")"
         sTitle = '''<html><head/><body>
         <p><span style=\" font-size:15pt; text-shadow:white 0px 0px 4px; font-weight:600;\">{artName}</span>
         <span style=\" font-size:12pt; font-style:italic;\">{trkTitle}</span></p>
         <span style=\" font-size:12pt; font-style:bold;\">{Album}</span></p>
         </body></html>'''
-        sTitle = sTitle.format(artName=artName,trkTitle=trkTitle,Album=sAlbum)
-        
+        sTitle = sTitle.format(artName=artName, trkTitle=trkTitle, Album=sAlbum)
+
         self.labelTitle.setText(sTitle)
 
-
-    def setRadioLabeLText(self,title=""):
-
+    def setRadioLabeLText(self, title=""):
+        trkTitle = ""
+        radioName = ""
         if title == "":
             if self.currentTrack is None: return
-            radioName = self.currentTrack.radio.name
-            trkTitle = self.currentTrack.radio.liveTrackTitle
+            if self.currentTrack.radio:
+                radioName = self.currentTrack.radio.name
+                trkTitle = self.currentTrack.radio.liveTrackTitle
             if trkTitle == "":
                 trkTitle = self.player.getNowPlaying()
-            if trkTitle == "NO_META": trkTitle = ""
+            if trkTitle == "NO_META":trkTitle = ""
         else:
             radioName = title
             trkTitle = ""
@@ -506,41 +467,30 @@ class playerControlWidget(QWidget):
         <p><span style=\" font-size:15pt; text-shadow:white 0px 0px 4px; font-weight:600;\">{radioName}</span>
         <span style=\" font-size:12pt; font-style:italic;\">{trkTitle}</span></p>
         </body></html>'''
-        sTitle = sTitle.format(radioName=radioName,trkTitle=trkTitle)
+        sTitle = sTitle.format(radioName=radioName, trkTitle=trkTitle)
 
         self.labelTitle.setText(sTitle)
 
-
-
-    def onTimeSliderIsReleased(self,event=None):
+    def onTimeSliderIsReleased(self, event=None):
         print('onTimeSliderIsReleased')
-        
+
         self.player.setPosition(self.nextPosition)
         self.isTimeSliderDown = False
-        #self.player.setPosition(self.nextPosition)
+        # self.player.setPosition(self.nextPosition)
 
-
-    def setPlayerPosition(self,pos):
+    def setPlayerPosition(self, pos):
         print(str(pos))
-        self.nextPosition = pos/1000
-        #self.player.setPosition(self.nextPosition)
+        self.nextPosition = pos / 1000
+        # self.player.setPosition(self.nextPosition)
 
     def getVolume(self):
         return self.playerControls.volumeSlider.value()
 
-    def setVolume(self,vol):
+    def setVolume(self, vol):
         self.playerControls.volumeSlider.setValue(vol)
-        
-    
 
-    def onPlayerPositionChanged(self,event=None):
+    def onPlayerPositionChanged(self, event=None):
         if not self.isTimeSliderDown:
-
             pos = self.player.getPosition()
-            #print('onPlayerPositionChanged='+str(pos))
-            self.timeSlider.setValue(pos*1000)
-       
-
-
-
-
+            # print('onPlayerPositionChanged='+str(pos))
+            self.timeSlider.setValue(pos * 1000)
