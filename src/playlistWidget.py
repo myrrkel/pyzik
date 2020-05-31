@@ -298,7 +298,7 @@ class playlistWidget(QDialog):
             new_order.append(int(idLine))
 
         newCurrent = 0
-        currentIndex = self.player.getCurrentIndexPlaylist()
+        currentIndex = self.player.get_current_index_playlist()
 
         #Backup current vlc media list
         tmp_mediaList = []
@@ -445,7 +445,7 @@ class playlistWidget(QDialog):
         else:
             self.setWindowTitle(_translate("playlist", "Playlist"))
 
-        index = self.player.getCurrentIndexPlaylist()
+        index = self.player.get_current_index_playlist()
 
         if self.tableWidgetTracks.rowCount == 0:
             self.showMediaList()
