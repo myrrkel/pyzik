@@ -6,23 +6,25 @@ import random
 from album import *
 import formatString as FS
 
-def getSimplestTitle(title,char):
-    simple =  title.replace(".",char)
-    simple = simple.replace(",",char)
-    simple = simple.replace("'",char)
-    simple = simple.replace("!",char)
-    simple = simple.replace(":",char)
-    simple = simple.replace("?",char)
-    simple = simple.replace("  "," ")
+
+def getSimplestTitle(title, char):
+    simple = title.replace(".", char)
+    simple = simple.replace(",", char)
+    simple = simple.replace("'", char)
+    simple = simple.replace("!", char)
+    simple = simple.replace(":", char)
+    simple = simple.replace("?", char)
+    simple = simple.replace("  ", " ")
     simple = simple.strip()
     return simple
-    
+
+
 def getAlternativeTitle(title):
     alter = title
     if " & " in alter:
-        alter = alter.replace(" & "," And ")
+        alter = alter.replace(" & ", " And ")
     else:
-        alter = alter.replace(" And "," & ")
+        alter = alter.replace(" And ", " & ")
     return alter
 
 
@@ -34,12 +36,13 @@ def filterAlbumsByTitle(seq, title):
             yield el
             break
 
+
 class artist:
     """
     Artist's class, the have 
     """
 
-    def __init__(self,name,id):
+    def __init__(self, name, id):
         self.artistID = id
         self.name = self.formatName(name)
         self.countryID = 0
@@ -48,41 +51,39 @@ class artist:
         self.albums = []
         self.itemListViewArtist = None
         self.searchKey = ""
-        
 
     def getName(self):
         return self.name
 
-    def formatName(self,name):
+    def formatName(self, name):
         return name.upper()
 
     def getSearchKey(self):
-        if self.searchKey =="":
+        if self.searchKey == "":
             self.searchKey = FS.getSearchKey(self.name)
         return self.searchKey
 
     def printInfos(self):
-        print(self.name+" id="+str(self.artistID))
+        print(self.name + " id=" + str(self.artistID))
 
     def sortAlbums(self):
-        self.albums = sorted(self.albums, key=attrgetter('year','title'))
+        self.albums = sorted(self.albums, key=attrgetter('year', 'title'))
 
     def getRandomAlbum(self):
         nbAlbum = len(self.albums)
-        if(nbAlbum > 0):
-            irandom  = random.randint(0, nbAlbum-1)
+        if (nbAlbum > 0):
+            irandom = random.randint(0, nbAlbum - 1)
             resAlb = self.albums[irandom]
             return resAlb
 
-    def addAlbum(self,alb):
+    def addAlbum(self, alb):
         self.albums.append(alb)
 
-    def addStyle(self,idSet):
+    def addStyle(self, idSet):
         self.styleIDSet = self.styleIDSet.union(idSet)
 
-
-    def findAlbums(self,stitle):
+    def findAlbums(self, stitle):
         albumList = []
-        for alb in filterAlbumsByTitle(self.albums,stitle):
+        for alb in filterAlbumsByTitle(self.albums, stitle):
             albumList.append(alb)
         return albumList

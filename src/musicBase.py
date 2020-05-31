@@ -10,12 +10,8 @@ from musicGenres import *
 from historyManager import *
 from radioManager import *
 
-
 import os.path
 from PyQt5 import QtWidgets, QtGui, QtCore
-
-
-
 
 
 class musicBase:
@@ -36,7 +32,7 @@ class musicBase:
         self.history = historyManager()
         self.radioMan = radioManager(self)
 
-    def loadMusicBase(self,memoryDB=True):
+    def loadMusicBase(self, memoryDB=True):
         if memoryDB: self.db.initMemoryDB()
         self.musicDirectoryCol.loadMusicDirectories()
         self.artistCol.loadArtists()
@@ -47,24 +43,20 @@ class musicBase:
         self.initAvailableGenres()
         self.history.initDataBase()
 
-
-
     def refresh(self):
         self.addGenresDirToAlbums()
         self.addAlbumsToArtists()
         self.initAvailableGenres()
 
-
     def initAvailableGenres(self):
         self.styleIDSet = self.musicDirectoryCol.getStyleIDSet()
         self.availableGenres = self.genres.getAvailableGenresFormIDSet(self.styleIDSet)
-
 
     def addGenresDirToAlbums(self):
         for alb in self.albumCol.albums:
             md = self.musicDirectoryCol.getMusicDirectory(alb.musicDirectoryID)
             if (md != None):
-                if md.styleID >=-1:
+                if md.styleID >= -1:
                     alb.addStyle({md.styleID})
 
     def addAlbumsToArtists(self):
@@ -75,17 +67,14 @@ class musicBase:
                 artistFound.addStyle(alb.styleIDSet)
                 artistFound.albums.append(alb)
 
-
-    def deleteMusicDirectory(self,musicDirectory):
+    def deleteMusicDirectory(self, musicDirectory):
         self.musicDirectoryCol.deleteMusicDirectory(musicDirectory)
 
     def emptyDatas(self):
         self.artistCol.artists = set()
         self.albumCol.albums = []
 
-
-
-    def generateRandomAlbumList(self,nb_alb=20,styleID=-2):
+    def generateRandomAlbumList(self, nb_alb=20, styleID=-2):
         randomAlbList = []
 
         for i in range(nb_alb):
@@ -100,15 +89,12 @@ class musicBase:
         return randomAlbList
 
 
-
-
-
 if __name__ == "__main__":
 
     import sys
     from PyQt5.QtWidgets import QApplication
-    app = QApplication(sys.argv)
 
+    app = QApplication(sys.argv)
 
     mb = musicBase()
     mb.loadMusicBase()
@@ -116,6 +102,5 @@ if __name__ == "__main__":
 
     for alb in randAlbumList:
         print(alb.title)
-
 
     sys.exit(app.exec_())

@@ -7,11 +7,9 @@ import time
 
 
 class loadAlbumFilesThread(QThread):
-
-
     """Read datas from files in the album folder"""
 
-    doStop = False 
+    doStop = False
     album = None
     player = None
     imagesLoaded = pyqtSignal(int, name='imagesLoaded')
@@ -27,8 +25,6 @@ class loadAlbumFilesThread(QThread):
         self.album.getTracks(self.player)
         self.tracksLoaded.emit(1)
         return
-        
-
 
     def stop(self):
         self.doStop = True

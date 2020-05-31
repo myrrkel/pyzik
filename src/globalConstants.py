@@ -12,9 +12,9 @@ global appAuthor
 appAuthor = "myrrkel"
 
 global musicFilesExtension
-musicFilesExtension = ["mp3","ogg","mpc","flac","m4a","wma"]
+musicFilesExtension = ["mp3", "ogg", "mpc", "flac", "m4a", "wma"]
 global pictureFilesExtension
-imageFilesExtension = ["jpg","jpeg","png"]
+imageFilesExtension = ["jpg", "jpeg", "png"]
 
 global dataDir
 dataDir = user_data_dir(appName, appAuthor)
@@ -24,8 +24,6 @@ if os.path.basename(sys.executable) == "pyzik":
     appDir = os.path.dirname(os.path.realpath(sys.executable))
 else:
     appDir = os.path.dirname(os.path.realpath(sys.argv[0]))
-
-
 
 global settings
 settings = QSettings('pyzik', 'pyzik')

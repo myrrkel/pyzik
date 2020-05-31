@@ -4,13 +4,11 @@
 
 from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QSize
 from PyQt5.QtWidgets import QDialog, QWidget, QShortcut, QAction, QWidget, QMainWindow, \
-                            QSizePolicy, QLabel, QFrame, QVBoxLayout, QHBoxLayout, QApplication
+    QSizePolicy, QLabel, QFrame, QVBoxLayout, QHBoxLayout, QApplication
 from PyQt5.QtGui import QPixmap, QIcon, QKeySequence
 
 
-
 class fullScreenCoverWidget(QDialog):
-    
     coverPixmap = None
 
     def __init__(self):
@@ -18,17 +16,15 @@ class fullScreenCoverWidget(QDialog):
 
         self.currentCoverPath = ""
         self.picBufferManager = None
-        
+
         self.setWindowFlags(
-                            Qt.Window | 
-                            Qt.WindowStaysOnTopHint | 
-                            Qt.MaximizeUsingFullscreenGeometryHint | 
-                            Qt.FramelessWindowHint )
+            Qt.Window |
+            Qt.WindowStaysOnTopHint |
+            Qt.MaximizeUsingFullscreenGeometryHint |
+            Qt.FramelessWindowHint)
 
-
-        
-        #self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
-        #self.shortcutPause.activated.connect(self.player.pause)
+        # self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
+        # self.shortcutPause.activated.connect(self.player.pause)
         self.shortcutClose = QShortcut(QKeySequence("Escape"), self)
         self.shortcutClose.activated.connect(self.close)
 
@@ -41,24 +37,20 @@ class fullScreenCoverWidget(QDialog):
 
         self.setBackgroundBlack()
 
-
     def show(self):
 
         self.setBackgroundBlack()
         self.showFullScreen()
-
 
     def setBackgroundBlack(self):
         self.setStyleSheet("background-color:black;")
 
     def initUI(self):
 
-
-
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
-        
+
         self.cover = QLabel()
         self.cover.setSizePolicy(sizePolicy)
         self.cover.setMinimumSize(QSize(300, 300))
@@ -68,49 +60,37 @@ class fullScreenCoverWidget(QDialog):
         self.cover.setPixmap(self.coverPixmap)
         self.vLayout.addWidget(self.cover)
 
-
-
     def mousePressEvent(self, event):
         self.close()
 
-
-    def resizeEvent(self,event):
+    def resizeEvent(self, event):
         self.resizeCover()
-
 
     def resizeCover(self):
         if (not self.coverPixmap.isNull()):
             scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                                    Qt.KeepAspectRatio,
-                                                    Qt.SmoothTransformation)
+                                                  Qt.KeepAspectRatio,
+                                                  Qt.SmoothTransformation)
             self.cover.setPixmap(scaledCover)
 
-
-
-    def setPixmapFromUri(self,path):
+    def setPixmapFromUri(self, path):
         if self.picBufferManager is None:
             self.coverPixmap = QPixmap(path)
         else:
-            self.coverPixmap = self.picBufferManager.getPic(path,"fullscreenCoverWidget")
+            self.coverPixmap = self.picBufferManager.getPic(path, "fullscreenCoverWidget")
 
         self.showCover()
-        
-
-
-
-
 
     def showCover(self):
         if not self.coverPixmap.isNull():
-            print("Pic size="+str(self.cover.size()))
+            print("Pic size=" + str(self.cover.size()))
             scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                                    Qt.KeepAspectRatio,
-                                                    Qt.SmoothTransformation)
+                                                  Qt.KeepAspectRatio,
+                                                  Qt.SmoothTransformation)
             self.cover.setPixmap(scaledCover)
         else:
             self.cover.setPixmap(QPixmap())
         self.cover.show()
-        
 
     def initCover(self):
         self.coverPixmap = QPixmap()
@@ -123,7 +103,6 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
 
-
     fs = fullScreenCoverWidget()
 
     fs.show()
@@ -132,6 +111,5 @@ if __name__ == "__main__":
     pd = picDownloader()
     tempPath = pd.getPic(url)
     fs.setPixmapFromUri(tempPath)
-
 
     sys.exit(app.exec_())

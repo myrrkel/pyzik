@@ -9,15 +9,15 @@ from progressWidget import *
 from svgIcon import *
 from waitOverlayWidget import *
 
+
 class searchControlsWidget(QtWidgets.QWidget):
 
-
-    def __init__(self,parent=None):
-        QtWidgets.QWidget.__init__(self,parent=parent)
+    def __init__(self, parent=None):
+        QtWidgets.QWidget.__init__(self, parent=parent)
 
         lay = QtWidgets.QHBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
-        
+
         _translate = QtCore.QCoreApplication.translate
 
         self.searchEdit = QtWidgets.QLineEdit()
@@ -28,23 +28,19 @@ class searchControlsWidget(QtWidgets.QWidget):
         lay.addWidget(self.searchEdit)
         lay.addWidget(self.searchButton)
 
-        
-
-
 
 class machineSelectorControlsWidget(QtWidgets.QWidget):
 
-
-    def __init__(self,parent=None,machines=[]):
-        QtWidgets.QWidget.__init__(self,parent=parent)
+    def __init__(self, parent=None, machines=[]):
+        QtWidgets.QWidget.__init__(self, parent=parent)
         self.checks = []
         self.lay = QtWidgets.QHBoxLayout(self)
         self.lay.setContentsMargins(0, 0, 0, 9)
-        
+
         for i, machine in enumerate(machines):
 
             check = QtWidgets.QCheckBox(machine)
-            if i==0: check.setChecked(True)
+            if i == 0: check.setChecked(True)
             self.checks.append(check)
             self.lay.addWidget(check)
 
@@ -52,22 +48,21 @@ class machineSelectorControlsWidget(QtWidgets.QWidget):
         machines = []
         for check in self.checks:
             if check.isChecked():
-                print("Checked="+check.text())
+                print("Checked=" + check.text())
                 machines.append(check.text())
 
         return machines
 
+
 class playControlsWidget(QtWidgets.QWidget):
 
-
-    def __init__(self,parent=None):
-        QtWidgets.QWidget.__init__(self,parent=parent)
+    def __init__(self, parent=None):
+        QtWidgets.QWidget.__init__(self, parent=parent)
 
         lay = QtWidgets.QHBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
-        
-        _translate = QtCore.QCoreApplication.translate
 
+        _translate = QtCore.QCoreApplication.translate
 
         self.playButton = QtWidgets.QPushButton("Play")
         self.playButton.setIcon(getSvgIcon("play.svg"))
@@ -79,22 +74,18 @@ class playControlsWidget(QtWidgets.QWidget):
 
 
 class searchRadioWidget(QtWidgets.QDialog):
-    
     radioAdded = pyqtSignal(int, name='radioAdded')
 
     def __init__(self, musicBase, player, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
         self.setWindowFlags(QtCore.Qt.Window)
-        
+
         self.radios = []
         self.radioManager = radioManager(musicBase)
         self.player = player
         self.searchRadioThread = searchRadioThread()
-        
-                
 
         self.initUI()
-
 
         self.initColumnHeaders()
 
@@ -102,16 +93,14 @@ class searchRadioWidget(QtWidgets.QDialog):
         self.setTabOrder(self.searchControls.searchEdit, self.searchControls.searchButton)
 
     def initUI(self):
-
         self.mainLayout = QtWidgets.QVBoxLayout()
         self.setLayout(self.mainLayout)
 
-        
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
         self.setSizePolicy(sizePolicy)
-        self.resize(600,400)
+        self.resize(600, 400)
         self.initTableWidgetItems()
 
         self.searchControls = searchControlsWidget()
@@ -121,7 +110,7 @@ class searchRadioWidget(QtWidgets.QDialog):
         self.playControls.playButton.clicked.connect(self.onClickPlayRadio)
         self.playControls.addButton.clicked.connect(self.onAddPadio)
 
-        self.machineSelectorControls = machineSelectorControlsWidget(None,self.radioManager.machines)
+        self.machineSelectorControls = machineSelectorControlsWidget(None, self.radioManager.machines)
 
         self.mainLayout.addWidget(self.searchControls)
         self.mainLayout.addWidget(self.machineSelectorControls)
@@ -132,13 +121,11 @@ class searchRadioWidget(QtWidgets.QDialog):
         self.overlay.hide()
 
         self.retranslateUi()
-        
 
     def resizeEvent(self, event):
-    
         self.overlay.resize(event.size())
 
-    def onSearch(self,event):
+    def onSearch(self, event):
         self.overlay.showOverlay()
         search = self.searchControls.searchEdit.text()
 
@@ -151,30 +138,27 @@ class searchRadioWidget(QtWidgets.QDialog):
         self.searchRadioThread.machines = self.machineSelectorControls.getSelectedMAchines()
         self.searchRadioThread.start()
 
-    def onPlayPadio(self,item):
+    def onPlayPadio(self, item):
         self.player.playRadioInThread(self.radios[item])
 
-    def onClickPlayRadio(self,event):
+    def onClickPlayRadio(self, event):
         i = self.tableWidgetItems.currentRow()
         self.player.playRadioInThread(self.radios[i])
 
-    def onAddPadio(self,item):
+    def onAddPadio(self, item):
         i = self.tableWidgetItems.currentRow()
         rad = self.radios[i]
         rad.saveRadio(self.radioManager.musicBase.db)
         self.radioAdded.emit(1)
 
-
-    def onSearchComplete(self,event):
+    def onSearchComplete(self, event):
         self.radios = self.searchRadioThread.resRadios
         self.showItems(self.radios)
         self.initColumnHeaders()
         self.wProgress.close()
         self.overlay.hide()
 
-
     def initTableWidgetItems(self):
-
         self.tableWidgetItems = QtWidgets.QTableWidget(self)
 
         self.tableWidgetItems.setGeometry(0, 0, 600, 300)
@@ -203,19 +187,13 @@ class searchRadioWidget(QtWidgets.QDialog):
 
         self.initColumnHeaders()
 
-       
-
-
     def initColumnHeaders(self):
-
         hHeader = self.tableWidgetItems.horizontalHeader()
         vHeader = self.tableWidgetItems.verticalHeader()
         vHeader.hide()
 
         hHeader.resizeSections(QtWidgets.QHeaderView.ResizeToContents)
         hHeader.setSectionResizeMode(QtWidgets.QHeaderView.Interactive)
-
-
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -233,32 +211,30 @@ class searchRadioWidget(QtWidgets.QDialog):
         self.playControls.playButton.setText(_translate("searchRadio", "Play"))
         self.playControls.addButton.setText(_translate("searchRadio", "Add"))
 
-    def showItems(self,items):      
-        self.tableWidgetItems.setStyleSheet("selection-background-color: black;selection-color: white;") 
+    def showItems(self, items):
+        self.tableWidgetItems.setStyleSheet("selection-background-color: black;selection-color: white;")
         self.tableWidgetItems.setColumnCount(4)
         self.tableWidgetItems.setRowCount(0)
-        i=0
+        i = 0
         for item in items:
             self.tableWidgetItems.insertRow(i)
             titleItem = QtWidgets.QTableWidgetItem(item.name)
             titleItem.setFlags(titleItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i,0,titleItem)
-            
+            self.tableWidgetItems.setItem(i, 0, titleItem)
+
             artistItem = QtWidgets.QTableWidgetItem(item.country)
             artistItem.setFlags(artistItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i,1,artistItem)
+            self.tableWidgetItems.setItem(i, 1, artistItem)
 
             albumItem = QtWidgets.QTableWidgetItem(item.getCategoriesText())
             albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i,2,albumItem)
+            self.tableWidgetItems.setItem(i, 2, albumItem)
 
             durationItem = QtWidgets.QTableWidgetItem(item.stream)
             durationItem.setFlags(durationItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i,3,durationItem)
+            self.tableWidgetItems.setItem(i, 3, durationItem)
 
-            i+=1
-
-   
+            i += 1
 
 
 if __name__ == "__main__":
@@ -275,13 +251,7 @@ if __name__ == "__main__":
 
     player = playerVLC()
 
-
-    
-
-    searchWidget = searchRadioWidget(mb,player)
+    searchWidget = searchRadioWidget(mb, player)
 
     searchWidget.show()
     sys.exit(app.exec_())
-
-
-    

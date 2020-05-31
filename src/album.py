@@ -13,7 +13,6 @@ from database import *
 from PyQt5.QtGui import QPixmap
 
 
-
 def getFolderSize(folder):
     if not os.path.isdir(folder): return 0
     total_size = os.path.getsize(folder)
@@ -25,22 +24,25 @@ def getFolderSize(folder):
             total_size += getFolderSize(itempath)
     return total_size
 
+
 def unvalidAlbumName():
     return ['Unknown album',
-    'Album inconnu',]
+            'Album inconnu', ]
+
 
 def unvalidArtistName():
     return ['Unknown artist',
-    'Artiste inconnu',]
+            'Artiste inconnu', ]
+
 
 def convert_size(size_bytes):
-   if size_bytes == 0:
-       return "0B"
-   size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-   i = int(math.floor(math.log(size_bytes, 1024)))
-   p = math.pow(1024, i)
-   s = round(size_bytes / p, 2)
-   return "%s %s" % (s, size_name[i])
+    if size_bytes == 0:
+        return "0B"
+    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+    i = int(math.floor(math.log(size_bytes, 1024)))
+    p = math.pow(1024, i)
+    s = round(size_bytes / p, 2)
+    return "%s %s" % (s, size_name[i])
 
 
 def year(s):
@@ -50,32 +52,34 @@ def year(s):
     """
     res = 0
     if str.isdigit(s):
-        if len(s) == 4: 
+        if len(s) == 4:
             res = int(s)
         else:
-            if len(s) == 2: res = int("19"+s)
-            #If year is 69 it means 1969.
-            #Sounds ridiculous to have 16 instead of 2016.
+            if len(s) == 2: res = int("19" + s)
+            # If year is 69 it means 1969.
+            # Sounds ridiculous to have 16 instead of 2016.
     return res
 
+
 def isYear(s):
-    return s.isdigit() and (len(s) in (4,2))
+    return s.isdigit() and (len(s) in (4, 2))
+
 
 def countDigitInDatas(datas):
-    return len( list(d for d in datas if d.isdigit()==True))
+    return len(list(d for d in datas if d.isdigit() == True))
+
 
 def getFileName(path):
-    
     filename = os.path.basename(path)
     filename, file_extension = os.path.splitext(filename)
-    #print("getFileName = "+filename)
+    # print("getFileName = "+filename)
     return filename
 
 
 def capitaliseWord(word):
-    res =""
-    for i,l in enumerate(word):
-        if i==0:
+    res = ""
+    for i, l in enumerate(word):
+        if i == 0:
             res += l.upper()
         else:
             res += l
@@ -95,26 +99,26 @@ def titleExcept(title):
     return " ".join(final)
 
 
-
 def replaceSpecialChars(text):
-    #Replace strings in given text according to the dictionary 'rep'
-    
-    rep = {"_": " ", "  ": " ", "#": "@",\
-     "-(": "@", ")-": "@", "- (": "@", ") -": "@",\
-     "-[": "@", "]-": "@", "- [": "@", "] -": "@",\
-     "(": "@", ")": "@", "[": "@", "]": "@",\
-     " - ": "@", "@ @": "@", "@@": "@"} 
+    # Replace strings in given text according to the dictionary 'rep'
+
+    rep = {"_": " ", "  ": " ", "#": "@", \
+           "-(": "@", ")-": "@", "- (": "@", ") -": "@", \
+           "-[": "@", "]-": "@", "- [": "@", "] -": "@", \
+           "(": "@", ")": "@", "[": "@", "]": "@", \
+           " - ": "@", "@ @": "@", "@@": "@"}
 
     rep = dict((re.escape(k), v) for k, v in rep.items())
     pattern = re.compile("|".join(rep.keys()))
     return pattern.sub(lambda match: rep[re.escape(match.group(0))], text)
+
 
 class album:
     """
     Album's class, each album is in a directory name.
     """
 
-    def __init__(self,dirname="",musicDirectory=None):
+    def __init__(self, dirname="", musicDirectory=None):
         self.albumID = 0
         self.title = ""
         self.dirName = dirname
@@ -131,18 +135,17 @@ class album:
         self.styleIDSet = set()
         self.doStop = False
         self.musicDirectory = musicDirectory
-        self.coverPixmap = None #QPixmap()
+        self.coverPixmap = None  # QPixmap()
         if musicDirectory:
             self.musicDirectoryID = musicDirectory.musicDirectoryID
         else:
             self.musicDirectoryID = 0
         self.searchKey = ""
 
-
-        if dirname!="":
+        if dirname != "":
             self.extractDataFromDirName()
 
-    def load(self,row):
+    def load(self, row):
         self.albumID = row[0]
         self.title = row[1]
         self.year = row[2]
@@ -152,64 +155,60 @@ class album:
         self.size = row[6]
         self.length = row[7]
 
-    def formatTitle(self,title):
+    def formatTitle(self, title):
         return titleExcept(title)
-
 
     def getCoverSearchText(self):
         txt = self.artistName
-        if int(self.year) > 0 : txt = txt + " " + str(self.year)
+        if int(self.year) > 0: txt = txt + " " + str(self.year)
         txt = txt + " " + self.title
         return txt
 
-
     def getSearchKey(self):
-        if self.searchKey =="":
+        if self.searchKey == "":
             self.searchKey = FS.getSearchKey(self.title.upper())
         return self.searchKey
 
     def printInfos(self):
-        print("Title: "+self.title+"  # Artist: "+self.artistName\
-            +"  # ArtistID: "+str(self.artistID)\
-            +"  # Year: "+str(self.year)\
-            +"  # musicDirectoryID: "+str(self.musicDirectoryID)
-            +"  # dirPath: "+str(self.dirPath))
-
+        print("Title: " + self.title + "  # Artist: " + self.artistName \
+              + "  # ArtistID: " + str(self.artistID) \
+              + "  # Year: " + str(self.year) \
+              + "  # musicDirectoryID: " + str(self.musicDirectoryID)
+              + "  # dirPath: " + str(self.dirPath))
 
     def extractDataFromDirName(self):
         pos1 = self.dirName.find(" - [")
         pos2 = self.dirName.find("] - ")
-        
-        if 0<pos1 and pos1<pos2:
-            #The name of the directory is correct like 'DEEP PURPLE - [1972] - Machine Head'
-            self.title = self.dirName[pos2+4:]
+
+        if 0 < pos1 and pos1 < pos2:
+            # The name of the directory is correct like 'DEEP PURPLE - [1972] - Machine Head'
+            self.title = self.dirName[pos2 + 4:]
             self.artistName = self.dirName[:pos1]
-            self.year = year(self.dirName[pos1+4:pos2])
+            self.year = year(self.dirName[pos1 + 4:pos2])
         else:
-            #Replace caracters that could be separtors in directory name by char @
+            # Replace caracters that could be separtors in directory name by char @
             salb = replaceSpecialChars(self.dirName)
             salb.strip()
-            if salb[len(salb)-1] == "@": salb = salb[:len(salb)-1]
+            if salb[len(salb) - 1] == "@": salb = salb[:len(salb) - 1]
             if salb[0] == "@": salb = salb[1:]
 
-            #Split datas separeted by @
+            # Split datas separeted by @
             datas = salb.split("@")
             datas = [str.strip(data) for data in datas]
-            
-            
-            #if len(datas)>3:
+
+            # if len(datas)>3:
             #    print("extractDataFromDirName: more than 3 datas = "+str(datas))
 
-            if len(datas)>=3:
+            if len(datas) >= 3:
                 '''With 3 or more informations in the directory name,
                 we suppose that the fisrt one is the artist name,
                 If the second is a year, the third is the title'''
                 self.title = ""
                 self.artistName = datas[0]
 
-                for i in range(1,len(datas)):
-                
-                    if(datas[i].isdigit()):
+                for i in range(1, len(datas)):
+
+                    if (datas[i].isdigit()):
                         if isYear(datas[i]):
                             self.year = year(datas[i])
                     else:
@@ -217,7 +216,7 @@ class album:
                         self.title += datas[i]
 
 
-            elif len(datas)==2:
+            elif len(datas) == 2:
                 '''With 2 informations in the directory name,
                 we suppose that the fisrt one is the artist name,
                 the second is the title'''
@@ -226,10 +225,9 @@ class album:
                 self.artistName = datas[0]
 
             else:
-                #No synthaxe does match with this dirname
-                print("No matching: "+salb+" for currentDir: "+self.dirPath)
+                # No synthaxe does match with this dirname
+                print("No matching: " + salb + " for currentDir: " + self.dirPath)
                 self.toVerify = True
-
 
         self.title.strip()
         self.artistName.strip()
@@ -238,16 +236,16 @@ class album:
     def getTagsFromFirstFile(self):
         track = self.getTracks(firstFileOnly=True)
         if track:
-            if track.artist and self.isValidArtistName(track.artist)  :
+            if track.artist and self.isValidArtistName(track.artist):
                 track.artist = self.artistName = track.artist
             else:
                 return
-            if track.album and self.isValidAlbumName(track.album) : 
+            if track.album and self.isValidAlbumName(track.album):
                 self.title = track.album
             if track.year: self.year = track.year
-            print("getTagsFromFirstFile="+self.artistName+" - "+self.title+" - "+str(track.year))
+            print("getTagsFromFirstFile=" + self.artistName + " - " + self.title + " - " + str(track.year))
 
-    def isValidAlbumName(self,name):
+    def isValidAlbumName(self, name):
         name = name.lower()
         if name:
             if name not in [x.lower() for x in unvalidAlbumName()]:
@@ -257,8 +255,7 @@ class album:
                             return False
                     return True
 
-
-    def isValidArtistName(self,name):
+    def isValidArtistName(self, name):
         name = name.lower()
         if name:
             if name not in [x.lower() for x in unvalidArtistName()]:
@@ -268,42 +265,40 @@ class album:
                             return False
                     return True
 
-
-    def getTracks(self,subdir="",firstFileOnly=False):
+    def getTracks(self, subdir="", firstFileOnly=False):
         if subdir == "": self.tracks = []
         self.doStop = False
-        if(not self.checkDir()): return False
+        if (not self.checkDir()): return False
         res = False
-        if(subdir==""): 
+        if (subdir == ""):
             self.tracks = []
             currentDir = self.getAlbumDir()
         else:
-            currentDir = os.path.join(self.getAlbumDir(),subdir)
-
+            currentDir = os.path.join(self.getAlbumDir(), subdir)
 
         files = os.listdir(currentDir)
         files.sort()
-        
-        nTrack = track("","")
-        
+
+        nTrack = track("", "")
+
         for file in files:
             if self.doStop: break
-            if os.path.isdir(os.path.join(currentDir,str(file))):
-                #file is a directory
-                res = self.getTracks(os.path.join(subdir,str(file)),firstFileOnly=firstFileOnly)
+            if os.path.isdir(os.path.join(currentDir, str(file))):
+                # file is a directory
+                res = self.getTracks(os.path.join(subdir, str(file)), firstFileOnly=firstFileOnly)
             else:
 
                 for ext in musicFilesExtension:
-                    if fnmatch.fnmatch(file.lower(), '*.'+ext):
+                    if fnmatch.fnmatch(file.lower(), '*.' + ext):
 
                         sfile = str(file)
 
-                        if("." in sfile):
+                        if ("." in sfile):
                             filename, file_extension = os.path.splitext(sfile)
-                            itrack = track(filename,file_extension,subdir)
+                            itrack = track(filename, file_extension, subdir)
                             itrack.path = currentDir
                             itrack.parentAlbum = self
-                            
+
                             if firstFileOnly:
                                 itrack.getMutagenTags(self.getAlbumDir())
                                 self.tracks.append(itrack)
@@ -314,68 +309,64 @@ class album:
                             break
         return res
 
-
-    def getImages(self,subdir=""):
+    def getImages(self, subdir=""):
         self.doStop = False
-        if(not self.checkDir()): return False
+        if (not self.checkDir()): return False
 
-        if(subdir==""): 
+        if (subdir == ""):
             self.images = []
             currentDir = self.getAlbumDir()
         else:
-            currentDir = os.path.join(self.getAlbumDir(),subdir)
+            currentDir = os.path.join(self.getAlbumDir(), subdir)
 
         files = os.listdir(currentDir)
-        
 
         files.sort()
-    
+
         for file in files:
             if self.doStop: break
-            if os.path.isdir(os.path.join(currentDir,str(file))):
-                #file is a directory
-                self.getImages(os.path.join(subdir,file))
+            if os.path.isdir(os.path.join(currentDir, str(file))):
+                # file is a directory
+                self.getImages(os.path.join(subdir, file))
             else:
                 if file == "cover":
-                    os.rename(os.path.join(currentDir,file),os.path.join(currentDir,"cover.jpg"))
-
+                    os.rename(os.path.join(currentDir, file), os.path.join(currentDir, "cover.jpg"))
 
                 for ext in imageFilesExtension:
-                    if fnmatch.fnmatch(file.lower(), '*.'+ext):
-                        sfile = os.path.join(currentDir,file)
+                    if fnmatch.fnmatch(file.lower(), '*.' + ext):
+                        sfile = os.path.join(currentDir, file)
                         self.images.append(sfile)
                         break
 
-
     def getCover(self):
 
-        if(len(self.images)>0):
-            keywords = ["cover","front","artwork","capa","caratula","recto","frente editada","frente","folder","f"]
-
+        if (len(self.images) > 0):
+            keywords = ["cover", "front", "artwork", "capa", "caratula", "recto", "frente editada", "frente", "folder",
+                        "f"]
 
             for keyword in keywords:
                 coverFound = next((x for x in self.images if keyword == getFileName(x.lower())), "")
-                if (coverFound!=""):
-                    #print("Image found equal="+keyword)
+                if (coverFound != ""):
+                    # print("Image found equal="+keyword)
                     self.cover = coverFound
                     break
 
-            if (coverFound==""):
+            if (coverFound == ""):
                 for keyword in keywords:
-                    coverFound = next((x for x in self.images if (keyword in getFileName(x.lower()) and "back" not in getFileName(x.lower()))), "")
-                    if (coverFound!=""):
+                    coverFound = next((x for x in self.images if
+                                       (keyword in getFileName(x.lower()) and "back" not in getFileName(x.lower()))),
+                                      "")
+                    if (coverFound != ""):
                         self.cover = coverFound
                         break
-            #print("getCover cover="+self.cover)
+            # print("getCover cover="+self.cover)
 
             if self.cover == "":
-                #print("getCover GetDefault="+self.images[0])
+                # print("getCover GetDefault="+self.images[0])
                 self.cover = self.images[0]
 
     def getCoverPath(self):
-        return os.path.join(self.getAlbumDir(),self.cover)
-
-
+        return os.path.join(self.getAlbumDir(), self.cover)
 
     def checkDir(self):
         if self.musicDirectory:
@@ -390,85 +381,71 @@ class album:
 
     def getAlbumDir(self):
         if self.musicDirectory:
-            albumDir = os.path.join(self.musicDirectory.getDirPath(),self.dirPath)
+            albumDir = os.path.join(self.musicDirectory.getDirPath(), self.dirPath)
             return albumDir
         else:
             return self.dirPath
 
     def getTracksFilePath(self):
-        files =[]
+        files = []
         for track in self.tracks:
             files.append(track.getFilePath())
         return files
-        
 
-    def addStyle(self,idSet):
+    def addStyle(self, idSet):
         self.styleIDSet = self.styleIDSet.union(idSet)
-
 
     def updateTitle(self):
         db = database()
-        db.updateValue("albums","title",self.title,"albumID",self.albumID)
+        db.updateValue("albums", "title", self.title, "albumID", self.albumID)
 
     def updateYear(self):
         db = database()
-        db.updateValue("albums","year",self.year,"albumID",self.albumID)
+        db.updateValue("albums", "year", self.year, "albumID", self.albumID)
 
     def updateSize(self):
         db = database()
-        db.updateValue("albums","size",self.size,"albumID",self.albumID)
+        db.updateValue("albums", "size", self.size, "albumID", self.albumID)
 
     def updateLength(self):
         db = database()
-        db.updateValue("albums","length",self.length,"albumID",self.albumID)
+        db.updateValue("albums", "length", self.length, "albumID", self.albumID)
 
     def update(self):
         self.updateTitle()
         self.updateYear()
 
-
-    def cutCoverFromPath(self,path):
-        destFile = os.path.join(self.getAlbumDir(),"cover.jpg")
+    def cutCoverFromPath(self, path):
+        destFile = os.path.join(self.getAlbumDir(), "cover.jpg")
         if os.path.isfile(destFile):
-            os.replace(path,destFile)
+            os.replace(path, destFile)
         else:
-            shutil.move(path,destFile)
+            shutil.move(path, destFile)
         self.cover = "cover.jpg"
-
-     
-
 
     def getAlbumSize(self):
         size = getFolderSize(self.getAlbumDir())
-        print(self.title+" size="+convert_size(self.size))
+        print(self.title + " size=" + convert_size(self.size))
         if size > 0 and size != self.size:
             self.size = size
-            print(self.title+" size="+convert_size(self.size))
+            print(self.title + " size=" + convert_size(self.size))
             self.updateSize()
 
-
-
     def getLength(self):
-        
-        if len(self.tracks) == 0 : self.getTracks()
+
+        if len(self.tracks) == 0: self.getTracks()
         alb_length = 0
         for trk in self.tracks:
             alb_length += trk.duration
 
-        print("album length="+str(alb_length))
+        print("album length=" + str(alb_length))
         if alb_length > 0 and (alb_length != self.length or self.length is None):
             self.length = int(alb_length)
             self.updateLength()
 
 
 if __name__ == '__main__':
-
-
     alb = album("ACDC - [1975] - TNT")
-    print(alb.title)  
+    print(alb.title)
     alb = album("ACDC - [1983] - a tribute to")
-    print(alb.title)        
-
-    
-            
-            
+    print(alb.title)

@@ -4,7 +4,7 @@
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QSize, QCoreApplication
 from PyQt5.QtWidgets import QApplication, QWidget, QListWidget, QDialog, QPushButton, QVBoxLayout, \
-QHeaderView, QHBoxLayout, QSlider, QSizePolicy, QFrame, QLabel, QShortcut, QListWidgetItem
+    QHeaderView, QHBoxLayout, QSlider, QSizePolicy, QFrame, QLabel, QShortcut, QListWidgetItem
 
 from picFromUrlThread import *
 from fullScreenCoverWidget import *
@@ -23,14 +23,10 @@ from PyQt5.QtCore import QThread
 from waitOverlayWidget import *
 
 
-
-
 class coverFinderSearchThread(QThread):
-
-
     """Read datas from files in the album folder"""
 
-    doStop = False 
+    doStop = False
     musicBase = None
     resultFound = pyqtSignal(int, name='resultFound')
 
@@ -43,72 +39,61 @@ class coverFinderSearchThread(QThread):
         except:
             self.quit()
         self.resultFound.emit(1)
-        self.quit()  
+        self.quit()
 
 
 class coverArtFinderDialog(QDialog):
-
     signalCoverSaved = pyqtSignal(int, name='coverSaved')
     picFromUrlThread = None
-    
+
     def __init__(self, album=None, parent=None):
         QDialog.__init__(self, parent)
         self.items = []
         self.album = album
         self.keyword = ""
         self.coverSaved = False
-        
+
         self.coverFinder = CoverArtFinder()
         self.coverFinderThread = coverFinderSearchThread()
         self.coverFinderThread.resultFound.connect(self.onCoverFinderResult)
-        
 
         if self.picFromUrlThread is None:
             self.picFromUrlThread = picFromUrlThread()
         self.picFromUrlThread.downloadCompleted.connect(self.onSelectedPicDownloaded)
 
-   
         self.setWindowFlags(Qt.Window)
         self.initUI()
 
-      
-
     def initUI(self):
-        #self.resize(650,400)
+        # self.resize(650,400)
 
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
 
-
         self.centralWidget = QWidget(self)
-
-
 
         self.overlay = waitOverlay(self)
 
-
         self.vLayout = QVBoxLayout()
-        #self.vLayout = QGridLayout()
+        # self.vLayout = QGridLayout()
         self.vLayout.setContentsMargins(6, 6, 6, 6)
         self.centralWidget.setLayout(self.vLayout)
-        
+
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
         self.centralWidget.setSizePolicy(sizePolicy)
-        self.centralWidget.resize(652,400)
+        self.centralWidget.resize(652, 400)
 
         self.thumbViewer = thumbnailViewerWidget(self.items)
         self.thumbViewer.thumbWidget.setSpacing(4)
 
         self.vLayout.addWidget(self.thumbViewer)
-        
 
         self.btWidget = QWidget()
         self.vLayout.addWidget(self.btWidget)
         layBt = QHBoxLayout(self.btWidget)
-
 
         self.saveButton = QPushButton(_translate("coverArtFinder", "Save cover"))
         self.saveButton.setIcon(getSvgIcon("save.svg"))
@@ -126,21 +111,16 @@ class coverArtFinderDialog(QDialog):
 
         self.overlay.showOverlay()
 
-
-
     def resizeEvent(self, event):
-    
+
         self.overlay.resize(event.size())
         self.centralWidget.resize(event.size())
-        
-        event.accept()
-        
 
-    def showEvent(self,event):
+        event.accept()
+
+    def showEvent(self, event):
         print("Show coverArtFinderDialog")
         self.search()
-
-
 
     def search(self):
 
@@ -149,12 +129,11 @@ class coverArtFinderDialog(QDialog):
         else:
             keyword = self.keyword
 
-        print("CoverArtFinder search="+keyword)
+        print("CoverArtFinder search=" + keyword)
 
         self.coverFinderThread.coverFinder = self.coverFinder
         self.coverFinderThread.keyword = keyword
         self.coverFinderThread.start()
-
 
     def saveCover(self):
         url = self.thumbViewer.selectedURL
@@ -166,10 +145,7 @@ class coverArtFinderDialog(QDialog):
             else:
                 self.saveSelectedCover()
 
-        
-        
-
-    def onSelectedPicDownloaded(self,uri):
+    def onSelectedPicDownloaded(self, uri):
         self.selectedFile = uri
         self.saveSelectedCover()
 
@@ -180,25 +156,21 @@ class coverArtFinderDialog(QDialog):
         print("saveSelectedCover")
         self.close()
 
-
-    def onCoverFinderResult(self,result):
+    def onCoverFinderResult(self, result):
         if not self.items:
             return
         self.items = self.coverFinder.items
         self.showThumbnails()
         self.overlay.hide()
 
-
-    def closeEvent(self,event):
+    def closeEvent(self, event):
         self.thumbViewer.thumbWidget.clear()
         self.thumbViewer.removeTempFiles(self.coverSaved)
         self.thumbViewer.resetSelection()
         self.close()
 
-
-    def addThumbnailItem(self,url,thumbURL,name):
-        self.thumbViewer.addThumbnailItem(url,thumbURL,name)
-
+    def addThumbnailItem(self, url, thumbURL, name):
+        self.thumbViewer.addThumbnailItem(url, thumbURL, name)
 
     def showThumbnails(self):
         for thumb in self.items:
@@ -206,11 +178,9 @@ class coverArtFinderDialog(QDialog):
             url = thumb["image_link"]
             height = thumb["image_height"]
             width = thumb["image_width"]
-            name = str(height)+"x"+str(width)
-            print("thumbURL="+thumbURL)
-            self.addThumbnailItem(url,thumbURL,name)
-
-
+            name = str(height) + "x" + str(width)
+            print("thumbURL=" + thumbURL)
+            self.addThumbnailItem(url, thumbURL, name)
 
     def retranslateUi(self):
 
@@ -218,15 +188,12 @@ class coverArtFinderDialog(QDialog):
         self.setWindowTitle(_translate("coverArtFinder", "Cover finder"))
 
 
-
 if __name__ == '__main__':
-
     import sys
-    
+
     app = QApplication(sys.argv)
     caf = coverArtFinderDialog()
 
     caf.show()
-
 
     sys.exit(app.exec_())

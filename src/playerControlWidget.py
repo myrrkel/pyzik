@@ -458,7 +458,7 @@ class playerControlWidget(QWidget):
                 trk_title = self.currentTrack.radio.liveTrackTitle
             if trk_title == "":
                 trk_title = self.player.getNowPlaying()
-            if trk_title == "NO_META":trk_title = ""
+            if trk_title == "NO_META": trk_title = ""
         else:
             radioName = title
             trk_title = ""

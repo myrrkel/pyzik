@@ -4,20 +4,20 @@
 
 from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QSize
 from PyQt5.QtWidgets import QDialog, QWidget, QShortcut, QAction, QWidget, QMainWindow, \
-                            QSizePolicy, QLabel, QFrame, QVBoxLayout, QHBoxLayout, QApplication
+    QSizePolicy, QLabel, QFrame, QVBoxLayout, QHBoxLayout, QApplication
 from PyQt5.QtGui import QPixmap, QIcon, QKeySequence
 
 from historyManager import *
 from picFromUrlThread import *
 
+
 class customControlsWidget(QWidget):
 
-
-    def __init__(self,parent=None):
-        QWidget.__init__(self,parent=parent)
+    def __init__(self, parent=None):
+        QWidget.__init__(self, parent=parent)
 
         lay = QHBoxLayout(self)
-        
+
         _translate = QCoreApplication.translate
 
         self.refreshButton = QPushButton(_translate("custom", "Refresh"))
@@ -25,22 +25,20 @@ class customControlsWidget(QWidget):
 
 
 class fullScreenWidget(QDialog):
-    
     coverPixmap = None
     picFromUrlThread = None
 
-    def __init__(self,player=None):
+    def __init__(self, player=None):
         QDialog.__init__(self)
         self.player = player
         self.currentTrack = None
         self.currentCoverPath = ""
         self.picBufferManager = None
         self.setWindowFlags(
-                            Qt.Window | 
-                            Qt.WindowStaysOnTopHint | 
-                            Qt.MaximizeUsingFullscreenGeometryHint | 
-                            Qt.FramelessWindowHint )
-
+            Qt.Window |
+            Qt.WindowStaysOnTopHint |
+            Qt.MaximizeUsingFullscreenGeometryHint |
+            Qt.FramelessWindowHint)
 
         self.initUI()
 
@@ -53,16 +51,15 @@ class fullScreenWidget(QDialog):
         self.shortcutClose = QShortcut(QKeySequence("Escape"), self)
         self.shortcutClose.activated.connect(self.close)
 
-        #self.setCurrentTrack()
-        #self.setBackgroundBlack()
-        #self.setTitleLabel()
-        #self.cover.show()
+        # self.setCurrentTrack()
+        # self.setBackgroundBlack()
+        # self.setTitleLabel()
+        # self.cover.show()
 
     def show(self):
         self.showFullScreen()
         self.setBackgroundBlack()
         self.setCurrentTrack()
-
 
     def setBackgroundBlack(self):
         self.setStyleSheet("background-color:black;")
@@ -78,11 +75,10 @@ class fullScreenWidget(QDialog):
         self.vLayout.setAlignment(Qt.AlignCenter)
         self.setLayout(self.vLayout)
 
-
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
-        
+
         self.cover = QLabel()
         self.cover.setSizePolicy(sizePolicy)
         self.cover.setMinimumSize(QSize(300, 300))
@@ -114,50 +110,40 @@ class fullScreenWidget(QDialog):
 
         self.vLayout.addWidget(self.labelTitle)
 
-
     def mousePressEvent(self, event):
         self.close()
 
-
-    def connectPicDownloader(self,picDl):
+    def connectPicDownloader(self, picDl):
         self.picFromUrlThread = picDl
         self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
 
-
-    def resizeEvent(self,event):
+    def resizeEvent(self, event):
         self.resizeCover()
-
 
     def resizeCover(self):
         if (not self.coverPixmap.isNull()):
             scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                                    Qt.KeepAspectRatio,
-                                                    Qt.SmoothTransformation)
+                                                  Qt.KeepAspectRatio,
+                                                  Qt.SmoothTransformation)
             self.cover.setPixmap(scaledCover)
 
+    def setCurrentTrack(self, title=""):
 
-    def setCurrentTrack(self,title=""):
-
-        if self.player is None : return 
+        if self.player is None: return
 
         if self.isVisible() == False: return
 
         self.currentTrack = self.player.getCurrentTrackPlaylist()
-    
 
         self.showCover(self.currentTrack)
 
         self.setTitleLabel()
 
-
-    def onPicDownloaded(self,path):
-        print("fullscreenWidget onPicDownloaded="+path)
+    def onPicDownloaded(self, path):
+        print("fullscreenWidget onPicDownloaded=" + path)
         self.showCoverPixmap(path)
-        
 
-
-
-    def showCover(self,trk):
+    def showCover(self, trk):
 
         if self.player.radioMode:
             coverUrl = self.player.getLiveCoverUrl()
@@ -175,9 +161,9 @@ class fullScreenWidget(QDialog):
                 self.picFromUrlThread.start()
 
         else:
-            #self.picFromUrlThread.resetLastURL()
+            # self.picFromUrlThread.resetLastURL()
             if trk is not None and trk.parentAlbum is not None:
-                print("fullscreenWidget trk.parentAlbum.cover="+trk.parentAlbum.cover)
+                print("fullscreenWidget trk.parentAlbum.cover=" + trk.parentAlbum.cover)
                 if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
                     self.coverPixmap = self.defaultPixmap
                 else:
@@ -186,29 +172,25 @@ class fullScreenWidget(QDialog):
                         return
                     self.currentCoverPath = coverPath
                     self.showCoverPixmap(coverPath)
-                    
 
-
-    def showCoverPixmap(self,path):
+    def showCoverPixmap(self, path):
         if self.picBufferManager is None:
             self.coverPixmap = QPixmap(path)
         else:
-            self.coverPixmap = self.picBufferManager.getPic(path,"fullscreenWidget")
+            self.coverPixmap = self.picBufferManager.getPic(path, "fullscreenWidget")
 
         scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                Qt.KeepAspectRatio,
-                                Qt.SmoothTransformation)
+                                              Qt.KeepAspectRatio,
+                                              Qt.SmoothTransformation)
         self.cover.setPixmap(scaledCover)
         self.cover.show()
 
-
-
     def setTitleLabel(self):
-        artName="Pyzik"
-        albTitle=""
-        year=""
+        artName = "Pyzik"
+        albTitle = ""
+        year = ""
 
-        #orange = QtGui.QColor(216, 119, 0)
+        # orange = QtGui.QColor(216, 119, 0)
         colorName = orange.name()
 
         if self.currentTrack:
@@ -223,16 +205,15 @@ class fullScreenWidget(QDialog):
                 albTitle = albTitle + " - " + self.currentTrack.getTrackTitle()
                 year = self.currentTrack.getAlbumYear()
 
-
         sAlbum = albTitle
-        sYear =str(year)
-        if(not sYear in ["0",""]): sAlbum += " ("+sYear+")"
+        sYear = str(year)
+        if (not sYear in ["0", ""]): sAlbum += " (" + sYear + ")"
         sTitle = '''<html><head/><body>
         <p><span style=\" color:{colorName}; font-size:28pt; text-shadow:white 0px 0px 4px; font-weight:600;\">{Artist}</span></p>
         <p><span style=\" color:{colorName}; font-size:20pt; font-style:italic;\">{Album}</span></p>
         </body></html>'''
-        sTitle = sTitle.format(Artist=artName,Album=sAlbum, colorName=colorName)
-        
+        sTitle = sTitle.format(Artist=artName, Album=sAlbum, colorName=colorName)
+
         self.labelTitle.setText(sTitle)
 
 
@@ -241,7 +222,6 @@ if __name__ == "__main__":
     from picDownloader import *
 
     app = QApplication(sys.argv)
-
 
     fs = fullScreenWidget()
 
@@ -253,14 +233,12 @@ if __name__ == "__main__":
     fs.onPicDownloaded(tempPath)
     fs.setTitleLabel()
 
-    #fs.showFullScreen()
+    # fs.showFullScreen()
 
-    #tempPath = "/tmp/tmp8mfrufdl"
-    #fs.setCoverPic(tempPath)
+    # tempPath = "/tmp/tmp8mfrufdl"
+    # fs.setCoverPic(tempPath)
 
-
-    #url = "C:\\Users\\MP05~1.OCT\\AppData\\Local\\Temp\\tmpp9wk96vu"
-    #playlist.onPicDownloaded(url)
-
+    # url = "C:\\Users\\MP05~1.OCT\\AppData\\Local\\Temp\\tmpp9wk96vu"
+    # playlist.onPicDownloaded(url)
 
     sys.exit(app.exec_())

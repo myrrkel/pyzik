@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-
-
 import sys
 import logging
 
@@ -13,7 +11,7 @@ from darkStyle import *
 from playerVLC import *
 from musicBase import *
 from translators import *
-from mainWindowLoader import * 
+from mainWindowLoader import *
 
 root_logger = logging.getLogger()
 root_logger.setLevel("INFO")
@@ -23,25 +21,23 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 root_logger.addHandler(handler)
 
+
 def main():
     logger.info("Pyzik starting...")
     app = QtWidgets.QApplication(sys.argv)
     app.setApplicationName("Pyzik")
 
-
     logger.info("Loading translations...")
-    tr = translators(app)      
+    tr = translators(app)
     localeLanguage = QtCore.QLocale.system().name()
     tr.installTranslators(localeLanguage)
 
-
-    #Load & Set the DarkStyleSheet
+    # Load & Set the DarkStyleSheet
     logger.info("Loading DarkStyleSheet...")
     app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
-    #logger.info("Available system styles: ",QtWidgets.QStyleFactory.keys())
-    #myStyle = QtWidgets.QStyleFactory.create('Windows')
-    #app.setStyle(myStyle)
-
+    # logger.info("Available system styles: ",QtWidgets.QStyleFactory.keys())
+    # myStyle = QtWidgets.QStyleFactory.create('Windows')
+    # app.setStyle(myStyle)
 
     mb = musicBase()
     logger.info('Loading musicBase...')
@@ -53,7 +49,7 @@ def main():
     window = MainWindowLoader(None, app, mb, player, tr)
     window.show()
 
-    logger.info("Go!")    
+    logger.info("Go!")
     app.exec()
     window.threadStreamObserver.stop()
 
@@ -65,7 +61,5 @@ def main():
     sys.exit()
 
 
-
 if __name__ == "__main__":
     main()
-
