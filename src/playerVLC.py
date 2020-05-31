@@ -15,6 +15,9 @@ import threading
 from track import *
 from PyQt5.QtCore import pyqtSignal
 import ctypes as c
+import logging
+
+logger = logging.getLogger(__name__)
 
 c_int_p = c.POINTER(c.c_int)
 c_uint8_p = c.POINTER(c.c_uint8)
@@ -77,6 +80,8 @@ class playerVLC:
         self.adKilled = False
         self.loadingRadio = False
         self.playlistChangedEvent = pyqtSignal(int, name='playlistChanged')
+        self.currentRadioChangedEvent = pyqtSignal(int, name='currentRadioChanged')
+        self.titleChangedEvent = pyqtSignal(str, name='titleChanged')
 
         self.nowPlaying = ""
 
@@ -321,11 +326,11 @@ class playerVLC:
         media = self.instance.media_new(sfile)
         return media
 
-    def playRadioInThread(self,radio, currentRadioChanged):
-        processThread = threading.Thread(target=self.playRadio, args=[radio, currentRadioChanged])
+    def playRadioInThread(self,radio):
+        processThread = threading.Thread(target=self.playRadio, args=[radio])
         processThread.start()
 
-    def playRadio(self,radio, currentRadioChanged):
+    def playRadio(self,radio):
         self.radioMode = True
         self.currentRadio = radio
         self.loadingRadio = True
@@ -337,6 +342,8 @@ class playerVLC:
         self.playlistChangedEvent.emit(1)
         self.currentRadioName = radio.name
         self.currentRadioTitle = "..."
+        logger.info("playRadio %s", radio.name)
+        self.titleChangedEvent.emit(radio.name)
         self.playMediaList()
         trk = track()
         trk.radioID = radio.radioID
@@ -377,7 +384,7 @@ class playerVLC:
         mrl = self.getCurrentMrlPlaylist()
         print(radio.name+" mrl="+mrl)
         self.tracksDatas.append((mrl,radio.stream,trk))
-        currentRadioChanged.emit(1)
+        self.currentRadioChangedEvent.emit(1)
 
 
     def getState(self):
@@ -398,7 +405,7 @@ class playerVLC:
                     print("PlayerVLC NowPlaying = NO_META")
                     return "NO_META"
                 else:
-                    print("PlayerVLC NowPlaying = "+currentRadioTitle)
+                    print("PlayerVLC NowPlaying = "+self.currentRadioTitle)
                     return self.currentRadioTitle
         else:
             print("PlayerVLC NowPlaying = NO_STREAM_MEDIA")

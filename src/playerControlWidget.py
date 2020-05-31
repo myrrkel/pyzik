@@ -15,6 +15,9 @@ from PyQt5.QtGui import QPixmap
 import threading
 from vlc import EventType as vlcEventType
 from svgIcon import *
+import logging
+
+logger = logging.getLogger(__name__)
 
 white = QtGui.QColor(255, 255, 255)
 
@@ -390,6 +393,11 @@ class playerControlWidget(QWidget):
         print("PlayerControl setCurrentTrack:",index)
 
         trk = self.player.getCurrentTrackPlaylist()
+        if trk is None and title:
+            self.setTitleLabel(title)
+            self.showCover()
+            return
+
         self.currentTrack = trk
 
         self.setTitleLabel()
@@ -397,7 +405,7 @@ class playerControlWidget(QWidget):
         self.showCover(trk)
 
 
-    def showCover(self,trk):
+    def showCover(self,trk=None):
 
         if self.player.radioMode:
             coverUrl = self.player.getLiveCoverUrl()
@@ -407,7 +415,7 @@ class playerControlWidget(QWidget):
                     coverUrl = rad.getRadioPic()
 
             if coverUrl is None: coverUrl = ""
-
+            logger.info("showCover: %s", coverUrl)
             if self.currentCoverPath == coverUrl:
                 self.isWaitingCover = False
                 self.refreshWaitOverlay()
@@ -420,7 +428,9 @@ class playerControlWidget(QWidget):
                 self.picFromUrlThread.url = coverUrl
                 self.isWaitingCover = True
                 self.picFromUrlThread.start()
-
+            else:
+                self.showDefaultPixmap()
+                self.refreshWaitOverlay()
    
 
         else:
@@ -440,7 +450,7 @@ class playerControlWidget(QWidget):
 
 
     def setTitleLabel(self,title=""):
-
+        logger.info("setTitleLabel %s", title)
         if title != "":
             self.setRadioLabeLText(title)
             return

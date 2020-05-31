@@ -205,6 +205,8 @@ class MainWindowLoader(QMainWindow):
         # This function is called when the mainWindow is shown
         if self.firstShow == True:
             self.player.playlistChangedEvent = self.playlistChanged
+            self.player.currentRadioChangedEvent = self.currentRadioChanged
+            self.player.titleChangedEvent = self.currentTrackChanged
             self.ramdomAlbum()
             self.firstShow = False
 
@@ -353,7 +355,7 @@ class MainWindowLoader(QMainWindow):
     def playRadio(self, radio):
         self.playerControl.setTitleLabel(radio.name)
         self.playerControl.showWaitingOverlay()
-        self.player.playRadioInThread(radio, self.currentRadioChanged)
+        self.player.playRadioInThread(radio)
 
     def onMenuExplore(self):
         self.exploreAlbumsDirectoriesThread.musicBase = self.musicBase
@@ -693,13 +695,15 @@ class MainWindowLoader(QMainWindow):
         self.fullScreenWidget.activateWindow()
 
     def onCurrentTrackChanged(self, event=None):
-
+        logger.info("onCurrentTrackChanged %s", event)
         if not self.player.radioMode:
             title = None
             trk = self.player.getCurrentTrackPlaylist()
             if trk is not None and trk.parentAlbum is not None:
                 self.musicBase.history.insertTrackHistory(trk.parentAlbum.albumID, trk.getFilePathInAlbumDir())
         else:
+            if not event:
+                return
             title = event
             if not title in ["...", "", "-"]:
                 self.musicBase.history.insertRadioHistory(self.player.currentRadioName, title)

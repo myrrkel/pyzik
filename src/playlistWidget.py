@@ -14,6 +14,9 @@ from tableWidgetDragRows import *
 
 from vlc import EventType as vlcEventType
 from svgIcon import *
+import logging
+
+logger = logging.getLogger(__name__)
 
 #orange = QtGui.QColor(216, 119, 0)
 white = QtGui.QColor(255, 255, 255)
@@ -164,6 +167,8 @@ class playlistWidget(QDialog):
         self.mainFrame.setLayout(self.hLayout)
 
         self.coverPixmap = QtGui.QPixmap()
+        self.defaultRadioPix = getSvgWithColorParam("radio.svg","","#000000")
+        self.defaultPixmap = QtGui.QPixmap()
 
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -424,25 +429,26 @@ class playlistWidget(QDialog):
     def setCurrentTrack(self,title=""):
         if self.isVisible() == False: return
 
-        if title == "": 
-            trk = self.player.getCurrentTrackPlaylist()
-            if trk: 
-                if trk.isRadio():
-                    title = self.player.getNowPlaying()
-                else:
-                    title = trk.getTrackTitle()
-            
-        if title != "" :
+        trk = self.player.getCurrentTrackPlaylist()
+
+        if title in ["", "..."] and trk:
+            if trk.isRadio():
+                title = self.player.getNowPlaying()
+                if title == "...":
+                    title = trk.radioName
+            else:
+                title = trk.getTrackTitle()
+
+        logger.info("setCurrentTrack window title %s", title)
+        if title != "":
             self.setWindowTitle(title)
         else:
             self.setWindowTitle(_translate("playlist", "Playlist"))
 
         index = self.player.getCurrentIndexPlaylist()
-        #print("setCurrentTrack:",index)
 
-        trk = self.player.getCurrentTrackPlaylist()
-
-        #print("Playlist count="+str(self.mediaList.count()))
+        if self.tableWidgetTracks.rowCount == 0:
+            self.showMediaList()
 
         for i in range(0,self.mediaList.count()):
 
@@ -452,7 +458,15 @@ class playlistWidget(QDialog):
                 break
 
             if trk is None:
-                print("trk is None")
+                self.showDefaultPixmap()
+                if self.player.radioMode:
+                    item.setText(title)
+                    item1 = self.tableWidgetTracks.item(i, 1)
+                    item1.setText("")
+                    item2 = self.tableWidgetTracks.item(i, 2)
+                    item2.setText("")
+                else:
+                    print("trk is None")
 
             if trk is not None and trk.radioName != "" and i==index:
                 if title != "":
@@ -519,6 +533,8 @@ class playlistWidget(QDialog):
                 self.currentCoverPath = cover_url
                 self.picFromUrlThread.url = cover_url
                 self.picFromUrlThread.start()
+            else:
+                self.showDefaultPixmap()
 
         else:
             #self.picFromUrlThread.resetLastURL()
@@ -540,14 +556,25 @@ class playlistWidget(QDialog):
         else:
             self.coverPixmap = self.picBufferManager.getPic(path,"playlistWidget")
 
-        scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                Qt.KeepAspectRatio,
-                                Qt.SmoothTransformation)
-        self.cover.setPixmap(scaledCover)
-        self.cover.show()
+        self.showScaledCover()
 
+    def showDefaultPixmap(self):
+        if self.player.radioMode:
+            self.coverPixmap = self.defaultRadioPix
+        else:
+            self.coverPixmap = self.defaultPixmap
 
+        self.showScaledCover()
 
+    def showScaledCover(self):
+        if not self.coverPixmap.isNull():
+            scaledCover = self.coverPixmap.scaled(self.cover.size(),
+                                                  Qt.KeepAspectRatio,
+                                                  Qt.SmoothTransformation)
+            self.cover.setPixmap(scaledCover)
+
+        else:
+            self.cover.clear()
 
     def changeTrack(self,item):
         i = self.tableWidgetTracks.currentRow()
