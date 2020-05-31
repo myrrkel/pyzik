@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-#from PyQt5 import QtCore, QtGui, QtWidgets
+# from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QSize, QCoreApplication
 from PyQt5.QtWidgets import QApplication, QWidget, QDialog, QPushButton, QVBoxLayout, \
-QHeaderView, QHBoxLayout, QSlider, QSizePolicy, QFrame, QLabel, QShortcut
+    QHeaderView, QHBoxLayout, QSlider, QSizePolicy, QFrame, QLabel, QShortcut
 from PyQt5.QtGui import QPixmap
 from track import *
 import requests
@@ -18,21 +18,21 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-#orange = QtGui.QColor(216, 119, 0)
+# orange = QtGui.QColor(216, 119, 0)
 white = QtGui.QColor(255, 255, 255)
 
 _translate = QCoreApplication.translate
 
+
 class playerControlsWidget(QWidget):
-    
     player = None
 
-    def __init__(self,parent=None):
-        QWidget.__init__(self,parent=parent)
+    def __init__(self, parent=None):
+        QWidget.__init__(self, parent=parent)
 
         lay = QHBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
-        
+
         self.pauseButton = QPushButton()
         self.pauseButton.setToolTip(_translate("playlist", "Pause"))
         self.pauseButton.setIcon(getSvgIcon("pause.svg"))
@@ -63,7 +63,7 @@ class playerControlsWidget(QWidget):
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        #sizePolicy.setHeightForWidth(self.volumeSlider.sizePolicy().hasHeightForWidth())
+        # sizePolicy.setHeightForWidth(self.volumeSlider.sizePolicy().hasHeightForWidth())
         self.volumeSlider.setSizePolicy(sizePolicy)
         self.volumeSlider.setMinimumSize(QSize(80, 0))
         self.volumeSlider.setMaximum(100)
@@ -73,7 +73,6 @@ class playerControlsWidget(QWidget):
 
 
 class playlistWidget(QDialog):
-    
     picFromUrlThread = None
     currentCoverPath = ""
     picBufferManager = None
@@ -96,32 +95,29 @@ class playlistWidget(QDialog):
         if self.picFromUrlThread is None:
             self.picFromUrlThread = picFromUrlThread()
 
-
-        
-
         self.initUI()
         self.tableWidgetTracks.cellDoubleClicked.connect(self.changeTrack)
         self.cover.mouseDoubleClickEvent = self.mouseDoubleClickEvent
         self.parent.playlistChanged.connect(self.onPlaylistChanged)
 
-    def mouseDoubleClickEvent(self,event):
+    def mouseDoubleClickEvent(self, event):
         self.showFullScreen()
 
     def initUI(self):
 
         self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
 
-        #self.setWindowIcon(QtGui.QIcon(self.parent.defaultPixmap))
+        # self.setWindowIcon(QtGui.QIcon(self.parent.defaultPixmap))
 
         self.vLayout = QVBoxLayout()
         self.vLayout.setContentsMargins(6, 6, 6, 6)
         self.setLayout(self.vLayout)
-        
+
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
         self.setSizePolicy(sizePolicy)
-        self.resize(550,400)
+        self.resize(550, 400)
         self.initTableWidgetTracks()
 
         self.playerControls = playerControlsWidget()
@@ -134,7 +130,6 @@ class playlistWidget(QDialog):
         self.playerControls.volumeSlider.setValue(self.player.getVolume())
         self.playerControls.volumeSlider.sliderMoved.connect(self.setVolume)
 
-        
         self.timeSlider = QSlider(self)
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -147,13 +142,13 @@ class playlistWidget(QDialog):
         self.timeSlider.setOrientation(Qt.Horizontal)
         self.timeSlider.setObjectName("timeSlider")
 
-        #self.timeSlider.mousePressEvent=self.setIsTimeSliderDown
-        #self.timeSlider.mouseReleaseEvent=self.onTimeSliderIsReleased
+        # self.timeSlider.mousePressEvent=self.setIsTimeSliderDown
+        # self.timeSlider.mouseReleaseEvent=self.onTimeSliderIsReleased
 
         self.timeSlider.sliderPressed.connect(self.setIsTimeSliderDown)
         self.timeSlider.sliderReleased.connect(self.onTimeSliderIsReleased)
         self.timeSlider.sliderMoved.connect(self.setPlayerPosition)
-        #self.player.mpEnventManager.event_attach(vlcEventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
+        # self.player.mpEnventManager.event_attach(vlcEventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
 
         self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
         self.shortcutPause.activated.connect(self.player.pause)
@@ -167,14 +162,14 @@ class playlistWidget(QDialog):
         self.mainFrame.setLayout(self.hLayout)
 
         self.coverPixmap = QtGui.QPixmap()
-        self.defaultRadioPix = getSvgWithColorParam("radio.svg","","#000000")
+        self.defaultRadioPix = getSvgWithColorParam("radio.svg", "", "#000000")
         self.defaultPixmap = QtGui.QPixmap()
 
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        #sizePolicy.setWidthForHeight(True)
-        
+        # sizePolicy.setWidthForHeight(True)
+
         self.cover = QLabel()
         self.cover.setSizePolicy(sizePolicy)
         self.cover.setMinimumSize(QSize(200, 200))
@@ -184,50 +179,41 @@ class playlistWidget(QDialog):
         self.hLayout.addWidget(self.cover)
         self.hLayout.addWidget(self.tableWidgetTracks)
 
-
         self.vLayout.addWidget(self.mainFrame)
         self.vLayout.addWidget(self.timeSlider)
         self.vLayout.addWidget(self.playerControls)
-        
-
 
         self.retranslateUi()
 
-        #self.resizeEvent = self.onResize
+        # self.resizeEvent = self.onResize
 
-
-    def onPause(self,event):
+    def onPause(self, event):
         self.player.pause()
 
-
-    def connectPicDownloader(self,picDl):
+    def connectPicDownloader(self, picDl):
         self.picFromUrlThread = picDl
         self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
 
-
-    def onPicDownloaded(self,path):
+    def onPicDownloaded(self, path):
         print('Playlist onPicDownloaded')
         self.showCoverPixmap(path)
 
-
-    
     def setVolume(self, volume):
         self.player.setVolume(volume)
 
-    def setIsTimeSliderDown(self,event=None):
+    def setIsTimeSliderDown(self, event=None):
         print('setIsTimeSliderDown')
         self.isTimeSliderDown = True
         if event is not None: return event.accept()
 
-    def setIsTimeSliderReleased(self,event=None):
+    def setIsTimeSliderReleased(self, event=None):
         print('setIsTimeSliderReleased')
         self.isTimeSliderDown = False
         if event is not None: return event.accept()
 
-    def onResize(self,event):
+    def onResize(self, event):
         hHeader = self.tableWidgetTracks.horizontalHeader()
         hHeader.resizeSections(QHeaderView.Stretch)
-        
 
     def showFullScreen(self):
         if self.fullScreenWidget:
@@ -265,8 +251,6 @@ class playlistWidget(QDialog):
         self.tableWidgetTracks.trackMoved.connect(self.onTrackMoved)
         self.tableWidgetTracks.beforeTrackMove.connect(self.onBeforeTrackMove)
 
-
-
     def initColumnHeaders(self):
 
         hHeader = self.tableWidgetTracks.horizontalHeader()
@@ -278,57 +262,55 @@ class playlistWidget(QDialog):
         hHeader.hideSection(4)
 
         if self.tableWidgetTracks.columnWidth(0) < 100:
-            self.tableWidgetTracks.setColumnWidth(0,100)
+            self.tableWidgetTracks.setColumnWidth(0, 100)
         else:
             if self.tableWidgetTracks.columnWidth(0) > 300:
-                self.tableWidgetTracks.setColumnWidth(0,300)     
+                self.tableWidgetTracks.setColumnWidth(0, 300)
 
+    def onBeforeTrackMove(self, param):
+        for i in range(0, self.tableWidgetTracks.rowCount()):
+            idLine = self.tableWidgetTracks.item(i, 4).setText(str(i))
 
-    def onBeforeTrackMove(self,param):
-        for i in range(0,self.tableWidgetTracks.rowCount()):
-            idLine = self.tableWidgetTracks.item(i,4).setText(str(i))
-
-    def onTrackMoved(self,trackMove: (int,int)):
+    def onTrackMoved(self, trackMove: (int, int)):
 
         self.mediaList.lock()
-        #Get new order of tracks
+        # Get new order of tracks
         new_order = []
-        for i in range(0,self.tableWidgetTracks.rowCount()):
-            idLine = self.tableWidgetTracks.item(i,4).text()
+        for i in range(0, self.tableWidgetTracks.rowCount()):
+            idLine = self.tableWidgetTracks.item(i, 4).text()
             new_order.append(int(idLine))
 
         newCurrent = 0
         currentIndex = self.player.get_current_index_playlist()
 
-        #Backup current vlc media list
+        # Backup current vlc media list
         tmp_mediaList = []
-        for i in range(0,self.mediaList.count()):
+        for i in range(0, self.mediaList.count()):
             tmp_mediaList.append(self.mediaList.item_at_index(i))
 
         self.player.removeAllTracks()
-        
-        #Add tracks in new order
+
+        # Add tracks in new order
         for i, idLine in enumerate(new_order):
             if idLine != currentIndex:
-                self.mediaList.insert_media(tmp_mediaList[idLine],i)
+                self.mediaList.insert_media(tmp_mediaList[idLine], i)
             else:
                 newCurrent = i
 
-        self.mediaList.unlock()   
+        self.mediaList.unlock()
 
-        print("newCurrent="+str(newCurrent))
-        
-        self.player.refreshMediaListPlayer()    
-        #self.player.resetCurrentItemIndex(newCurrent)
+        print("newCurrent=" + str(newCurrent))
 
-    def onClearPlaylist(self,event):
-        #Remove all medias from the playlist except the current track
+        self.player.refreshMediaListPlayer()
+        # self.player.resetCurrentItemIndex(newCurrent)
+
+    def onClearPlaylist(self, event):
+        # Remove all medias from the playlist except the current track
         self.player.removeAllTracks()
         self.showMediaList()
 
-
     def retranslateUi(self):
-        
+
         item = self.tableWidgetTracks.horizontalHeaderItem(0)
         item.setText(_translate("playlist", "Title"))
         item = self.tableWidgetTracks.horizontalHeaderItem(1)
@@ -340,8 +322,7 @@ class playlistWidget(QDialog):
         item = self.tableWidgetTracks.horizontalHeaderItem(4)
         item.setText(_translate("playlist", "ID"))
 
-
-        self.playerControls.pauseButton.setToolTip(_translate("playlist", "Pause"))   
+        self.playerControls.pauseButton.setToolTip(_translate("playlist", "Pause"))
         self.playerControls.previousButton.setToolTip(_translate("playlist", "Previous"))
         self.playerControls.nextButton.setToolTip(_translate("playlist", "Next"))
         self.playerControls.fullscreenButton.setToolTip(_translate("playlist", "Full screen"))
@@ -349,51 +330,50 @@ class playlistWidget(QDialog):
 
         self.setWindowTitle(_translate("playlist", "Playlist"))
 
-    def showTracks(self,tracks):      
-        self.tableWidgetTracks.setStyleSheet("selection-background-color: black;selection-color: white;") 
+    def showTracks(self, tracks):
+        self.tableWidgetTracks.setStyleSheet("selection-background-color: black;selection-color: white;")
         self.tableWidgetTracks.setColumnCount(5)
         self.tableWidgetTracks.setRowCount(0)
-        i=0
+        i = 0
         for track in tracks:
             self.tableWidgetTracks.insertRow(i)
             titleItem = QTableWidgetItem(track.getTrackTitle())
             titleItem.setFlags(titleItem.flags() ^ Qt.ItemIsEditable)
-            self.tableWidgetTracks.setItem(i,0,titleItem)
-            
+            self.tableWidgetTracks.setItem(i, 0, titleItem)
+
             if track.radioName == "":
                 artistItem = QTableWidgetItem(track.getArtistName())
                 artistItem.setFlags(artistItem.flags() ^ Qt.ItemIsEditable)
-                self.tableWidgetTracks.setItem(i,1,artistItem)
+                self.tableWidgetTracks.setItem(i, 1, artistItem)
 
                 albumItem = QTableWidgetItem(track.getAlbumTitle())
                 albumItem.setFlags(albumItem.flags() ^ Qt.ItemIsEditable)
-                self.tableWidgetTracks.setItem(i,2,albumItem)
+                self.tableWidgetTracks.setItem(i, 2, albumItem)
 
                 durationItem = QTableWidgetItem(track.getDurationText())
                 durationItem.setFlags(durationItem.flags() ^ Qt.ItemIsEditable)
-                self.tableWidgetTracks.setItem(i,3,durationItem)
+                self.tableWidgetTracks.setItem(i, 3, durationItem)
             else:
-                print("radioName="+track.radioName)
+                print("radioName=" + track.radioName)
                 artistItem = QTableWidgetItem(self.player.currentRadioName)
                 artistItem.setFlags(artistItem.flags() ^ Qt.ItemIsEditable)
-                self.tableWidgetTracks.setItem(i,1,artistItem)
+                self.tableWidgetTracks.setItem(i, 1, artistItem)
 
                 albumItem = QTableWidgetItem(self.player.currentRadioName)
                 albumItem.setFlags(albumItem.flags() ^ Qt.ItemIsEditable)
-                self.tableWidgetTracks.setItem(i,2,albumItem)
+                self.tableWidgetTracks.setItem(i, 2, albumItem)
 
                 durationItem = QTableWidgetItem(track.getDurationText())
                 durationItem.setFlags(durationItem.flags() ^ Qt.ItemIsEditable)
-                self.tableWidgetTracks.setItem(i,3,durationItem)
-
+                self.tableWidgetTracks.setItem(i, 3, durationItem)
 
             orderItem = QTableWidgetItem(str(i))
             orderItem.setFlags(orderItem.flags() ^ Qt.ItemIsEditable)
-            self.tableWidgetTracks.setItem(i,4,orderItem)
+            self.tableWidgetTracks.setItem(i, 4, orderItem)
 
-            i+=1
+            i += 1
 
-    def showEvent(self,event):
+    def showEvent(self, event):
         self.showMediaList()
 
     def showMediaList(self):
@@ -403,11 +383,11 @@ class playlistWidget(QDialog):
         for i in range(self.mediaList.count()):
             m = self.mediaList.item_at_index(i)
             if m is None:
-                print("BREAK ShowMediaList media=",i)
+                print("BREAK ShowMediaList media=", i)
                 break
-            
+
             mrl = m.get_mrl()
-            #print("ShowMediaList mrl="+mrl)
+            # print("ShowMediaList mrl="+mrl)
             t = self.player.getTrackFromMrl(mrl)
             if t is None:
                 t = track()
@@ -420,13 +400,10 @@ class playlistWidget(QDialog):
             tracks.append(t)
 
         self.showTracks(tracks)
-        
+
         self.setCurrentTrack()
 
-
-
-
-    def setCurrentTrack(self,title=""):
+    def setCurrentTrack(self, title=""):
         if self.isVisible() == False: return
 
         trk = self.player.getCurrentTrackPlaylist()
@@ -450,11 +427,11 @@ class playlistWidget(QDialog):
         if self.tableWidgetTracks.rowCount == 0:
             self.showMediaList()
 
-        for i in range(0,self.mediaList.count()):
+        for i in range(0, self.mediaList.count()):
 
-            item = self.tableWidgetTracks.item(i,0)
+            item = self.tableWidgetTracks.item(i, 0)
             if item is None:
-                print("BREAK setCurrentTrack item=",i)
+                print("BREAK setCurrentTrack item=", i)
                 break
 
             if trk is None:
@@ -468,7 +445,7 @@ class playlistWidget(QDialog):
                 else:
                     print("trk is None")
 
-            if trk is not None and trk.radioName != "" and i==index:
+            if trk is not None and trk.radioName != "" and i == index:
                 if title != "":
                     if title == "NO_META": title = trk.radioName
                     item.setText(title)
@@ -477,11 +454,10 @@ class playlistWidget(QDialog):
                     if nowPlaying == "NO_META": nowPlaying = trk.radioName
                     item.setText(nowPlaying)
 
-                item1 = self.tableWidgetTracks.item(i,1)
+                item1 = self.tableWidgetTracks.item(i, 1)
                 item1.setText(self.player.currentRadioName)
-                item2 = self.tableWidgetTracks.item(i,2)
+                item2 = self.tableWidgetTracks.item(i, 2)
                 item2.setText(self.player.currentRadioName)
-
 
             f = item.font()
             if i == index:
@@ -496,25 +472,21 @@ class playlistWidget(QDialog):
 
             item.setFont(f)
 
-            for j in range(0,2):
-                self.tableWidgetTracks.item(i,j).setFont(f)
+            for j in range(0, 2):
+                self.tableWidgetTracks.item(i, j).setFont(f)
 
-            for j in range(0,3):
-                self.tableWidgetTracks.item(i,j).setForeground(color)
+            for j in range(0, 3):
+                self.tableWidgetTracks.item(i, j).setForeground(color)
 
             if i == index: self.tableWidgetTracks.setCurrentItem(item)
 
-
         self.tableWidgetTracks.scrollTo(self.tableWidgetTracks.currentIndex())
 
-            
         self.update()
 
         self.initColumnHeaders()
 
-
-
-    def showCover(self,trk):
+    def showCover(self, trk):
 
         if self.player.radioMode:
             self.coverPixmap = QPixmap()
@@ -537,24 +509,21 @@ class playlistWidget(QDialog):
                 self.showDefaultPixmap()
 
         else:
-            #self.picFromUrlThread.resetLastURL()
+            # self.picFromUrlThread.resetLastURL()
             if trk is not None and trk.parentAlbum is not None:
-                print("playlistWidget trk.parentAlbum.cover="+trk.parentAlbum.cover)
+                print("playlistWidget trk.parentAlbum.cover=" + trk.parentAlbum.cover)
                 if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
                     self.coverPixmap = self.defaultPixmap
                 else:
                     coverPath = trk.parentAlbum.getCoverPath()
-                    
+
                     self.showCoverPixmap(coverPath)
-                    
 
-
-
-    def showCoverPixmap(self,path):
+    def showCoverPixmap(self, path):
         if self.picBufferManager is None:
             self.coverPixmap = QtGui.QPixmap(path)
         else:
-            self.coverPixmap = self.picBufferManager.getPic(path,"playlistWidget")
+            self.coverPixmap = self.picBufferManager.getPic(path, "playlistWidget")
 
         self.showScaledCover()
 
@@ -576,39 +545,32 @@ class playlistWidget(QDialog):
         else:
             self.cover.clear()
 
-    def changeTrack(self,item):
+    def changeTrack(self, item):
         i = self.tableWidgetTracks.currentRow()
 
         self.trackChanged.emit(i)
 
-
-    def onTimeSliderIsReleased(self,event=None):
+    def onTimeSliderIsReleased(self, event=None):
         print('onTimeSliderIsReleased')
-        
+
         self.player.setPosition(self.nextPosition)
         self.isTimeSliderDown = False
-        #self.player.setPosition(self.nextPosition)
+        # self.player.setPosition(self.nextPosition)
 
-
-    def setPlayerPosition(self,pos):
+    def setPlayerPosition(self, pos):
         print(str(pos))
-        self.nextPosition = pos/1000
-        #self.player.setPosition(self.nextPosition)
-        
-    
+        self.nextPosition = pos / 1000
+        # self.player.setPosition(self.nextPosition)
 
-    def onPlayerPositionChanged(self,event=None):
+    def onPlayerPositionChanged(self, event=None):
         if not self.isTimeSliderDown:
-
             pos = self.player.getPosition()
-            #print('onPlayerPositionChanged='+str(pos))
-            self.timeSlider.setValue(pos*1000)
-       
+            # print('onPlayerPositionChanged='+str(pos))
+            self.timeSlider.setValue(pos * 1000)
 
-    def onPlaylistChanged(self,event):
+    def onPlaylistChanged(self, event):
         print("PlayerControlWidget playlist changed!")
         self.showMediaList()
-
 
 
 if __name__ == "__main__":
@@ -625,13 +587,12 @@ if __name__ == "__main__":
     playlist.tableWidgetTracks.setRowCount(5)
 
     for i in range(5):
-        playlist.tableWidgetTracks.setItem(i, 0, QTableWidgetItem("test"+str(i)))
-        playlist.tableWidgetTracks.setItem(i, 1, QTableWidgetItem("toto"+str(i)))
+        playlist.tableWidgetTracks.setItem(i, 0, QTableWidgetItem("test" + str(i)))
+        playlist.tableWidgetTracks.setItem(i, 1, QTableWidgetItem("toto" + str(i)))
 
     playlist.show()
 
     url = "/tmp/tmp8mfrufdl"
     playlist.onPicDownloaded(url)
-
 
     sys.exit(app.exec_())
