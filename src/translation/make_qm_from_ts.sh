@@ -2,9 +2,11 @@
 #ajouter le nom du nouveau fichier de traduction:    
 #		TRANSLATIONS += pyzik_en.ts pyzik_es.ts pyzik_fr.ts
 
+# Needed: sudo apt-get install qttools5-dev-tools
+
 cd ..
-lrelease ./qt/*.ts
-lrelease ./translation/*.ts
+/usr/lib/x86_64-linux-gnu/qt5/bin/lrelease ./qt/*.ts
+/usr/lib/x86_64-linux-gnu/qt5/bin/lrelease ./translation/*.ts
 cp ./qt/*.qm ./translation/
 
 
