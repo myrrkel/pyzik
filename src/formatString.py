@@ -5,7 +5,7 @@ import re
 import unicodedata
 
 """
-Usefull functions to format titles, dir name...
+Useful functions to format titles, dir name...
 """
 
 
@@ -29,5 +29,5 @@ def getSearchKey(value):
     res = simplifiedString(res)
     res = deleteAccent(res)
     res = deletePonctuation(res)
-    res = res.replace(" ", "")
+    res = res.replace(" ", "").upper()
     return res
