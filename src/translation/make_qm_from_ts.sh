@@ -7,7 +7,7 @@
 cd ..
 /usr/lib/x86_64-linux-gnu/qt5/bin/lrelease ./qt/*.ts
 /usr/lib/x86_64-linux-gnu/qt5/bin/lrelease ./translation/*.ts
-cp ./qt/*.qm ./translation/
+mv ./qt/*.qm ./translation/
 
 
 
