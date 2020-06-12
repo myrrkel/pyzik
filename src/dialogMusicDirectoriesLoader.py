@@ -18,6 +18,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.currentDir = None
         self.ui = dialogMusicDirectories.Ui_Dialog()
         self.ui.setupUi(self)
+        self.setWindowFlags(QtCore.Qt.Window)
         # self.setWindowTitle("PyZik")
         self.ui.wRight.setEnabled(False)
 
