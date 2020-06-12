@@ -130,16 +130,10 @@ class customWidget(QtWidgets.QDialog):
 
 if __name__ == "__main__":
     import sys
-    from musicBase import *
-
-    print('musicBase')
-    mb = musicBase()
-    print('loadMusicBase')
-    mb.loadMusicBase(False)
 
     app = QtWidgets.QApplication(sys.argv)
 
-    custWidget = customWidget(mb)
+    custWidget = customWidget(app)
 
     custWidget.show()
     sys.exit(app.exec_())
