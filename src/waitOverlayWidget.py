@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import *
 class waitOverlay(QWidget):
     timer = 0
 
-    def __init__(self, parent=None, nbDots=15, circleSize=30, color=None, backgroundOpacity=40):
+    def __init__(self, parent=None, nbDots=15, circleSize=30, color=None, backgroundOpacity=40, hideOnClick = False):
 
         QWidget.__init__(self, parent)
 
@@ -19,6 +19,7 @@ class waitOverlay(QWidget):
         self.parent = parent
         self.nbDots = nbDots
         self.circleSize = circleSize
+        self.hideOnClick = hideOnClick
 
         if color is None:
             self.color = QColor(100, 100, 100)
@@ -69,9 +70,10 @@ class waitOverlay(QWidget):
 
         self.counter += 1
         self.update()
-        # if self.counter == 500:
-        #    self.killTimer(self.timer)
-        #    self.hide()
+
+    def mouseReleaseEvent(self, event):
+        if self.hideOnClick:
+            self.hide()
 
 
 class MainWindow(QMainWindow):
@@ -88,9 +90,9 @@ class MainWindow(QMainWindow):
         layout.addWidget(button, 1, 1, 1, 1)
 
         self.setCentralWidget(widget)
-        self.overlay = waitOverlay(self.centralWidget())
+        self.overlay = waitOverlay(self.centralWidget(), hideOnClick=True)
         self.overlay.hide()
-        button.clicked.connect(self.overlay.show)
+        button.clicked.connect(self.overlay.showOverlay)
 
     def resizeEvent(self, event):
         self.overlay.resize(event.size())
