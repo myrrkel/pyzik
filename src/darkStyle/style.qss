@@ -1141,6 +1141,19 @@ QTableView::item:pressed, QListView::item:pressed, QTreeView::item:pressed  {
     color: black;
 }
 
+QTableView::indicator:checked  {
+    background-color: #323232;
+    border: 3px solid #D1DBCB;
+    border-radius: 0px;
+    selection-color: black;
+}
+
+QTableView::indicator:unchecked  {
+    background-color: #D1DBCB;
+    color: #eff0f1;
+    image: url(:/qss_icons/rc/checkbox_unchecked.png);
+}
+
 QTableView::item:selected:active, QTreeView::item:selected:active, QListView::item:selected:active  {
     background: #D1DBCB;
     color: black;
