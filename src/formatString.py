@@ -25,9 +25,9 @@ def deletePonctuation(value):
 
 
 def getSearchKey(value):
-    res = value
+    res = value.strip().upper()
     res = simplifiedString(res)
     res = deleteAccent(res)
     res = deletePonctuation(res)
-    res = res.replace(" ", "").upper()
+    res = res.replace(" ", "")
     return res
