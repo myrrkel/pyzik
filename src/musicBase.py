@@ -94,7 +94,7 @@ class musicBase:
     def import_albums(self, alb_dict_list={}):
         for alb_dict in alb_dict_list:
             if not alb_dict["album_exists"]:
-                logger.info("import_album %s", alb_dict)
+                logger.debug("import_album %s", alb_dict)
                 alb_dict['to_dir'].import_album(alb_dict['alb'], alb_dict['full_dir'])
 
 

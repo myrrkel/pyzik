@@ -25,6 +25,8 @@ root_logger.addHandler(handler)
 def main():
     logger.info("Pyzik starting...")
     app = QtWidgets.QApplication(sys.argv)
+    if "--debug" in sys.argv:
+        root_logger.setLevel("DEBUG")
     app.setApplicationName("Pyzik")
 
     logger.info("Loading translations...")

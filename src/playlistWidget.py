@@ -416,7 +416,7 @@ class playlistWidget(QDialog):
             else:
                 title = trk.getTrackTitle()
 
-        logger.info("setCurrentTrack window title %s", title)
+        logger.debug("setCurrentTrack window title %s", title)
         if title != "":
             self.setWindowTitle(title)
         else:

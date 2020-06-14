@@ -348,7 +348,7 @@ class playerVLC:
                 return
 
             if state != "State.Opening":
-                logger.info("VLC state=" + state)
+                logger.debug("VLC state=" + state)
 
             if startSince > 5:
                 # Find out if stream is working.

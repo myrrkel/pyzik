@@ -27,7 +27,7 @@ class exploreAlbumsDirectoriesThread(QThread):
         self.musicBase.musicDirectoryCol.db = db
 
         for mdir in self.musicBase.musicDirectoryCol.musicDirectories:
-            logger.info("explore=" + mdir.dirName)
+            logger.debug("explore=" + mdir.dirName)
             self.directoryChanged.emit(mdir.dirName)
             mdir.db = db
             mdir.artistCol = self.musicBase.artistCol

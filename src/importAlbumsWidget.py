@@ -118,7 +118,7 @@ class importAlbumsWidget(QtWidgets.QDialog):
             music_dir = musicDirectory(self.musicbase, dir_path)
             res = music_dir.explore_albums_to_import()
             for alb in res:
-                logger.info(alb)
+                logger.debug(alb)
             self.showTableItems(res)
 
     def load_dir_list(self, combo):

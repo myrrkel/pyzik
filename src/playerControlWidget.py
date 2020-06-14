@@ -380,7 +380,7 @@ class playerControlWidget(QWidget):
                     coverUrl = rad.getRadioPic()
 
             if coverUrl is None: coverUrl = ""
-            logger.info("showCover: %s", coverUrl)
+            logger.debug("showCover: %s", coverUrl)
             if self.currentCoverPath == coverUrl:
                 self.isWaitingCover = False
                 self.refreshWaitOverlay()
@@ -413,7 +413,7 @@ class playerControlWidget(QWidget):
             self.refreshWaitOverlay()
 
     def setTitleLabel(self, title=""):
-        logger.info("setTitleLabel %s", title)
+        logger.debug("setTitleLabel %s", title)
         if title != "":
             self.setRadioLabeLText(title)
             return

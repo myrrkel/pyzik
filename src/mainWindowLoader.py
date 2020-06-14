@@ -212,9 +212,9 @@ class MainWindowLoader(QMainWindow):
             self.firstShow = False
 
     def onExploreCompleted(self, event):
-        logger.info("onExploreCompleted")
+        logger.debug("onExploreCompleted")
         events = self.musicBase.musicDirectoryCol.getExploreEvents()
-        logger.info("EXPLORE EVENTS=" + str([e.getText() for e in events]))
+        logger.debug("EXPLORE EVENTS=" + str([e.getText() for e in events]))
         self.musicBase.db = database()
         # self.musicBase.loadMusicBase()
         self.showArtists()
@@ -707,7 +707,7 @@ class MainWindowLoader(QMainWindow):
         self.fullScreenWidget.activateWindow()
 
     def onCurrentTrackChanged(self, event=None):
-        logger.info("onCurrentTrackChanged %s", event)
+        logger.debug("onCurrentTrackChanged %s", event)
         if not self.player.radioMode:
             title = None
             trk = self.player.getCurrentTrackPlaylist()

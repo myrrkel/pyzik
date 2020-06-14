@@ -40,7 +40,6 @@ class albumCollection:
         self.musicBase = mainMusicBase
 
     def addAlbum(self, album):
-        logger.info('addAlbum %s', album.albumID)
         if album.albumID == 0:
             album.albumID = self.musicBase.db.insertAlbum(album)
 

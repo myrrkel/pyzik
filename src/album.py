@@ -230,7 +230,7 @@ class album:
 
             else:
                 # No synthaxe does match with this dirname
-                logger.info("No matching: " + salb + " for currentDir: " + self.dirPath)
+                logger.debug("No matching: " + salb + " for currentDir: " + self.dirPath)
                 self.toVerify = True
 
         self.title = self.title.strip()

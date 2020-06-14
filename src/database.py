@@ -347,7 +347,6 @@ class database():
             sqlInsertAlbum = """    INSERT INTO albums (title, artistID,dirPath,year,musicDirectoryID,creationDate)
                                 VALUES (?,?,?,?,?,date('now'));
                           """
-            logger.info(sqlInsertAlbum)
             c.execute(sqlInsertAlbum, (album.title, album.artistID, album.dirPath, album.year, album.musicDirectoryID))
             self.connection.commit()
             album.albumID = c.lastrowid

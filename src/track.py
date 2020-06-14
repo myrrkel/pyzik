@@ -12,7 +12,9 @@ from mutagen import MutagenError
 from mutagen import File
 from urllib.parse import unquote
 from PyQt5.QtCore import pyqtSignal
+import logging
 
+logger = logging.getLogger(__name__)
 
 class track:
     """
@@ -48,7 +50,7 @@ class track:
     def printInfos(self):
         txt = "TrackTitle=" + self.title + " No=" + str(self.trackNumber) + " DiscNo=" + str(self.discNumber)
         txt += " TrackCount=" + str(self.trackCount) + " DiscCount=" + str(self.discCount)
-        print(txt)
+        logger.debug(txt)
 
     def getName(self):
         return self.fileName + self.extension
