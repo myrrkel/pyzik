@@ -169,8 +169,6 @@ class track:
                 self.bitrate = audio.info.bitrate
 
             if audio.tags:
-                for tag in audio.tags:
-                    logger.info("TAG: %s", tag)
                 self.title = str(audio.tags.get("TIT2"))
                 self.artist = str(audio.tags.get('TPE1'))
                 self.album = str(audio.tags.get('TALB'))
@@ -208,6 +206,8 @@ class track:
                 y = audio.tags.get("TYER")
                 if y:
                     return int(str(y))
+                y = audio.tags.get("TDRC")
+                return int(str(y))
             return 0
         except Exception as e:
             logger.error("exception mutagen: ", e)

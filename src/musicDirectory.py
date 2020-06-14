@@ -153,7 +153,9 @@ class musicDirectory:
         return res
 
     def import_album(self, album_to_import, album_path):
-        copy_path = os.path.join(self.dirPath, album_to_import.get_formatted_dir_name())
+        new_dir_name = album_to_import.get_formatted_dir_name()
+        album_to_import.dirPath = new_dir_name
+        copy_path = os.path.join(self.dirPath, new_dir_name)
         logger.info("from: %s to: %s", album_path, copy_path)
         if os.path.exists(copy_path):
             logger.info("Directory already exists %s", copy_path)

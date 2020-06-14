@@ -232,7 +232,6 @@ class album:
                 # No synthaxe does match with this dirname
                 logger.debug("No matching: " + salb + " for currentDir: " + self.dirPath)
                 self.toVerify = True
-
         if self.year in [0, 9999]:
             self.year = self.get_year_from_tags()
         self.title = self.title.strip()
