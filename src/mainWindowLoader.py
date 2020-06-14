@@ -29,6 +29,7 @@ from fullScreenCoverWidget import *
 from playerControlWidget import *
 from progressWidget import *
 from albumWidget import *
+from importAlbumsWidget import *
 from coverArtFinderDialog import *
 from svgIcon import *
 from picFromUrlThread import *
@@ -245,6 +246,11 @@ class MainWindowLoader(QMainWindow):
             self.showArtist(art)
             # self.showAlbum(alb)
 
+    def open_import_album_widget(self):
+        if not hasattr(self, 'import_album_widget'):
+            self.import_album_widget = importAlbumsWidget(self, self.musicBase)
+        self.import_album_widget.show()
+
     def playRandomPlaylist(self):
         print("playRandomPlaylist")
         index = self.player.mediaList.count()
@@ -310,11 +316,17 @@ class MainWindowLoader(QMainWindow):
         hHeader.hideSection(2)
 
     def initExtraMenu(self):
+        if not hasattr(self.ui, 'actionRandomPlaylist'):
+            self.ui.actionRandomPlaylist = QAction(self.ui.menuAlbums)
+            self.ui.actionRandomPlaylist.triggered.connect(self.playRandomPlaylist)
+            self.ui.menuAlbums.addAction(self.ui.actionRandomPlaylist)
+        self.ui.actionRandomPlaylist.setText(_translate("menu", "Random playlist"))
 
-        actionRandomPlaylist = QAction(self.ui.menuAlbums)
-        actionRandomPlaylist.setText(_translate("menu", "Random playlist"))
-        actionRandomPlaylist.triggered.connect(self.playRandomPlaylist)
-        self.ui.menuAlbums.addAction(actionRandomPlaylist)
+        if not hasattr(self.ui, 'action_open_import_album_widget'):
+            self.ui.action_open_import_album_widget = QAction(self.ui.menuAlbums)
+            self.ui.action_open_import_album_widget.triggered.connect(self.open_import_album_widget)
+            self.ui.menuAlbums.addAction(self.ui.action_open_import_album_widget)
+        self.ui.action_open_import_album_widget.setText(_translate("menu", "Import albums"))
 
     def initRadioFavMenu(self):
 
@@ -866,6 +878,7 @@ class MainWindowLoader(QMainWindow):
     def retranslateUi(self):
 
         self.ui.menuFavRadios.setTitle(_translate("radio", "Favorite radios"))
+        self.initExtraMenu()
         self.ui.searchCoverButton.setText(_translate("coverArtFinder", "Cover finder"))
         self.ui.retranslateUi(self)
 

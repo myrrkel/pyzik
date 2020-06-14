@@ -9,6 +9,9 @@ from musicDirectoryCollection import *
 from musicGenres import *
 from historyManager import *
 from radioManager import *
+import logging
+
+logger = logging.getLogger(__name__)
 
 import os.path
 from PyQt5 import QtWidgets, QtGui, QtCore
@@ -87,6 +90,11 @@ class musicBase:
             if alb not in randomAlbList: randomAlbList.append(alb)
 
         return randomAlbList
+
+    def import_albums(self, alb_dict_list={}):
+        for alb_dict in alb_dict_list:
+            logger.info("import_album %s", alb_dict)
+
 
 
 if __name__ == "__main__":
