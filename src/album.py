@@ -229,8 +229,8 @@ class album:
                 print("No matching: " + salb + " for currentDir: " + self.dirPath)
                 self.toVerify = True
 
-        self.title.strip()
-        self.artistName.strip()
+        self.title = self.title.strip()
+        self.artistName = self.artistName.strip().upper()
         self.title = self.formatTitle(self.title)
 
     def getTagsFromFirstFile(self):
