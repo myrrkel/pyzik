@@ -243,6 +243,7 @@ class album:
         track = self.getTracks(firstFileOnly=True)
         if track:
             return track.get_year_from_tags()
+        return 0
 
     def getTagsFromFirstFile(self):
         track = self.getTracks(firstFileOnly=True)
