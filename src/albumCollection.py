@@ -5,7 +5,9 @@ import os
 import random
 
 from album import *
+import logging
 
+logger = logging.getLogger(__name__)
 
 def filterByTitle_ArtistID(seq, title, art_id):
     ''' not used any more, use artist.findAlbum() '''
@@ -38,6 +40,7 @@ class albumCollection:
         self.musicBase = mainMusicBase
 
     def addAlbum(self, album):
+        logger.info('addAlbum %s', album.albumID)
         if album.albumID == 0:
             album.albumID = self.musicBase.db.insertAlbum(album)
 

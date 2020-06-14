@@ -19,6 +19,7 @@ class importAlbumsWidget(QtWidgets.QDialog):
         QtWidgets.QDialog.__init__(self)
         self.parent = parent
         self.musicbase = musicbase
+        self.musicbase.db = database()
         self.setWindowFlags(QtCore.Qt.Window)
 
         self.initUI()
@@ -235,7 +236,7 @@ if __name__ == "__main__":
     mb.loadMusicBase()
 
     importWidget = importAlbumsWidget(app, mb)
-    importWidget.from_directory.setText('/home/mperrocheau/Musique')
+    importWidget.from_directory.setText('/home/mperrocheau/Documents/TEST')
 
     importWidget.show()
     sys.exit(app.exec_())

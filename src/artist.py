@@ -5,7 +5,9 @@ from operator import itemgetter, attrgetter
 import random
 from album import *
 import formatString as FS
+import logging
 
+logger = logging.getLogger(__name__)
 
 def getSimplestTitle(title, char):
     simple = title.replace(".", char)

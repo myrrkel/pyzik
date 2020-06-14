@@ -11,6 +11,9 @@ from globalConstants import *
 import formatString as FS
 from database import *
 from PyQt5.QtGui import QPixmap
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def getFolderSize(folder):
@@ -160,7 +163,8 @@ class album:
 
     def getCoverSearchText(self):
         txt = self.artistName
-        if int(self.year) > 0: txt = txt + " " + str(self.year)
+        if int(self.year) > 0 and int(self.year) != 9999:
+            txt = txt + " " + str(self.year)
         txt = txt + " " + self.title
         return txt
 
@@ -226,7 +230,7 @@ class album:
 
             else:
                 # No synthaxe does match with this dirname
-                print("No matching: " + salb + " for currentDir: " + self.dirPath)
+                logger.info("No matching: " + salb + " for currentDir: " + self.dirPath)
                 self.toVerify = True
 
         self.title = self.title.strip()
@@ -443,9 +447,15 @@ class album:
             self.length = int(alb_length)
             self.updateLength()
 
+    def get_formatted_dir_name(self):
+        return "{artist} - [{year}] - {title}".format(artist=self.artistName, year=self.year or '9999', title=self.title)
+
+
 
 if __name__ == '__main__':
     alb = album("ACDC - [1975] - TNT")
     print(alb.title)
     alb = album("ACDC - [1983] - a tribute to")
     print(alb.title)
+    alb = album("ACDC - a tribute to")
+    print(alb.get_formatted_dir_name())

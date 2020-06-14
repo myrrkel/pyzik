@@ -7,6 +7,9 @@ from io import StringIO
 
 from progressWidget import *
 from globalConstants import *
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class database():
@@ -344,11 +347,12 @@ class database():
             sqlInsertAlbum = """    INSERT INTO albums (title, artistID,dirPath,year,musicDirectoryID,creationDate)
                                 VALUES (?,?,?,?,?,date('now'));
                           """
+            logger.info(sqlInsertAlbum)
             c.execute(sqlInsertAlbum, (album.title, album.artistID, album.dirPath, album.year, album.musicDirectoryID))
             self.connection.commit()
             album.albumID = c.lastrowid
         except sqlite3.Error as e:
-            print(e)
+            logger.error(e)
 
         return album.albumID
 

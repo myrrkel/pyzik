@@ -5,6 +5,7 @@ import os
 from albumCollection import *
 from artistCollection import *
 import logging
+import shutil
 
 logger = logging.getLogger(__name__)
 
@@ -115,15 +116,11 @@ class musicDirectory:
 
         return
 
-
     def explore_albums_to_import(self, progressChanged=None, forceTAGCheck=False):
+        self.exploreEvents = []
         res = []
         logger.info("explore %s", self.dirPath)
         dir_list = next(os.walk(self.dirPath))[1]
-
-
-        for art in self.artistCol.artists:
-            logger.info("ARTIST= %s", art.name)
 
         for i, dir_path in enumerate(dir_list):
             dir_result = {}
@@ -134,13 +131,16 @@ class musicDirectory:
                 progressChanged.emit(iProgress)
 
             curAlb = album(dir_path, self)
-            logger.info("curAlb artist: %s", curAlb.artistName)
+            if curAlb.toVerify:
+                curAlb.getTagsFromFirstFile()
             artists = self.artistCol.findArtists(curAlb.artistName)
-            logger.info("artists: %s", artists)
             artist_exists = len(artists) > 0
             if artist_exists:
+                curAlb.artistID = artists[0].artistID
                 albums = artists[0].findAlbums(curAlb.title)
                 album_exists = len(albums) > 0
+            else:
+                logger.info("Artist don't exists %s", curAlb.artistName)
 
             dir_result['alb'] = curAlb
             dir_result['artist_exists'] = artist_exists
@@ -152,42 +152,33 @@ class musicDirectory:
         res = sorted(res, key=lambda k: k['alb'].artistName+k['alb'].title)
         return res
 
-            # if not curAlb.toVerify or forceTAGCheck:
-            #
-            #     if forceTAGCheck:
-            #         curAlb.getTagsFromFirstFile()
-            #         if not (curAlb.artistName and curAlb.title):
-            #             self.addExploreEvent(exploreEvent("ALBUM_TO_VERIFY_NO_TAG", curAlb.getAlbumDir()))
-            #
-            #     # Artist name and album title has been found
-            #     #curArt = self.artistCol.getArtist(curAlb.artistName)
-            #
-            #     # GetArtist return a new artist if it doesn't exists in artistsCol
-            #     if curArt:
-            #         curAlb.artistID = curArt.artistID
-            #         curAlb.artistName = curArt.name
-            #         curAlb.addStyle({self.styleID})
-            #
-            #         albumList = curArt.findAlbums(curAlb.title)
-            #         if not albumList:
-            #             logger.info("Add " + curAlb.title + " in " + curArt.name + " discography. ArtID= %s", curArt.artistID)
-            #             self.addExploreEvent(exploreEvent("ALBUM_ADDED", curAlb.getAlbumDir()))
-            #             # curAlb.getAlbumSize()
-            #             # curAlb.getLength()
-            #             self.albumCol.addAlbum(curAlb)
-            #             curArt.addAlbum(curAlb)
-            #         else:
-            #             for alb in albumList:
-            #                 if alb.getAlbumDir() != curAlb.getAlbumDir():
-            #                     self.addExploreEvent(
-            #                         exploreEvent("ALBUM_DUPLICATE", curAlb.getAlbumDir(), alb.albumID, curArt.artistID))
-            #
-            #     else:
-            #         logger.info("exploreAlbumsDirectory - No artist for " + dir)
-            # else:
-            #     self.addExploreEvent(exploreEvent("ALBUM_TO_VERIFY", curAlb.getAlbumDir()))
+    def import_album(self, album_to_import, album_path):
+        copy_path = os.path.join(self.dirPath, album_to_import.get_formatted_dir_name())
+        logger.info("from: %s to: %s", album_path, copy_path)
+        if os.path.exists(copy_path):
+            logger.info("Directory already exists %s", copy_path)
+            self.addExploreEvent(exploreEvent("DIRECTORY_EXISTS", album_to_import.getAlbumDir(),
+                                              album_to_import.albumID, album_to_import.artistID))
+            return False
 
-        return
+        shutil.move(album_path, copy_path)
+
+        curArt = self.artistCol.getArtist(album_to_import.artistName)
+        # GetArtist return a new artist if it doesn't exists in artistsCol
+        if curArt:
+            album_to_import.artistID = curArt.artistID
+            album_to_import.musicDirectoryID = self.musicDirectoryID
+            album_to_import.artistName = curArt.name
+            album_to_import.addStyle({self.styleID})
+
+            albumList = curArt.findAlbums(album_to_import.title)
+            if not albumList:
+                logger.info("Add " + album_to_import.title + " in " + curArt.name + " discography. ArtID= %s", curArt.artistID)
+                self.addExploreEvent(exploreEvent("ALBUM_ADDED", album_to_import.getAlbumDir()))
+                self.albumCol.addAlbum(album_to_import)
+                curArt.addAlbum(album_to_import)
+                return True
+        return False
 
     def exploreArtistsDirectory(self, progressChanged=None):
         if self.getStatus() == -1: return
