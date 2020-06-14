@@ -233,9 +233,16 @@ class album:
                 logger.debug("No matching: " + salb + " for currentDir: " + self.dirPath)
                 self.toVerify = True
 
+        if self.year in [0, 9999]:
+            self.year = self.get_year_from_tags()
         self.title = self.title.strip()
         self.artistName = self.artistName.strip().upper()
         self.title = self.formatTitle(self.title)
+
+    def get_year_from_tags(self):
+        track = self.getTracks(firstFileOnly=True)
+        if track:
+            return track.get_year_from_tags()
 
     def getTagsFromFirstFile(self):
         track = self.getTracks(firstFileOnly=True)

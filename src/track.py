@@ -169,6 +169,8 @@ class track:
                 self.bitrate = audio.info.bitrate
 
             if audio.tags:
+                for tag in audio.tags:
+                    logger.info("TAG: %s", tag)
                 self.title = str(audio.tags.get("TIT2"))
                 self.artist = str(audio.tags.get('TPE1'))
                 self.album = str(audio.tags.get('TALB'))
@@ -191,6 +193,25 @@ class track:
 
         if self.title in ("", "None"): self.title = self.fileName
         self.printInfos()
+
+    def get_year_from_tags(self, dir=""):
+        """Extract year with Mutagen"""
+        try:
+            if dir != "":
+                trackPath = os.path.join(dir, self.getFilePathInAlbumDir())
+            else:
+                trackPath = self.getFilePath()
+
+            audio = File(trackPath)
+
+            if audio.tags:
+                y = audio.tags.get("TYER")
+                if y:
+                    return int(str(y))
+            return 0
+        except Exception as e:
+            logger.error("exception mutagen: ", e)
+            return 0
 
     def getMutagenFastTags(self, dir=""):
         """Extract ID3 metadatas with Mutagen"""
