@@ -12,26 +12,6 @@ import logging
 logger = logging.getLogger(__name__)
 _translate = QtCore.QCoreApplication.translate
 
-# class customControlsWidget(QtWidgets.QWidget):
-#
-#     def __init__(self, parent=None):
-#         QtWidgets.QWidget.__init__(self, parent=parent)
-#
-#         lay = QtWidgets.QHBoxLayout(self)
-#
-#         self.refreshButton = QtWidgets.QPushButton(_translate("custom", "Refresh"))
-#         lay.addWidget(self.refreshButton)
-
-class customControlsWidget(QtWidgets.QWidget):
-
-    def __init__(self, parent=None):
-        QtWidgets.QWidget.__init__(self, parent=parent)
-
-        lay = QtWidgets.QHBoxLayout(self)
-
-        self.refreshButton = QtWidgets.QPushButton(_translate("custom", "Refresh"))
-        lay.addWidget(self.refreshButton)
-
 
 class importAlbumsWidget(QtWidgets.QDialog):
 
@@ -67,6 +47,7 @@ class importAlbumsWidget(QtWidgets.QDialog):
         self.main_layout.setAlignment(self.explore_button, Qt.AlignHCenter)
 
         self.defaut_music_directory = QtWidgets.QComboBox()
+        self.defaut_music_directory.currentIndexChanged.connect(self.on_change_to_directory)
         self.load_dir_list(self.defaut_music_directory)
         combo_with_label = QtWidgets.QWidget()
         combo_layout = QtWidgets.QHBoxLayout(combo_with_label)
@@ -101,16 +82,30 @@ class importAlbumsWidget(QtWidgets.QDialog):
         alb_dict_list = self.get_albums_dict_list()
         self.musicbase.import_albums(alb_dict_list)
 
-
     def get_albums_dict_list(self):
         alb_dict_list = []
         for row in range(self.tableWidgetItems.rowCount()):
             item = self.tableWidgetItems.item(row, 0)
             if item.checkState():
-                alb_dict_list.append(item.alb_item)
+                alb_dict = item.alb_item
+                cell_dir = self.tableWidgetItems.cellWidget(row, 1)
+                alb_dict['to_dir'] = cell_dir.model().item(cell_dir.currentIndex()).music_dir
+                alb_dict_list.append(alb_dict)
         return alb_dict_list
 
+    def on_change_to_directory(self, event):
+        if hasattr(self, 'tableWidgetItems'):
+            for row in range(self.tableWidgetItems.rowCount()):
+                cell_dir = self.tableWidgetItems.cellWidget(row, 1)
+                cell_dir.setCurrentIndex(self.defaut_music_directory.currentIndex())
 
+    def toggle_selected_row(self):
+        for row in range(self.tableWidgetItems.rowCount()):
+            item = self.tableWidgetItems.item(row, 0)
+            if item.checkState() == Qt.Unchecked:
+                item.setCheckState(Qt.Checked)
+            else:
+                item.setCheckState(Qt.Unchecked)
 
     def explore_directory(self, event):
         dir_path = self.from_directory.getText()
@@ -161,8 +156,6 @@ class importAlbumsWidget(QtWidgets.QDialog):
         item = QtWidgets.QTableWidgetItem()
         self.tableWidgetItems.setHorizontalHeaderItem(5, item)
 
-        self.initColumnHeaders()
-
     def initColumnHeaders(self):
         hHeader = self.tableWidgetItems.horizontalHeader()
         vHeader = self.tableWidgetItems.verticalHeader()
@@ -174,6 +167,7 @@ class importAlbumsWidget(QtWidgets.QDialog):
         hHeader.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
         hHeader.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
         self.tableWidgetItems.setColumnHidden(4, True)
+        hHeader.sectionClicked.connect(self.toggle_selected_row, Qt.UniqueConnection)
 
     def retranslateUi(self):
 
