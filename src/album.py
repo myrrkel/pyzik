@@ -190,13 +190,13 @@ class album:
             self.artistName = self.dirName[:pos1]
             self.year = year(self.dirName[pos1 + 4:pos2])
         else:
-            # Replace caracters that could be separtors in directory name by char @
+            # Replace characters that could beseparatorss in directory name by char @
             salb = replaceSpecialChars(self.dirName)
             salb.strip()
             if salb[len(salb) - 1] == "@": salb = salb[:len(salb) - 1]
             if salb[0] == "@": salb = salb[1:]
 
-            # Split datas separeted by @
+            # Split datas separated by @
             datas = salb.split("@")
             datas = [str.strip(data) for data in datas]
 
@@ -204,8 +204,8 @@ class album:
             #    print("extractDataFromDirName: more than 3 datas = "+str(datas))
 
             if len(datas) >= 3:
-                '''With 3 or more informations in the directory name,
-                we suppose that the fisrt one is the artist name,
+                '''With 3 or more datas in the directory name,
+                we suppose that the first one is the artist name,
                 If the second is a year, the third is the title'''
                 self.title = ""
                 self.artistName = datas[0]
@@ -221,15 +221,15 @@ class album:
 
 
             elif len(datas) == 2:
-                '''With 2 informations in the directory name,
-                we suppose that the fisrt one is the artist name,
+                '''With 2 datas in the directory name,
+                we suppose that the first one is the artist name,
                 the second is the title'''
                 self.title = datas[1]
                 self.year = 0
                 self.artistName = datas[0]
 
             else:
-                # No synthaxe does match with this dirname
+                # No syntax does match with this dirname
                 logger.debug("No matching: " + salb + " for currentDir: " + self.dirPath)
                 self.toVerify = True
         if self.year in [0, 9999]:
