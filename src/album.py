@@ -234,6 +234,8 @@ class album:
                 self.toVerify = True
         # if self.year in [0, 9999]:
         #     self.year = self.get_year_from_tags()
+        if isYear(self.artistName):
+            self.toVerify = True
         self.title = self.title.strip()
         self.artistName = self.artistName.strip().upper()
         self.title = self.formatTitle(self.title)

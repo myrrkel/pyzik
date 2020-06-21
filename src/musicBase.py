@@ -96,7 +96,7 @@ class musicBase:
         for i, alb_dict in enumerate(alb_dict_list):
             if album_import_progress:
                 if i != 0:
-                    album_import_progress.emit((100 / alb_dict_list.count()) * i)
+                    album_import_progress.emit((100 / len (alb_dict_list)) * i)
                 else:
                     album_import_progress.emit(0)
 
