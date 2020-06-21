@@ -870,6 +870,7 @@ class MainWindowLoader(QMainWindow):
         if self.searchRadio is not None: self.searchRadio.retranslateUi()
         if self.playerControl is not None: self.playerControl.retranslateUi()
         if self.coverFinder is not None: self.coverFinder.retranslateUi()
+        if self.import_album_widget is not None: self.import_album_widget.retranslateUi()
 
         self.update()
         self.setWindowTitle("Pyzik")

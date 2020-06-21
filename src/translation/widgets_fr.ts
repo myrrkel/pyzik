@@ -45,6 +45,10 @@
         <source>Import selected albums in music directories</source>
         <translation>Importer les albums sélectionnés dans les répertoires musicaux</translation>
     </message>
+    <message>
+        <source>Copying:</source>
+        <translation>Copie de:</translation>
+    </message>
 </context>
 <context>
     <name>directory</name>

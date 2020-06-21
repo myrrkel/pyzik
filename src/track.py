@@ -207,10 +207,11 @@ class track:
                 if y:
                     return int(str(y))
                 y = audio.tags.get("TDRC")
-                return int(str(y))
+                if y:
+                    return int(str(y))
             return 0
         except Exception as e:
-            logger.error("exception mutagen: ", e)
+            logger.error("exception mutagen: %s", e)
             return 0
 
     def getMutagenFastTags(self, dir=""):

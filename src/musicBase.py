@@ -91,12 +91,19 @@ class musicBase:
 
         return randomAlbList
 
-    def import_albums(self, alb_dict_list={}):
-        for alb_dict in alb_dict_list:
+    def import_albums(self, alb_dict_list={}, album_import_started_signal=None, file_copy_started_signal=None, album_import_progress=None):
+
+        for i, alb_dict in enumerate(alb_dict_list):
+            if album_import_progress:
+                if i != 0:
+                    album_import_progress.emit((100 / alb_dict_list.count()) * i)
+                else:
+                    album_import_progress.emit(0)
+
             if not alb_dict["album_exists"]:
                 logger.debug("import_album %s", alb_dict)
-                alb_dict['to_dir'].import_album(alb_dict['alb'], alb_dict['full_dir'])
-
+                album_import_started_signal.emit(alb_dict['alb'].get_formatted_dir_name())
+                alb_dict['to_dir'].import_album(alb_dict['alb'], alb_dict['full_dir'], file_copy_started_signal)
 
 
 if __name__ == "__main__":

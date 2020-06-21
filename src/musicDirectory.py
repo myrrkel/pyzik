@@ -4,10 +4,30 @@
 import os
 from albumCollection import *
 from artistCollection import *
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import QThread
 import logging
-import shutil
+from filesUtils import *
 
 logger = logging.getLogger(__name__)
+
+
+class ImportAlbumsThread(QThread):
+    """Read datas from files in the album folder"""
+
+    alb_dict_list = []
+    musicbase = None
+
+    album_import_progress = pyqtSignal(int, name='album_import_progress')
+    album_import_started_signal = pyqtSignal(str, name='album_imported_signal')
+    file_copy_started_signal = pyqtSignal(str, name='file_copied_signal')
+    import_completed_signal = pyqtSignal(int, name='import_completed_signal')
+
+    def run(self):
+        self.musicbase.db = database()
+        self.musicbase.import_albums(self.alb_dict_list, self.album_import_started_signal, self.file_copy_started_signal, self.album_import_progress)
+        self.import_completed_signal.emit(1)
+        return
 
 
 class musicDirectory:
@@ -133,14 +153,18 @@ class musicDirectory:
             curAlb = album(dir_path, self)
             if curAlb.toVerify:
                 curAlb.getTagsFromFirstFile()
+            if not curAlb.toVerify and curAlb.year in [0, 9999]:
+                curAlb.get_year_from_first_file()
             artists = self.artistCol.findArtists(curAlb.artistName)
             artist_exists = len(artists) > 0
             if artist_exists:
+                dir_result['artist_name'] = artists[0].name
                 curAlb.artistID = artists[0].artistID
                 albums = artists[0].findAlbums(curAlb.title)
                 album_exists = len(albums) > 0
             else:
                 logger.info("Artist don't exists %s", curAlb.artistName)
+                dir_result['artist_name'] = curAlb.artistName
 
             dir_result['alb'] = curAlb
             dir_result['artist_exists'] = artist_exists
@@ -152,7 +176,7 @@ class musicDirectory:
         res = sorted(res, key=lambda k: k['alb'].artistName+k['alb'].title)
         return res
 
-    def import_album(self, album_to_import, album_path):
+    def import_album(self, album_to_import, album_path, file_copy_started_signal=None):
         new_dir_name = album_to_import.get_formatted_dir_name()
         album_to_import.dirPath = new_dir_name
         copy_path = os.path.join(self.dirPath, new_dir_name)
@@ -163,7 +187,7 @@ class musicDirectory:
                                               album_to_import.albumID, album_to_import.artistID))
             return False
 
-        shutil.move(album_path, copy_path)
+        move_directory_file_by_file(album_path, copy_path, file_copy_started_signal, test_mode=False)
 
         curArt = self.artistCol.getArtist(album_to_import.artistName)
         # GetArtist return a new artist if it doesn't exists in artistsCol

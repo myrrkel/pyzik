@@ -81,7 +81,22 @@ class importAlbumsWidget(QtWidgets.QDialog):
 
     def import_albums(self):
         alb_dict_list = self.get_albums_dict_list()
-        self.musicbase.import_albums(alb_dict_list)
+
+        self.wProgress = progressWidget(self, can_be_closed=False, with_file_progress=True)
+        self.wProgress.setProgressLabel(_translate("import albums", "Copying:"))
+        self.wProgress.show()
+        self.import_alb_thread = ImportAlbumsThread()
+        self.import_alb_thread.alb_dict_list = alb_dict_list
+        self.import_alb_thread.musicbase = self.musicbase
+        self.import_alb_thread.album_import_progress.connect(self.wProgress.setValue)
+        self.import_alb_thread.album_import_started_signal.connect(self.wProgress.setDirectoryText)
+        self.import_alb_thread.file_copy_started_signal.connect(self.wProgress.setFileText)
+        self.import_alb_thread.import_completed_signal.connect(self.explore_completed)
+        self.import_alb_thread.start()
+
+    def explore_completed(self):
+        self.wProgress.close()
+        self.explore_directory()
 
     def get_albums_dict_list(self):
         alb_dict_list = []
@@ -171,8 +186,10 @@ class importAlbumsWidget(QtWidgets.QDialog):
         hHeader.sectionClicked.connect(self.toggle_selected_row, Qt.UniqueConnection)
 
     def retranslateUi(self):
-
+        self.setWindowTitle(_translate("menu", "Import albums"))
         self.from_directory.setLabel(_translate("import albums", "From directory"))
+        self.explore_button.setText(_translate("import albums", "Explore directory"))
+        self.import_button.setText(_translate("import albums", "Import selected albums in music directories"))
         # self.to_directory.setLabel(_translate("import albums", "To directory"))
         self.defaut_music_directory_label.setText(_translate("import albums", "To directory"))
 
