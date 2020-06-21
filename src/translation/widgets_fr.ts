@@ -42,6 +42,10 @@
         <translation>L&apos;album existe</translation>
     </message>
     <message>
+        <source>Exists</source>
+        <translation>Existe</translation>
+    </message>
+    <message>
         <source>Import selected albums in music directories</source>
         <translation>Importer les albums sélectionnés dans les répertoires musicaux</translation>
     </message>

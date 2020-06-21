@@ -149,7 +149,7 @@ class musicDirectory:
             if progressChanged:
                 iProgress = round((i / len(dir_list)) * 100)
                 progressChanged.emit(iProgress)
-
+            logger.debug("explore album %s", dir_path)
             curAlb = album(dir_path, self)
             if curAlb.toVerify:
                 curAlb.getTagsFromFirstFile()

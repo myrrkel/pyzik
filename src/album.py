@@ -232,8 +232,8 @@ class album:
                 # No syntax does match with this dirname
                 logger.debug("No matching: " + salb + " for currentDir: " + self.dirPath)
                 self.toVerify = True
-        if self.year in [0, 9999]:
-            self.year = self.get_year_from_tags()
+        # if self.year in [0, 9999]:
+        #     self.year = self.get_year_from_tags()
         self.title = self.title.strip()
         self.artistName = self.artistName.strip().upper()
         self.title = self.formatTitle(self.title)
@@ -254,7 +254,7 @@ class album:
             if track.album and self.isValidAlbumName(track.album):
                 self.title = track.album
             if track.year: self.year = track.year
-            print("getTagsFromFirstFile=" + self.artistName + " - " + self.title + " - " + str(track.year))
+            print("getTagsFromFirstFile=" + self.artistName + " - " + self.title + " - " + str(self.year))
 
     def get_year_from_first_file(self):
         track = self.getTracks(firstFileOnly=True)
@@ -294,6 +294,7 @@ class album:
         else:
             currentDir = os.path.join(self.getAlbumDir(), subdir)
 
+        logger.debug("getTracks path %s", currentDir)
         files = os.listdir(currentDir)
         files.sort()
 
@@ -303,6 +304,7 @@ class album:
             if self.doStop: break
             if os.path.isdir(os.path.join(currentDir, str(file))):
                 # file is a directory
+                logger.debug("getTracks sub dir: %s ; %s", subdir, str(file))
                 res = self.getTracks(os.path.join(subdir, str(file)), firstFileOnly=firstFileOnly)
             else:
 

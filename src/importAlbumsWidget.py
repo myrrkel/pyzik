@@ -157,7 +157,7 @@ class importAlbumsWidget(QtWidgets.QDialog):
         self.tableWidgetItems.setMinimumSize(QtCore.QSize(50, 0))
         self.tableWidgetItems.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
         self.tableWidgetItems.setObjectName("tableWidgetItems")
-        self.tableWidgetItems.setColumnCount(6)
+        self.tableWidgetItems.setColumnCount(7)
         self.tableWidgetItems.setRowCount(0)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidgetItems.setHorizontalHeaderItem(0, item)
@@ -171,6 +171,8 @@ class importAlbumsWidget(QtWidgets.QDialog):
         self.tableWidgetItems.setHorizontalHeaderItem(4, item)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidgetItems.setHorizontalHeaderItem(5, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidgetItems.setHorizontalHeaderItem(6, item)
 
     def initColumnHeaders(self):
         hHeader = self.tableWidgetItems.horizontalHeader()
@@ -182,7 +184,8 @@ class importAlbumsWidget(QtWidgets.QDialog):
 
         hHeader.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
         hHeader.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
-        self.tableWidgetItems.setColumnHidden(4, True)
+        hHeader.setSectionResizeMode(6, QtWidgets.QHeaderView.ResizeToContents)
+        # self.tableWidgetItems.setColumnHidden(5, True)
         hHeader.sectionClicked.connect(self.toggle_selected_row, Qt.UniqueConnection)
 
     def retranslateUi(self):
@@ -202,9 +205,11 @@ class importAlbumsWidget(QtWidgets.QDialog):
         item = self.tableWidgetItems.horizontalHeaderItem(3)
         item.setText(_translate("MainWindow", "Album"))
         item = self.tableWidgetItems.horizontalHeaderItem(4)
-        item.setText(_translate("directory", "Directory"))
+        item.setText(_translate("album", "Year"))
         item = self.tableWidgetItems.horizontalHeaderItem(5)
-        item.setText(_translate("import albums", "Album exists"))
+        item.setText(_translate("directory", "Directory"))
+        item = self.tableWidgetItems.horizontalHeaderItem(6)
+        item.setText(_translate("import albums", "Exists"))
 
     def showTableItems(self, items):
         self.tableWidgetItems.setStyleSheet("selection-background-color: black;selection-color: white;")
@@ -233,9 +238,37 @@ class importAlbumsWidget(QtWidgets.QDialog):
             albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetItems.setItem(i, 3, albumItem)
 
+
+            yearItem = QtWidgets.QTableWidgetItem(str(item['alb'].year))
+            yearItem.setFlags(yearItem.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.tableWidgetItems.setItem(i, 4, yearItem)
+
             dirItem = QtWidgets.QTableWidgetItem(item['album_dir'])
             dirItem.setFlags(dirItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i, 4, dirItem)
+            self.tableWidgetItems.setItem(i, 5, dirItem)
+
+            # albumExistItem = QtWidgets.QTableWidgetItem()
+            # albumExistItem.setFlags(albumExistItem.flags() ^ QtCore.Qt.ItemIsEditable)
+            # albumExistItem.setCheckState(item['album_exists'])
+            # albumExistItem.setFlags((albumExistItem.flags() ^ QtCore.Qt.ItemIsEnabled))
+            # albumExistItem.setTextAlignment(QtCore.Qt.AlignHCenter)
+            #
+            # self.tableWidgetItems.setItem(i, 6, albumExistItem)
+
+            albumExistItem = QtWidgets.QCheckBox()
+            albumExistItem.setTristate(False)
+            if item['album_exists']:
+                state = 2
+            else:
+                state = 0
+            albumExistItem.setCheckState(state)
+            albumExistItem.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+            albumExistItem.sizePolicy().setHorizontalStretch(100)
+            albumExistItem.setMaximumSize(100, 200)
+            albumExistItem.mouseReleaseEvent = lambda event: None
+            albumExistItem.setStyleSheet("background-color: rgba(0, 0, 0, 0.0);")
+            self.tableWidgetItems.setCellWidget(i, 6, albumExistItem)
+
 
         hHeader = self.tableWidgetItems.horizontalHeader()
         hHeader.resizeSections(QtWidgets.QHeaderView.ResizeToContents)

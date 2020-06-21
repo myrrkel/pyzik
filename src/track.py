@@ -199,15 +199,17 @@ class track:
                 trackPath = os.path.join(dir, self.getFilePathInAlbumDir())
             else:
                 trackPath = self.getFilePath()
-
+            logger.debug("get_year_from_tags track path %s", trackPath)
             audio = File(trackPath)
 
             if audio.tags:
                 y = audio.tags.get("TYER")
                 if y:
+                    self.year = int(str(y))
                     return int(str(y))
                 y = audio.tags.get("TDRC")
                 if y:
+                    self.year = int(str(y))
                     return int(str(y))
             return 0
         except Exception as e:
