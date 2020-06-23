@@ -753,7 +753,7 @@ class MainWindowLoader(QMainWindow):
         openFile(self.currentAlbum.getAlbumDir())
 
     '''
-    Miscellanious UI functions 
+    Miscellaneous UI functions 
     '''
 
     def setTitleLabel(self, artName="", albTitle="", year=""):
