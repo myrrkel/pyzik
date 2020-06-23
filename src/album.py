@@ -246,6 +246,12 @@ class album:
             return track.get_year_from_tags()
         return 0
 
+    def get_pic_from_tags(self):
+        track = self.getTracks(firstFileOnly=True)
+        if track:
+            return track.get_pic_from_tags()
+        return ""
+
     def getTagsFromFirstFile(self):
         track = self.getTracks(firstFileOnly=True)
         if track:
@@ -386,6 +392,10 @@ class album:
             if self.cover == "":
                 # print("getCover GetDefault="+self.images[0])
                 self.cover = self.images[0]
+
+        if self.cover == "":
+            self.cover = self.get_pic_from_tags()
+
 
     def getCoverPath(self):
         return os.path.join(self.getAlbumDir(), self.cover)

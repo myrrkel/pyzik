@@ -216,6 +216,33 @@ class track:
             logger.error("exception mutagen: %s", e)
             return 0
 
+    def get_pic_from_tags(self, dir=""):
+        """Extract cover pic with Mutagen"""
+        try:
+            if dir != "":
+                trackPath = os.path.join(dir, self.getFilePathInAlbumDir())
+            else:
+                trackPath = self.getFilePath()
+            logger.debug("get_pic_from_tags track path %s", trackPath)
+            audio = File(trackPath)
+            logger.debug("get_pic_from_tags track tags %s", audio.tags)
+            if audio.tags:
+                pic = audio.tags.get("APIC:")
+                if pic:
+                    alb_dir = os.path.dirname(trackPath)
+                    img_path = os.path.join(alb_dir, 'cover.jpg')
+                    img_short_path = os.path.join(dir, 'cover.jpg')
+                    logger.debug("get_pic_from_tags track img %s", img_path)
+                    f = open(img_path, 'w+b')
+                    data = pic.data
+                    f.write(data)
+                    f.close()
+                    return img_short_path
+            return ""
+        except Exception as e:
+            logger.error("exception mutagen: %s", e)
+            return ""
+
     def getMutagenFastTags(self, dir=""):
         """Extract ID3 metadatas with Mutagen"""
         try:
@@ -249,3 +276,17 @@ class track:
     def onCoverDownloaded(self, cover):
         self.setCover(cover)
         self.coverDownloaded.emit(cover)
+
+if __name__ == '__main__':
+    import sys
+    from pyzik import *
+    from musicBase import *
+
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
+    mb = musicBase()
+    mb.loadMusicBase()
+    trk = track("09. Not Suitable For Life", ".mp3", "/home/Documents/TEST/")
+    trk.path = "/home/Documents/TEST/"
+    logger.debug(trk)
+    trk.get_pic_from_tags()
