@@ -112,7 +112,7 @@ class musicDirectory:
                 # GetArtist return a new artist if it doesn't exists in artistsCol
                 if curArt:
                     curAlb.artistID = curArt.artistID
-                    curAlb.artistName = curArt.name
+                    curAlb.artistName = curArt.name.upper()
                     curAlb.addStyle({self.styleID})
 
                     albumList = curArt.findAlbums(curAlb.title)

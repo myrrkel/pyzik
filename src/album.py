@@ -193,7 +193,7 @@ class album:
         track = self.getTracks(firstFileOnly=True)
         if track:
             if track.artist and self.isValidArtistName(track.artist):
-                track.artist = self.artistName = track.artist
+                self.artistName = track.artist
             else:
                 return
             if track.album and self.isValidAlbumName(track.album):

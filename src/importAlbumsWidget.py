@@ -13,6 +13,14 @@ logger = logging.getLogger(__name__)
 _translate = QtCore.QCoreApplication.translate
 
 
+def set_check_state(check_item, bool_state):
+    if bool_state:
+        state = 2
+    else:
+        state = 0
+    check_item.setCheckState(state)
+
+
 class importAlbumsWidget(QtWidgets.QDialog):
 
     def __init__(self, parent, musicbase=None):
@@ -157,7 +165,7 @@ class importAlbumsWidget(QtWidgets.QDialog):
         self.tableWidgetItems.setMinimumSize(QtCore.QSize(50, 0))
         self.tableWidgetItems.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
         self.tableWidgetItems.setObjectName("tableWidgetItems")
-        self.tableWidgetItems.setColumnCount(7)
+        self.tableWidgetItems.setColumnCount(8)
         self.tableWidgetItems.setRowCount(0)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidgetItems.setHorizontalHeaderItem(0, item)
@@ -173,6 +181,8 @@ class importAlbumsWidget(QtWidgets.QDialog):
         self.tableWidgetItems.setHorizontalHeaderItem(5, item)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidgetItems.setHorizontalHeaderItem(6, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidgetItems.setHorizontalHeaderItem(7, item)
 
     def initColumnHeaders(self):
         hHeader = self.tableWidgetItems.horizontalHeader()
@@ -210,6 +220,8 @@ class importAlbumsWidget(QtWidgets.QDialog):
         item.setText(_translate("directory", "Directory"))
         item = self.tableWidgetItems.horizontalHeaderItem(6)
         item.setText(_translate("import albums", "Exists"))
+        item = self.tableWidgetItems.horizontalHeaderItem(7)
+        item.setText(_translate("import albums", "Read Tags"))
 
     def showTableItems(self, items):
         self.tableWidgetItems.setStyleSheet("selection-background-color: black;selection-color: white;")
@@ -257,11 +269,12 @@ class importAlbumsWidget(QtWidgets.QDialog):
 
             albumExistItem = QtWidgets.QCheckBox()
             albumExistItem.setTristate(False)
-            if item['album_exists']:
-                state = 2
-            else:
-                state = 0
-            albumExistItem.setCheckState(state)
+            set_check_state(albumExistItem, item['album_exists'])
+            # if item['album_exists']:
+            #     state = 2
+            # else:
+            #     state = 0
+            # albumExistItem.setCheckState(state)
             albumExistItem.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
             albumExistItem.sizePolicy().setHorizontalStretch(100)
             albumExistItem.setMaximumSize(100, 200)
@@ -269,10 +282,44 @@ class importAlbumsWidget(QtWidgets.QDialog):
             albumExistItem.setStyleSheet("background-color: rgba(0, 0, 0, 0.0);")
             self.tableWidgetItems.setCellWidget(i, 6, albumExistItem)
 
+            check_tags_button = QtWidgets.QPushButton()
+            check_tags_button.alb_item = item
+            check_tags_button.clicked.connect(self.check_tags)
+            check_tags_button.setIcon(getSvgIcon("lightning2.svg"))
+            self.tableWidgetItems.setCellWidget(i, 7, check_tags_button)
 
         hHeader = self.tableWidgetItems.horizontalHeader()
         hHeader.resizeSections(QtWidgets.QHeaderView.ResizeToContents)
         hHeader.setSectionResizeMode(QtWidgets.QHeaderView.Interactive)
+
+
+    def check_tags(self, event):
+        check_tags_button = self.tableWidgetItems.focusWidget()
+        index = self.tableWidgetItems.indexAt(check_tags_button.pos())
+        row = index.row()
+        logger.info(row)
+        alb = check_tags_button.alb_item['alb']
+        alb.getTagsFromFirstFile()
+        curArt = self.musicbase.artistCol.findArtists(alb.artistName)
+        # GetArtist return a new artist if it doesn't exists in artistsCol
+        if len(curArt) == 1:
+            curArt = curArt[0]
+            alb.artistID = curArt.artistID
+            alb.artistName = curArt.name.upper()
+            albums = curArt.findAlbums(alb.title)
+            album_exists = len(albums) > 0
+            albumExistItem = self.tableWidgetItems.cellWidget(row, 6)
+            set_check_state(albumExistItem, album_exists)
+
+        artistItem = self.tableWidgetItems.item(row, 2)
+        albumItem = self.tableWidgetItems.item(row, 3)
+        yearItem = self.tableWidgetItems.item(row, 4)
+        artistItem.setText(alb.artistName)
+        albumItem.setText(alb.title)
+        yearItem.setText(str(alb.year))
+        logger.info("%s - %s", alb.artistName, alb.title)
+
+
 
 
 if __name__ == "__main__":
