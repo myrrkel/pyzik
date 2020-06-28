@@ -5,8 +5,12 @@ import sys
 import os
 import requests
 
-from google_images_download import google_images_download as gid  # importing the library
+#from google_images_download import google_images_download as gid  # importing the library
+from google_images_download import googleimagesdownload as gid   # importing the library
+from google_images_download import user_input as gid_user_input   # importing the library
+import logging
 
+logger = logging.getLogger(__name__)
 
 class CoverArtFinder:
     """Find URL of cover art jpg"""
@@ -19,13 +23,14 @@ class CoverArtFinder:
         for param in params:
             items = self.searchWithParam(keyword, param[0], param[1])
             if items:
-                self.items |= items
+                self.items = self.items + items
+        logger.debug("CoverArtFinder items %s", self.items)
 
     def searchWithParam(self, keyword, limit=4, size="medium"):
 
-        response = gid.googleimagesdownload()  # class instantiation
+        response = gid()  # class instantiation
 
-        records = gid.user_input()
+        records = gid_user_input()
 
         main_directory = ""
         dir_name = ""
@@ -41,7 +46,7 @@ class CoverArtFinder:
 
         params = response.build_url_parameters(arguments)  # building URL with params
 
-        url = response.build_search_url(keyword, params, arguments['url'], arguments['similar_images'],
+        url = response.build_search_url(keyword, params, arguments['url'],
                                         arguments['specific_site'],
                                         arguments['safe_search'])  # building main search url
 
@@ -56,19 +61,16 @@ class CoverArtFinder:
 
         return items
 
-        # paths = response.download(arguments)   #passing the arguments to the function
-        # print(paths)   #printing absolute paths of the downloaded images
-
 
 if __name__ == '__main__':
     import sys
+    import pyzik
+    from PyQt5 import QtCore, QtGui, QtWidgets
     from coverArtFinderDialog import *
 
     app = QApplication(sys.argv)
 
-    keyword = "jerusalem 1972"
-    caf = CoverArtFinder()
-    caf.search(keyword)
+    keyword = "jerusalem album 1972"
 
     caf_diag = coverArtFinderDialog()
     caf_diag.keyword = keyword

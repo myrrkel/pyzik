@@ -11,6 +11,9 @@ from fullScreenCoverWidget import *
 from thumbnailViewerWidget import *
 from coverArtFinder import *
 from svgIcon import *
+import logging
+
+logger = logging.getLogger(__name__)
 
 _translate = QCoreApplication.translate
 
@@ -36,7 +39,8 @@ class coverFinderSearchThread(QThread):
     def run(self):
         try:
             self.coverFinder.search(self.keyword)
-        except:
+        except Exception as e:
+            logger.error(e)
             self.quit()
         self.resultFound.emit(1)
         self.quit()
@@ -157,9 +161,10 @@ class coverArtFinderDialog(QDialog):
         self.close()
 
     def onCoverFinderResult(self, result):
-        if not self.items:
+        if not self.coverFinder.items:
             return
         self.items = self.coverFinder.items
+        logger.debug("ITEMS : %s", self.items)
         self.showThumbnails()
         self.overlay.hide()
 
