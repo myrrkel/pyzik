@@ -328,7 +328,7 @@ class playerVLC:
         logger.info("playRadio %s", radio.name)
         self.titleChangedEvent.emit(radio.name)
         self.playMediaList()
-        trk = track()
+        trk = Track()
         trk.radioID = radio.radioID
         trk.radioName = radio.name
         trk.radioStream = radio.stream

@@ -390,7 +390,7 @@ class playlistWidget(QDialog):
             # print("ShowMediaList mrl="+mrl)
             t = self.player.getTrackFromMrl(mrl)
             if t is None:
-                t = track()
+                t = Track()
                 t.setMRL(mrl)
                 t.title = self.player.getTitle()
 

@@ -18,7 +18,7 @@ from utils import *
 logger = logging.getLogger(__name__)
 
 
-class track:
+class Track:
     """
     Track's class, each track is music a file such mp3, ogg, wma (sic), mpc, flac...
     """
@@ -61,7 +61,8 @@ class track:
         return os.path.join(self.subPath, self.getName())
 
     def getFilePath(self):
-        return os.path.join(self.path, self.getFilePathInAlbumDir())
+        # return os.path.join(self.path, self.getFilePathInAlbumDir())
+        return os.path.join(self.path, self.getName())
 
     def getFullFilePath(self):
         return os.path.join(self.path, self.getName())
@@ -186,7 +187,7 @@ class track:
             logger.error("MutagenError:" + trackPath)
 
         except Exception as e:
-            logger.error("Exception mutagen: %s", e)
+            logger.error("getMutagenTags Exception mutagen: %s", e)
 
         if self.title in ("", "None"): self.title = self.fileName
         self.printInfos()
@@ -205,7 +206,7 @@ class track:
                 self.year = self.get_year_from_tag_dict(audio.tags)
                 return self.year
         except Exception as e:
-            logger.error("exception mutagen: %s", e)
+            logger.error("get_year_from_tags exception mutagen: %s", e)
             return 0
 
     def get_year_from_tag_dict(self, tag_dict):
@@ -245,10 +246,10 @@ class track:
                     data = pic.data
                     f.write(data)
                     f.close()
-                    return img_short_path
+                    return img_path
             return ""
         except Exception as e:
-            logger.error("exception mutagen: %s", e)
+            logger.error("get_pic_from_tags exception mutagen: %s", e)
             return ""
 
     def getMutagenFastTags(self, dir=""):
@@ -293,7 +294,7 @@ if __name__ == '__main__':
     app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
     mb = musicBase()
     mb.loadMusicBase()
-    trk = track("09. Not Suitable For Life", ".mp3", "/home/Documents/TEST/")
+    trk = Track("09. Not Suitable For Life", ".mp3", "/home/Documents/TEST/")
     trk.path = "/home/Documents/TEST/"
     logger.debug(trk)
     trk.get_pic_from_tags()

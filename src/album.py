@@ -243,7 +243,7 @@ class album:
         files = os.listdir(currentDir)
         files.sort()
 
-        nTrack = track("", "")
+        nTrack = Track("", "")
 
         for file in files:
             if self.doStop: break
@@ -260,7 +260,7 @@ class album:
 
                         if ("." in sfile):
                             filename, file_extension = os.path.splitext(sfile)
-                            itrack = track(filename, file_extension, subdir)
+                            itrack = Track(filename, file_extension, subdir)
                             itrack.path = currentDir
                             itrack.parentAlbum = self
 
@@ -330,8 +330,10 @@ class album:
                 # print("getCover GetDefault="+self.images[0])
                 self.cover = self.images[0]
 
+        logger.debug("getCover %s", self.cover)
         if self.cover == "":
             self.cover = self.get_pic_from_tags()
+            logger.debug("getCover %s", self.cover)
 
 
     def getCoverPath(self):
