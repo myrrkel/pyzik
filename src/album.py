@@ -3,10 +3,12 @@
 
 import re
 import os
-import math
+
 import shutil
 import fnmatch
 from track import *
+from filesUtils import *
+from utils import *
 from globalConstants import *
 import formatString as FS
 from database import *
@@ -14,18 +16,6 @@ from PyQt5.QtGui import QPixmap
 import logging
 
 logger = logging.getLogger(__name__)
-
-
-def getFolderSize(folder):
-    if not os.path.isdir(folder): return 0
-    total_size = os.path.getsize(folder)
-    for item in os.listdir(folder):
-        itempath = os.path.join(folder, item)
-        if os.path.isfile(itempath):
-            total_size += os.path.getsize(itempath)
-        elif os.path.isdir(itempath):
-            total_size += getFolderSize(itempath)
-    return total_size
 
 
 def unvalidAlbumName():
@@ -36,58 +26,6 @@ def unvalidAlbumName():
 def unvalidArtistName():
     return ['Unknown artist',
             'Artiste inconnu', ]
-
-
-def convert_size(size_bytes):
-    if size_bytes == 0:
-        return "0B"
-    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-    i = int(math.floor(math.log(size_bytes, 1024)))
-    p = math.pow(1024, i)
-    s = round(size_bytes / p, 2)
-    return "%s %s" % (s, size_name[i])
-
-
-def year(s):
-    """
-    Convert a string made of numbers into a year
-    Return 0 if string s is not a year, else return the year on 4 digits. ex: "73"-->1973
-    """
-    res = 0
-    if str.isdigit(s):
-        if len(s) == 4:
-            res = int(s)
-        else:
-            if len(s) == 2: res = int("19" + s)
-            # If year is 69 it means 1969.
-            # Sounds ridiculous to have 16 instead of 2016.
-    return res
-
-
-def isYear(s):
-    return s.isdigit() and (len(s) in (4, 2))
-
-
-def countDigitInDatas(datas):
-    return len(list(d for d in datas if d.isdigit() == True))
-
-
-def getFileName(path):
-    filename = os.path.basename(path)
-    filename, file_extension = os.path.splitext(filename)
-    # print("getFileName = "+filename)
-    return filename
-
-
-def capitaliseWord(word):
-    res = ""
-    for i, l in enumerate(word):
-        if i == 0:
-            res += l.upper()
-        else:
-            res += l
-    return res
-
 
 def titleExcept(title):
     exceptions = ['a', 'an', 'of', 'the', 'is', 'in', 'to']
@@ -101,14 +39,13 @@ def titleExcept(title):
             final.append(capitaliseWord(word))
     return " ".join(final)
 
-
 def replaceSpecialChars(text):
     # Replace strings in given text according to the dictionary 'rep'
 
-    rep = {"_": " ", "  ": " ", "#": "@", \
-           "-(": "@", ")-": "@", "- (": "@", ") -": "@", \
-           "-[": "@", "]-": "@", "- [": "@", "] -": "@", \
-           "(": "@", ")": "@", "[": "@", "]": "@", \
+    rep = {"_": " ", "  ": " ", "#": "@",
+           "-(": "@", ")-": "@", "- (": "@", ") -": "@",
+           "-[": "@", "]-": "@", "- [": "@", "] -": "@",
+           "(": "@", ")": "@", "[": "@", "]": "@",
            " - ": "@", "@ @": "@", "@@": "@"}
 
     rep = dict((re.escape(k), v) for k, v in rep.items())
@@ -174,9 +111,9 @@ class album:
         return self.searchKey
 
     def printInfos(self):
-        print("Title: " + self.title + "  # Artist: " + self.artistName \
-              + "  # ArtistID: " + str(self.artistID) \
-              + "  # Year: " + str(self.year) \
+        print("Title: " + self.title + "  # Artist: " + self.artistName
+              + "  # ArtistID: " + str(self.artistID)
+              + "  # Year: " + str(self.year)
               + "  # musicDirectoryID: " + str(self.musicDirectoryID)
               + "  # dirPath: " + str(self.dirPath))
 

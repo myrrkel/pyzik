@@ -13,8 +13,10 @@ from mutagen import File
 from urllib.parse import unquote
 from PyQt5.QtCore import pyqtSignal
 import logging
+from utils import *
 
 logger = logging.getLogger(__name__)
+
 
 class track:
     """
@@ -172,22 +174,19 @@ class track:
                 self.title = str(audio.tags.get("TIT2"))
                 self.artist = str(audio.tags.get('TPE1'))
                 self.album = str(audio.tags.get('TALB'))
-                y = audio.tags.get("TYER")
-                if y: self.year = int(y)
-                y = audio.tags.get("TDRC")
-                if y: self.year = int(str(y))
+                self.year = self.get_year_from_tag_dict(audio.tags)
                 self.getValidTrackNumberFromTAG(str(audio.tags.get("TRCK")))
                 self.getValidDiscNumberFromTAG(str(audio.tags.get("TPOS")))
 
 
         except ID3NoHeaderError:
-            print("No tags")
+            logger.info("No tags")
 
         except MutagenError:
-            print("MutagenError:" + trackPath)
+            logger.error("MutagenError:" + trackPath)
 
-        except:
-            print("exception mutagen: ", sys.exc_info()[1])
+        except Exception as e:
+            logger.error("Exception mutagen: %s", e)
 
         if self.title in ("", "None"): self.title = self.fileName
         self.printInfos()
@@ -203,18 +202,27 @@ class track:
             audio = File(trackPath)
 
             if audio.tags:
-                y = audio.tags.get("TYER")
-                if y:
-                    self.year = int(str(y))
-                    return int(str(y))
-                y = audio.tags.get("TDRC")
-                if y:
-                    self.year = int(str(y))
-                    return int(str(y))
-            return 0
+                self.year = self.get_year_from_tag_dict(audio.tags)
+                return self.year
         except Exception as e:
             logger.error("exception mutagen: %s", e)
             return 0
+
+    def get_year_from_tag_dict(self, tag_dict):
+        if tag_dict:
+            y = tag_dict.get("TYER")
+            if y:
+                return year(y)
+            else:
+                y = tag_dict.get("TDRC")
+                if y:
+                    str_y = str(y)
+                    if len(str_y) > 4:
+                        logger.debug("datas: %s", str_y)
+                        str_y = str_y[:4]
+                    return year(str_y)
+
+        return 0
 
     def get_pic_from_tags(self, dir=""):
         """Extract cover pic with Mutagen"""
@@ -256,26 +264,25 @@ class track:
                 self.artist = str(audio.tags.get('TPE1'))
                 self.album = str(audio.tags.get('TALB'))
                 self.title = str(audio.tags.get("TIT2"))
-                y = audio.tags.get("TYER")
-                if y: self.year = int(y)
-                y = audio.tags.get("TDRC")
-                if y: self.year = int(str(y))
+                self.year = self.get_year_from_tag_dict(audio.tags)
+
                 self.trackNumber = str(audio.get("TRCK"))
 
         except ID3NoHeaderError:
-            print("No tags")
+            logger.debug("No tags")
 
         except MutagenError:
-            print("MutagenError:" + trackPath)
+            logger.error("MutagenError:" + trackPath)
 
-        except:
-            print("exception mutagen: ", sys.exc_info()[0])
+        except Exception as e:
+            logger.error("getMutagenFastTags exception mutagen: %s", e)
 
         if self.title in ("", "None"): self.title = self.fileName
 
     def onCoverDownloaded(self, cover):
         self.setCover(cover)
         self.coverDownloaded.emit(cover)
+
 
 if __name__ == '__main__':
     import sys
