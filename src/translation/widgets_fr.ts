@@ -53,6 +53,10 @@
         <source>Copying:</source>
         <translation>Copie de:</translation>
     </message>
+    <message>
+        <source>Read Tags</source>
+        <translation>Lire les tags</translation>
+    </message>
 </context>
 <context>
     <name>directory</name>
