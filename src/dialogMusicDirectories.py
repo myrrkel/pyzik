@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(622, 223)
+        #Dialog.resize(622, 223)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -21,7 +21,7 @@ class Ui_Dialog(object):
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.wLeft = QtWidgets.QWidget(Dialog)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(50)
+        # sizePolicy.setHorizontalStretch(50)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.wLeft.sizePolicy().hasHeightForWidth())
         self.wLeft.setSizePolicy(sizePolicy)
@@ -35,7 +35,7 @@ class Ui_Dialog(object):
         self.verticalLayout_3.addWidget(self.DirListView)
         self.wButtonsList = QtWidgets.QWidget(self.wLeft)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(100)
+        #sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.wButtonsList.sizePolicy().hasHeightForWidth())
         self.wButtonsList.setSizePolicy(sizePolicy)
@@ -207,6 +207,7 @@ class Ui_Dialog(object):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Music directories manager"))
         self.AddButton.setText(_translate("Dialog", "Add directory"))
+        self.AddButton.updateGeometry()
         self.DeleteButton.setText(_translate("Dialog", "Delete"))
         self.labelName.setText(_translate("Dialog", "Name"))
         self.labelDir.setText(_translate("Dialog", "Dir"))

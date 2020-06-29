@@ -75,6 +75,7 @@ class MainWindowLoader(QMainWindow):
         self.searchRadio = None
         self.histoWidget = None
         self.coverFinder = None
+        self.import_album_widget = None
 
         self.coverPixmap = QtGui.QPixmap()
         if not self.defaultPixmap:
