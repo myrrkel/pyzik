@@ -8,6 +8,9 @@ from musicBase import *
 from musicDirectory import *
 from database import *
 from musicGenres import *
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
@@ -52,6 +55,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.ui.Name.setText(md.dirName)
         self.ui.DirEdit.setText(md.dirPath)
         print("Current Style ID=", md.styleID)
+        print("Current MD ", md.dirName, md.musicDirectoryID)
         if md.styleID >= 0:
             i = self.ui.comboStyle.findData(md.styleID)
             self.ui.comboStyle.setCurrentIndex(i)
@@ -90,8 +94,10 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         indexes = self.ui.DirListView.selectionModel().selectedIndexes()
         model = self.ui.DirListView.model()
         i = indexes[0].row()
-        print("Index delete=" + str(i))
+
+        self.musicBase.deleteMusicDirectory(self.currentDir)
         model.removeRow(i)
+
         if i >= model.rowCount() - 1:
             index = model.createIndex(model.rowCount() - 1, 0)
         else:
@@ -99,8 +105,6 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.ui.DirListView.setModel(model)
         self.ui.DirListView.selectionModel().select(index, QtCore.QItemSelectionModel.Select)
         self.onDirChanged(index)
-
-        self.musicBase.deleteMusicDirectory(self.currentDir)
 
     def onChangeDir(self):
         sDir = self.selectDir()
