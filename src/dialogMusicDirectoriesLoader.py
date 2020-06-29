@@ -8,6 +8,7 @@ from musicBase import *
 from musicDirectory import *
 from database import *
 from musicGenres import *
+from svgIcon import *
 import logging
 
 logger = logging.getLogger(__name__)
@@ -31,6 +32,9 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.ui.Name.textChanged.connect(self.onNameChanged)
         self.ui.comboStyle.currentIndexChanged.connect(self.onChangeGenre)
         self.ui.comboDirType.currentIndexChanged.connect(self.onChangeDirType)
+
+        self.ui.AddButton.setIcon(getSvgIcon("folder_add.svg"))
+        self.ui.DeleteButton.setIcon(getSvgIcon("folder_delete.svg"))
 
         self.loadDirList()
         self.showGenres()
