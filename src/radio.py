@@ -52,11 +52,6 @@ class radio:
         self.liveCoverUrl = ""
         self.cover = None
         self.coverPixmap = QPixmap()
-        # if self.picFromUrlThread is None:
-        #    self.picFromUrlThread = picFromUrlThread()
-        # self.picFromUrlThread.downloadCompleted.connect(self.onCoverDownloaded)
-        # self.coverDownloaded = pyqtSignal(str, name='coverDownloaded')
-        # self.picDownloader = picDownloader()
 
     def load(self, row):
         self.radioID = row[0]
@@ -103,9 +98,8 @@ class radio:
                                       WHERE radioID = ?;
                           """
             c.execute(sqlInsertHistory, (
-            self.name, self.stream, self.image, self.thumb, self.getCategorieID(), self.sortID, self.radioID,))
+                self.name, self.stream, self.image, self.thumb, self.getCategorieID(), self.sortID, self.radioID,))
             db.connection.commit()
-
 
         except sqlite3.Error as e:
             print(e)
@@ -113,8 +107,6 @@ class radio:
     def initWithDirbleRadio(self, dRadio, stream):
         self.name = dRadio.name
         self.country = dRadio.country
-
-        # print(str(dRadio))
 
         if hasattr(dRadio, 'image'):
             if len(dRadio.image) > 0:

@@ -75,6 +75,12 @@ To make a Windows EXE Installer:
 + Collecting track title and lyrics from web
 + USB Music Player Manager: Fill a USB storage with music you like
 
+## Thanks
 
+https://www.videolan.org for LibVLC
+
+https://olivieraubert.net for Python VLC binding
+
+http://www.radio-browser.info for radio search results
 
 

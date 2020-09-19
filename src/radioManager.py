@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
 import requests
 import urllib.parse
 import json
-
 import xml.etree.ElementTree as ET
-
 from collections import namedtuple
 
 from radio import *
 from globalConstants import *
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
@@ -136,32 +137,35 @@ class radioManager():
 
     def searchRadioBrower(self, search):
         """
-        Get radios from RadioBrowser open-source project
-        http://www.radio-browser.info/webservice
+        Search radios with Radio Browser API
         """
-        rbRadios = []
+        rb_radios, tradios = [], []
+        headers = {'User-Agent': 'pyzik 0.3', }
         search = urllib.parse.quote_plus(search.replace(" ", "_"))
 
-        try:
-            headers = {'User-Agent': 'pyzik 0.1b', }
-            searchUrl = "http://www.radio-browser.info/webservice/json/stations/byname/" + search
-            r = requests.post(searchUrl, headers=headers)
-            # print(r.text)
-            tradios = json2obj(r.text)
-        except requests.exceptions.HTTPError as err:
-            print(err)
+        r = requests.post("http://all.api.radio-browser.info/json/servers", headers=headers)
+        servers = json2obj(r.text)
+        logger.debug("Servers %s", servers)
+        for server in servers:
+            search_url = "http://%s/json/stations/search?name=%s" % (server.name, search)
+            try:
+                r = requests.post(search_url, headers=headers, data={'name': search})
+                tradios = json2obj(r.text)
+                break
+            except requests.exceptions.HTTPError as err:
+                logger.error(err)
 
         if tradios:
             for tr in tradios:
                 rad = radio()
                 rad.name = tr.name
                 rad.stream = tr.url
-                rad.coutry = tr.country
+                rad.country = tr.country
                 rad.image = tr.favicon
                 rad.addCategorie(tr.tags)
-                rbRadios.append(rad)
+                rb_radios.append(rad)
 
-        return rbRadios
+        return rb_radios
 
     def searchTuneinRadios(self, search):
         tuneinRadios = []
