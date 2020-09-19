@@ -1,49 +1,45 @@
-# pyzik
+# Pyzik Player
+
+Pyzik Player finds datas from albums directories name and saves it in database. 
+
+ID3 tags are only used when there is no over option to get albums information.
+
+#### What's the point?
+
+Even if you have a very big music storage, all albums are referenced very quickly.
+
+Just tell where are your repositories and play your music.
+
 
 <img src="https://raw.githubusercontent.com/myrrkel/pyzik/master/screenshot.png" alt="pyzik" />
 
-Pyzik explores big music directories like:
-
-                                    ./Rock/Artist1 - [1965] - Album1
-                                    ./Rock/Artist1 - [1967] - Album2
-                                    ./Rock/Artist2 - Album2 (1972)
-                                    ...
-                                    ./Blues/Artist3 - Album4
-                                    ...
-
-or
-
-                                    ./Artist/1972 - Album1
-                                    ./Artist/1975 - Album2
-                                    ./Artist2/1967 - Album1
-                                    ./Artist2/1968 - Album2
 
 
+## Pyzik script command line: 
+
+Start the project:
+
+    python3 ./src/pyzik.py
+    
+Parameters:
+
+    -d, --debug:       Enable debug mode
+    -s, --style:       Set Qt Style (Windows, Fusion...)
+    -p, --db-path:     Set the database file path (~/.local/share/pyzik/data/pyzik.db)
+    -h, --help:        Display help
 
 
-Pyzik finds datas from albums directories name and saves it in database. 
-
-So you can find your music quickly, and play it.
-
-
-# To start the project use the command line: 
-
-install requirements:
+To install requirements:
 
     pip install -r requirements.txt
 
-start the project:
-
-    python3 ./src/pyzik.py
-
-
-# Install on Linux
+## Install on Linux
 
     wget https://github.com/myrrkel/pyzik/releases/download/v0.3-beta/pyzik-0.3.linux-86_64-standalone.tar.gz
     tar -zxvf pyzik-0.3.linux-86_64-standalone.tar.gz
 
 
-# To build the project: 
+## To build the project: 
 
 For Linux:
 
@@ -62,7 +58,7 @@ To make a Windows EXE Installer:
     ( install NSIS from https://nsis.sourceforge.io )
 
 
-# News
+## News
 + Grab covers from Google Image
 + Full screen mode with current track and cover art
 + Radio finder (from RadioBrower, Tunein, Dar and Dirble)
@@ -71,12 +67,13 @@ To make a Windows EXE Installer:
 + Playing radio without ads
 + Reading tags
 + Language selector
-
-
-# Coming soon:
 + Generating random M3U playlist
 + Correcting folder's name acording ID3 tags
+
+## Coming soon:
+
 + Collecting track title and lyrics from web
++ USB Music Player Manager: Fill a USB storage with music you like
 
 
 
