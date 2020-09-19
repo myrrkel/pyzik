@@ -41,6 +41,7 @@ class coverFinderSearchThread(QThread):
             self.coverFinder.search(self.keyword)
         except Exception as e:
             logger.error(e)
+            raise e
             self.quit()
         self.resultFound.emit(1)
         self.quit()
@@ -59,6 +60,7 @@ class coverArtFinderDialog(QDialog):
 
         self.coverFinder = CoverArtFinder()
         self.coverFinderThread = coverFinderSearchThread()
+        self.coverFinderThread.coverFinder = self.coverFinder
         self.coverFinderThread.resultFound.connect(self.onCoverFinderResult)
 
         if self.picFromUrlThread is None:
@@ -129,9 +131,9 @@ class coverArtFinderDialog(QDialog):
     def search(self):
 
         if self.album is not None:
-            keyword = self.album.getCoverSearchText()
-        else:
-            keyword = self.keyword
+            self.keyword = self.album.getCoverSearchText()
+
+        keyword = self.keyword
 
         print("CoverArtFinder search=" + keyword)
 

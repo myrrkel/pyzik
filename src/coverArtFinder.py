@@ -17,16 +17,16 @@ class CoverArtFinder:
 
     items = []
 
-    def search(self, keyword):
+    def search(self, search_keyword):
         params = [(4, "large"), (8, "medium")]
 
         for param in params:
-            items = self.searchWithParam(keyword, param[0], param[1])
+            items = self.searchWithParam(search_keyword, param[0], param[1])
             if items:
                 self.items = self.items + items
         logger.debug("CoverArtFinder items %s", self.items)
 
-    def searchWithParam(self, keyword, limit=4, size="medium"):
+    def searchWithParam(self, search_keyword, limit=4, size="medium"):
 
         response = gid()  # class instantiation
 
@@ -36,7 +36,7 @@ class CoverArtFinder:
         dir_name = ""
 
         arguments = records[0]
-        arguments["keywords"] = keyword
+        arguments["keywords"] = search_keyword
         arguments["no_download"] = True
         arguments["limit"] = limit
         arguments["size"] = size
@@ -46,7 +46,7 @@ class CoverArtFinder:
 
         params = response.build_url_parameters(arguments)  # building URL with params
 
-        url = response.build_search_url(keyword, params, arguments['url'],
+        url = response.build_search_url(search_keyword, params, arguments['url'],
                                         arguments['specific_site'],
                                         arguments['safe_search'])  # building main search url
 
@@ -71,6 +71,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
 
     keyword = "jerusalem album 1972"
+    keyword = "IN FLAMES Clayman"
 
     caf_diag = coverArtFinderDialog()
     caf_diag.keyword = keyword
