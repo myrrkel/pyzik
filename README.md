@@ -71,7 +71,7 @@ To make a Windows EXE Installer:
 + Correcting folder's name according ID3 tags
 + Import albums from dirty directories like 'Downloads' to music storage
 
-## Coming soon:
+## Coming soon
 
 + Collecting track lyrics from web
 + USB Music Player Manager: Fill a USB storage with music you like
@@ -88,6 +88,6 @@ https://www.videolan.org for LibVLC
 
 https://olivieraubert.net for Python VLC binding
 
-http://www.radio-browser.info for radio search results
+http://www.radio-browser.info for radio search api
 
 
