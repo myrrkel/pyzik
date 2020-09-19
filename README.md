@@ -61,19 +61,26 @@ To make a Windows EXE Installer:
 ## News
 + Grab covers from Google Image
 + Full screen mode with current track and cover art
-+ Radio finder (from RadioBrower, Tunein, Dar and Dirble)
++ Radio finder (with RadioBrower, Tunein, Dar or Dirble)
 + Played tracks and radio history
 + Music style filter
 + Playing radio without ads
 + Reading tags
 + Language selector
 + Generating random M3U playlist
-+ Correcting folder's name acording ID3 tags
++ Correcting folder's name according ID3 tags
++ Import albums from dirty directories like 'Downloads' to music storage
 
 ## Coming soon:
 
-+ Collecting track title and lyrics from web
++ Collecting track lyrics from web
 + USB Music Player Manager: Fill a USB storage with music you like
++ Music Base Information (Number of artist, albums...)
++ Filters in history view
++ Web Radio Manager
++ Explore Event tool
++ Album information, update and delete tools
+
 
 ## Thanks
 
