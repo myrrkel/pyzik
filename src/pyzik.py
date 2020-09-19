@@ -4,6 +4,7 @@
 
 import sys
 import logging
+import getopt
 
 print("Import modules...")
 
@@ -23,10 +24,30 @@ root_logger.addHandler(handler)
 
 
 def main():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hdp:s:", ["help", "debug", "db-path=", "style="])
+    except getopt.GetoptError as e:
+        logger.error(e)
+        print_help()
+        sys.exit(2)
+
+    db_path = ''
+    style_name = ''
+    for opt, arg in opts:
+        if opt in ("-d", "--debug"):
+            root_logger.setLevel("DEBUG")
+            logger.debug("Debug mode ON")
+        elif opt in ("-p", "--db-path"):
+            db_path = arg
+        elif opt in ("-s", "--style"):
+            style_name = arg
+        elif opt in ("-h", "--help"):
+            print_help()
+            sys.exit()
+
     logger.info("Pyzik starting...")
     app = QtWidgets.QApplication(sys.argv)
-    if "--debug" in sys.argv:
-        root_logger.setLevel("DEBUG")
+
     app.setApplicationName("Pyzik")
 
     logger.info("Loading translations...")
@@ -35,13 +56,18 @@ def main():
     tr.installTranslators(localeLanguage)
 
     # Load & Set the DarkStyleSheet
-    logger.info("Loading DarkStyleSheet...")
-    app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
-    # logger.info("Available system styles: ",QtWidgets.QStyleFactory.keys())
-    # myStyle = QtWidgets.QStyleFactory.create('Windows')
-    # app.setStyle(myStyle)
+    if style_name:
+        logger.info("Available system styles: %s", QtWidgets.QStyleFactory.keys())
+        try:
+            q_style = QtWidgets.QStyleFactory.create(style_name)
+            app.setStyle(q_style)
+        except Exception as e:
+            logger.error(e)
+    else:
+        logger.info("Loading DarkStyleSheet...")
+        app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
 
-    mb = musicBase()
+    mb = musicBase(db_path=db_path)
     logger.info('Loading musicBase...')
     mb.loadMusicBase()
     logger.info('Loading VLC player...')
@@ -61,6 +87,23 @@ def main():
     db.vacuum()
 
     sys.exit()
+
+
+def print_help():
+    help_str = '''
+    
+#########################    
+#      Pyzik Help       #
+#########################
+
+    Parameters:
+        -d, --debug:       Enable debug mode
+        -s, --style:       Set Qt Style (Windows, Fusion...)
+        -p, --db-path:     Set the database file path (~/.local/share/pyzik/data/pyzik.db)
+        -h, --help:        Display help
+        
+    '''
+    logger.info(help_str)
 
 
 if __name__ == "__main__":

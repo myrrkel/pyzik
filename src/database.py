@@ -18,7 +18,7 @@ class database():
 
     '''
 
-    def __init__(self, isHistory=False):
+    def __init__(self, isHistory=False, db_path=''):
         self.isHistory = isHistory
 
         if self.isHistory:
@@ -26,7 +26,10 @@ class database():
         else:
             self.databaseName = "pyzik.db"
 
-        self.dataPath = dataDir + "/data/" + self.databaseName
+        if db_path:
+            self.dataPath = db_path
+        else:
+            self.dataPath = dataDir + "/data/" + self.databaseName
         self.dataPathMain = dataDir + "/data/pyzik.db"
         self.connection = ""
         self.memoryConnection = ""

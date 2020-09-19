@@ -1,5 +1,5 @@
 urllib3
-PyQt5==5.10.1
+PyQt5
 setuptools
 python-vlc
 mutagen
@@ -9,5 +9,4 @@ beautifulsoup4
 pytz
 pyinstaller
 appdirs
-google_images_download
 musicbrainzngs

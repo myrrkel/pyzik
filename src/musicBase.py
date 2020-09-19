@@ -23,8 +23,8 @@ class musicBase:
     the music directories to the database'''
     """
 
-    def __init__(self):
-        self.db = database()
+    def __init__(self, db_path=''):
+        self.db = database(db_path=db_path)
         self.db.initDataBase()
         self.albumCol = albumCollection(self)
         self.artistCol = artistCollection(self)
