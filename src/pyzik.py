@@ -45,6 +45,7 @@ def main():
             print_help()
             sys.exit()
 
+    sys.argv = [sys.argv[0]]
     logger.info("Pyzik starting...")
     app = QtWidgets.QApplication(sys.argv)
 

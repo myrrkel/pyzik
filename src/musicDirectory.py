@@ -37,6 +37,8 @@ class musicDirectory:
     All his albums heritates of this style on import
     """
 
+    exploreEvents = []
+
     def __init__(self, musicBase=None, dirPath=""):
 
         self.musicBase = musicBase
@@ -53,7 +55,6 @@ class musicDirectory:
         self.albums = []
         self.dirType = 0
         self.status = 0  # -1=Error ,0=Unknown , 1=OK
-        self.exploreEvents = []
 
     def load(self, row):
         # musicDirectoryID, dirPath, dirName, styleID
@@ -127,7 +128,7 @@ class musicDirectory:
                         for alb in albumList:
                             if alb.getAlbumDir() != curAlb.getAlbumDir():
                                 self.addExploreEvent(
-                                    exploreEvent("ALBUM_DUPLICATE", curAlb.getAlbumDir(), alb.albumID, curArt.artistID))
+                                    exploreEvent("ALBUM_DUPLICATE", curAlb.getAlbumDir(), alb.albumID, curArt.artistID, alb))
 
                 else:
                     logger.info("exploreAlbumsDirectory - No artist for " + dir)
@@ -281,11 +282,12 @@ class musicDirectory:
 
 class exploreEvent:
 
-    def __init__(self, code, dirpath, albumID=0, artistID=0):
+    def __init__(self, code, dirpath, albumID=0, artistID=0, album=None):
         self.eventCode = code
         self.dirPath = dirpath
         self.artistID = artistID
         self.albumID = albumID
+        self.album = album
 
     def getText(self):
         if self.eventCode == "ALBUM_DUPLICATE":

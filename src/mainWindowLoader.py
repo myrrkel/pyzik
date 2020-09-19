@@ -30,6 +30,7 @@ from playerControlWidget import *
 from progressWidget import *
 from albumWidget import *
 from importAlbumsWidget import *
+from exploreEventsWidget import *
 from coverArtFinderDialog import *
 from svgIcon import *
 from picFromUrlThread import *
@@ -216,10 +217,16 @@ class MainWindowLoader(QMainWindow):
         logger.debug("onExploreCompleted")
         events = self.musicBase.musicDirectoryCol.getExploreEvents()
         logger.debug("EXPLORE EVENTS=" + str([e.getText() for e in events]))
+        self.open_explore_events_widget(events)
         self.musicBase.db = database()
         # self.musicBase.loadMusicBase()
         self.showArtists()
         self.showGenres()
+
+    def open_explore_events_widget(self, events):
+        if not hasattr(self, 'explore_events_widget'):
+            self.explore_events_widget = ExploreEventsWidget(self, self.musicBase, events)
+        self.explore_events_widget.show()
 
     def onPlaySearchRadio(self):
 

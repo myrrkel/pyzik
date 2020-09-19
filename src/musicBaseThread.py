@@ -18,11 +18,13 @@ class exploreAlbumsDirectoriesThread(QThread):
     progressChanged = pyqtSignal(int, name='progressChanged')
     directoryChanged = pyqtSignal(str, name='directoryChanged')
     exploreCompleted = pyqtSignal(int, name='exploreCompleted')
+    exploreEvents = []
 
     def run(self):
         self.doStop = False
         db = database()
         db.initMemoryDB()
+        self.exploreEvents = []
         self.musicBase.db = db
         self.musicBase.musicDirectoryCol.db = db
 
@@ -36,6 +38,7 @@ class exploreAlbumsDirectoriesThread(QThread):
             mdir.albumCol.db = db
 
             mdir.exploreDirectory(self.progressChanged)
+            self.exploreEvents.extend(mdir.exploreEvents)
 
             if self.doStop: break
         self.directoryChanged.emit("Saving datas...")
