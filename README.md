@@ -1,12 +1,12 @@
 # Pyzik Player
 
-Pyzik Player finds datas from albums directories name and saves it in database. 
+Pyzik Player is designed to manage finds data from albums directories name and saves it in database. 
 
 ID3 tags are only used when there is no over option to get albums information.
 
 #### What's the point?
 
-Even if you have a very big music storage, all albums are referenced very quickly.
+Even if you have a very big music storage, all albums are referenced very quickly, once.
 
 Just tell where are your repositories and play your music.
 
@@ -39,7 +39,7 @@ To install requirements:
     tar -zxvf pyzik-0.3.linux-86_64-standalone.tar.gz
 
 
-## To build the project: 
+## Build the project 
 
 For Linux:
 
