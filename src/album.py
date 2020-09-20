@@ -64,7 +64,7 @@ class album:
         self.dirName = dirname
         self.dirPath = dirname
         self.artistID = ""
-        self.artistName = ""
+        self.artist_name = ""
         self.year = 0
         self.cover = ""
         self.size = 0
@@ -99,7 +99,7 @@ class album:
         return titleExcept(title)
 
     def getCoverSearchText(self):
-        txt = self.artistName
+        txt = self.artist_name
         if int(self.year) > 0 and int(self.year) != 9999:
             txt = txt + " " + str(self.year)
         txt = txt + " " + self.title
@@ -111,71 +111,178 @@ class album:
         return self.searchKey
 
     def printInfos(self):
-        print("Title: " + self.title + "  # Artist: " + self.artistName
+        print("Title: " + self.title + "  # Artist: " + self.artist_name
               + "  # ArtistID: " + str(self.artistID)
               + "  # Year: " + str(self.year)
               + "  # musicDirectoryID: " + str(self.musicDirectoryID)
               + "  # dirPath: " + str(self.dirPath))
 
-    def extractDataFromDirName(self):
-        pos1 = self.dirName.find(" - [")
-        pos2 = self.dirName.find("] - ")
+    def get_common_formats(self, with_year=True, generic=False):
 
-        if 0 < pos1 and pos1 < pos2:
-            # The name of the directory is correct like 'DEEP PURPLE - [1972] - Machine Head'
-            self.title = self.dirName[pos2 + 4:]
-            self.artistName = self.dirName[:pos1]
-            self.year = year(self.dirName[pos1 + 4:pos2])
-        else:
-            # Replace characters that could beseparatorss in directory name by char @
-            salb = replaceSpecialChars(self.dirName)
-            salb.strip()
-            if salb[len(salb) - 1] == "@": salb = salb[:len(salb) - 1]
-            if salb[0] == "@": salb = salb[1:]
+        def get_separator(sep, side, var_name):
+            return {'separator': sep,
+                    'side': side,
+                    'var': var_name}
 
-            # Split datas separated by @
-            datas = salb.split("@")
-            datas = [str.strip(data) for data in datas]
+        common_name_formats = []
 
-            # if len(datas)>3:
-            #    print("extractDataFromDirName: more than 3 datas = "+str(datas))
+        if generic:
+            if with_year:
+                # 'DEEP PURPLE @ 1972 @ Machine Head'
+                separators = []
+                separators.append(get_separator("@", "left", "artist_name"))
+                separators.append(get_separator("@", "left", "year"))
+                separators.append(get_separator("", "right", "title"))
+                common_name_formats.append(separators)
 
-            if len(datas) >= 3:
-                '''With 3 or more datas in the directory name,
-                we suppose that the first one is the artist name,
-                If the second is a year, the third is the title'''
-                self.title = ""
-                self.artistName = datas[0]
+                # 'DEEP PURPLE @ Machine Head @ 1972 @'
+                separators = []
+                separators.append(get_separator("@", "left", "artist_name"))
+                separators.append(get_separator("@", "left", "title"))
+                separators.append(get_separator("@", "left", "year"))
+                common_name_formats.append(separators)
 
-                for i in range(1, len(datas)):
-
-                    if (datas[i].isdigit()):
-                        if isYear(datas[i]):
-                            self.year = year(datas[i])
-                    else:
-                        if self.title != "": self.title += " - "
-                        self.title += datas[i]
-
-
-            elif len(datas) == 2:
-                '''With 2 datas in the directory name,
-                we suppose that the first one is the artist name,
-                the second is the title'''
-                self.title = datas[1]
-                self.year = 0
-                self.artistName = datas[0]
+                # 'DEEP PURPLE @ Machine Head @ 1972'
+                separators = []
+                separators.append(get_separator("@", "left", "artist_name"))
+                separators.append(get_separator("@", "left", "title"))
+                separators.append(get_separator("", "right", "year"))
+                common_name_formats.append(separators)
 
             else:
-                # No syntax does match with this dirname
-                logger.debug("No matching: " + salb + " for currentDir: " + self.dirPath)
-                self.toVerify = True
-        # if self.year in [0, 9999]:
-        #     self.year = self.get_year_from_tags()
-        if isYear(self.artistName):
-            self.toVerify = True
+                # 'DEEP PURPLE @ Machine Head'
+                separators = []
+                separators.append(get_separator("@", "left", "artist_name"))
+                separators.append(get_separator("", "right", "title"))
+                common_name_formats.append(separators)
+
+                # 'DEEP PURPLE @ Machine Head @'
+                separators = []
+                separators.append(get_separator("@", "left", "artist_name"))
+                separators.append(get_separator("@", "left", "title"))
+                common_name_formats.append(separators)
+
+
+        if with_year:
+            # 'DEEP PURPLE - [1972] - Machine Head'
+            separators = []
+            separators.append(get_separator(" - [", "left", "artist_name"))
+            separators.append(get_separator("] - ", "left", "year"))
+            separators.append(get_separator("", "right", "title"))
+            common_name_formats.append(separators)
+
+            # 'DEEP PURPLE - (1972) - Machine Head'
+            separators = []
+            separators.append(get_separator(" - (", "left", "artist_name"))
+            separators.append(get_separator(") - ", "left", "year"))
+            separators.append(get_separator("", "right", "title"))
+            common_name_formats.append(separators)
+
+            # 'DEEP PURPLE (1972) Machine Head'
+            separators = []
+            separators.append(get_separator("(", "left", "artist_name"))
+            separators.append(get_separator(")", "left", "year"))
+            separators.append(get_separator("", "right", "title"))
+            common_name_formats.append(separators)
+
+            # 'DEEP PURPLE - 1972 - Machine Head'
+            separators = []
+            separators.append(get_separator(" - ", "left", "artist_name"))
+            separators.append(get_separator(" - ", "left", "year"))
+            separators.append(get_separator("", "right", "title"))
+            common_name_formats.append(separators)
+
+            # 'DEEP PURPLE - Machine Head (1972)'
+            separators = []
+            separators.append(get_separator(" - ", "left", "artist_name"))
+            separators.append(get_separator("(", "left", "title"))
+            separators.append(get_separator(")", "left", "year"))
+            common_name_formats.append(separators)
+
+            # 'DEEP PURPLE - Machine Head [1972]'
+            separators = []
+            separators.append(get_separator(" - ", "left", "artist_name"))
+            separators.append(get_separator("[", "left", "title"))
+            separators.append(get_separator("]", "left", "year"))
+            common_name_formats.append(separators)
+
+        else:
+            # 'DEEP PURPLE - Machine Head'
+            separators = []
+            separators.append(get_separator(" - ", "left", "artist_name"))
+            separators.append(get_separator("", "right", "title"))
+            common_name_formats.append(separators)
+
+        return common_name_formats
+
+    def split_with_separator(self, string_separator, string_to_split):
+        res_val = res_left = False
+        if string_separator['side'] == 'left':
+            res_split = string_to_split.split(string_separator['separator'], maxsplit=1)
+            if len(res_split) == 2:
+                res_val, res_left = res_split[0], res_split[1]
+        elif string_separator['side'] == 'right':
+            if string_separator['separator'] == '':
+                res_val, res_left = string_to_split, ""
+
+        if res_val and string_separator['var'] == 'year':
+            if not (res_val.isdigit() and isYear(res_val)):
+                return False
+            else:
+                res_val = year(res_val)
+
+        if res_val:
+            return res_val, res_left
+        return False
+
+    def eval_name_formats(self, txt, name_formats):
+        for name_format in name_formats:
+            valid = True
+            for i, separator in enumerate(name_format):
+                res = self.split_with_separator(separator, txt)
+                if res:
+                    val, txt = res
+                    name_format[i]['val'] = val
+                    logger.debug("split_with_separator sep=%s val=%s txt=%s", separator, val, txt)
+                else:
+                    valid = False
+                    break
+            if valid:
+                return name_format
+
+        return False
+
+    def extractDataFromDirName(self):
+        self.toVerify = False
+        common_name_formats = self.get_common_formats()
+        txt = self.dirName
+        format_found = self.eval_name_formats(txt, common_name_formats)
+
+        if not format_found:
+            txt = replaceSpecialChars(self.dirName).strip()
+            common_name_formats = self.get_common_formats(with_year=True, generic=True)
+            format_found = self.eval_name_formats(txt, common_name_formats)
+
+        if not format_found:
+            txt = self.dirName
+            common_name_formats = self.get_common_formats(with_year=False)
+            format_found = self.eval_name_formats(txt, common_name_formats)
+
+        if not format_found:
+            txt = replaceSpecialChars(self.dirName).strip()
+            common_name_formats = self.get_common_formats(with_year=False, generic=True)
+            format_found = self.eval_name_formats(txt, common_name_formats)
+
+        if format_found:
+            for separator in format_found:
+                setattr(self, separator['var'], separator['val'])
+
         self.title = self.title.strip()
-        self.artistName = self.artistName.strip().upper()
+        self.artist_name = self.artist_name.strip().upper()
         self.title = self.formatTitle(self.title)
+
+        if isYear(self.artist_name) or not self.title or not self.artist_name:
+            self.toVerify = True
 
     def get_year_from_tags(self):
         track = self.getTracks(firstFileOnly=True)
@@ -193,13 +300,13 @@ class album:
         track = self.getTracks(firstFileOnly=True)
         if track:
             if track.artist and self.isValidArtistName(track.artist):
-                self.artistName = track.artist
+                self.artist_name = track.artist
             else:
                 return
             if track.album and self.isValidAlbumName(track.album):
                 self.title = track.album
             if track.year: self.year = track.year
-            print("getTagsFromFirstFile=" + self.artistName + " - " + self.title + " - " + str(self.year))
+            print("getTagsFromFirstFile=" + self.artist_name + " - " + self.title + " - " + str(self.year))
 
     def get_year_from_first_file(self):
         track = self.getTracks(firstFileOnly=True)
@@ -305,24 +412,22 @@ class album:
 
     def getCover(self):
 
-        if (len(self.images) > 0):
-            keywords = ["cover", "front", "artwork", "capa", "caratula", "recto", "frente editada", "frente", "folder",
-                        "f"]
+        if len(self.images) > 0:
+            keywords = ["cover", "front", "artwork", "capa", "caratula", "recto", "portada",
+                        "frente editada", "frente", "folder", "f"]
 
             for keyword in keywords:
-                coverFound = next((x for x in self.images if keyword == getFileName(x.lower())), "")
-                if (coverFound != ""):
-                    # print("Image found equal="+keyword)
-                    self.cover = coverFound
+                cover_found = next((x for x in self.images if keyword == getFileName(x.lower())), "")
+                if cover_found != "":
+                    self.cover = cover_found
                     break
 
-            if (coverFound == ""):
+            if cover_found == "":
                 for keyword in keywords:
-                    coverFound = next((x for x in self.images if
-                                       (keyword in getFileName(x.lower()) and "back" not in getFileName(x.lower()))),
-                                      "")
-                    if (coverFound != ""):
-                        self.cover = coverFound
+                    cover_found = next((x for x in self.images
+                                        if keyword in getFileName(x.lower()) and "back" not in getFileName(x.lower())), "")
+                    if cover_found:
+                        self.cover = cover_found
                         break
             # print("getCover cover="+self.cover)
 
@@ -415,7 +520,7 @@ class album:
             self.updateLength()
 
     def get_formatted_dir_name(self):
-        return "{artist} - [{year}] - {title}".format(artist=self.artistName, year=self.year or '9999', title=self.title)
+        return "{artist} - [{year}] - {title}".format(artist=self.artist_name, year=self.year or '9999', title=self.title)
 
 
 

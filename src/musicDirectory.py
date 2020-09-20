@@ -105,15 +105,15 @@ class musicDirectory:
 
                 if forceTAGCheck:
                     curAlb.getTagsFromFirstFile()
-                    if not (curAlb.artistName and curAlb.title):
+                    if not (curAlb.artist_name and curAlb.title):
                         self.addExploreEvent(exploreEvent("ALBUM_TO_VERIFY_NO_TAG", curAlb.getAlbumDir()))
 
                 # Artist name and album title has been found
-                curArt = self.artistCol.getArtist(curAlb.artistName)
+                curArt = self.artistCol.getArtist(curAlb.artist_name)
                 # GetArtist return a new artist if it doesn't exists in artistsCol
                 if curArt:
                     curAlb.artistID = curArt.artistID
-                    curAlb.artistName = curArt.name.upper()
+                    curAlb.artist_name = curArt.name.upper()
                     curAlb.addStyle({self.styleID})
 
                     albumList = curArt.findAlbums(curAlb.title)
@@ -156,7 +156,7 @@ class musicDirectory:
                 curAlb.getTagsFromFirstFile()
             if not curAlb.toVerify and curAlb.year in [0, 9999]:
                 curAlb.get_year_from_first_file()
-            artists = self.artistCol.findArtists(curAlb.artistName)
+            artists = self.artistCol.findArtists(curAlb.artist_name)
             artist_exists = len(artists) > 0
             if artist_exists:
                 dir_result['artist_name'] = artists[0].name
@@ -164,8 +164,8 @@ class musicDirectory:
                 albums = artists[0].findAlbums(curAlb.title)
                 album_exists = len(albums) > 0
             else:
-                logger.info("Artist don't exists %s", curAlb.artistName)
-                dir_result['artist_name'] = curAlb.artistName
+                logger.info("Artist don't exists %s", curAlb.artist_name)
+                dir_result['artist_name'] = curAlb.artist_name
 
             dir_result['alb'] = curAlb
             dir_result['artist_exists'] = artist_exists
@@ -174,7 +174,7 @@ class musicDirectory:
             dir_result['full_dir'] = os.path.join(self.dirPath, dir_path)
             res.append(dir_result)
 
-        res = sorted(res, key=lambda k: k['alb'].artistName+k['alb'].title)
+        res = sorted(res, key=lambda k: k['alb'].artist_name + k['alb'].title)
         return res
 
     def import_album(self, album_to_import, album_path, file_copy_started_signal=None):
@@ -190,12 +190,12 @@ class musicDirectory:
 
         move_directory_file_by_file(album_path, copy_path, file_copy_started_signal, test_mode=False)
 
-        curArt = self.artistCol.getArtist(album_to_import.artistName)
+        curArt = self.artistCol.getArtist(album_to_import.artist_name)
         # GetArtist return a new artist if it doesn't exists in artistsCol
         if curArt:
             album_to_import.artistID = curArt.artistID
             album_to_import.musicDirectoryID = self.musicDirectoryID
-            album_to_import.artistName = curArt.name
+            album_to_import.artist_name = curArt.name
             album_to_import.addStyle({self.styleID})
 
             albumList = curArt.findAlbums(album_to_import.title)
@@ -245,7 +245,7 @@ class musicDirectory:
             # curAlb.dirPath = dirArt
 
             curAlb.artistID = artist.artistID
-            curAlb.artistName = artist.name
+            curAlb.artist_name = artist.name
 
             if curAlb.toVerify == False:
                 # Artist name et album title has been found

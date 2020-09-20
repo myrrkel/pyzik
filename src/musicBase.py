@@ -66,7 +66,7 @@ class musicBase:
         for alb in self.albumCol.albums:
             artistFound = self.artistCol.getArtistByID(alb.artistID)
             if artistFound is not None:
-                alb.artistName = artistFound.name
+                alb.artist_name = artistFound.name
                 artistFound.addStyle(alb.styleIDSet)
                 artistFound.albums.append(alb)
 

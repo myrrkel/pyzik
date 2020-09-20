@@ -75,7 +75,7 @@ class Track:
 
     def getArtistName(self):
         if self.parentAlbum is not None:
-            return self.parentAlbum.artistName
+            return self.parentAlbum.artist_name
         else:
             return self.artist
 

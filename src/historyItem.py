@@ -44,13 +44,13 @@ class dataHistoAlbum():
         self.album = musicBase.albumCol.getAlbum(self.albumID)
 
     def getInfo(self):
-        return "Artist: " + self.album.artistName + " Album: " + self.album.title
+        return "Artist: " + self.album.artist_name + " Album: " + self.album.title
 
     def getColumnText(self, colID):
         if colID == 1:
             return ""
         if colID == 2:
-            return self.album.artistName
+            return self.album.artist_name
         elif colID == 3:
             return self.album.title
         else:
@@ -63,13 +63,13 @@ class dataHistoTrack(dataHistoAlbum):
         self.fileName = fileName
 
     def getInfo(self):
-        return "Artist: " + self.album.artistName + " Album: " + self.album.title + " File: " + self.fileName
+        return "Artist: " + self.album.artist_name + " Album: " + self.album.title + " File: " + self.fileName
 
     def getColumnText(self, colID):
         if colID == 1:
             return self.fileName
         elif colID == 2:
-            return self.album.artistName
+            return self.album.artist_name
         elif colID == 3:
             return self.album.title
         else:

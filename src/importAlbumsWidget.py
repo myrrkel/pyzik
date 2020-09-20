@@ -242,7 +242,7 @@ class importAlbumsWidget(QtWidgets.QDialog):
             combo_music_directory.setCurrentIndex(self.defaut_music_directory.currentIndex())
             self.tableWidgetItems.setCellWidget(i, 1, combo_music_directory)
 
-            artistItem = QtWidgets.QTableWidgetItem(item['alb'].artistName)
+            artistItem = QtWidgets.QTableWidgetItem(item['alb'].artist_name)
             artistItem.setFlags(artistItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetItems.setItem(i, 2, artistItem)
 
@@ -300,12 +300,12 @@ class importAlbumsWidget(QtWidgets.QDialog):
         logger.info(row)
         alb = check_tags_button.alb_item['alb']
         alb.getTagsFromFirstFile()
-        curArt = self.musicbase.artistCol.findArtists(alb.artistName)
+        curArt = self.musicbase.artistCol.findArtists(alb.artist_name)
         # GetArtist return a new artist if it doesn't exists in artistsCol
         if len(curArt) == 1:
             curArt = curArt[0]
             alb.artistID = curArt.artistID
-            alb.artistName = curArt.name.upper()
+            alb.artist_name = curArt.name.upper()
             albums = curArt.findAlbums(alb.title)
             album_exists = len(albums) > 0
             albumExistItem = self.tableWidgetItems.cellWidget(row, 6)
@@ -314,10 +314,10 @@ class importAlbumsWidget(QtWidgets.QDialog):
         artistItem = self.tableWidgetItems.item(row, 2)
         albumItem = self.tableWidgetItems.item(row, 3)
         yearItem = self.tableWidgetItems.item(row, 4)
-        artistItem.setText(alb.artistName)
+        artistItem.setText(alb.artist_name)
         albumItem.setText(alb.title)
         yearItem.setText(str(alb.year))
-        logger.info("%s - %s", alb.artistName, alb.title)
+        logger.info("%s - %s", alb.artist_name, alb.title)
 
 
 

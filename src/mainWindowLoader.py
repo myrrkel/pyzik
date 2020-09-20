@@ -216,16 +216,18 @@ class MainWindowLoader(QMainWindow):
     def onExploreCompleted(self, event):
         logger.debug("onExploreCompleted")
         events = self.musicBase.musicDirectoryCol.getExploreEvents()
-        logger.debug("EXPLORE EVENTS=" + str([e.getText() for e in events]))
-        self.open_explore_events_widget(events)
+        # logger.debug("EXPLORE EVENTS=" + str([e.getText() for e in events]))
+        if events:
+            self.open_explore_events_widget(events)
         self.musicBase.db = database()
-        # self.musicBase.loadMusicBase()
         self.showArtists()
         self.showGenres()
 
     def open_explore_events_widget(self, events):
         if not hasattr(self, 'explore_events_widget'):
             self.explore_events_widget = ExploreEventsWidget(self, self.musicBase, events)
+        else:
+            self.explore_events_widget.items = events
         self.explore_events_widget.show()
 
     def onPlaySearchRadio(self):
