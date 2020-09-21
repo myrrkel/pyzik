@@ -8,6 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 import time
+from explore_event import *
 
 
 class exploreAlbumsDirectoriesThread(QThread):
@@ -18,13 +19,13 @@ class exploreAlbumsDirectoriesThread(QThread):
     progressChanged = pyqtSignal(int, name='progressChanged')
     directoryChanged = pyqtSignal(str, name='directoryChanged')
     exploreCompleted = pyqtSignal(int, name='exploreCompleted')
-    exploreEvents = []
+    explore_events = ExploreEventList()
 
     def run(self):
         self.doStop = False
         db = database()
         db.initMemoryDB()
-        self.exploreEvents = []
+        self.explore_events = []
         self.musicBase.db = db
         self.musicBase.musicDirectoryCol.db = db
 
@@ -38,7 +39,7 @@ class exploreAlbumsDirectoriesThread(QThread):
             mdir.albumCol.db = db
 
             mdir.exploreDirectory(self.progressChanged)
-            self.exploreEvents.extend(mdir.exploreEvents)
+            self.explore_events.extend(mdir.explore_events)
 
             if self.doStop: break
         self.directoryChanged.emit("Saving datas...")

@@ -216,7 +216,7 @@ class MainWindowLoader(QMainWindow):
     def onExploreCompleted(self, event):
         logger.debug("onExploreCompleted")
         events = self.musicBase.musicDirectoryCol.getExploreEvents()
-        # logger.debug("EXPLORE EVENTS=" + str([e.getText() for e in events]))
+        # logger.debug("EXPLORE EVENTS=" + str([e.get_text() for e in events]))
         if events:
             self.open_explore_events_widget(events)
         self.musicBase.db = database()

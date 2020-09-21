@@ -18,6 +18,112 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def get_common_formats(with_year=True, generic=False):
+    def get_separator(sep, side, var_name):
+        return {'separator': sep,
+                'side': side,
+                'var': var_name}
+
+    common_name_formats = []
+
+    if generic:
+        if with_year:
+            # 'DEEP PURPLE @ 1972 @ Machine Head'
+            separators = []
+            separators.append(get_separator("@", "left", "artist_name"))
+            separators.append(get_separator("@", "left", "year"))
+            separators.append(get_separator("", "right", "title"))
+            common_name_formats.append(separators)
+
+            # 'DEEP PURPLE @ Machine Head @ 1972 @'
+            separators = []
+            separators.append(get_separator("@", "left", "artist_name"))
+            separators.append(get_separator("@", "left", "title"))
+            separators.append(get_separator("@", "left", "year"))
+            common_name_formats.append(separators)
+
+            # 'DEEP PURPLE @ Machine Head @ 1972'
+            separators = []
+            separators.append(get_separator("@", "left", "artist_name"))
+            separators.append(get_separator("@", "left", "title"))
+            separators.append(get_separator("", "right", "year"))
+            common_name_formats.append(separators)
+
+        else:
+            # 'DEEP PURPLE @ Machine Head'
+            separators = []
+            separators.append(get_separator("@", "left", "artist_name"))
+            separators.append(get_separator("", "right", "title"))
+            common_name_formats.append(separators)
+
+            # 'DEEP PURPLE @ Machine Head @'
+            separators = []
+            separators.append(get_separator("@", "left", "artist_name"))
+            separators.append(get_separator("@", "left", "title"))
+            common_name_formats.append(separators)
+    else:
+        if with_year:
+            # 'DEEP PURPLE - [1972] - Machine Head'
+            separators = []
+            separators.append(get_separator(" - [", "left", "artist_name"))
+            separators.append(get_separator("] - ", "left", "year"))
+            separators.append(get_separator("", "right", "title"))
+            common_name_formats.append(separators)
+
+            # 'DEEP PURPLE - (1972) - Machine Head'
+            separators = []
+            separators.append(get_separator(" - (", "left", "artist_name"))
+            separators.append(get_separator(") - ", "left", "year"))
+            separators.append(get_separator("", "right", "title"))
+            common_name_formats.append(separators)
+
+            # 'DEEP PURPLE (1972) Machine Head'
+            separators = []
+            separators.append(get_separator("(", "left", "artist_name"))
+            separators.append(get_separator(")", "left", "year"))
+            separators.append(get_separator("", "right", "title"))
+            common_name_formats.append(separators)
+
+            # 'DEEP PURPLE - 1972 - Machine Head'
+            separators = []
+            separators.append(get_separator(" - ", "left", "artist_name"))
+            separators.append(get_separator(" - ", "left", "year"))
+            separators.append(get_separator("", "right", "title"))
+            common_name_formats.append(separators)
+
+            # 'DEEP PURPLE - Machine Head (1972)'
+            separators = []
+            separators.append(get_separator(" - ", "left", "artist_name"))
+            separators.append(get_separator("(", "left", "title"))
+            separators.append(get_separator(")", "left", "year"))
+            common_name_formats.append(separators)
+
+            # 'DEEP PURPLE - Machine Head [1972]'
+            separators = []
+            separators.append(get_separator(" - ", "left", "artist_name"))
+            separators.append(get_separator("[", "left", "title"))
+            separators.append(get_separator("]", "left", "year"))
+            common_name_formats.append(separators)
+
+        else:
+            # 'DEEP PURPLE - Machine Head'
+            separators = []
+            separators.append(get_separator(" - ", "left", "artist_name"))
+            separators.append(get_separator("", "right", "title"))
+            common_name_formats.append(separators)
+
+    return common_name_formats
+
+
+name_formats_with_year = get_common_formats(with_year=True, generic=False)
+
+name_formats_generic_with_year = get_common_formats(with_year=True, generic=True)
+
+name_formats_without_year = get_common_formats(with_year=False, generic=False)
+
+name_formats_generic_without_year = get_common_formats(with_year=False, generic=True)
+
+
 def unvalidAlbumName():
     return ['Unknown album',
             'Album inconnu', ]
@@ -117,104 +223,6 @@ class album:
               + "  # musicDirectoryID: " + str(self.musicDirectoryID)
               + "  # dirPath: " + str(self.dirPath))
 
-    def get_common_formats(self, with_year=True, generic=False):
-
-        def get_separator(sep, side, var_name):
-            return {'separator': sep,
-                    'side': side,
-                    'var': var_name}
-
-        common_name_formats = []
-
-        if generic:
-            if with_year:
-                # 'DEEP PURPLE @ 1972 @ Machine Head'
-                separators = []
-                separators.append(get_separator("@", "left", "artist_name"))
-                separators.append(get_separator("@", "left", "year"))
-                separators.append(get_separator("", "right", "title"))
-                common_name_formats.append(separators)
-
-                # 'DEEP PURPLE @ Machine Head @ 1972 @'
-                separators = []
-                separators.append(get_separator("@", "left", "artist_name"))
-                separators.append(get_separator("@", "left", "title"))
-                separators.append(get_separator("@", "left", "year"))
-                common_name_formats.append(separators)
-
-                # 'DEEP PURPLE @ Machine Head @ 1972'
-                separators = []
-                separators.append(get_separator("@", "left", "artist_name"))
-                separators.append(get_separator("@", "left", "title"))
-                separators.append(get_separator("", "right", "year"))
-                common_name_formats.append(separators)
-
-            else:
-                # 'DEEP PURPLE @ Machine Head'
-                separators = []
-                separators.append(get_separator("@", "left", "artist_name"))
-                separators.append(get_separator("", "right", "title"))
-                common_name_formats.append(separators)
-
-                # 'DEEP PURPLE @ Machine Head @'
-                separators = []
-                separators.append(get_separator("@", "left", "artist_name"))
-                separators.append(get_separator("@", "left", "title"))
-                common_name_formats.append(separators)
-
-
-        if with_year:
-            # 'DEEP PURPLE - [1972] - Machine Head'
-            separators = []
-            separators.append(get_separator(" - [", "left", "artist_name"))
-            separators.append(get_separator("] - ", "left", "year"))
-            separators.append(get_separator("", "right", "title"))
-            common_name_formats.append(separators)
-
-            # 'DEEP PURPLE - (1972) - Machine Head'
-            separators = []
-            separators.append(get_separator(" - (", "left", "artist_name"))
-            separators.append(get_separator(") - ", "left", "year"))
-            separators.append(get_separator("", "right", "title"))
-            common_name_formats.append(separators)
-
-            # 'DEEP PURPLE (1972) Machine Head'
-            separators = []
-            separators.append(get_separator("(", "left", "artist_name"))
-            separators.append(get_separator(")", "left", "year"))
-            separators.append(get_separator("", "right", "title"))
-            common_name_formats.append(separators)
-
-            # 'DEEP PURPLE - 1972 - Machine Head'
-            separators = []
-            separators.append(get_separator(" - ", "left", "artist_name"))
-            separators.append(get_separator(" - ", "left", "year"))
-            separators.append(get_separator("", "right", "title"))
-            common_name_formats.append(separators)
-
-            # 'DEEP PURPLE - Machine Head (1972)'
-            separators = []
-            separators.append(get_separator(" - ", "left", "artist_name"))
-            separators.append(get_separator("(", "left", "title"))
-            separators.append(get_separator(")", "left", "year"))
-            common_name_formats.append(separators)
-
-            # 'DEEP PURPLE - Machine Head [1972]'
-            separators = []
-            separators.append(get_separator(" - ", "left", "artist_name"))
-            separators.append(get_separator("[", "left", "title"))
-            separators.append(get_separator("]", "left", "year"))
-            common_name_formats.append(separators)
-
-        else:
-            # 'DEEP PURPLE - Machine Head'
-            separators = []
-            separators.append(get_separator(" - ", "left", "artist_name"))
-            separators.append(get_separator("", "right", "title"))
-            common_name_formats.append(separators)
-
-        return common_name_formats
-
     def split_with_separator(self, string_separator, string_to_split):
         res_val = res_left = False
         if string_separator['side'] == 'left':
@@ -235,9 +243,11 @@ class album:
             return res_val, res_left
         return False
 
-    def eval_name_formats(self, txt, name_formats):
+    def eval_name_formats(self, album_name, name_formats):
         for name_format in name_formats:
+            logger.debug("eval_name_formats name_format=%s album_name=%s", name_format, album_name)
             valid = True
+            txt = album_name
             for i, separator in enumerate(name_format):
                 res = self.split_with_separator(separator, txt)
                 if res:
@@ -254,24 +264,24 @@ class album:
 
     def extractDataFromDirName(self):
         self.toVerify = False
-        common_name_formats = self.get_common_formats()
         txt = self.dirName
-        format_found = self.eval_name_formats(txt, common_name_formats)
+        logger.info("extractDataFromDirName name_formats_with_year %s", name_formats_with_year)
+        format_found = self.eval_name_formats(txt, name_formats_with_year)
 
         if not format_found:
             txt = replaceSpecialChars(self.dirName).strip()
-            common_name_formats = self.get_common_formats(with_year=True, generic=True)
-            format_found = self.eval_name_formats(txt, common_name_formats)
+            logger.info("extractDataFromDirName name_formats_generic_with_year %s", name_formats_generic_with_year)
+            format_found = self.eval_name_formats(txt, name_formats_generic_with_year)
 
         if not format_found:
             txt = self.dirName
-            common_name_formats = self.get_common_formats(with_year=False)
-            format_found = self.eval_name_formats(txt, common_name_formats)
+            logger.info("extractDataFromDirName name_formats_without_year %s", name_formats_without_year)
+            format_found = self.eval_name_formats(txt, name_formats_without_year)
 
         if not format_found:
             txt = replaceSpecialChars(self.dirName).strip()
-            common_name_formats = self.get_common_formats(with_year=False, generic=True)
-            format_found = self.eval_name_formats(txt, common_name_formats)
+            logger.info("extractDataFromDirName name_formats_generic_without_year %s", name_formats_generic_without_year)
+            format_found = self.eval_name_formats(txt, name_formats_generic_without_year)
 
         if format_found:
             for separator in format_found:

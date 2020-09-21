@@ -15,7 +15,7 @@ _translate = QtCore.QCoreApplication.translate
 
 class ExploreEventsWidget(QtWidgets.QDialog):
 
-    items = []
+    items = ExploreEventList()
 
     def __init__(self, parent, musicbase=None, items=[]):
         QtWidgets.QDialog.__init__(self)
@@ -38,6 +38,13 @@ class ExploreEventsWidget(QtWidgets.QDialog):
         sizePolicy.setVerticalStretch(100)
         self.setSizePolicy(sizePolicy)
         self.resize(550, 400)
+
+        self.header_label = QtWidgets.QLabel()
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.header_label.sizePolicy().hasHeightForWidth())
+        self.main_layout.addWidget(self.header_label)
 
         # self.from_directory = directoryWidget(self)
         # self.main_layout.addWidget(self.from_directory)
@@ -84,6 +91,8 @@ class ExploreEventsWidget(QtWidgets.QDialog):
 
         self.showTableItems(self.items)
 
+        self.show_header()
+
     # def import_albums(self):
     #     alb_dict_list = self.get_albums_dict_list()
     #
@@ -119,6 +128,9 @@ class ExploreEventsWidget(QtWidgets.QDialog):
     #         for row in range(self.tableWidgetItems.rowCount()):
     #             cell_dir = self.tableWidgetItems.cellWidget(row, 1)
     #             cell_dir.setCurrentIndex(self.defaut_music_directory.currentIndex())
+
+    def show_header(self):
+        self.header_label.setText("Album added: %s" % self.items.count_album_added())
 
     def toggle_selected_row(self):
         for row in range(self.tableWidgetItems.rowCount()):
@@ -220,34 +232,52 @@ class ExploreEventsWidget(QtWidgets.QDialog):
         item = self.tableWidgetItems.horizontalHeaderItem(7)
         item.setText(_translate("explore event", "Read Tags"))
 
+    def add_item_to_line(self, line, col, item):
+        self.tableWidgetItems.setItem(line, col, item)
+        return col + 1
+
     def showTableItems(self, items):
+        items = items.filter_exclude_code("ALBUM_ADDED")
         self.tableWidgetItems.setStyleSheet("selection-background-color: black;selection-color: white;")
         # self.tableWidgetItems.setColumnCount(4)
         self.tableWidgetItems.setRowCount(0)
 
         for i, item in enumerate(items):
             self.tableWidgetItems.insertRow(i)
+            i_col = 0
 
-            item_code = QtWidgets.QTableWidgetItem(item.eventCode)
+            item_sel = QtWidgets.QTableWidgetItem()
+            item_sel.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled)
+            item_sel.setCheckState(QtCore.Qt.Checked)
+            item_sel.alb_item = item
+            i_col = self.add_item_to_line(i, i_col, item_sel)
+            # self.tableWidgetItems.setItem(i, 0, item_sel)
+
+            item_code = QtWidgets.QTableWidgetItem(item.event_code)
             item_code.setFlags(item_code.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i, 0, item_code)
+            # self.tableWidgetItems.setItem(i, 0, item_code)
+            i_col = self.add_item_to_line(i, i_col, item_code)
 
             item_path = QtWidgets.QTableWidgetItem(item.dirPath)
             item_path.setFlags(item_path.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i, 1, item_path)
+            # self.tableWidgetItems.setItem(i, 1, item_path)
+            i_col = self.add_item_to_line(i, i_col, item_path)
 
             if item.album:
                 item_artist = QtWidgets.QTableWidgetItem(item.album.artist_name)
                 item_artist.setFlags(item_artist.flags() ^ QtCore.Qt.ItemIsEditable)
-                self.tableWidgetItems.setItem(i, 2, item_artist)
+                # self.tableWidgetItems.setItem(i, 2, item_artist)
+                i_col = self.add_item_to_line(i, i_col, item_artist)
 
                 item_title = QtWidgets.QTableWidgetItem(item.album.title)
                 item_title.setFlags(item_title.flags() ^ QtCore.Qt.ItemIsEditable)
-                self.tableWidgetItems.setItem(i, 3, item_title)
+                # self.tableWidgetItems.setItem(i, 3, item_title)
+                i_col = self.add_item_to_line(i, i_col, item_title)
 
                 item_year = QtWidgets.QTableWidgetItem(str(item.album.year))
                 item_year.setFlags(item_year.flags() ^ QtCore.Qt.ItemIsEditable)
-                self.tableWidgetItems.setItem(i, 4, item_year)
+                # self.tableWidgetItems.setItem(i, 4, item_year)
+                i_col = self.add_item_to_line(i, i_col, item_year)
 
             # selItem = QtWidgets.QTableWidgetItem()
             # selItem.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled)

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from explore_event import *
 from albumCollection import *
 from artistCollection import *
 from PyQt5.QtCore import pyqtSignal
@@ -30,6 +31,8 @@ class ImportAlbumsThread(QThread):
         return
 
 
+
+
 class musicDirectory:
     """
     musicDirectory contains albums or artist's directories.
@@ -37,7 +40,7 @@ class musicDirectory:
     All his albums heritates of this style on import
     """
 
-    exploreEvents = []
+    explore_events = ExploreEventList()
 
     def __init__(self, musicBase=None, dirPath=""):
 
@@ -77,11 +80,11 @@ class musicDirectory:
         return self.status
 
     def addExploreEvent(self, explEvent):
-        self.exploreEvents.append(explEvent)
-        logger.info("ExploreEvent " + explEvent.eventCode + " : " + explEvent.getText())
+        self.explore_events.append(explEvent)
+        logger.info("ExploreEvent " + explEvent.event_code + " : " + explEvent.get_text())
 
     def exploreDirectory(self, progressChanged=None):
-        self.exploreEvents = []
+        self.explore_events = []
         if self.dirType in (0, None):
             self.exploreAlbumsDirectory(progressChanged)
         elif self.dirType == 1:
@@ -106,7 +109,7 @@ class musicDirectory:
                 if forceTAGCheck:
                     curAlb.getTagsFromFirstFile()
                     if not (curAlb.artist_name and curAlb.title):
-                        self.addExploreEvent(exploreEvent("ALBUM_TO_VERIFY_NO_TAG", curAlb.getAlbumDir()))
+                        self.addExploreEvent(ExploreEvent("ALBUM_TO_VERIFY_NO_TAG", curAlb.getAlbumDir()))
 
                 # Artist name and album title has been found
                 curArt = self.artistCol.getArtist(curAlb.artist_name)
@@ -119,7 +122,7 @@ class musicDirectory:
                     albumList = curArt.findAlbums(curAlb.title)
                     if not albumList:
                         logger.info("Add " + curAlb.title + " in " + curArt.name + " discography. ArtID= %s", curArt.artistID)
-                        self.addExploreEvent(exploreEvent("ALBUM_ADDED", curAlb.getAlbumDir()))
+                        self.addExploreEvent(ExploreEvent("ALBUM_ADDED", curAlb.getAlbumDir()))
                         # curAlb.getAlbumSize()
                         # curAlb.getLength()
                         self.albumCol.addAlbum(curAlb)
@@ -128,17 +131,17 @@ class musicDirectory:
                         for alb in albumList:
                             if alb.getAlbumDir() != curAlb.getAlbumDir():
                                 self.addExploreEvent(
-                                    exploreEvent("ALBUM_DUPLICATE", curAlb.getAlbumDir(), alb.albumID, curArt.artistID, alb))
+                                    ExploreEvent("ALBUM_DUPLICATE", curAlb.getAlbumDir(), alb.albumID, curArt.artistID, alb))
 
                 else:
                     logger.info("exploreAlbumsDirectory - No artist for " + dir)
             else:
-                self.addExploreEvent(exploreEvent("ALBUM_TO_VERIFY", curAlb.getAlbumDir()))
+                self.addExploreEvent(ExploreEvent("ALBUM_TO_VERIFY", curAlb.getAlbumDir()))
 
         return
 
     def explore_albums_to_import(self, progressChanged=None, forceTAGCheck=False):
-        self.exploreEvents = []
+        self.explore_events = []
         res = []
         logger.info("explore %s", self.dirPath)
         dir_list = next(os.walk(self.dirPath))[1]
@@ -184,7 +187,7 @@ class musicDirectory:
         logger.info("from: %s to: %s", album_path, copy_path)
         if os.path.exists(copy_path):
             logger.info("Directory already exists %s", copy_path)
-            self.addExploreEvent(exploreEvent("DIRECTORY_EXISTS", album_to_import.getAlbumDir(),
+            self.addExploreEvent(ExploreEvent("DIRECTORY_EXISTS", album_to_import.getAlbumDir(),
                                               album_to_import.albumID, album_to_import.artistID))
             return False
 
@@ -201,7 +204,7 @@ class musicDirectory:
             albumList = curArt.findAlbums(album_to_import.title)
             if not albumList:
                 logger.info("Add " + album_to_import.title + " in " + curArt.name + " discography. ArtID= %s", curArt.artistID)
-                self.addExploreEvent(exploreEvent("ALBUM_ADDED", album_to_import.getAlbumDir()))
+                self.addExploreEvent(ExploreEvent("ALBUM_ADDED", album_to_import.getAlbumDir()))
                 self.albumCol.addAlbum(album_to_import)
                 curArt.addAlbum(album_to_import)
                 return True
@@ -280,22 +283,3 @@ class musicDirectory:
                 logger.info(e)
 
 
-class exploreEvent:
-
-    def __init__(self, code, dirpath, albumID=0, artistID=0, album=None):
-        self.eventCode = code
-        self.dirPath = dirpath
-        self.artistID = artistID
-        self.albumID = albumID
-        self.album = album
-
-    def getText(self):
-        if self.eventCode == "ALBUM_DUPLICATE":
-            return "Album in " + self.dirPath + " already exists for this artist."
-        if self.eventCode == "ALBUM_TO_VERIFY":
-            return "Album in " + self.dirPath + " must be verified"
-        if self.eventCode == "ALBUM_TO_VERIFY_NO_TAG":
-            return "Album in " + self.dirPath + " must be verified. No tag found."
-        if self.eventCode == "ALBUM_ADDED":
-            return "Album in " + self.dirPath + " added."
-        return ""

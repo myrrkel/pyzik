@@ -41,9 +41,9 @@ class musicDirectoryCollection:
             dir.printInfos()
 
     def getExploreEvents(self):
-        events = []
+        events = ExploreEventList()
         for md in self.musicDirectories:
-            events = events + md.exploreEvents
+            events.extend(md.explore_events)
         return events
 
     def insertMusicDirectoryDB(self, musicDirectory):
