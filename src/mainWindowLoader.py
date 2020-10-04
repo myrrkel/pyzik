@@ -257,7 +257,7 @@ class MainWindowLoader(QMainWindow):
             # self.showAlbum(alb)
 
     def open_import_album_widget(self):
-        if not hasattr(self, 'import_album_widget'):
+        if not self.import_album_widget:
             self.import_album_widget = importAlbumsWidget(self, self.musicBase)
         self.import_album_widget.show()
 
