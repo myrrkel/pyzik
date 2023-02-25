@@ -18,21 +18,23 @@ root_logger = logging.getLogger()
 root_logger.setLevel("INFO")
 handler = logging.StreamHandler(sys.stdout)
 handler.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 handler.setFormatter(formatter)
 root_logger.addHandler(handler)
 
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hdp:s:", ["help", "debug", "db-path=", "style="])
+        opts, args = getopt.getopt(
+            sys.argv[1:], "hdp:s:", ["help", "debug", "db-path=", "style="]
+        )
     except getopt.GetoptError as e:
         logger.error(e)
         print_help()
         sys.exit(2)
 
-    db_path = ''
-    style_name = ''
+    db_path = ""
+    style_name = ""
     for opt, arg in opts:
         if opt in ("-d", "--debug"):
             root_logger.setLevel("DEBUG")
@@ -52,7 +54,7 @@ def main():
     app.setApplicationName("Pyzik")
 
     logger.info("Loading translations...")
-    tr = translators(app)
+    tr = Translators(app)
     localeLanguage = QtCore.QLocale.system().name()
     tr.installTranslators(localeLanguage)
 
@@ -66,15 +68,16 @@ def main():
             logger.error(e)
     else:
         logger.info("Loading DarkStyleSheet...")
-        app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
+        ds = darkStyle.darkStyle()
+        app.setStyleSheet(ds.load_stylesheet_pyqt5())
 
-    mb = musicBase(db_path=db_path)
-    logger.info('Loading musicBase...')
+    mb = MusicBase(db_path=db_path)
+    logger.info("Loading musicBase...")
     mb.loadMusicBase()
-    logger.info('Loading VLC player...')
-    player = playerVLC()
+    logger.info("Loading VLC player...")
+    player = PlayerVLC()
 
-    logger.info('Showing main window...')
+    logger.info("Showing main window...")
     window = MainWindowLoader(None, app, mb, player, tr)
     window.show()
 
@@ -84,14 +87,14 @@ def main():
 
     player.release()
 
-    db = database()
+    db = Database()
     db.vacuum()
 
     sys.exit()
 
 
 def print_help():
-    help_str = '''
+    help_str = """
     
 #########################    
 #      Pyzik Help       #
@@ -103,7 +106,7 @@ def print_help():
         -p, --db-path:     Set the database file path (~/.local/share/pyzik/data/pyzik.db)
         -h, --help:        Display help
         
-    '''
+    """
     logger.info(help_str)
 
 

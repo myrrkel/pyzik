@@ -8,23 +8,23 @@ import time
 from radioManager import *
 
 
-class searchRadioThread(QThread):
+class SearchRadioThread(QThread):
     """search radios"""
 
     doStop = False
     search = ""
-    rm = radioManager()
+    rm = RadioManager()
 
     resRadios = []
 
     machineNb = 0
 
-    searchProgress = pyqtSignal(int, name='searchProgress')
-    searchCurrentMachine = pyqtSignal(str, name='searchCurrentMachine')
-    searchCompleted = pyqtSignal(int, name='searchCompleted')
+    searchProgress = pyqtSignal(int, name="searchProgress")
+    searchCurrentMachine = pyqtSignal(str, name="searchCurrentMachine")
+    searchCompleted = pyqtSignal(int, name="searchCompleted")
 
     def emitCurrentMachine(self, txt):
-        self.searchCurrentMachine.emit(txt + ' - Results = ' + str(len(self.resRadios)))
+        self.searchCurrentMachine.emit(txt + " - Results = " + str(len(self.resRadios)))
 
     def emitProgress(self, val):
         if val != 0:
@@ -37,14 +37,16 @@ class searchRadioThread(QThread):
         self.doStop = False
         i = 0
         self.emitProgress(0)
-        if self.machines is None: self.machines = self.rm.machines
+        if self.machines is None:
+            self.machines = self.rm.machines
         self.machineNb = len(self.machines)
         for machine in self.machines:
             print(machine)
             i = i + 1
             self.searchMachine(machine)
             self.emitProgress(i)
-            if self.doStop: break
+            if self.doStop:
+                break
 
         self.searchCompleted.emit(1)
 

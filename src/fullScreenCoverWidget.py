@@ -3,12 +3,24 @@
 
 
 from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QSize
-from PyQt5.QtWidgets import QDialog, QWidget, QShortcut, QAction, QWidget, QMainWindow, \
-    QSizePolicy, QLabel, QFrame, QVBoxLayout, QHBoxLayout, QApplication
+from PyQt5.QtWidgets import (
+    QDialog,
+    QWidget,
+    QShortcut,
+    QAction,
+    QWidget,
+    QMainWindow,
+    QSizePolicy,
+    QLabel,
+    QFrame,
+    QVBoxLayout,
+    QHBoxLayout,
+    QApplication,
+)
 from PyQt5.QtGui import QPixmap, QIcon, QKeySequence
 
 
-class fullScreenCoverWidget(QDialog):
+class FullScreenCoverWidget(QDialog):
     coverPixmap = None
 
     def __init__(self):
@@ -18,10 +30,11 @@ class fullScreenCoverWidget(QDialog):
         self.picBufferManager = None
 
         self.setWindowFlags(
-            Qt.Window |
-            Qt.WindowStaysOnTopHint |
-            Qt.MaximizeUsingFullscreenGeometryHint |
-            Qt.FramelessWindowHint)
+            Qt.Window
+            | Qt.WindowStaysOnTopHint
+            | Qt.MaximizeUsingFullscreenGeometryHint
+            | Qt.FramelessWindowHint
+        )
 
         # self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
         # self.shortcutPause.activated.connect(self.player.pause)
@@ -38,7 +51,6 @@ class fullScreenCoverWidget(QDialog):
         self.setBackgroundBlack()
 
     def show(self):
-
         self.setBackgroundBlack()
         self.showFullScreen()
 
@@ -46,7 +58,6 @@ class fullScreenCoverWidget(QDialog):
         self.setStyleSheet("background-color:black;")
 
     def initUI(self):
-
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
@@ -67,26 +78,28 @@ class fullScreenCoverWidget(QDialog):
         self.resizeCover()
 
     def resizeCover(self):
-        if (not self.coverPixmap.isNull()):
-            scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                                  Qt.KeepAspectRatio,
-                                                  Qt.SmoothTransformation)
+        if not self.coverPixmap.isNull():
+            scaledCover = self.coverPixmap.scaled(
+                self.cover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
+            )
             self.cover.setPixmap(scaledCover)
 
     def setPixmapFromUri(self, path):
         if self.picBufferManager is None:
             self.coverPixmap = QPixmap(path)
         else:
-            self.coverPixmap = self.picBufferManager.getPic(path, "fullscreenCoverWidget")
+            self.coverPixmap = self.picBufferManager.getPic(
+                path, "fullscreenCoverWidget"
+            )
 
         self.showCover()
 
     def showCover(self):
         if not self.coverPixmap.isNull():
             print("Pic size=" + str(self.cover.size()))
-            scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                                  Qt.KeepAspectRatio,
-                                                  Qt.SmoothTransformation)
+            scaledCover = self.coverPixmap.scaled(
+                self.cover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
+            )
             self.cover.setPixmap(scaledCover)
         else:
             self.cover.setPixmap(QPixmap())
@@ -103,12 +116,12 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
 
-    fs = fullScreenCoverWidget()
+    fs = FullScreenCoverWidget()
 
     fs.show()
 
     url = "https://i3.radionomy.com/radios/400/ce7c17ce-4b4b-4698-8ed0-c2881eaf6e6b.png"
-    pd = picDownloader()
+    pd = PicDownloader()
     tempPath = pd.getPic(url)
     fs.setPixmapFromUri(tempPath)
 

@@ -11,8 +11,7 @@ from historyManager import *
 from picFromUrlThread import *
 
 
-class customControlsWidget(QWidget):
-
+class CustomControlsWidget(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent=parent)
 
@@ -24,7 +23,7 @@ class customControlsWidget(QWidget):
         lay.addWidget(self.refreshButton)
 
 
-class fullScreenWidget(QDialog):
+class FullScreenWidget(QDialog):
     coverPixmap = None
     picFromUrlThread = None
 
@@ -35,15 +34,16 @@ class fullScreenWidget(QDialog):
         self.currentCoverPath = ""
         self.picBufferManager = None
         self.setWindowFlags(
-            Qt.Window |
-            Qt.WindowStaysOnTopHint |
-            Qt.MaximizeUsingFullscreenGeometryHint |
-            Qt.FramelessWindowHint)
+            Qt.Window
+            | Qt.WindowStaysOnTopHint
+            | Qt.MaximizeUsingFullscreenGeometryHint
+            | Qt.FramelessWindowHint
+        )
 
         self.initUI()
 
         if self.picFromUrlThread is None:
-            self.picFromUrlThread = picFromUrlThread()
+            self.picFromUrlThread = PicFromUrlThread()
 
         self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
         if self.player is not None:
@@ -65,7 +65,6 @@ class fullScreenWidget(QDialog):
         self.setStyleSheet("background-color:black;")
 
     def initUI(self):
-
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
@@ -89,7 +88,9 @@ class fullScreenWidget(QDialog):
         self.vLayout.addWidget(self.cover)
 
         self.labelTitle = QtWidgets.QLabel()
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.labelTitle.sizePolicy().hasHeightForWidth())
@@ -121,17 +122,18 @@ class fullScreenWidget(QDialog):
         self.resizeCover()
 
     def resizeCover(self):
-        if (not self.coverPixmap.isNull()):
-            scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                                  Qt.KeepAspectRatio,
-                                                  Qt.SmoothTransformation)
+        if not self.coverPixmap.isNull():
+            scaledCover = self.coverPixmap.scaled(
+                self.cover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
+            )
             self.cover.setPixmap(scaledCover)
 
     def setCurrentTrack(self, title=""):
+        if self.player is None:
+            return
 
-        if self.player is None: return
-
-        if self.isVisible() == False: return
+        if self.isVisible() == False:
+            return
 
         self.currentTrack = self.player.getCurrentTrackPlaylist()
 
@@ -144,7 +146,6 @@ class fullScreenWidget(QDialog):
         self.showCoverPixmap(path)
 
     def showCover(self, trk):
-
         if self.player.radioMode:
             coverUrl = self.player.getLiveCoverUrl()
             if coverUrl == "":
@@ -179,9 +180,9 @@ class fullScreenWidget(QDialog):
         else:
             self.coverPixmap = self.picBufferManager.getPic(path, "fullscreenWidget")
 
-        scaledCover = self.coverPixmap.scaled(self.cover.size(),
-                                              Qt.KeepAspectRatio,
-                                              Qt.SmoothTransformation)
+        scaledCover = self.coverPixmap.scaled(
+            self.cover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
+        )
         self.cover.setPixmap(scaledCover)
         self.cover.show()
 
@@ -207,11 +208,12 @@ class fullScreenWidget(QDialog):
 
         sAlbum = albTitle
         sYear = str(year)
-        if (not sYear in ["0", ""]): sAlbum += " (" + sYear + ")"
-        sTitle = '''<html><head/><body>
+        if not sYear in ["0", ""]:
+            sAlbum += " (" + sYear + ")"
+        sTitle = """<html><head/><body>
         <p><span style=\" color:{colorName}; font-size:28pt; text-shadow:white 0px 0px 4px; font-weight:600;\">{Artist}</span></p>
         <p><span style=\" color:{colorName}; font-size:20pt; font-style:italic;\">{Album}</span></p>
-        </body></html>'''
+        </body></html>"""
         sTitle = sTitle.format(Artist=artName, Album=sAlbum, colorName=colorName)
 
         self.labelTitle.setText(sTitle)
@@ -223,12 +225,12 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
 
-    fs = fullScreenWidget()
+    fs = FullScreenWidget()
 
     fs.show()
 
     url = "https://i3.radionomy.com/radios/400/ce7c17ce-4b4b-4698-8ed0-c2881eaf6e6b.png"
-    pd = picDownloader()
+    pd = PicDownloader()
     tempPath = pd.getPic(url)
     fs.onPicDownloaded(tempPath)
     fs.setTitleLabel()

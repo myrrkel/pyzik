@@ -7,10 +7,10 @@ from historyManager import *
 from radioManager import *
 
 
-class streamObserver(QThread):
+class StreamObserver(QThread):
     """Watch what's playing and send title"""
 
-    titleChanged = pyqtSignal(str, name='titleChanged')
+    titleChanged = pyqtSignal(str, name="titleChanged")
 
     # self.window = window
 
@@ -18,15 +18,14 @@ class streamObserver(QThread):
     previousTitle = ""
     currentVolume = 0
     player = None
-    history = historyManager()
-    musicBase = None
+    history = HistoryManager()
+    music_base = None
 
     def run(self):
-
         msg = ""
         while True:
-
-            if self.doStop: break
+            if self.doStop:
+                break
 
             if self.player.isPlaying() == False:
                 self.previousTitle = ""
@@ -40,18 +39,16 @@ class streamObserver(QThread):
 
             if self.player.radioMode == True:
                 if self.player.adblock == True:
-
                     title = self.player.getNowPlaying()
                     # print("streamObserver="+title+" "+self.player.getTitle()+" "+self.player.getArtist())
                     if title != "NO_META":
                         self.player.mute(False)
                         self.player.adKilled = False
-                        if (self.previousTitle != title):
+                        if self.previousTitle != title:
                             self.previousTitle = title
                             self.player.currentRadioTitle = self.cleanTitle(title)
                             self.titleChanged.emit(self.cleanTitle(title))
                     else:
-
                         if self.previousTitle == "Advert Killed!":
                             self.player.stop()
                             time.sleep(2)
@@ -69,7 +66,7 @@ class streamObserver(QThread):
                             self.player.play()
 
                 else:
-                    ''' No meta, no adblock'''
+                    """No meta, no adblock"""
                     # print("NOADBLOCK")
                     self.player.adKilled = False
                     trk = self.player.getCurrentTrackPlaylist()
@@ -78,12 +75,13 @@ class streamObserver(QThread):
                         if trk.radio is not None:
                             rad = trk.radio
                             title = rad.getCurrentTrack()
-                            if title == "": title = self.nowPlaying()
+                            if title == "":
+                                title = self.nowPlaying()
 
                         else:
                             title = self.nowPlaying()
 
-                        if (self.previousTitle != title):
+                        if self.previousTitle != title:
                             self.previousTitle = title
                             self.player.currentRadioTitle = title
                             print("EMIT= " + title)
@@ -100,9 +98,12 @@ class streamObserver(QThread):
 
     def cleanTitle(self, title):
         clean = title.strip()
-        if clean == "|": clean = ""
-        if clean == "-": clean = ""
-        if "targetspot" in clean.lower(): clean = ""
+        if clean == "|":
+            clean = ""
+        if clean == "-":
+            clean = ""
+        if "targetspot" in clean.lower():
+            clean = ""
         return clean
 
     def nowPlaying(self):

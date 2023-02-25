@@ -5,12 +5,13 @@ import sys
 import os
 import requests
 
-#from google_images_download import google_images_download as gid  # importing the library
-from google_images_download import googleimagesdownload as gid   # importing the library
-from google_images_download import user_input as gid_user_input   # importing the library
+# from google_images_download import google_images_download as gid  # importing the library
+from google_images_download import googleimagesdownload as gid  # importing the library
+from google_images_download import user_input as gid_user_input  # importing the library
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 class CoverArtFinder:
     """Find URL of cover art jpg"""
@@ -27,7 +28,6 @@ class CoverArtFinder:
         logger.debug("CoverArtFinder items %s", self.items)
 
     def searchWithParam(self, search_keyword, limit=4, size="medium"):
-
         response = gid()  # class instantiation
 
         records = gid_user_input()
@@ -46,9 +46,13 @@ class CoverArtFinder:
 
         params = response.build_url_parameters(arguments)  # building URL with params
 
-        url = response.build_search_url(search_keyword, params, arguments['url'],
-                                        arguments['specific_site'],
-                                        arguments['safe_search'])  # building main search url
+        url = response.build_search_url(
+            search_keyword,
+            params,
+            arguments["url"],
+            arguments["specific_site"],
+            arguments["safe_search"],
+        )  # building main search url
 
         try:
             raw_html = response.download_page(url)  # download page
@@ -56,13 +60,14 @@ class CoverArtFinder:
             print(e)
             return False
 
-        items, errorCount, abs_path = response._get_all_items(raw_html, main_directory, dir_name, limit,
-                                                              arguments)  # get all image items and download images
+        items, errorCount, abs_path = response._get_all_items(
+            raw_html, main_directory, dir_name, limit, arguments
+        )  # get all image items and download images
 
         return items
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
     import pyzik
     from PyQt5 import QtCore, QtGui, QtWidgets
@@ -73,7 +78,7 @@ if __name__ == '__main__':
     keyword = "jerusalem album 1972"
     keyword = "IN FLAMES Clayman"
 
-    caf_diag = coverArtFinderDialog()
+    caf_diag = CoverArtFinderDialog()
     caf_diag.keyword = keyword
 
     caf_diag.show()

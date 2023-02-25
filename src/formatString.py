@@ -10,7 +10,7 @@ Useful functions to format titles, dir name...
 
 
 def deleteAccent(value):
-    return str(unicodedata.normalize('NFD', value).encode('ascii', 'ignore'))
+    return str(unicodedata.normalize("NFD", value).encode("ascii", "ignore"))
 
 
 def simplifiedString(value):
@@ -21,7 +21,7 @@ def simplifiedString(value):
 
 
 def deletePonctuation(value):
-    return re.sub('\W+', '', value)
+    return re.sub("\W+", "", value)
 
 
 def getSearchKey(value):

@@ -12,13 +12,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class database():
-    '''
+class Database:
+    """
     Do the SQL things
 
-    '''
+    """
 
-    def __init__(self, isHistory=False, db_path=''):
+    def __init__(self, isHistory=False, db_path=""):
         self.isHistory = isHistory
 
         if self.isHistory:
@@ -56,7 +56,7 @@ class database():
         tempfile = StringIO()
 
         for line in self.connection.iterdump():
-            tempfile.write('%s\n' % line)
+            tempfile.write("%s\n" % line)
 
         self.connection.close()
         tempfile.seek(0)
@@ -70,20 +70,22 @@ class database():
         self.connection = self.memoryConnection
 
     def saveMemoryToDisc(self):
-
-        copyfile(self.dataPath, self.dataPath + 'k')
+        copyfile(self.dataPath, self.dataPath + "k")
 
         self.createConnection()
         self.dropAll()
         with self.connection:
             for line in self.memoryConnection.iterdump():
-                if line not in ('BEGIN;', 'COMMIT;'):  # let python handle the transactions
+                if line not in (
+                    "BEGIN;",
+                    "COMMIT;",
+                ):  # let python handle the transactions
                     self.connection.execute(line)
 
         self.connection.commit()
 
     def createConnection(self):
-        """ create a database connection to the SQLite database
+        """create a database connection to the SQLite database
         specified by self.dataPath
         :return: Connection object or None
         """
@@ -109,19 +111,20 @@ class database():
     def execSQLWithoutResult(self, sql, attachMain=False):
         try:
             c = self.connection.cursor()
-            if attachMain: c.execute("ATTACH DATABASE '" + self.dataPathMain + "' as 'maindb';")
+            if attachMain:
+                c.execute("ATTACH DATABASE '" + self.dataPathMain + "' as 'maindb';")
             c.execute("BEGIN;")
             c.execute(sql)
             c.execute("COMMIT;")
-            if attachMain: c.execute("DETACH DATABASE 'maindb';")
+            if attachMain:
+                c.execute("DETACH DATABASE 'maindb';")
             return True
         except sqlite3.Error as e:
             print(e)
             return False
 
     def dropTable(self, tableName, attachMain=False):
-        """ drop the table called tableName
-        """
+        """drop the table called tableName"""
         print("dropTable " + tableName)
         self.execSQLWithoutResult("DROP TABLE IF EXISTS " + tableName, attachMain)
 
@@ -169,7 +172,7 @@ class database():
         self.dropTable("playHistoryRadio")
 
     def insertLine(self, insertSQL):
-        """ insert a line from the insertSQL statement """
+        """insert a line from the insertSQL statement"""
         try:
             c = self.connection.cursor()
             c.execute(insertSQL)
@@ -279,10 +282,12 @@ class database():
         # print('getSelect: '+select_sql)
         c = self.connection.cursor()
         if params is None:
-            if attachMain: c.execute("ATTACH DATABASE '" + self.dataPathMain + "' as 'maindb';")
+            if attachMain:
+                c.execute("ATTACH DATABASE '" + self.dataPathMain + "' as 'maindb';")
             c.execute(select_sql)
             rows = c.fetchall()
-            if attachMain: c.execute("DETACH DATABASE 'maindb';")
+            if attachMain:
+                c.execute("DETACH DATABASE 'maindb';")
         else:
             c.execute(select_sql, params)
             rows = c.fetchall()
@@ -294,18 +299,28 @@ class database():
         return result[0][0]
 
     def getCountTableInMainDB(self, table):
-        result = self.getSelect("SELECT COUNT(*) FROM maindb." + table + ";", attachMain=True)
+        result = self.getSelect(
+            "SELECT COUNT(*) FROM maindb." + table + ";", attachMain=True
+        )
         print("count=" + str(result))
         return result[0][0]
 
     def tableExists(self, table):
-        query = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='" + table + "'";
+        query = (
+            "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='"
+            + table
+            + "'"
+        )
         result = self.getSelect(query)
         print("table " + table + " exists=" + str(result))
         return result[0][0]
 
     def tableExistsInMainDB(self, table):
-        query = "SELECT COUNT(*) FROM maindb.sqlite_master WHERE type='table' AND name='" + table + "'";
+        query = (
+            "SELECT COUNT(*) FROM maindb.sqlite_master WHERE type='table' AND name='"
+            + table
+            + "'"
+        )
         result = self.getSelect(query, True)
         # print("table "+table+" exists="+str(result))
         return result[0][0]
@@ -316,12 +331,13 @@ class database():
         columns = []
         columns = self.getSelect(sqlExists)
         for col in columns:
-            if column == col[1]: return True
+            if column == col[1]:
+                return True
 
         return False
 
     def insert(self, sql):
-        ''' Execute an insert query '''
+        """Execute an insert query"""
         try:
             c = self.connection.cursor()
             c.execute(sql)
@@ -332,7 +348,7 @@ class database():
             return 0
 
     def deleteWithID(self, table, idName, idValue):
-        ''' Delete a row from table where the id called idName == idValue '''
+        """Delete a row from table where the id called idName == idValue"""
         rowcount = 0
         try:
             c = self.connection.cursor()
@@ -344,13 +360,21 @@ class database():
             return 0
 
     def insertAlbum(self, album):
-
         try:
             c = self.connection.cursor()
             sqlInsertAlbum = """    INSERT INTO albums (title, artistID,dirPath,year,musicDirectoryID,creationDate)
                                 VALUES (?,?,?,?,?,date('now'));
                           """
-            c.execute(sqlInsertAlbum, (album.title, album.artistID, album.dirPath, album.year, album.musicDirectoryID))
+            c.execute(
+                sqlInsertAlbum,
+                (
+                    album.title,
+                    album.artistID,
+                    album.dirPath,
+                    album.year,
+                    album.musicDirectoryID,
+                ),
+            )
             self.connection.commit()
             album.albumID = c.lastrowid
         except sqlite3.Error as e:
@@ -359,7 +383,6 @@ class database():
         return album.albumID
 
     def insertArtist(self, artist):
-
         try:
             c = self.connection.cursor()
             sqlInsertArtist = """    INSERT INTO artists (name)
@@ -374,7 +397,7 @@ class database():
         return artist.artistID
 
     def insertTrackHistory(self, albumID, fileName):
-        ''' Insert track in history '''
+        """Insert track in history"""
 
         try:
             c = self.connection.cursor()
@@ -388,7 +411,7 @@ class database():
             return -1
 
     def insertRadioHistory(self, radioName, title):
-        ''' Insert radio title in history '''
+        """Insert radio title in history"""
         try:
             c = self.connection.cursor()
             sqlInsertRadioHistory = """    INSERT INTO playHistoryRadio (radioName, title, playDate)
@@ -401,7 +424,7 @@ class database():
             return -1
 
     def insertAlbumHistory(self, albumID):
-        ''' Insert album in history '''
+        """Insert album in history"""
         try:
             c = self.connection.cursor()
             sqlInsertAlbumHistory = """    INSERT INTO playHistoryAlbum (albumID, playDate)
@@ -421,7 +444,17 @@ class database():
     def updateValue(self, table, column, value, columnID, rowID):
         try:
             c = self.connection.cursor()
-            sqlUpdate = "UPDATE " + table + " SET " + column + "=? WHERE " + columnID + "=" + str(rowID) + ";"
+            sqlUpdate = (
+                "UPDATE "
+                + table
+                + " SET "
+                + column
+                + "=? WHERE "
+                + columnID
+                + "="
+                + str(rowID)
+                + ";"
+            )
 
             c.execute(sqlUpdate, (value,))
 
@@ -431,6 +464,6 @@ class database():
             print(e)
 
 
-if __name__ == '__main__':
-    db = database()
+if __name__ == "__main__":
+    db = Database()
     # db.dropHistoryTables()

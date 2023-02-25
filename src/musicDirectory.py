@@ -3,6 +3,7 @@
 
 import os
 from explore_event import *
+from album import *
 from albumCollection import *
 from artistCollection import *
 from PyQt5.QtCore import pyqtSignal
@@ -19,18 +20,21 @@ class ImportAlbumsThread(QThread):
     alb_dict_list = []
     musicbase = None
 
-    album_import_progress = pyqtSignal(int, name='album_import_progress')
-    album_import_started_signal = pyqtSignal(str, name='album_imported_signal')
-    file_copy_started_signal = pyqtSignal(str, name='file_copied_signal')
-    import_completed_signal = pyqtSignal(int, name='import_completed_signal')
+    album_import_progress = pyqtSignal(int, name="album_import_progress")
+    album_import_started_signal = pyqtSignal(str, name="album_imported_signal")
+    file_copy_started_signal = pyqtSignal(str, name="file_copied_signal")
+    import_completed_signal = pyqtSignal(int, name="import_completed_signal")
 
     def run(self):
-        self.musicbase.db = database()
-        self.musicbase.import_albums(self.alb_dict_list, self.album_import_started_signal, self.file_copy_started_signal, self.album_import_progress)
+        self.musicbase.db = Database()
+        self.musicbase.import_albums(
+            self.alb_dict_list,
+            self.album_import_started_signal,
+            self.file_copy_started_signal,
+            self.album_import_progress,
+        )
         self.import_completed_signal.emit(1)
         return
-
-
 
 
 class musicDirectory:
@@ -42,15 +46,14 @@ class musicDirectory:
 
     explore_events = ExploreEventList()
 
-    def __init__(self, musicBase=None, dirPath=""):
-
-        self.musicBase = musicBase
-        if musicBase:
-            self.albumCol = musicBase.albumCol
-            self.artistCol = musicBase.artistCol
+    def __init__(self, music_base=None, dirPath=""):
+        self.music_base = music_base
+        if music_base:
+            self.albumCol = music_base.albumCol
+            self.artistCol = music_base.artistCol
         else:
-            self.albumCol = albumCollection(self.musicBase)
-            self.artistCol = artistCollection(self.musicBase)
+            self.albumCol = AlbumCollection(self.music_base)
+            self.artistCol = ArtistCollection(self.music_base)
         self.dirPath = dirPath
         self.musicDirectoryID = 0
         self.styleID = -1
@@ -81,7 +84,9 @@ class musicDirectory:
 
     def addExploreEvent(self, explEvent):
         self.explore_events.append(explEvent)
-        logger.info("ExploreEvent " + explEvent.event_code + " : " + explEvent.get_text())
+        logger.info(
+            "ExploreEvent " + explEvent.event_code + " : " + explEvent.get_text()
+        )
 
     def exploreDirectory(self, progressChanged=None):
         self.explore_events = []
@@ -95,21 +100,22 @@ class musicDirectory:
             self.exploreAlbumsDirectory(progressChanged, forceTAGCheck=True)
 
     def exploreAlbumsDirectory(self, progressChanged=None, forceTAGCheck=False):
-
-        if self.getStatus() == -1: return
+        if self.getStatus() == -1:
+            return
 
         dirlist = next(os.walk(self.dirPath))[1]
         for i, dir in enumerate(dirlist):
             iProgress = round((i / len(dirlist)) * 100)
             progressChanged.emit(iProgress)
-            curAlb = album(dir, self)
+            curAlb = Album(dir, self)
 
-            if not curAlb.toVerify or forceTAGCheck:
-
+            if not curAlb.to_verify or forceTAGCheck:
                 if forceTAGCheck:
-                    curAlb.getTagsFromFirstFile()
+                    curAlb.get_tags_from_first_file()
                     if not (curAlb.artist_name and curAlb.title):
-                        self.addExploreEvent(ExploreEvent("ALBUM_TO_VERIFY_NO_TAG", curAlb.getAlbumDir()))
+                        self.addExploreEvent(
+                            ExploreEvent("ALBUM_TO_VERIFY_NO_TAG", curAlb.get_album_dir())
+                        )
 
                 # Artist name and album title has been found
                 curArt = self.artistCol.getArtist(curAlb.artist_name)
@@ -117,26 +123,44 @@ class musicDirectory:
                 if curArt:
                     curAlb.artistID = curArt.artistID
                     curAlb.artist_name = curArt.name.upper()
-                    curAlb.addStyle({self.styleID})
+                    curAlb.add_style({self.styleID})
 
                     albumList = curArt.findAlbums(curAlb.title)
                     if not albumList:
-                        logger.info("Add " + curAlb.title + " in " + curArt.name + " discography. ArtID= %s", curArt.artistID)
-                        self.addExploreEvent(ExploreEvent("ALBUM_ADDED", curAlb.getAlbumDir()))
+                        logger.info(
+                            "Add "
+                            + curAlb.title
+                            + " in "
+                            + curArt.name
+                            + " discography. ArtID= %s",
+                            curArt.artistID,
+                        )
+                        self.addExploreEvent(
+                            ExploreEvent("ALBUM_ADDED", curAlb.get_album_dir())
+                        )
                         # curAlb.getAlbumSize()
                         # curAlb.getLength()
-                        self.albumCol.addAlbum(curAlb)
-                        curArt.addAlbum(curAlb)
+                        self.albumCol.add_album(curAlb)
+                        curArt.add_album(curAlb)
                     else:
                         for alb in albumList:
-                            if alb.getAlbumDir() != curAlb.getAlbumDir():
+                            if alb.get_album_dir() != curAlb.get_album_dir():
                                 self.addExploreEvent(
-                                    ExploreEvent("ALBUM_DUPLICATE", curAlb.getAlbumDir(), alb.albumID, curArt.artistID, alb))
+                                    ExploreEvent(
+                                        "ALBUM_DUPLICATE",
+                                        curAlb.get_album_dir(),
+                                        alb.albumID,
+                                        curArt.artistID,
+                                        alb,
+                                    )
+                                )
 
                 else:
                     logger.info("exploreAlbumsDirectory - No artist for " + dir)
             else:
-                self.addExploreEvent(ExploreEvent("ALBUM_TO_VERIFY", curAlb.getAlbumDir()))
+                self.addExploreEvent(
+                    ExploreEvent("ALBUM_TO_VERIFY", curAlb.get_album_dir())
+                )
 
         return
 
@@ -154,30 +178,30 @@ class musicDirectory:
                 iProgress = round((i / len(dir_list)) * 100)
                 progressChanged.emit(iProgress)
             logger.debug("explore album %s", dir_path)
-            curAlb = album(dir_path, self)
-            if curAlb.toVerify:
+            curAlb = Album(dir_path, self)
+            if curAlb.to_verify:
                 curAlb.getTagsFromFirstFile()
-            if not curAlb.toVerify and curAlb.year in [0, 9999]:
+            if not curAlb.to_verify and curAlb.year in [0, 9999]:
                 curAlb.get_year_from_first_file()
             artists = self.artistCol.findArtists(curAlb.artist_name)
             artist_exists = len(artists) > 0
             if artist_exists:
-                dir_result['artist_name'] = artists[0].name
+                dir_result["artist_name"] = artists[0].name
                 curAlb.artistID = artists[0].artistID
                 albums = artists[0].findAlbums(curAlb.title)
                 album_exists = len(albums) > 0
             else:
                 logger.info("Artist don't exists %s", curAlb.artist_name)
-                dir_result['artist_name'] = curAlb.artist_name
+                dir_result["artist_name"] = curAlb.artist_name
 
-            dir_result['alb'] = curAlb
-            dir_result['artist_exists'] = artist_exists
-            dir_result['album_exists'] = album_exists
-            dir_result['album_dir'] = dir_path
-            dir_result['full_dir'] = os.path.join(self.dirPath, dir_path)
+            dir_result["alb"] = curAlb
+            dir_result["artist_exists"] = artist_exists
+            dir_result["album_exists"] = album_exists
+            dir_result["album_dir"] = dir_path
+            dir_result["full_dir"] = os.path.join(self.dirPath, dir_path)
             res.append(dir_result)
 
-        res = sorted(res, key=lambda k: k['alb'].artist_name + k['alb'].title)
+        res = sorted(res, key=lambda k: k["alb"].artist_name + k["alb"].title)
         return res
 
     def import_album(self, album_to_import, album_path, file_copy_started_signal=None):
@@ -187,11 +211,19 @@ class musicDirectory:
         logger.info("from: %s to: %s", album_path, copy_path)
         if os.path.exists(copy_path):
             logger.info("Directory already exists %s", copy_path)
-            self.addExploreEvent(ExploreEvent("DIRECTORY_EXISTS", album_to_import.getAlbumDir(),
-                                              album_to_import.albumID, album_to_import.artistID))
+            self.addExploreEvent(
+                ExploreEvent(
+                    "DIRECTORY_EXISTS",
+                    album_to_import.get_album_dir(),
+                    album_to_import.albumID,
+                    album_to_import.artistID,
+                )
+            )
             return False
 
-        move_directory_file_by_file(album_path, copy_path, file_copy_started_signal, test_mode=False)
+        move_directory_file_by_file(
+            album_path, copy_path, file_copy_started_signal, test_mode=False
+        )
 
         curArt = self.artistCol.getArtist(album_to_import.artist_name)
         # GetArtist return a new artist if it doesn't exists in artistsCol
@@ -199,19 +231,29 @@ class musicDirectory:
             album_to_import.artistID = curArt.artistID
             album_to_import.musicDirectoryID = self.musicDirectoryID
             album_to_import.artist_name = curArt.name
-            album_to_import.addStyle({self.styleID})
+            album_to_import.add_style({self.styleID})
 
             albumList = curArt.findAlbums(album_to_import.title)
             if not albumList:
-                logger.info("Add " + album_to_import.title + " in " + curArt.name + " discography. ArtID= %s", curArt.artistID)
-                self.addExploreEvent(ExploreEvent("ALBUM_ADDED", album_to_import.getAlbumDir()))
-                self.albumCol.addAlbum(album_to_import)
-                curArt.addAlbum(album_to_import)
+                logger.info(
+                    "Add "
+                    + album_to_import.title
+                    + " in "
+                    + curArt.name
+                    + " discography. ArtID= %s",
+                    curArt.artistID,
+                )
+                self.addExploreEvent(
+                    ExploreEvent("ALBUM_ADDED", album_to_import.get_album_dir())
+                )
+                self.albumCol.add_album(album_to_import)
+                curArt.add_album(album_to_import)
                 return True
         return False
 
     def exploreArtistsDirectory(self, progressChanged=None):
-        if self.getStatus() == -1: return
+        if self.getStatus() == -1:
+            return
         dirlist = next(os.walk(self.dirPath))[1]
         i = 0
         for dirArt in dirlist:
@@ -219,7 +261,7 @@ class musicDirectory:
             iProgress = round((i / len(dirlist)) * 100)
             progressChanged.emit(iProgress)
 
-            logger.info('exploreArtistsDirectory=' + dirArt)
+            logger.info("exploreArtistsDirectory=" + dirArt)
             curArt = self.artistCol.getArtist(dirArt)
             # GetArtist return a new artist if it doesn't exists in artistsCol
 
@@ -228,7 +270,6 @@ class musicDirectory:
         return
 
     def exploreAlbumsInArtistDirectory(self, artist, dirArt, progressChanged=None):
-
         artPath = os.path.join(self.dirPath, dirArt)
         dirlist = next(os.walk(artPath))[1]
         i = 0
@@ -242,7 +283,7 @@ class musicDirectory:
             iProgress = round((i / len(dirlist)) * 100)
             progressChanged.emit(iProgress)
             albPath = os.path.join(dirArt, dirAlb)
-            curAlb = album(albPath, self)
+            curAlb = Album(albPath, self)
             # curAlb.musicDirectoryID = self.musicDirectoryID
             # curAlb.musicDirectory = self
             # curAlb.dirPath = dirArt
@@ -250,36 +291,45 @@ class musicDirectory:
             curAlb.artistID = artist.artistID
             curAlb.artist_name = artist.name
 
-            if curAlb.toVerify == False:
+            if curAlb.to_verify == False:
                 # Artist name et album title has been found
 
                 albumList = artist.findAlbums(curAlb.title)
                 if len(albumList) == 0:
-                    logger.info("Add " + curAlb.title + " in " + artist.name + " discography. ArtID= %s", artist.artistID)
-                    curAlb.getAlbumSize()
+                    logger.info(
+                        "Add "
+                        + curAlb.title
+                        + " in "
+                        + artist.name
+                        + " discography. ArtID= %s",
+                        artist.artistID,
+                    )
+                    curAlb.get_album_size()
                     # curAlb.getLength()
-                    self.albumCol.addAlbum(curAlb)
-                    artist.addAlbum(curAlb)
+                    self.albumCol.add_album(curAlb)
+                    artist.add_album(curAlb)
 
         return True
 
     def updateMusicDirectoryDB(self):
         if self.musicDirectoryID > 0:
             try:
-                c = self.musicBase.db.connection.cursor()
+                c = self.music_base.db.connection.cursor()
                 sqlInsertMusicDirectory = """    UPDATE musicDirectories SET dirPath=?, dirName=?, styleID=?, dirType=?
                             WHERE musicDirectoryID=?;
                               """
-                c.execute(sqlInsertMusicDirectory,
-                          (self.dirPath,
-                           self.dirName,
-                           self.styleID,
-                           self.dirType,
-                           self.musicDirectoryID))
+                c.execute(
+                    sqlInsertMusicDirectory,
+                    (
+                        self.dirPath,
+                        self.dirName,
+                        self.styleID,
+                        self.dirType,
+                        self.musicDirectoryID,
+                    ),
+                )
 
-                self.musicBase.db.connection.commit()
+                self.music_base.db.connection.commit()
 
             except sqlite3.Error as e:
                 logger.info(e)
-
-

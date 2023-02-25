@@ -3,8 +3,22 @@
 
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QSize, QCoreApplication
-from PyQt5.QtWidgets import QApplication, QWidget, QListWidget, QDialog, QPushButton, QVBoxLayout, \
-    QHeaderView, QHBoxLayout, QSlider, QSizePolicy, QFrame, QLabel, QShortcut, QListWidgetItem
+from PyQt5.QtWidgets import (
+    QApplication,
+    QWidget,
+    QListWidget,
+    QDialog,
+    QPushButton,
+    QVBoxLayout,
+    QHeaderView,
+    QHBoxLayout,
+    QSlider,
+    QSizePolicy,
+    QFrame,
+    QLabel,
+    QShortcut,
+    QListWidgetItem,
+)
 
 from picFromUrlThread import *
 from fullScreenCoverWidget import *
@@ -12,7 +26,7 @@ from fullScreenCoverWidget import *
 _translate = QCoreApplication.translate
 
 
-class thumbnailItem(QListWidgetItem):
+class ThumbnailItem(QListWidgetItem):
     def __init__(self, parent, url, thumb_url, name):
         self.url = url
         self.path = ""
@@ -34,12 +48,11 @@ class thumbnailItem(QListWidgetItem):
 
 
 class thumbnailIcon(QtGui.QIcon):
-
     def __init__(self, parent, url):
         QtGui.QIcon.__init__(self)
         self.parent = parent
         self.path = ""
-        self.picFromUrlThread = picFromUrlThread()
+        self.picFromUrlThread = pPicFromUrlThread()
         self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
         self.picFromUrlThread.url = url
         self.picFromUrlThread.start()
@@ -56,7 +69,6 @@ class thumbnailIcon(QtGui.QIcon):
 
 
 class thumbnailViewerWidget(QWidget):
-
     def __init__(self, items):
         QWidget.__init__(self)
         self.items = items
@@ -64,8 +76,8 @@ class thumbnailViewerWidget(QWidget):
         self.selectedFile = ""
         self.selectedURL = ""
         self.isDownloading = False
-        self.fullScreenCover = fullScreenCoverWidget()
-        self.picFromUrlThread = picFromUrlThread()
+        self.fullScreenCover = FullScreenCoverWidget()
+        self.picFromUrlThread = PicFromUrlThread()
         self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
 
         self.setWindowFlags(Qt.Window)
@@ -136,7 +148,7 @@ class thumbnailViewerWidget(QWidget):
                 del self.tempFiles[i]
 
     def addThumbnailItem(self, url, thumbURL, name):
-        self.thumbWidget.addItem(thumbnailItem(self, url, thumbURL, name))
+        self.thumbWidget.addItem(ThumbnailItem(self, url, thumbURL, name))
 
     # def showThumbnails(self):
     #     for thumb in self.items:

@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 
 
-class historyItem():
+class HistoryItem:
     """
     Defines different types of history items
     """
 
     def __init__(self, playDate):
-
         self.playDate = playDate
         self.historyType = 0  # 2=Album, 1=Track, 3=Radio
         self.data = None
@@ -35,13 +34,13 @@ class historyItem():
             return self.data.getColumnText(colID)
 
 
-class dataHistoAlbum():
+class dataHistoAlbum:
     def __init__(self, albumID):
         self.albumID = albumID
         self.album = None
 
-    def getAlbum(self, musicBase):
-        self.album = musicBase.albumCol.getAlbum(self.albumID)
+    def getAlbum(self, music_base):
+        self.album = music_base.albumCol.getAlbum(self.albumID)
 
     def getInfo(self):
         return "Artist: " + self.album.artist_name + " Album: " + self.album.title
@@ -63,7 +62,14 @@ class dataHistoTrack(dataHistoAlbum):
         self.fileName = fileName
 
     def getInfo(self):
-        return "Artist: " + self.album.artist_name + " Album: " + self.album.title + " File: " + self.fileName
+        return (
+            "Artist: "
+            + self.album.artist_name
+            + " Album: "
+            + self.album.title
+            + " File: "
+            + self.fileName
+        )
 
     def getColumnText(self, colID):
         if colID == 1:
@@ -76,7 +82,7 @@ class dataHistoTrack(dataHistoAlbum):
             return ""
 
 
-class dataHistoRadio():
+class dataHistoRadio:
     def __init__(self, radioName, title):
         self.radioName = radioName
         self.title = title

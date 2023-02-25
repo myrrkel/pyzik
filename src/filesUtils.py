@@ -11,11 +11,14 @@ import math
 logger = logging.getLogger(__name__)
 
 
-def move_directory_file_by_file(from_path, to_path, file_copy_started_signal=None, test_mode=False):
-
+def move_directory_file_by_file(
+    from_path, to_path, file_copy_started_signal=None, test_mode=False
+):
     if not test_mode:
         os.makedirs(to_path)
-    files = glob.glob(glob.escape(from_path + os.sep) + "**" + os.sep + "*.*", recursive=True)
+    files = glob.glob(
+        glob.escape(from_path + os.sep) + "**" + os.sep + "*.*", recursive=True
+    )
     files = sorted(files)
     logger.info("FILES %s in %s", files, from_path)
     for file in files:
@@ -30,7 +33,8 @@ def move_directory_file_by_file(from_path, to_path, file_copy_started_signal=Non
 
 
 def getFolderSize(folder):
-    if not os.path.isdir(folder): return 0
+    if not os.path.isdir(folder):
+        return 0
     total_size = os.path.getsize(folder)
     for item in os.listdir(folder):
         itempath = os.path.join(folder, item)
@@ -50,8 +54,8 @@ def convert_size(size_bytes):
     s = round(size_bytes / p, 2)
     return "%s %s" % (s, size_name[i])
 
+
 def getFileName(path):
     filename = os.path.basename(path)
     filename, file_extension = os.path.splitext(filename)
     return filename
-

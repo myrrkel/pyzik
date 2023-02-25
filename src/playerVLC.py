@@ -47,11 +47,10 @@ def print(txt):
         _print(txt)
 
 
-class playerVLC:
+class PlayerVLC:
     tracksDatas = []
 
     def __init__(self):
-
         # creating a basic vlc instance
         self.instance = vlc.Instance("--quiet")
 
@@ -74,9 +73,9 @@ class playerVLC:
         self.adblock = False
         self.adKilled = False
         self.loadingRadio = False
-        self.playlistChangedEvent = pyqtSignal(int, name='playlistChanged')
-        self.currentRadioChangedEvent = pyqtSignal(int, name='currentRadioChanged')
-        self.titleChangedEvent = pyqtSignal(str, name='titleChanged')
+        self.playlistChangedEvent = pyqtSignal(int, name="playlistChanged")
+        self.currentRadioChangedEvent = pyqtSignal(int, name="currentRadioChanged")
+        self.titleChangedEvent = pyqtSignal(str, name="titleChanged")
 
         self.nowPlaying = ""
 
@@ -87,13 +86,33 @@ class playerVLC:
         # void prepareRender(void* p_audio_data, uint8_t** pp_pcm_buffer , size_t size); // Audio prerender callback
         # void handleStream(void* p_audio_data, uint8_t* p_pcm_buffer, unsigned int channels, unsigned int rate, unsigned int nb_samples, unsigned int bits_per_sample, size_t size, int64_t pts); // Audio postrender callback
 
-    @c.CFUNCTYPE(c.c_void_p, c_uint8_p, c.c_uint, c.c_uint, c.c_uint, c.c_uint, c.c_size_t, c.c_int64)
-    def audioPostrender(self, p_audio_data, p_pcm_buffer, channels, rate, nb_samples, bits_per_sample, size,
-                        pts):  # Audio postrender callback
+    @c.CFUNCTYPE(
+        c.c_void_p,
+        c_uint8_p,
+        c.c_uint,
+        c.c_uint,
+        c.c_uint,
+        c.c_uint,
+        c.c_size_t,
+        c.c_int64,
+    )
+    def audioPostrender(
+        self,
+        p_audio_data,
+        p_pcm_buffer,
+        channels,
+        rate,
+        nb_samples,
+        bits_per_sample,
+        size,
+        pts,
+    ):  # Audio postrender callback
         print("HandleStream")
 
     @c.CFUNCTYPE(c.c_void_p, c_uint8_pp, c.c_size_t)
-    def audioPrerender(self, p_audio_data, pp_pcm_buffer, size):  # Audio prerender callback
+    def audioPrerender(
+        self, p_audio_data, pp_pcm_buffer, size
+    ):  # Audio prerender callback
         print("prepareRender")
 
     def release(self):
@@ -131,7 +150,9 @@ class playerVLC:
         return self.mediaPlayer.is_playing()
 
     def isPlayingRadio(self):
-        return (self.adKilled == False and self.isPlaying() and self.loadingRadio == False)
+        return (
+            self.adKilled == False and self.isPlaying() and self.loadingRadio == False
+        )
 
     def get_current_index_playlist(self):
         m = self.mediaPlayer.get_media()
@@ -190,7 +211,6 @@ class playerVLC:
         self.playlistChangedEvent.emit(1)
 
     def addAlbum(self, album):
-
         for trk in album.tracks:
             path = trk.getFullFilePath()
             media = self.instance.media_new(path)
@@ -203,7 +223,7 @@ class playerVLC:
     def playFile(self, sfile):
         # create the media
         print(sys.version)
-        if (sys.version < '3'):
+        if sys.version < "3":
             sfile = unicode(sfile)
 
         media = self.instance.media_new(sfile)
@@ -280,24 +300,20 @@ class playerVLC:
         self.playlistChangedEvent.emit(1)
 
     def getVolume(self):
-        """Get the volume from the player
-        """
+        """Get the volume from the player"""
         volume = int(self.mediaPlayer.audio_get_volume())
         return volume
 
     def setVolume(self, Volume):
-        """Set the volume
-        """
+        """Set the volume"""
         self.mediaPlayer.audio_set_volume(Volume)
 
     def getPosition(self):
-        """Get the position in media
-        """
+        """Get the position in media"""
         return self.mediaPlayer.get_position()
 
     def setPosition(self, pos):
-        """Set the position in media
-        """
+        """Set the position in media"""
         return self.mediaPlayer.set_position(pos)
 
     def getParsedMedia(self, sfile):
@@ -337,7 +353,6 @@ class playerVLC:
         # Wait until playing start.
         startSince = 0
         while self.isPlaying() == 0:
-
             time.sleep(0.05)
             startSince = startSince + 0.05
             # Get current state.
@@ -374,7 +389,8 @@ class playerVLC:
         return str(self.mediaPlayer.get_state())
 
     def getNowPlaying(self):
-        if not self.radioMode: return self.currentRadioTitle
+        if not self.radioMode:
+            return self.currentRadioTitle
         m = self.mediaPlayer.get_media()
         if m is not None:
             nowPlaying = m.get_meta(12)
@@ -416,7 +432,8 @@ class playerVLC:
                 title = trk.getFullTitle()
             else:
                 title = self.getNowPlaying()
-                if title == "NO_META": title = trk.radioName
+                if title == "NO_META":
+                    title = trk.radioName
         return title
 
     def getTitle(self):
@@ -433,7 +450,8 @@ class playerVLC:
         m = self.mediaPlayer.get_media()
         if m is not None:
             artist = m.get_meta(1)
-            if artist == None: artist = "NO_ARTIST"
+            if artist == None:
+                artist = "NO_ARTIST"
         else:
             artist = "NO_ARTIST"
         return artist
@@ -466,14 +484,15 @@ class playerVLC:
     def setPlaylistTrack(self, index):
         print("setPlaylistTrack=" + str(index))
         trk = self.getTrackAtIndex(index)
-        self.radioMode = (trk.radioName != "")
+        self.radioMode = trk.radioName != ""
         print("radioMode=" + str(self.radioMode))
 
         self.mediaListPlayer.play_item_at_index(index)
 
 
-if __name__ == '__main__':
-    player = playerVLC()
+if __name__ == "__main__":
+    player = PlayerVLC()
     # player.initMediaList()
     player.playFile(
-        "C://Users//mp05.octave//Music//FREEDOM//FREEDOM - [1970] - Freedom At Last//Freedom - 01 - Enchanted Wood - 3.03.mp3")
+        "C://Users//mp05.octave//Music//FREEDOM//FREEDOM - [1970] - Freedom At Last//Freedom - 01 - Enchanted Wood - 3.03.mp3"
+    )

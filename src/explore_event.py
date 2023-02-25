@@ -7,8 +7,8 @@ from PyQt5 import QtCore
 logger = logging.getLogger(__name__)
 _translate = QtCore.QCoreApplication.translate
 
-class ExploreEventList(list):
 
+class ExploreEventList(list):
     def filter_by_code(self, event_code):
         return [el for el in self if el.event_code == event_code]
 
@@ -20,15 +20,20 @@ class ExploreEventList(list):
 
     def get_event_types(self):
         return [
-            {'code': "ALBUM_DUPLICATE", 'label': _translate("events", 'Album duplicate')},
-            {'code': "ALBUM_TO_VERIFY", 'label': _translate('Album to check')},
-            {'code': "ALBUM_TO_VERIFY_NO_TAG", 'label': _translate('Album to check without tags')},
-            {'code': "ALBUM_ADDED", 'label': _translate('Album added')},
+            {
+                "code": "ALBUM_DUPLICATE",
+                "label": _translate("events", "Album duplicate"),
+            },
+            {"code": "ALBUM_TO_VERIFY", "label": _translate("Album to check")},
+            {
+                "code": "ALBUM_TO_VERIFY_NO_TAG",
+                "label": _translate("Album to check without tags"),
+            },
+            {"code": "ALBUM_ADDED", "label": _translate("Album added")},
         ]
 
 
 class ExploreEvent:
-
     def __init__(self, code, dirpath, albumID=0, artistID=0, album=None):
         self.event_code = code
         self.dirPath = dirpath

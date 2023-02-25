@@ -8,7 +8,6 @@ from svgIcon import *
 
 
 class historyControlsWidget(QtWidgets.QWidget):
-
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent=parent)
 
@@ -22,13 +21,12 @@ class historyControlsWidget(QtWidgets.QWidget):
         lay.addStretch()
 
 
-class historyWidget(QtWidgets.QDialog):
-
-    def __init__(self, musicBase, parent):
+class HistoryWidget(QtWidgets.QDialog):
+    def __init__(self, music_base, parent):
         QtWidgets.QDialog.__init__(self, parent)
         self.setWindowFlags(QtCore.Qt.Window)
 
-        self.history = historyManager(musicBase)
+        self.history = HistoryManager(music_base)
         self.history.loadHistory(False)
 
         self.initUI()
@@ -40,7 +38,9 @@ class historyWidget(QtWidgets.QDialog):
         layout = QtWidgets.QVBoxLayout()
         self.setLayout(layout)
 
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
         self.setSizePolicy(sizePolicy)
@@ -63,7 +63,9 @@ class historyWidget(QtWidgets.QDialog):
         self.tableWidgetItems = QtWidgets.QTableWidget(self)
 
         self.tableWidgetItems.setGeometry(0, 0, 550, 300)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
 
@@ -109,7 +111,9 @@ class historyWidget(QtWidgets.QDialog):
         self.historyControls.refreshButton.setText(_translate("history", "Refresh"))
 
     def showHistoryItems(self, items):
-        self.tableWidgetItems.setStyleSheet("selection-background-color: black;selection-color: white;")
+        self.tableWidgetItems.setStyleSheet(
+            "selection-background-color: black;selection-color: white;"
+        )
         self.tableWidgetItems.setColumnCount(4)
         self.tableWidgetItems.setRowCount(0)
         i = 0
@@ -138,14 +142,14 @@ if __name__ == "__main__":
     import sys
     from musicBase import *
 
-    print('musicBase')
-    mb = musicBase()
-    print('loadMusicBase')
+
+    mb = MusicBase()
+
     mb.loadMusicBase(False)
 
     app = QtWidgets.QApplication(sys.argv)
 
-    histoWidget = historyWidget(mb)
+    histoWidget = HistoryWidget(mb)
 
     histoWidget.show()
     sys.exit(app.exec_())

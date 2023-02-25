@@ -14,10 +14,10 @@ import time
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-class picFromUrlThread(QThread):
+class PicFromUrlThread(QThread):
     """Get a pic from an url"""
 
-    downloadCompleted = pyqtSignal(str, name='downloadCompleted')
+    downloadCompleted = pyqtSignal(str, name="downloadCompleted")
     lastTempFile = ""
     lastUrl = ""
     url = ""
@@ -34,7 +34,9 @@ class picFromUrlThread(QThread):
             self.lastUrl = self.url
             self.lastTempFile = ""
             self.removeLastTempFile()
-            headers = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; rv:2.2) Gecko/20110201'}
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 6.1; rv:2.2) Gecko/20110201"
+            }
             response = requests.get(self.url, headers=headers, verify=False)
             print("GET Status=" + str(response.status_code))
             if response.status_code == 404:

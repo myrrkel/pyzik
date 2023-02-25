@@ -35,33 +35,30 @@ import platform
 from globalConstants import *
 from darkStyle.pyqt5_style_rc import *
 
+
 class darkStyle:
-
-    def load_stylesheet_pyqt5():
-
+    def load_stylesheet_pyqt5(self):
         # Smart import of the rc file
-        
 
         # Load the stylesheet content from resources
         from PyQt5.QtCore import QFile, QTextStream
 
-        f = QFile(appDir+'/darkStyle/style.qss')
+        f = QFile(appDir + "/darkStyle/style.qss")
         if not f.exists():
-            print('Unable to load stylesheet, file not found in '
-                            'resources')
-            return ''
+            print("Unable to load stylesheet, file not found in " "resources")
+            return ""
         else:
             f.open(QFile.ReadOnly | QFile.Text)
             ts = QTextStream(f)
             stylesheet = ts.readAll()
-            if platform.system().lower() == 'darwin':  # see issue #12 on github
-                mac_fix = '''
+            if platform.system().lower() == "darwin":  # see issue #12 on github
+                mac_fix = """
                 QDockWidget::title
                 {
                     background-color: #31363b;
                     text-align: center;
                     height: 12px;
                 }
-                '''
+                """
                 stylesheet += mac_fix
             return stylesheet

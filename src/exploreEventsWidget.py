@@ -14,7 +14,6 @@ _translate = QtCore.QCoreApplication.translate
 
 
 class ExploreEventsWidget(QtWidgets.QDialog):
-
     items = ExploreEventList()
 
     def __init__(self, parent, musicbase=None, items=[]):
@@ -22,25 +21,28 @@ class ExploreEventsWidget(QtWidgets.QDialog):
         self.parent = parent
         self.musicbase = musicbase
         self.items = items
-        self.musicbase.db = database()
+        self.musicbase.db = Database()
         self.setWindowFlags(QtCore.Qt.Window)
 
         self.initUI()
-
 
     def initUI(self):
         self.setWindowTitle(_translate("menu", "Explore Events"))
         self.main_layout = QtWidgets.QVBoxLayout()
         self.setLayout(self.main_layout)
 
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
         self.setSizePolicy(sizePolicy)
         self.resize(550, 400)
 
         self.header_label = QtWidgets.QLabel()
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.header_label.sizePolicy().hasHeightForWidth())
@@ -75,7 +77,6 @@ class ExploreEventsWidget(QtWidgets.QDialog):
         self.initTableWidgetItems()
         self.main_layout.addWidget(self.tableWidgetItems)
 
-
         # self.import_button = QtWidgets.QPushButton(_translate("explore event", "Import selected albums in music directories"))
         # self.import_button.clicked.connect(self.import_albums)
         # self.import_button.setIcon(getSvgIcon("folder_import.svg"))
@@ -83,7 +84,6 @@ class ExploreEventsWidget(QtWidgets.QDialog):
         # self.import_button.setSizePolicy(sizePolicy)
         # self.main_layout.addWidget(self.import_button)
         # self.main_layout.setAlignment(self.import_button, Qt.AlignHCenter)
-
 
         self.retranslateUi()
 
@@ -161,12 +161,13 @@ class ExploreEventsWidget(QtWidgets.QDialog):
             model.appendRow(itemDir)
         combo.setModel(model)
 
-
     def initTableWidgetItems(self):
         self.tableWidgetItems = QtWidgets.QTableWidget(self)
 
         self.tableWidgetItems.setGeometry(0, 0, 550, 300)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
 
@@ -238,7 +239,9 @@ class ExploreEventsWidget(QtWidgets.QDialog):
 
     def showTableItems(self, items):
         items = items.filter_exclude_code("ALBUM_ADDED")
-        self.tableWidgetItems.setStyleSheet("selection-background-color: black;selection-color: white;")
+        self.tableWidgetItems.setStyleSheet(
+            "selection-background-color: black;selection-color: white;"
+        )
         # self.tableWidgetItems.setColumnCount(4)
         self.tableWidgetItems.setRowCount(0)
 
@@ -247,7 +250,11 @@ class ExploreEventsWidget(QtWidgets.QDialog):
             i_col = 0
 
             item_sel = QtWidgets.QTableWidgetItem()
-            item_sel.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled)
+            item_sel.setFlags(
+                QtCore.Qt.ItemIsUserCheckable
+                | QtCore.Qt.ItemIsEditable
+                | QtCore.Qt.ItemIsEnabled
+            )
             item_sel.setCheckState(QtCore.Qt.Checked)
             item_sel.alb_item = item
             i_col = self.add_item_to_line(i, i_col, item_sel)
@@ -330,13 +337,12 @@ class ExploreEventsWidget(QtWidgets.QDialog):
         hHeader.resizeSections(QtWidgets.QHeaderView.ResizeToContents)
         hHeader.setSectionResizeMode(QtWidgets.QHeaderView.Interactive)
 
-
     def check_tags(self, event):
         check_tags_button = self.tableWidgetItems.focusWidget()
         index = self.tableWidgetItems.indexAt(check_tags_button.pos())
         row = index.row()
         logger.info(row)
-        alb = check_tags_button.alb_item['alb']
+        alb = check_tags_button.alb_item["alb"]
         alb.getTagsFromFirstFile()
         curArt = self.musicbase.artistCol.findArtists(alb.artist_name)
         # GetArtist return a new artist if it doesn't exists in artistsCol
@@ -365,7 +371,7 @@ if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
-    mb = musicBase()
+    mb = MusicBase()
     mb.loadMusicBase()
 
     importWidget = ExploreEventsWidget(app, mb)

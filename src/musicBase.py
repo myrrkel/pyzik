@@ -17,29 +17,30 @@ import os.path
 from PyQt5 import QtWidgets, QtGui, QtCore
 
 
-class musicBase:
+class MusicBase:
     """
     musicBase manage albums and artists from
     the music directories to the database'''
     """
 
-    def __init__(self, db_path=''):
-        self.db = database(db_path=db_path)
+    def __init__(self, db_path=""):
+        self.db = Database(db_path=db_path)
         self.db.initDataBase()
-        self.albumCol = albumCollection(self)
-        self.artistCol = artistCollection(self)
-        self.musicDirectoryCol = musicDirectoryCollection(self)
-        self.genres = musicGenres()
+        self.albumCol = AlbumCollection(self)
+        self.artistCol = ArtistCollection(self)
+        self.musicDirectoryCol = MusicDirectoryCollection(self)
+        self.genres = MusicGenres()
         self.styleIDSet = set()
         self.availableGenres = set()
-        self.history = historyManager()
-        self.radioMan = radioManager(self)
+        self.history = HistoryManager()
+        self.radioMan = RadioManager(self)
 
     def loadMusicBase(self, memoryDB=True):
-        if memoryDB: self.db.initMemoryDB()
+        if memoryDB:
+            self.db.initMemoryDB()
         self.musicDirectoryCol.loadMusicDirectories()
-        self.artistCol.loadArtists()
-        self.albumCol.loadAlbums()
+        self.artistCol.load_artists()
+        self.albumCol.load_albums()
         self.addGenresDirToAlbums()
         self.addAlbumsToArtists()
         self.radioMan.loadFavRadios()
@@ -58,7 +59,7 @@ class musicBase:
     def addGenresDirToAlbums(self):
         for alb in self.albumCol.albums:
             md = self.musicDirectoryCol.getMusicDirectory(alb.musicDirectoryID)
-            if (md != None):
+            if md != None:
                 if md.styleID >= -1:
                     alb.addStyle({md.styleID})
 
@@ -82,38 +83,47 @@ class musicBase:
 
         for i in range(nb_alb):
             try_count = 0
-            alb = self.albumCol.getRandomAlbum(styleID)
+            alb = self.albumCol.get_random_album(styleID)
             while alb in randomAlbList and try_count < 3:
-                alb = self.albumCol.getRandomAlbum(styleID)
+                alb = self.albumCol.get_random_album(styleID)
                 try_count += 1
 
-            if alb not in randomAlbList: randomAlbList.append(alb)
+            if alb not in randomAlbList:
+                randomAlbList.append(alb)
 
         return randomAlbList
 
-    def import_albums(self, alb_dict_list={}, album_import_started_signal=None, file_copy_started_signal=None, album_import_progress=None):
-
+    def import_albums(
+        self,
+        alb_dict_list={},
+        album_import_started_signal=None,
+        file_copy_started_signal=None,
+        album_import_progress=None,
+    ):
         for i, alb_dict in enumerate(alb_dict_list):
             if album_import_progress:
                 if i != 0:
-                    album_import_progress.emit((100 / len (alb_dict_list)) * i)
+                    album_import_progress.emit((100 / len(alb_dict_list)) * i)
                 else:
                     album_import_progress.emit(0)
 
             if not alb_dict["album_exists"]:
                 logger.debug("import_album %s", alb_dict)
-                album_import_started_signal.emit(alb_dict['alb'].get_formatted_dir_name())
-                alb_dict['to_dir'].import_album(alb_dict['alb'], alb_dict['full_dir'], file_copy_started_signal)
+                album_import_started_signal.emit(
+                    alb_dict["alb"].get_formatted_dir_name()
+                )
+                alb_dict["to_dir"].import_album(
+                    alb_dict["alb"], alb_dict["full_dir"], file_copy_started_signal
+                )
 
 
 if __name__ == "__main__":
-
     import sys
     from PyQt5.QtWidgets import QApplication
 
     app = QApplication(sys.argv)
 
-    mb = musicBase()
+    mb = MusicBase()
     mb.loadMusicBase()
     randAlbumList = mb.generateRandomAlbumList(20)
 

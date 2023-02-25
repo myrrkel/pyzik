@@ -9,6 +9,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def getSimplestTitle(title, char):
     simple = title.replace(".", char)
     simple = simple.replace(",", char)
@@ -39,14 +40,14 @@ def filterAlbumsByTitle(seq, title):
             break
 
 
-class artist:
+class Artist:
     """
-    Artist's class, the have 
+    Artist's class, the have
     """
 
     def __init__(self, name, id):
         self.artistID = id
-        self.name = self.formatName(name)
+        self.name = self.format_name(name)
         self.countryID = 0
         self.categoryID = 0
         self.styleIDSet = set()
@@ -54,37 +55,37 @@ class artist:
         self.itemListViewArtist = None
         self.searchKey = ""
 
-    def getName(self):
+    def get_name(self):
         return self.name
 
-    def formatName(self, name):
+    def format_name(self, name):
         return name.upper()
 
-    def getSearchKey(self):
+    def get_search_key(self):
         if self.searchKey == "":
             self.searchKey = FS.getSearchKey(self.name)
         return self.searchKey
 
-    def printInfos(self):
+    def print_infos(self):
         print(self.name + " id=" + str(self.artistID))
 
-    def sortAlbums(self):
-        self.albums = sorted(self.albums, key=attrgetter('year', 'title'))
+    def sort_albums(self):
+        self.albums = sorted(self.albums, key=attrgetter("year", "title"))
 
-    def getRandomAlbum(self):
+    def get_random_album(self):
         nbAlbum = len(self.albums)
-        if (nbAlbum > 0):
+        if nbAlbum > 0:
             irandom = random.randint(0, nbAlbum - 1)
             resAlb = self.albums[irandom]
             return resAlb
 
-    def addAlbum(self, alb):
+    def add_album(self, alb):
         self.albums.append(alb)
 
-    def addStyle(self, idSet):
+    def add_style(self, idSet):
         self.styleIDSet = self.styleIDSet.union(idSet)
 
-    def findAlbums(self, stitle):
+    def find_albums(self, stitle):
         albumList = []
         for alb in filterAlbumsByTitle(self.albums, stitle):
             albumList.append(alb)

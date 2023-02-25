@@ -7,13 +7,19 @@ import sys
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QDropEvent
-from PyQt5.QtWidgets import QTableWidget, QAbstractItemView, QTableWidgetItem, QWidget, QHBoxLayout, \
-    QApplication
+from PyQt5.QtWidgets import (
+    QTableWidget,
+    QAbstractItemView,
+    QTableWidgetItem,
+    QWidget,
+    QHBoxLayout,
+    QApplication,
+)
 
 
 class TableWidgetDragRows(QTableWidget):
-    trackMoved = pyqtSignal(object, name='trackMoved')
-    beforeTrackMove = pyqtSignal(int, name='beforeTrackMove')
+    trackMoved = pyqtSignal(object, name="trackMoved")
+    beforeTrackMove = pyqtSignal(int, name="beforeTrackMove")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -35,15 +41,18 @@ class TableWidgetDragRows(QTableWidget):
 
             rows = sorted(set(item.row() for item in self.selectedItems()))
             rows_to_move = [
-                [QTableWidgetItem(self.item(row_index, column_index)) for column_index in range(self.columnCount())]
-                for row_index in rows]
+                [
+                    QTableWidgetItem(self.item(row_index, column_index))
+                    for column_index in range(self.columnCount())
+                ]
+                for row_index in rows
+            ]
             for row_index in reversed(rows):
                 self.removeRow(row_index)
                 if row_index < drop_row:
                     drop_row -= 1
 
             for row_index, data in enumerate(rows_to_move):
-
                 row_index += drop_row
                 self.insertRow(row_index)
                 for column_index, column_data in enumerate(data):
@@ -73,5 +82,8 @@ class TableWidgetDragRows(QTableWidget):
         elif rect.bottom() - pos.y() < margin:
             return True
         # noinspection PyTypeChecker
-        return rect.contains(pos, True) and not (
-                    int(self.model().flags(index)) & Qt.ItemIsDropEnabled) and pos.y() >= rect.center().y()
+        return (
+            rect.contains(pos, True)
+            and not (int(self.model().flags(index)) & Qt.ItemIsDropEnabled)
+            and pos.y() >= rect.center().y()
+        )

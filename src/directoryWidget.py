@@ -4,13 +4,23 @@
 import sys
 from PyQt5.QtCore import Qt, QTimer, QSize, QCoreApplication
 from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QSizePolicy, QPushButton, QLineEdit, QGridLayout, QFileDialog, QLabel
+from PyQt5.QtWidgets import (
+    QApplication,
+    QMainWindow,
+    QWidget,
+    QSizePolicy,
+    QPushButton,
+    QLineEdit,
+    QGridLayout,
+    QFileDialog,
+    QLabel,
+)
+
 _translate = QCoreApplication.translate
 
-class directoryWidget(QWidget):
 
+class DirectoryWidget(QWidget):
     def __init__(self, parent=None):
-
         QWidget.__init__(self, parent)
 
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
@@ -44,11 +54,9 @@ class directoryWidget(QWidget):
         self.DirEdit.setSizePolicy(sizePolicy)
         self.DirEdit.setMinimumSize(QSize(25, 27))
         self.DirEdit.setMaximumSize(QSize(16777215, 27))
-        self.DirEdit.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+        self.DirEdit.setAlignment(Qt.AlignRight | Qt.AlignTrailing | Qt.AlignVCenter)
         self.DirEdit.setObjectName("DirEdit")
         self.gridLayout.addWidget(self.DirEdit, 0, 2)
-
-
 
         self.DirButton = QPushButton(self)
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
@@ -61,7 +69,7 @@ class directoryWidget(QWidget):
         self.DirButton.setObjectName("DirButton")
         self.gridLayout.addWidget(self.DirButton, 0, 3)
 
-        self.setLabel(_translate("directory", 'Directory'))
+        self.setLabel(_translate("directory", "Directory"))
         self.DirButton.setText("...")
 
         self.DirButton.clicked.connect(self.onChangeDir)
@@ -77,7 +85,13 @@ class directoryWidget(QWidget):
 
     def selectDir(self):
         file_diag = QFileDialog(self)
-        directory = str(file_diag.getExistingDirectory(self, _translate("directory", "Select directory"), directory=self.getText()))
+        directory = str(
+            file_diag.getExistingDirectory(
+                self,
+                _translate("directory", "Select directory"),
+                directory=self.getText(),
+            )
+        )
         return directory
 
     def onChangeDir(self):
@@ -86,16 +100,15 @@ class directoryWidget(QWidget):
 
 
 class TestMainWindow(QMainWindow):
-
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
 
         widget = QWidget(self)
-        self.directory_selector = directoryWidget(self)
+        self.directory_selector = DirectoryWidget(self)
 
         layout = QGridLayout(widget)
         layout.addWidget(self.directory_selector)
-        self.directory_selector.setLabel('My Directory')
+        self.directory_selector.setLabel("My Directory")
 
         self.setCentralWidget(widget)
 

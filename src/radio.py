@@ -20,17 +20,19 @@ def _json_object_hook(d):
     for k in d.keys():
         k = k.replace("-", "_")
     for v in d.values():
-        if isinstance(v, str): v = v.replace("-", "_")
-    return namedtuple('X', d.keys(), rename=True)(*d.values())
+        if isinstance(v, str):
+            v = v.replace("-", "_")
+    return namedtuple("X", d.keys(), rename=True)(*d.values())
 
 
-def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
+def json2obj(data):
+    return json.loads(data, object_hook=_json_object_hook)
 
 
-class radio:
-    '''
+class Radio:
+    """
     Radio Stream
-    '''
+    """
 
     def __init__(self):
         self.radioID = 0
@@ -97,8 +99,18 @@ class radio:
             sqlInsertHistory = """    UPDATE radios SET name=?, stream=?,image=?,thumb=?,categoryID=?,sortID=?
                                       WHERE radioID = ?;
                           """
-            c.execute(sqlInsertHistory, (
-                self.name, self.stream, self.image, self.thumb, self.getCategorieID(), self.sortID, self.radioID,))
+            c.execute(
+                sqlInsertHistory,
+                (
+                    self.name,
+                    self.stream,
+                    self.image,
+                    self.thumb,
+                    self.getCategorieID(),
+                    self.sortID,
+                    self.radioID,
+                ),
+            )
             db.connection.commit()
 
         except sqlite3.Error as e:
@@ -108,10 +120,10 @@ class radio:
         self.name = dRadio.name
         self.country = dRadio.country
 
-        if hasattr(dRadio, 'image'):
+        if hasattr(dRadio, "image"):
             if len(dRadio.image) > 0:
                 self.image = dRadio.image[0]
-                if hasattr(dRadio.image, 'thumb'):
+                if hasattr(dRadio.image, "thumb"):
                     self.thumb = dRadio.image.thumb[0]
 
         self.stream = stream
@@ -148,36 +160,36 @@ class radio:
     def isFIP(self, strict=False):
         radName = "FIP"
         if strict:
-            return (self.name.upper() == radName)
+            return self.name.upper() == radName
         else:
-            return (self.name.upper() == radName or radName + " " in self.name.upper())
+            return self.name.upper() == radName or radName + " " in self.name.upper()
 
     def isFranceMusique(self, strict=False):
         radName = "FRANCE MUSIQUE"
         if strict:
-            return (self.name.upper() == radName)
+            return self.name.upper() == radName
         else:
-            return (self.name.upper() == radName or radName + " " in self.name.upper())
+            return self.name.upper() == radName or radName + " " in self.name.upper()
 
     def isFranceInter(self, strict=False):
         radName = "FRANCE INTER"
-        return (self.name.upper() == radName)
+        return self.name.upper() == radName
 
     def isFranceCulture(self):
         radName = "FRANCE CULTURE"
-        return (self.name.upper() == radName)
+        return self.name.upper() == radName
 
     def isFranceInfo(self):
         radName = "FRANCE INFO"
-        return (self.name.upper() == radName)
+        return self.name.upper() == radName
 
     def isTSFJazz(self):
         radName = "TSF JAZZ"
-        return (self.name.upper() == radName)
+        return self.name.upper() == radName
 
     def isKEXP(self):
         radName = "KEXP"
-        return (self.name.upper() == radName or radName + " " in self.name.upper())
+        return self.name.upper() == radName or radName + " " in self.name.upper()
 
     def getFranceMusiqueLiveID(self, rurl):
         if self.isFranceMusique(strict=True):
@@ -204,7 +216,7 @@ class radio:
 
                 pos1 = rurl.rfind("/")
                 pos2 = rurl.rfind("-")
-                station = rurl[pos1 + 1:pos2]
+                station = rurl[pos1 + 1 : pos2]
                 print(station + " LiveID=" + str(liveID))
                 if station in url:
                     return liveID
@@ -223,7 +235,8 @@ class radio:
         elif self.isFranceMusique():
             if self.liveID < 0:
                 self.liveID = int(self.getFranceMusiqueLiveID(self.stream))
-            if self.liveID < 0: return ""
+            if self.liveID < 0:
+                return ""
             liveUrl = "https://www.francemusique.fr/livemeta/pull/" + str(self.liveID)
             title = self.getCurrentTrackRF(liveUrl)
 
@@ -255,9 +268,12 @@ class radio:
 
     def cleanTitle(self, title):
         clean = title.strip()
-        if clean == "|": clean = ""
-        if clean == "-": clean = ""
-        if "targetspot" in clean.lower(): clean = ""
+        if clean == "|":
+            clean = ""
+        if clean == "-":
+            clean = ""
+        if "targetspot" in clean.lower():
+            clean = ""
         return clean
 
     def isTimeout(self, nbSec=10):
@@ -275,8 +291,8 @@ class radio:
         return res
 
     def getCurrentTrackTSFJazz(self):
-
-        if not self.isTimeout(): return self.liveTrackTitle
+        if not self.isTimeout():
+            return self.liveTrackTitle
 
         url = "http://www.tsfjazz.com/getSongInformations.php"
         r = requests.get(url)
@@ -284,16 +300,18 @@ class radio:
         return track
 
     def getCurrentTrackKEXP(self):
-
-        if not self.isTimeout(): return self.liveTrackTitle
+        if not self.isTimeout():
+            return self.liveTrackTitle
 
         currentTrack = ""
         try:
             liveUrl = "https://legacy-api.kexp.org/play/?format=json&limit=1"
             print("LiveUrl=" + liveUrl)
             r = requests.get(liveUrl)
-            if r.text == "": return ""
-            if len(r.text) > 0 and r.text[0] != "{": return ""
+            if r.text == "":
+                return ""
+            if len(r.text) > 0 and r.text[0] != "{":
+                return ""
             # print(r.text)
             dateRequest = r.headers.__getitem__("Date")
             dateSrv = datetime(*eut.parsedate(dateRequest)[:6])
@@ -305,7 +323,11 @@ class radio:
 
         if datas:
             if datas.results[0].playtype.playtypeid == 1:
-                currentTrack = str(datas.results[0].artist.name) + " - " + str(datas.results[0].track.name)
+                currentTrack = (
+                    str(datas.results[0].artist.name)
+                    + " - "
+                    + str(datas.results[0].track.name)
+                )
             else:
                 currentTrack = self.getCurrentShowKEXP()
 
@@ -318,19 +340,24 @@ class radio:
             liveUrl = "https://legacy-api.kexp.org/show/?format=json&limit=1"
             print("LiveShowUrl=" + liveUrl)
             r = requests.get(liveUrl)
-            if r.text == "": return ""
-            if len(r.text) > 0 and r.text[0] != "{": return ""
+            if r.text == "":
+                return ""
+            if len(r.text) > 0 and r.text[0] != "{":
+                return ""
             datas = json2obj(r.text)
         except requests.exceptions.HTTPError as err:
             print(err)
 
         if datas:
-            currentShow = str(datas.results[0].program.name) + " - " + str(datas.results[0].hosts[0].name)
+            currentShow = (
+                str(datas.results[0].program.name)
+                + " - "
+                + str(datas.results[0].hosts[0].name)
+            )
 
         return currentShow
 
     def getCurrentTrackRF(self, liveUrl):
-
         """
         Get live title from RF
         """
@@ -344,8 +371,10 @@ class radio:
         try:
             print("LiveUrl=" + liveUrl)
             r = requests.get(liveUrl)
-            if r.text == "": return ""
-            if len(r.text) > 0 and r.text[0] != "{": return ""
+            if r.text == "":
+                return ""
+            if len(r.text) > 0 and r.text[0] != "{":
+                return ""
             # print(r.text)
             dateRequest = r.headers.__getitem__("Date")
             dateSrv = datetime(*eut.parsedate(dateRequest)[:6])
@@ -391,12 +420,18 @@ class radio:
                         else:
                             currentTrack = stp.title
 
-                    if self.isFranceInter() or self.isFranceInfo() or self.isFranceCulture():
+                    if (
+                        self.isFranceInter()
+                        or self.isFranceInfo()
+                        or self.isFranceCulture()
+                    ):
                         if hasattr(stp, "visual") and stp.visual[:3].lower() == "http":
                             self.liveCoverUrl = stp.visual
                             print("visual=" + self.liveCoverUrl)
 
-                        if hasattr(stp, "titleConcept") and isinstance(stp.titleConcept, str):
+                        if hasattr(stp, "titleConcept") and isinstance(
+                            stp.titleConcept, str
+                        ):
                             currentTrack = stp.titleConcept
                             if stp.titleConcept != "":
                                 currentTrack = currentTrack + " - " + stp.title
@@ -407,7 +442,15 @@ class radio:
         return currentTrack
 
     def printData(self):
-        print(self.name + " # " + self.stream + " # " + str(self.image) + " # " + str(self.thumb))
+        print(
+            self.name
+            + " # "
+            + self.stream
+            + " # "
+            + str(self.image)
+            + " # "
+            + str(self.thumb)
+        )
 
     def getRadioPic(self):
         url = self.image
@@ -421,7 +464,8 @@ class radio:
 
     def getCoverUrl(self):
         url = self.liveCoverUrl
-        if url == "": url = self.getRadioPic()
+        if url == "":
+            url = self.getRadioPic()
         return url
 
     def getCover(self):
@@ -464,7 +508,7 @@ if __name__ == "__main__":
     utc_dt = local_dt.astimezone(pytz.utc)
     print("local_dt=" + str(local_dt) + " utc_dt=" + str(utc_dt))
 
-    rad = radio()
+    rad = Radio()
     rad.stream = "https://direct.francemusique.fr/live/francemusiquelajazz-hifi.mp3"
     rad.name = "France Musique La Jazz"
     print("Rad=" + rad.getCurrentTrack())

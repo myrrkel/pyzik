@@ -6,8 +6,8 @@ from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import Qt
 
 
-class progressWidget(QtWidgets.QDialog):
-    progressClosed = pyqtSignal(int, name='progressClosed')
+class ProgressWidget(QtWidgets.QDialog):
+    progressClosed = pyqtSignal(int, name="progressClosed")
 
     def __init__(self, parent, can_be_closed=True, with_file_progress=False):
         QtWidgets.QDialog.__init__(self)
@@ -20,7 +20,9 @@ class progressWidget(QtWidgets.QDialog):
         self.resize(350, 20)
         # self.setMaximumWidth(150)
         # self.setMaximumSize(QtCore.QSize(350, 150))
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(100)
 
@@ -32,16 +34,20 @@ class progressWidget(QtWidgets.QDialog):
         self.progress = QtWidgets.QProgressBar(self)
         self.progress.setGeometry(0, 0, 250, 20)
         self.progress.setValue(0)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(0)
         self.progress.setSizePolicy(sizePolicy)
         self.main_layout.addWidget(self.progress)
 
-        self.progress_label = QtWidgets.QLabel('Progress:')
+        self.progress_label = QtWidgets.QLabel("Progress:")
         self.progress_label.setMargin(0)
         self.progress_label.setContentsMargins(0, 0, 0, 0)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(0)
         self.progress_label.setSizePolicy(sizePolicy)
@@ -49,9 +55,11 @@ class progressWidget(QtWidgets.QDialog):
         # self.progress_label.setWordWrap(True)
         self.main_layout.addWidget(self.progress_label)
 
-        self.directory = QtWidgets.QLineEdit('Directory')
+        self.directory = QtWidgets.QLineEdit("Directory")
         self.directory.setReadOnly(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(0)
         self.directory.setSizePolicy(sizePolicy)
@@ -60,9 +68,11 @@ class progressWidget(QtWidgets.QDialog):
         self.main_layout.addWidget(self.directory)
 
         if self.with_file_progress:
-            self.file = QtWidgets.QLineEdit('File')
+            self.file = QtWidgets.QLineEdit("File")
             self.file.setReadOnly(True)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+            sizePolicy = QtWidgets.QSizePolicy(
+                QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+            )
             sizePolicy.setHorizontalStretch(100)
             sizePolicy.setVerticalStretch(0)
             self.file.setSizePolicy(sizePolicy)
@@ -71,9 +81,16 @@ class progressWidget(QtWidgets.QDialog):
             self.main_layout.addWidget(self.file)
 
         if self.can_be_closed:
-            self.setWindowFlags(Qt.Window | Qt.WindowStaysOnTopHint | Qt.WindowTitleHint)
+            self.setWindowFlags(
+                Qt.Window | Qt.WindowStaysOnTopHint | Qt.WindowTitleHint
+            )
         else:
-            self.setWindowFlags(Qt.Window | Qt.WindowStaysOnTopHint | Qt.CustomizeWindowHint | Qt.WindowTitleHint)
+            self.setWindowFlags(
+                Qt.Window
+                | Qt.WindowStaysOnTopHint
+                | Qt.CustomizeWindowHint
+                | Qt.WindowTitleHint
+            )
 
         self.show()
 
@@ -83,7 +100,6 @@ class progressWidget(QtWidgets.QDialog):
 
     def setProgressLabel(self, value):
         self.progress_label.setText(value)
-
 
     def setDirectoryText(self, value):
         self.directory.setText(value)
@@ -102,10 +118,11 @@ class progressWidget(QtWidgets.QDialog):
 if __name__ == "__main__":
     import sys
     from pyzik import *
+
     app = QtWidgets.QApplication(sys.argv)
     app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
 
-    progress = progressWidget(app, can_be_closed=False, with_file_progress=True)
+    progress = ProgressWidget(app, can_be_closed=False, with_file_progress=True)
 
     progress.show()
     sys.exit(app.exec_())

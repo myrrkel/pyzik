@@ -26,12 +26,12 @@ else:
     appDir = os.path.dirname(os.path.realpath(sys.argv[0]))
 
 global settings
-settings = QSettings('pyzik', 'pyzik')
+settings = QSettings("pyzik", "pyzik")
 
 global theme_color
 
-if settings.contains('theme_color'):
-    theme_color = settings.value('theme_color', type=str)
+if settings.contains("theme_color"):
+    theme_color = settings.value("theme_color", type=str)
 else:
     theme_color = ""
 

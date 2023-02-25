@@ -6,8 +6,7 @@ from PyQt5.QtCore import pyqtSignal
 from historyManager import *
 
 
-class customControlsWidget(QtWidgets.QWidget):
-
+class CustomControlsWidget(QtWidgets.QWidget):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent=parent)
 
@@ -19,8 +18,7 @@ class customControlsWidget(QtWidgets.QWidget):
         lay.addWidget(self.refreshButton)
 
 
-class customWidget(QtWidgets.QDialog):
-
+class CustomWidget(QtWidgets.QDialog):
     def __init__(self, parent):
         QtWidgets.QDialog.__init__(self)
         self.parent = parent
@@ -35,14 +33,16 @@ class customWidget(QtWidgets.QDialog):
         layout = QtWidgets.QVBoxLayout()
         self.setLayout(layout)
 
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
         self.setSizePolicy(sizePolicy)
         self.resize(550, 400)
         # self.initTableWidgetItems()
 
-        self.customControls = customControlsWidget()
+        self.customControls = CustomControlsWidget()
         self.customControls.refreshButton.clicked.connect(self.onAction)
 
         # layout.addWidget(self.tableWidgetItems)
@@ -57,7 +57,9 @@ class customWidget(QtWidgets.QDialog):
         self.tableWidgetItems = QtWidgets.QTableWidget(self)
 
         self.tableWidgetItems.setGeometry(0, 0, 550, 300)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
 
@@ -103,7 +105,9 @@ class customWidget(QtWidgets.QDialog):
         self.historyControls.refreshButton.setText(_translate("history", "Refresh"))
 
     def showTableItems(self, items):
-        self.tableWidgetItems.setStyleSheet("selection-background-color: black;selection-color: white;")
+        self.tableWidgetItems.setStyleSheet(
+            "selection-background-color: black;selection-color: white;"
+        )
         self.tableWidgetItems.setColumnCount(4)
         self.tableWidgetItems.setRowCount(0)
         i = 0
@@ -133,7 +137,7 @@ if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
 
-    custWidget = customWidget(app)
+    custWidget = CustomWidget(app)
 
     custWidget.show()
     sys.exit(app.exec_())

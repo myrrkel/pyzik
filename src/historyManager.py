@@ -8,14 +8,14 @@ from database import *
 from historyItem import *
 
 
-class historyManager():
+class HistoryManager:
     """
     Read and write playing history
     """
 
-    def __init__(self, musicBase=None):
-        self.musicBase = musicBase
-        self.database = database(isHistory=True)
+    def __init__(self, music_base=None):
+        self.music_base = music_base
+        self.database = Database(isHistory=True)
         self.log = []
 
     def initDataBase(self):
@@ -23,13 +23,16 @@ class historyManager():
 
     def loadHistory(self, withAlbums=True):
         self.log = []
-        if withAlbums: self.loadAlbumHistory()
+        if withAlbums:
+            self.loadAlbumHistory()
         self.loadTrackHistory()
         self.loadRadioHistory()
-        self.log = sorted(self.log, key=attrgetter('playDate', 'historyType'), reverse=True)
+        self.log = sorted(
+            self.log, key=attrgetter("playDate", "historyType"), reverse=True
+        )
 
     def insertAlbumHistory(self, albumID):
-        ''' Insert album in history '''
+        """Insert album in history"""
         self.database.insertAlbumHistory(albumID)
 
     def loadAlbumHistory(self):
@@ -39,13 +42,13 @@ class historyManager():
         """
 
         for rowHisto in self.database.getSelect(req):
-            histo = historyItem(rowHisto[1])
+            histo = HistoryItem(rowHisto[1])
             histo.initHistoAlbum(rowHisto[0])
-            histo.data.getAlbum(self.musicBase)
+            histo.data.getAlbum(self.music_base)
             self.log.append(histo)
 
     def insertTrackHistory(self, albumID, fileName):
-        ''' Insert track in history '''
+        """Insert track in history"""
         self.database.insertTrackHistory(albumID, fileName)
 
     def loadTrackHistory(self):
@@ -55,13 +58,13 @@ class historyManager():
         """
 
         for rowHisto in self.database.getSelect(req):
-            histo = historyItem(rowHisto[2])
+            histo = HistoryItem(rowHisto[2])
             histo.initHistoTrack(rowHisto[0], rowHisto[1])
-            histo.data.getAlbum(self.musicBase)
+            histo.data.getAlbum(self.music_base)
             self.log.append(histo)
 
     def insertRadioHistory(self, radioName, title):
-        ''' Insert radio title in history '''
+        """Insert radio title in history"""
         self.database.insertRadioHistory(radioName, title)
 
     def loadRadioHistory(self):
@@ -71,7 +74,7 @@ class historyManager():
         """
 
         for rowHisto in self.database.getSelect(req):
-            histo = historyItem(rowHisto[2])
+            histo = HistoryItem(rowHisto[2])
             histo.initHistoRadio(rowHisto[0], rowHisto[1])
             self.log.append(histo)
 
@@ -83,16 +86,15 @@ class historyManager():
 if __name__ == "__main__":
     from musicBase import *
 
-    # print('musicBase')
-    mb = musicBase()
-    # print('loadMusicBase')
+    mb = MusicBase()
     mb.loadMusicBase(False)
 
-    history = historyManager(mb)
-    # history.loadHistory()
+    history = HistoryManager(mb)
     history.printAll()
 
     sql = """    INSERT INTO playHistoryRadio ({columns})
                     VALUES ('{radioName}','{title}',datetime('now','localtime'));
-              """.format(columns="radioName, title, playDate", radioName="testRad", title="MyTitle")
+              """.format(
+        columns="radioName, title, playDate", radioName="testRad", title="MyTitle"
+    )
     print(sql)

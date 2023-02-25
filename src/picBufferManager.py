@@ -6,7 +6,7 @@ import os
 from PyQt5.QtGui import QPixmap
 
 
-class picBufferItem:
+class PicBufferItem:
     users = []
 
     def __init__(self, path, user):
@@ -25,7 +25,7 @@ class picBufferItem:
         return len(self.users)
 
 
-class picBufferManager:
+class PicBufferManager:
     """
     This pic buffer avoid to load sevral time a same pic file from hard disc,
     keep it in memory as long needed, remove it when the pic is not used anymore or
@@ -36,13 +36,12 @@ class picBufferManager:
     items = []
 
     def getPic(self, path, user):
-
         item = self.findItem(path)
         if item is not None:
             pix = item.pix
             item.addUser(user)
         else:
-            item = picBufferItem(path, user)
+            item = PicBufferItem(path, user)
             pix = item.pix
             item.addUser(user)
             self.items.append(item)
@@ -59,7 +58,7 @@ class picBufferManager:
             return None
 
     def checkBufferSize(self):
-        ''' Remove oldest pixmap from the buffer if 5 are in ram '''
+        """Remove oldest pixmap from the buffer if 5 are in ram"""
         if len(self.items) >= 5:
             self.items.remove(self.items[0])
 

@@ -8,7 +8,8 @@ def year(s):
         if len(s) == 4:
             res = int(s)
         else:
-            if len(s) == 2: res = int("19" + s)
+            if len(s) == 2:
+                res = int("19" + s)
             # If year is 69 it means 1969.
             # Sounds ridiculous to have 16 instead of 2016.
     return res

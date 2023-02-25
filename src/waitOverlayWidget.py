@@ -7,11 +7,18 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 
-class waitOverlay(QWidget):
+class WaitOverlay(QWidget):
     timer = 0
 
-    def __init__(self, parent=None, nbDots=15, circleSize=30, color=None, backgroundOpacity=40, hideOnClick = False):
-
+    def __init__(
+        self,
+        parent=None,
+        nbDots=15,
+        circleSize=30,
+        color=None,
+        backgroundOpacity=40,
+        hideOnClick=False,
+    ):
         QWidget.__init__(self, parent)
 
         self.counter = 0
@@ -40,7 +47,9 @@ class waitOverlay(QWidget):
         painter.begin(self)
         painter.setRenderHint(QPainter.Antialiasing)
 
-        painter.fillRect(event.rect(), QBrush(QColor(255, 255, 255, self.backgroundOpacity)))
+        painter.fillRect(
+            event.rect(), QBrush(QColor(255, 255, 255, self.backgroundOpacity))
+        )
         painter.setPen(QPen(Qt.NoPen))
 
         for i in range(self.nbDots):
@@ -50,14 +59,19 @@ class waitOverlay(QWidget):
                 painter.setBrush(QBrush(self.colorLight))
 
             painter.drawEllipse(
-                (self.width() - 0) / 2 + self.circleSize * math.cos(2 * math.pi * i / self.nbDots) - 5,
-                (self.height() - 0) / 2 + self.circleSize * math.sin(2 * math.pi * i / self.nbDots) - 5,
-                10, 10)
+                (self.width() - 0) / 2
+                + self.circleSize * math.cos(2 * math.pi * i / self.nbDots)
+                - 5,
+                (self.height() - 0) / 2
+                + self.circleSize * math.sin(2 * math.pi * i / self.nbDots)
+                - 5,
+                10,
+                10,
+            )
 
         painter.end()
 
     def showEvent(self, event):
-
         event.accept()
 
     def showOverlay(self):
@@ -67,7 +81,6 @@ class waitOverlay(QWidget):
         self.show()
 
     def timerEvent(self, event):
-
         self.counter += 1
         self.update()
 
@@ -77,7 +90,6 @@ class waitOverlay(QWidget):
 
 
 class MainWindow(QMainWindow):
-
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
 
@@ -90,7 +102,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(button, 1, 1, 1, 1)
 
         self.setCentralWidget(widget)
-        self.overlay = waitOverlay(self.centralWidget(), hideOnClick=True)
+        self.overlay = WaitOverlay(self.centralWidget(), hideOnClick=True)
         self.overlay.hide()
         button.clicked.connect(self.overlay.showOverlay)
 

@@ -30,7 +30,6 @@ def keyToString2(key):
     skey = ""
     chars = key.split("-")
     for char in chars:
-        # print(char)
         skey = skey + chr(int(char))
 
     return skey
@@ -44,7 +43,8 @@ def stringToKey2(s):
 
     for c in s:
         n = ord(c)
-        if key != "": key = key + '-'
+        if key != "":
+            key = key + "-"
         key = key + str(n)
 
     return key
@@ -53,4 +53,5 @@ def stringToKey2(s):
 dirbleAPIKey = stringToKey("HcFaFbIfICffGcffFGHGCCBddD")
 darAPIKey = stringToKey("EDJFIIGAFA")
 ytubeAPIKey = keyToString2(
-    "65-73-122-97-83-121-67-83-57-56-121-119-72-111-118-101-83-98-109-109-115-107-82-51-50-97-68-65-120-117-73-100-97-121-78-108-95-98-89")
+    "65-73-122-97-83-121-67-83-57-56-121-119-72-111-118-101-83-98-109-109-115-107-82-51-50-97-68-65-120-117-73-100-97-121-78-108-95-98-89"
+)

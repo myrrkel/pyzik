@@ -7,14 +7,15 @@ from historyManager import *
 from svgIcon import *
 
 
-class albumControlsWidget(QtWidgets.QWidget):
-
+class AlbumControlsWidget(QtWidgets.QWidget):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent=parent)
 
         lay = QtWidgets.QHBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(0)
 
@@ -29,7 +30,9 @@ class albumControlsWidget(QtWidgets.QWidget):
         # self.saveButton.setMaximumSize(QtCore.QSize(70, 27))
         self.saveButton.setIcon(getSvgIcon("save.svg"))
 
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(50)
         sizePolicy.setVerticalStretch(0)
 
@@ -41,7 +44,6 @@ class albumControlsWidget(QtWidgets.QWidget):
 
 
 class albumInfoControlsWidget(QtWidgets.QWidget):
-
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent=parent)
 
@@ -50,14 +52,18 @@ class albumInfoControlsWidget(QtWidgets.QWidget):
         lay = QtWidgets.QVBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
 
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(0)
 
         self.setSizePolicy(sizePolicy)
 
         self.title = QtWidgets.QWidget(self)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(0)
 
@@ -72,16 +78,22 @@ class albumInfoControlsWidget(QtWidgets.QWidget):
 
         self.titleLabel = QtWidgets.QLabel(self.title)
         self.titleLabel.setText(_translate("album", "Title"))
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         self.titleLabel.setSizePolicy(sizePolicy)
-        self.titleLabel.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        self.titleLabel.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter
+        )
         lay1.addWidget(self.titleLabel)
 
         self.titleEdit = QtWidgets.QLineEdit(self.title)
 
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(0)
         self.titleEdit.setSizePolicy(sizePolicy)
@@ -90,7 +102,9 @@ class albumInfoControlsWidget(QtWidgets.QWidget):
         lay1.addWidget(self.titleEdit)
 
         self.year = QtWidgets.QWidget(self)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
 
@@ -105,16 +119,22 @@ class albumInfoControlsWidget(QtWidgets.QWidget):
 
         self.yearLabel = QtWidgets.QLabel(self.year)
         self.yearLabel.setText(_translate("album", "Year"))
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(100)
         self.yearLabel.setSizePolicy(sizePolicy)
-        self.yearLabel.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        self.yearLabel.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter
+        )
         lay2.addWidget(self.yearLabel)
 
         self.yearSpin = QtWidgets.QSpinBox(self.year)
 
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(100)
         self.yearSpin.setSizePolicy(sizePolicy)
@@ -129,7 +149,6 @@ class albumInfoControlsWidget(QtWidgets.QWidget):
 
 
 class albumWidget(QtWidgets.QDialog):
-
     def __init__(self, album, parent):
         QtWidgets.QDialog.__init__(self, parent)
         self.album = album
@@ -146,7 +165,9 @@ class albumWidget(QtWidgets.QDialog):
         # layout.setContentsMargins(4, 4, 4, 4)
         self.setLayout(layout)
 
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         self.setSizePolicy(sizePolicy)
@@ -158,7 +179,7 @@ class albumWidget(QtWidgets.QDialog):
         self.albumInfoControls = albumInfoControlsWidget(self)
         layout.addWidget(self.albumInfoControls)
 
-        self.albumControls = albumControlsWidget(self)
+        self.albumControls = AlbumControlsWidget(self)
         self.albumControls.saveButton.clicked.connect(self.onSave)
 
         # layout.addWidget(self.tableWidgetItems)
@@ -190,9 +211,9 @@ if __name__ == "__main__":
     import sys
     from musicBase import *
 
-    print('musicBase')
-    mb = musicBase()
-    print('loadMusicBase')
+
+    mb = MusicBase()
+    print("loadMusicBase")
     mb.loadMusicBase(False)
 
     # alb = mb.albumCol.getRandomAlbum()

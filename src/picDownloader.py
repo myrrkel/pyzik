@@ -10,24 +10,26 @@ import tempfile
 import time
 
 
-class picDownloader:
+class PicDownloader:
     """Get a pic from an url"""
 
     lastTempFile = ""
     lastUrl = ""
 
     def getPic(self, url):
-
         if url == "":
             self.lastUrl = url
             return
 
         if self.lastUrl != url:
-
             self.cleanLastTempFile()
             self.lastUrl = url
-            response = requests.get(url, headers={
-                'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; rv:2.2) Gecko/20110201'})
+            response = requests.get(
+                url,
+                headers={
+                    "User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 6.1; rv:2.2) Gecko/20110201"
+                },
+            )
             print("GET Status=" + str(response.status_code))
             if response.status_code == 404:
                 self.lastTempFile = ""
@@ -51,7 +53,7 @@ class picDownloader:
 
 
 if __name__ == "__main__":
-    pDL = picDownloader()
+    pDL = PicDownloader()
     url = "http://jamesostafford.files.wordpress.com/2012/03/41-edgar-broughton-band-inside-out.jpg"
 
     pDL.getPic(url)

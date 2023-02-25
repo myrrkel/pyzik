@@ -9,11 +9,12 @@ from globalConstants import *
 
 # orange = QtGui.QColor(216, 119, 0) #d87700
 
+
 def getSvgIcon(fileName):
     return QtGui.QIcon(getColoredSvg(fileName))
 
 
-def getColoredSvg(fileName, colorToReplace='black'):
+def getColoredSvg(fileName, colorToReplace="black"):
     svg = QtGui.QPixmap(appDir + "/img/" + fileName)
     mask = svg.createMaskFromColor(QtGui.QColor(colorToReplace), Qt.MaskOutColor)
     svg.fill(orange)
@@ -22,7 +23,7 @@ def getColoredSvg(fileName, colorToReplace='black'):
     return svg
 
 
-def getColoredSvg2(fileName, colorToReplace='black'):
+def getColoredSvg2(fileName, colorToReplace="black"):
     svg = QtGui.QPixmap(appDir + "/img/" + fileName)
     mask = svg.createMaskFromColor(QtGui.QColor(colorToReplace), Qt.MaskInColor)
 
@@ -34,7 +35,9 @@ def getColoredSvg2(fileName, colorToReplace='black'):
     return svg
 
 
-def getSvgWithColorParam(fileName, destName="logo.svg", colorToReplace="#color", newColor="#D87700"):
+def getSvgWithColorParam(
+    fileName, destName="logo.svg", colorToReplace="#color", newColor="#D87700"
+):
     file = QFile(appDir + "/img/" + fileName)
     file.open(QFile.ReadOnly | QFile.Text)
     textStream = QTextStream(file)
@@ -54,12 +57,13 @@ def getSvgWithColorParam(fileName, destName="logo.svg", colorToReplace="#color",
     img = rend.render(painter)
     painter.end()
 
-    if destName != "": pix.save(appDir + "/img/" + destName)
+    if destName != "":
+        pix.save(appDir + "/img/" + destName)
 
     return pix
 
 
-def getColoredPixmapSvg(fileName, colorToReplace='black'):
+def getColoredPixmapSvg(fileName, colorToReplace="black"):
     svg = QtGui.QPixmap(50, 50)
     svg.fill(QtGui.QColor("transparent"))
     svg.load(appDir + "/img/" + fileName)
