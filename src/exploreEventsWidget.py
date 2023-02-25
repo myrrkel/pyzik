@@ -4,10 +4,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtCore import pyqtSignal
-from directoryWidget import *
-from musicDirectory import *
+from directoryWidget import DirectoryWidget
+from musicDirectory import MusicDirectory
+from explore_event import ExploreEventList
 from svgIcon import *
 import logging
+from darkStyle import darkStyle
 
 logger = logging.getLogger(__name__)
 _translate = QtCore.QCoreApplication.translate
@@ -147,7 +149,7 @@ class ExploreEventsWidget(QtWidgets.QDialog):
     #                                       _translate("directory", "You must select a directory."),
     #                                       QtWidgets.QMessageBox.Ok)
     #     else:
-    #         music_dir = musicDirectory(self.musicbase, dir_path)
+    #         music_dir = MusicDirectory(self.musicbase, dir_path)
     #         res = music_dir.explore_albums_to_import()
     #         for alb in res:
     #             logger.debug(alb)
@@ -367,10 +369,11 @@ class ExploreEventsWidget(QtWidgets.QDialog):
 if __name__ == "__main__":
     import sys
     from pyzik import *
-    from musicBase import *
+    from musicBase import MusicBase
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
+    dark = darkStyle.darkStyle()
+    app.setStyleSheet(dark.load_stylesheet_pyqt5())
     mb = MusicBase()
     mb.loadMusicBase()
 

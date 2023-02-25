@@ -20,10 +20,10 @@ from PyQt5.QtWidgets import (
     QListWidgetItem,
 )
 
-from picFromUrlThread import *
-from fullScreenCoverWidget import *
-from thumbnailViewerWidget import *
-from coverArtFinder import *
+from picFromUrlThread import PicFromUrlThread
+from fullScreenCoverWidget import FullScreenCoverWidget
+from thumbnailViewerWidget import ThumbnailViewerWidget
+from coverArtFinder import CoverArtFinder
 from svgIcon import *
 import logging
 
@@ -37,7 +37,7 @@ import time
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
 
-from waitOverlayWidget import *
+from waitOverlayWidget import WaitOverlay
 
 
 class CoverFinderSearchThread(QThread):
@@ -106,7 +106,7 @@ class CoverArtFinderDialog(QDialog):
         self.centralWidget.setSizePolicy(sizePolicy)
         self.centralWidget.resize(652, 400)
 
-        self.thumbViewer = thumbnailViewerWidget(self.items)
+        self.thumbViewer = ThumbnailViewerWidget(self.items)
         self.thumbViewer.thumbWidget.setSpacing(4)
 
         self.vLayout.addWidget(self.thumbViewer)

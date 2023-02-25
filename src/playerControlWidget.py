@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5 import QtGui
-from PyQt5.QtCore import Qt, QSize, QCoreApplication
+from PyQt5.QtCore import Qt, QSize, QCoreApplication, pyqtSignal
 from PyQt5.QtWidgets import (
     QApplication,
     QWidget,
@@ -19,14 +17,13 @@ from PyQt5.QtWidgets import (
     QShortcut,
 )
 from track import *
-import requests
-from picFromUrlThread import *
-from tableWidgetDragRows import *
-from waitOverlayWidget import *
+
+from picFromUrlThread import PicFromUrlThread
+from tableWidgetDragRows import TableWidgetDragRows
+from waitOverlayWidget import WaitOverlay
 from PyQt5.QtGui import QPixmap
 import threading
 
-# from vlc import EventType as vlcEventType
 from svgIcon import *
 import logging
 
@@ -105,7 +102,7 @@ class PlayerControlsWidget(QWidget):
         lay.addWidget(self.frameEmpty)
 
 
-class playerControlWidget(QWidget):
+class PlayerControlWidget(QWidget):
     mediaList = None
     player = None
     picFromUrlThread = None

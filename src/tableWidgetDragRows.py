@@ -11,9 +11,6 @@ from PyQt5.QtWidgets import (
     QTableWidget,
     QAbstractItemView,
     QTableWidgetItem,
-    QWidget,
-    QHBoxLayout,
-    QApplication,
 )
 
 

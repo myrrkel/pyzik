@@ -5,7 +5,7 @@ from PyQt5.QtCore import QThread
 
 import time
 
-from radioManager import *
+from radioManager import RadioManager
 
 
 class SearchRadioThread(QThread):

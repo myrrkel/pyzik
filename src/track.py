@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import re
-import os
-import sys
 import time
 import platform
 from mutagen.id3 import ID3
@@ -11,7 +8,6 @@ from mutagen.id3 import ID3NoHeaderError
 from mutagen import MutagenError
 from mutagen import File
 from urllib.parse import unquote
-from PyQt5.QtCore import pyqtSignal
 import logging
 from utils import *
 
@@ -301,7 +297,7 @@ class Track:
 if __name__ == "__main__":
     import sys
     from pyzik import *
-    from musicBase import *
+    from musicBase import MusicBase
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())

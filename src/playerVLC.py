@@ -5,13 +5,12 @@
 ##############################################
 #           Play mp3 with VLC                #
 ##############################################
-
 import sys
 import time
 import vlc
 import os
 import threading
-from track import *
+from track import Track
 from PyQt5.QtCore import pyqtSignal
 import ctypes as c
 import logging
@@ -43,8 +42,7 @@ def cleanTitle(title):
 
 
 def print(txt):
-    if True == False:
-        _print(txt)
+    logger.info(txt)
 
 
 class PlayerVLC:

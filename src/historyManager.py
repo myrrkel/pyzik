@@ -3,9 +3,9 @@
 
 from operator import itemgetter, attrgetter
 
-from album import *
-from database import *
-from historyItem import *
+from album import Album
+from database import Database
+from historyItem import HistoryItem
 
 
 class HistoryManager:
@@ -84,7 +84,7 @@ class HistoryManager:
 
 
 if __name__ == "__main__":
-    from musicBase import *
+    from musicBase import MusicBase
 
     mb = MusicBase()
     mb.loadMusicBase(False)

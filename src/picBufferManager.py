@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys
-import os
+from picDownloader import PicDownloader
 from PyQt5.QtGui import QPixmap
 
 
@@ -64,7 +63,7 @@ class PicBufferManager:
 
 
 if __name__ == "__main__":
-    pDL = picDownloader()
+    pDL = PicDownloader()
     url = "http://jamesostafford.files.wordpress.com/2012/03/41-edgar-broughton-band-inside-out.jpg"
 
     pDL.getPic(url)

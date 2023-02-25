@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
+
+import sqlite3
 from explore_event import *
-from album import *
-from albumCollection import *
-from artistCollection import *
+from database import Database
+from album import Album
+from albumCollection import AlbumCollection
+from artistCollection import ArtistCollection
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
-import logging
 from filesUtils import *
 
 logger = logging.getLogger(__name__)
@@ -37,7 +38,7 @@ class ImportAlbumsThread(QThread):
         return
 
 
-class musicDirectory:
+class MusicDirectory:
     """
     musicDirectory contains albums or artist's directories.
     It have a style: Various (default), Rock, Jazz...
@@ -118,7 +119,7 @@ class musicDirectory:
                         )
 
                 # Artist name and album title has been found
-                curArt = self.artistCol.getArtist(curAlb.artist_name)
+                curArt = self.artistCol.get_artist(curAlb.artist_name)
                 # GetArtist return a new artist if it doesn't exists in artistsCol
                 if curArt:
                     curAlb.artistID = curArt.artistID
@@ -180,10 +181,10 @@ class musicDirectory:
             logger.debug("explore album %s", dir_path)
             curAlb = Album(dir_path, self)
             if curAlb.to_verify:
-                curAlb.getTagsFromFirstFile()
+                curAlb.get_tags_from_first_file()
             if not curAlb.to_verify and curAlb.year in [0, 9999]:
                 curAlb.get_year_from_first_file()
-            artists = self.artistCol.findArtists(curAlb.artist_name)
+            artists = self.artistCol.find_artists(curAlb.artist_name)
             artist_exists = len(artists) > 0
             if artist_exists:
                 dir_result["artist_name"] = artists[0].name
@@ -225,7 +226,7 @@ class musicDirectory:
             album_path, copy_path, file_copy_started_signal, test_mode=False
         )
 
-        curArt = self.artistCol.getArtist(album_to_import.artist_name)
+        curArt = self.artistCol.get_artist(album_to_import.artist_name)
         # GetArtist return a new artist if it doesn't exists in artistsCol
         if curArt:
             album_to_import.artistID = curArt.artistID
@@ -262,7 +263,7 @@ class musicDirectory:
             progressChanged.emit(iProgress)
 
             logger.info("exploreArtistsDirectory=" + dirArt)
-            curArt = self.artistCol.getArtist(dirArt)
+            curArt = self.artistCol.get_artist(dirArt)
             # GetArtist return a new artist if it doesn't exists in artistsCol
 
             self.exploreAlbumsInArtistDirectory(curArt, dirArt, progressChanged)

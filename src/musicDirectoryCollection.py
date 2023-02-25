@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from musicDirectory import *
+import sqlite3
+from musicDirectory import MusicDirectory
+from explore_event import ExploreEventList
 
 
 def filterByID(seq, id):
@@ -76,7 +78,7 @@ class MusicDirectoryCollection:
         req = "SELECT musicDirectoryID, dirPath, dirName, ifnull(styleID,0), ifnull(dirType,0) as dirType FROM musicDirectories"
         for rowDir in self.music_base.db.getSelect(req):
             # print('{0} : {1}'.format(rowDir[0], rowDir[1]))
-            dir = musicDirectory(self.music_base)
+            dir = MusicDirectory(self.music_base)
             dir.load(rowDir)
             self.addMusicDirectory(dir)
 

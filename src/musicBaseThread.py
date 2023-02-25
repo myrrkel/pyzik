@@ -2,13 +2,11 @@ import sys
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
-from database import *
+from explore_event import ExploreEventList
+from database import Database
 import logging
 
 logger = logging.getLogger(__name__)
-
-import time
-from explore_event import *
 
 
 class ExploreAlbumsDirectoriesThread(QThread):

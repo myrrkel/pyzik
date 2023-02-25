@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
 from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QSize
 from PyQt5.QtWidgets import (
     QDialog,
@@ -112,7 +111,7 @@ class FullScreenCoverWidget(QDialog):
 
 if __name__ == "__main__":
     import sys
-    from picDownloader import *
+    from picDownloader import PicDownloader
 
     app = QApplication(sys.argv)
 

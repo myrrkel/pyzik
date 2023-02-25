@@ -4,11 +4,13 @@
 
 from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QSize
 from PyQt5.QtWidgets import QDialog, QWidget, QShortcut, QAction, QWidget, QMainWindow, \
-    QSizePolicy, QLabel, QFrame, QVBoxLayout, QHBoxLayout, QApplication
-from PyQt5.QtGui import QPixmap, QIcon, QKeySequence
+    QSizePolicy, QLabel, QFrame, QVBoxLayout, QHBoxLayout, QApplication, QPushButton
+from PyQt5.QtGui import QPixmap, QIcon, QKeySequence, QFont, QKeySequence
 
-from historyManager import *
-from picFromUrlThread import *
+from track import Track
+from historyManager import HistoryManager
+from picFromUrlThread import PicFromUrlThread
+from globalConstants import *
 
 
 class CustomControlsWidget(QWidget):
@@ -26,11 +28,12 @@ class CustomControlsWidget(QWidget):
 class FullScreenWidget(QDialog):
     coverPixmap = None
     picFromUrlThread = None
+    defaultPixmap = None
 
     def __init__(self, player=None):
         QDialog.__init__(self)
         self.player = player
-        self.currentTrack = None
+        self.currentTrack = Track()
         self.currentCoverPath = ""
         self.picBufferManager = None
         self.setWindowFlags(
@@ -45,7 +48,7 @@ class FullScreenWidget(QDialog):
         if self.picFromUrlThread is None:
             self.picFromUrlThread = PicFromUrlThread()
 
-        self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
+        self.shortcutPause = QShortcut(QKeySequence("Space"), self)
         if self.player is not None:
             self.shortcutPause.activated.connect(self.player.pause)
         self.shortcutClose = QShortcut(QKeySequence("Escape"), self)
@@ -87,27 +90,27 @@ class FullScreenWidget(QDialog):
         self.cover.setPixmap(self.coverPixmap)
         self.vLayout.addWidget(self.cover)
 
-        self.labelTitle = QtWidgets.QLabel()
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
+        self.labelTitle = QLabel()
+        sizePolicy = QSizePolicy(
+            QSizePolicy.Expanding, QSizePolicy.Fixed
         )
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.labelTitle.sizePolicy().hasHeightForWidth())
         self.labelTitle.setSizePolicy(sizePolicy)
-        self.labelTitle.setMinimumSize(QtCore.QSize(50, 70))
-        font = QtGui.QFont()
+        self.labelTitle.setMinimumSize(QSize(50, 70))
+        font = QFont()
         font.setPointSize(12)
         self.labelTitle.setStyleSheet("color:white;")
         self.labelTitle.setFont(font)
         self.labelTitle.setAutoFillBackground(False)
-        self.labelTitle.setFrameShape(QtWidgets.QFrame.Box)
-        self.labelTitle.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.labelTitle.setFrameShape(QFrame.Box)
+        self.labelTitle.setFrameShadow(QFrame.Raised)
         self.labelTitle.setLineWidth(1)
         self.labelTitle.setMidLineWidth(0)
-        self.labelTitle.setTextFormat(QtCore.Qt.RichText)
+        self.labelTitle.setTextFormat(Qt.RichText)
         self.labelTitle.setScaledContents(True)
-        self.labelTitle.setAlignment(QtCore.Qt.AlignCenter)
+        self.labelTitle.setAlignment(Qt.AlignCenter)
 
         self.vLayout.addWidget(self.labelTitle)
 
@@ -195,16 +198,16 @@ class FullScreenWidget(QDialog):
         colorName = orange.name()
 
         if self.currentTrack:
-            if self.currentTrack.isRadio():
+            if self.currentTrack.is_radio():
                 artName = self.currentTrack.radio.name
                 albTitle = self.currentTrack.radio.liveTrackTitle
                 if albTitle == "":
                     albTitle = self.player.getNowPlaying()
             else:
-                artName = self.currentTrack.getArtistName()
-                albTitle = self.currentTrack.getAlbumTitle()
-                albTitle = albTitle + " - " + self.currentTrack.getTrackTitle()
-                year = self.currentTrack.getAlbumYear()
+                artName = self.currentTrack.get_artist_name()
+                albTitle = self.currentTrack.get_album_title()
+                albTitle = albTitle + " - " + self.currentTrack.get_track_title()
+                year = self.currentTrack.get_album_year()
 
         sAlbum = albTitle
         sYear = str(year)
@@ -221,7 +224,7 @@ class FullScreenWidget(QDialog):
 
 if __name__ == "__main__":
     import sys
-    from picDownloader import *
+    from picDownloader import PicDownloader
 
     app = QApplication(sys.argv)
 

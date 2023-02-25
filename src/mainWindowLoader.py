@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import os, sys, subprocess, functools
+import subprocess
+import functools
 
 from PyQt5.QtCore import (
     Qt,
@@ -8,6 +9,7 @@ from PyQt5.QtCore import (
     QCoreApplication,
     QItemSelectionModel,
     pyqtSignal,
+    QSize,
 )
 from PyQt5.QtWidgets import (
     QTableWidgetItem,
@@ -17,6 +19,7 @@ from PyQt5.QtWidgets import (
     QAction,
     QAbstractItemView,
     QMainWindow,
+    QSizePolicy,
 )
 from PyQt5.QtGui import (
     QPixmap,
@@ -31,32 +34,32 @@ from PyQt5.QtGui import (
 import mainWindow  # import of mainWindow.py made with pyuic5
 
 from darkStyle import darkStyle
-from playerVLC import *
+from playerVLC import vlc
 
-from musicBase import *
-from musicDirectory import *
-from database import *
+from musicBase import MusicBase
+from musicDirectory import MusicDirectory
+from database import Database
 
-from dialogMusicDirectoriesLoader import *
-from streamObserver import *
-from artist import *
-from album import *
-from albumThread import *
-from musicBaseThread import *
-from playlistWidget import *
-from historyWidget import *
-from searchRadioWidget import *
-from fullScreenWidget import *
-from fullScreenCoverWidget import *
-from playerControlWidget import *
-from progressWidget import *
-from albumWidget import *
-from importAlbumsWidget import *
-from exploreEventsWidget import *
-from coverArtFinderDialog import *
+from dialogMusicDirectoriesLoader import DialogMusicDirectoriesLoader
+from streamObserver import StreamObserver
+from artist import Artist
+from album import Album
+from albumThread import LoadAlbumFilesThread
+from musicBaseThread import ExploreAlbumsDirectoriesThread
+from playlistWidget import PlaylistWidget
+from historyWidget import HistoryWidget
+from searchRadioWidget import SearchRadioWidget
+from fullScreenWidget import FullScreenWidget
+from fullScreenCoverWidget import FullScreenCoverWidget
+from playerControlWidget import PlayerControlWidget
+from progressWidget import ProgressWidget
+from albumWidget import AlbumWidget
+from importAlbumsWidget import ImportAlbumsWidget
+from exploreEventsWidget import ExploreEventList
+from coverArtFinderDialog import CoverArtFinderDialog
 from svgIcon import *
-from picFromUrlThread import *
-from picBufferManager import *
+from picFromUrlThread import PicFromUrlThread
+from picBufferManager import PicBufferManager
 import logging
 
 logger = logging.getLogger(__name__)
@@ -120,7 +123,7 @@ class MainWindowLoader(QMainWindow):
 
         self.ui = mainWindow.Ui_MainWindow()
         self.ui.setupUi(self)
-        self.playerControl = playerControlWidget(self.player, self)
+        self.playerControl = PlayerControlWidget(self.player, self)
         self.playerControl.connectPicDownloader(self.picFromUrlThread)
         self.playerControl.defaultPixmap = self.defaultPixmap
         self.ui.verticalMainLayout.addWidget(self.playerControl)
@@ -284,7 +287,7 @@ class MainWindowLoader(QMainWindow):
 
     def onPlaySearchRadio(self):
         if self.searchRadio is None:
-            self.searchRadio = searchRadioWidget(self.music_base, self.player, self)
+            self.searchRadio = SearchRadioWidget(self.music_base, self.player, self)
             self.searchRadio.radioAdded.connect(self.onAddFavRadio)
 
         self.searchRadio.show()
@@ -760,7 +763,7 @@ class MainWindowLoader(QMainWindow):
         isNew = False
         if self.playList is None:
             isNew = True
-            self.playList = playlistWidget(self.player, self)
+            self.playList = PlaylistWidget(self.player, self)
             self.playList.picBufferManager = self.picBufferManager
             self.playList.fullScreenWidget = self.fullScreenWidget
             self.playList.connectPicDownloader(self.picFromUrlThread)
@@ -915,15 +918,15 @@ class MainWindowLoader(QMainWindow):
         self.ui.addAlbumButton.setSizePolicy(sizePolicy)
         self.ui.searchCoverButton.setSizePolicy(sizePolicy)
 
-        self.ui.playButton.setMaximumSize(QtCore.QSize(40, 25))
-        self.ui.openDirButton.setMaximumSize(QtCore.QSize(40, 25))
-        self.ui.addAlbumButton.setMaximumSize(QtCore.QSize(40, 25))
-        self.ui.searchCoverButton.setMaximumSize(QtCore.QSize(40, 25))
+        self.ui.playButton.setMaximumSize(QSize(40, 25))
+        self.ui.openDirButton.setMaximumSize(QSize(40, 25))
+        self.ui.addAlbumButton.setMaximumSize(QSize(40, 25))
+        self.ui.searchCoverButton.setMaximumSize(QSize(40, 25))
 
-        self.ui.playButton.setMinimumSize(QtCore.QSize(27, 27))
-        self.ui.openDirButton.setMinimumSize(QtCore.QSize(27, 27))
-        self.ui.addAlbumButton.setMinimumSize(QtCore.QSize(27, 27))
-        self.ui.searchCoverButton.setMinimumSize(QtCore.QSize(27, 27))
+        self.ui.playButton.setMinimumSize(QSize(27, 27))
+        self.ui.openDirButton.setMinimumSize(QSize(27, 27))
+        self.ui.addAlbumButton.setMinimumSize(QSize(27, 27))
+        self.ui.searchCoverButton.setMinimumSize(QSize(27, 27))
 
     def closeEvent(self, event):
         if self.playList is not None:

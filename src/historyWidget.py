@@ -3,7 +3,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
-from historyManager import *
+from historyManager import HistoryManager
 from svgIcon import *
 
 
@@ -140,9 +140,7 @@ class HistoryWidget(QtWidgets.QDialog):
 
 if __name__ == "__main__":
     import sys
-    from musicBase import *
-
-
+    from musicBase import MusicBase
     mb = MusicBase()
 
     mb.loadMusicBase(False)

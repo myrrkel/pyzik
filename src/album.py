@@ -6,13 +6,12 @@ import os
 
 import shutil
 import fnmatch
-from track import *
+import track
+import database
 from filesUtils import *
 from utils import *
 from globalConstants import *
 import formatString as FS
-from database import *
-from PyQt5.QtGui import QPixmap
 import logging
 
 logger = logging.getLogger(__name__)
@@ -332,25 +331,25 @@ class Album:
             self.to_verify = True
 
     def get_year_from_tags(self):
-        track = self.getTracks(firstFileOnly=True)
+        track = self.get_tracks(first_file_only=True)
         if track:
             return track.get_year_from_tags()
         return 0
 
     def get_pic_from_tags(self):
-        track = self.getTracks(firstFileOnly=True)
+        track = self.get_tracks(first_file_only=True)
         if track:
             return track.get_pic_from_tags()
         return ""
 
     def get_tags_from_first_file(self):
-        track = self.getTracks(firstFileOnly=True)
+        track = self.get_tracks(first_file_only=True)
         if track:
-            if track.artist and self.isValidArtistName(track.artist):
+            if track.artist and self.is_valid_artist_name(track.artist):
                 self.artist_name = track.artist
             else:
                 return
-            if track.album and self.isValidAlbumName(track.album):
+            if track.album and self.is_valid_album_name(track.album):
                 self.title = track.album
             if track.year:
                 self.year = track.year
@@ -364,7 +363,7 @@ class Album:
             )
 
     def get_year_from_first_file(self):
-        track = self.getTracks(firstFileOnly=True)
+        track = self.get_tracks(first_file_only=True)
         if track:
             if track.year:
                 self.year = track.year
@@ -394,7 +393,7 @@ class Album:
         if subdir == "":
             self.tracks = []
         self.doStop = False
-        if not self.checkDir():
+        if not self.check_dir():
             return False
         res = False
         if subdir == "":
@@ -403,20 +402,20 @@ class Album:
         else:
             current_dir = os.path.join(self.get_album_dir(), subdir)
 
-        logger.debug("getTracks path %s", current_dir)
+        logger.debug("get_tracks() path %s", current_dir)
         files = os.listdir(current_dir)
         files.sort()
 
-        nTrack = Track("", "")
+        nTrack = track.Track("", "")
 
         for file in files:
             if self.doStop:
                 break
             if os.path.isdir(os.path.join(current_dir, str(file))):
                 # file is a directory
-                logger.debug("getTracks sub dir: %s ; %s", subdir, str(file))
-                res = self.getTracks(
-                    os.path.join(subdir, str(file)), firstFileOnly=first_file_only
+                logger.debug("get_tracks() sub dir: %s ; %s", subdir, str(file))
+                res = self.get_tracks(
+                    os.path.join(subdir, str(file)), first_file_only=first_file_only
                 )
             else:
                 for ext in musicFilesExtension:
@@ -425,23 +424,23 @@ class Album:
 
                         if "." in sfile:
                             filename, file_extension = os.path.splitext(sfile)
-                            itrack = Track(filename, file_extension, subdir)
+                            itrack = track.Track(filename, file_extension, subdir)
                             itrack.path = current_dir
                             itrack.parentAlbum = self
 
                             if first_file_only:
-                                itrack.getMutagenTags(self.get_album_dir())
+                                itrack.get_mutagen_tags(self.get_album_dir())
                                 self.tracks.append(itrack)
                                 return itrack
                             else:
-                                itrack.getMutagenTags(self.get_album_dir())
+                                itrack.get_mutagen_tags(self.get_album_dir())
                                 self.tracks.append(itrack)
                             break
         return res
 
     def get_images(self, subdir=""):
         self.doStop = False
-        if not self.checkDir():
+        if not self.check_dir():
             return False
 
         if subdir == "":
@@ -459,7 +458,7 @@ class Album:
                 break
             if os.path.isdir(os.path.join(current_dir, str(file))):
                 # file is a directory
-                self.getImages(os.path.join(subdir, file))
+                self.get_images(os.path.join(subdir, file))
             else:
                 if file == "cover":
                     os.rename(
@@ -489,6 +488,7 @@ class Album:
                 "f",
             ]
 
+            cover_found = ""
             for keyword in keywords:
                 cover_found = next(
                     (x for x in self.images if keyword == getFileName(x.lower())), ""
@@ -553,19 +553,19 @@ class Album:
         self.style_id_set = self.style_id_set.union(idSet)
 
     def update_title(self):
-        db = Database()
+        db = database.Database()
         db.updateValue("albums", "title", self.title, "album_id", self.album_id)
 
     def update_year(self):
-        db = Database()
+        db = database.Database()
         db.updateValue("albums", "year", self.year, "album_id", self.album_id)
 
     def update_size(self):
-        db = Database()
+        db = database.Database()
         db.updateValue("albums", "size", self.size, "album_id", self.album_id)
 
     def update_length(self):
-        db = Database()
+        db = database.Database()
         db.updateValue("albums", "length", self.length, "album_id", self.album_id)
 
     def update(self):
@@ -590,7 +590,7 @@ class Album:
 
     def get_length(self):
         if len(self.tracks) == 0:
-            self.getTracks()
+            self.get_tracks()
         alb_length = 0
         for trk in self.tracks:
             alb_length += trk.duration
@@ -598,7 +598,7 @@ class Album:
         print("album length=" + str(alb_length))
         if alb_length > 0 and (alb_length != self.length or self.length is None):
             self.length = int(alb_length)
-            self.updateLength()
+            self.update_length()
 
     def get_formatted_dir_name(self):
         return "{artist} - [{year}] - {title}".format(

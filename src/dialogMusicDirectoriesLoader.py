@@ -4,10 +4,10 @@
 import os
 from PyQt5 import QtWidgets, QtGui, QtCore
 import dialogMusicDirectories
-from musicBase import *
-from musicDirectory import *
-from database import *
-from musicGenres import *
+from musicBase import MusicBase
+from musicDirectory import MusicDirectory
+from database import Database
+from musicGenres import MusicGenres
 from svgIcon import *
 import logging
 
@@ -74,7 +74,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         success = False
         sDir = self.selectDir()
         if sDir != "":
-            md = musicDirectory(self.music_base, sDir)
+            md = MusicDirectory(self.music_base, sDir)
             dirName = os.path.basename(sDir)
             print("Add directory " + dirName)
             md.dirName, ok = QtWidgets.QInputDialog.getText(

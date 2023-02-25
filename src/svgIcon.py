@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5 import QtGui, QtSvg
-from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QFile, QXmlStreamReader, QByteArray, QTextStream
 from globalConstants import *
 

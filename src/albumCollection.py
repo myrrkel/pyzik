@@ -4,7 +4,8 @@
 import os
 import random
 
-from album import *
+from album import Album
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -24,11 +25,11 @@ def filterByTitle_ArtistID(seq, title, art_id):
                 break
 
 
-def findByAlbumID2(seq, alb_id):
+def find_by_album_id2(seq, alb_id):
     return next(el for el in seq if int(el.albumID) == int(alb_id))
 
 
-def findByAlbumID(seq, alb_id):
+def find_by_album_id(seq, alb_id):
     return next((el for el in seq if int(el.albumID) == int(alb_id)), None)
 
 
@@ -39,9 +40,9 @@ class AlbumCollection:
 
     music_base = None
 
-    def __init__(self, mainMusicBase):
+    def __init__(self, main_music_base):
         self.albums = []  # Album Collection
-        self.music_base = mainMusicBase
+        self.music_base = main_music_base
 
     def add_album(self, album):
         if album.albumID == 0:
@@ -63,7 +64,7 @@ class AlbumCollection:
         ):
             alb = Album("")
             alb.load(rowAlb)
-            self.addAlbum(alb)
+            self.add_album(alb)
 
     def find_albums(self, stitle, artID):
         albumList = []
@@ -71,8 +72,8 @@ class AlbumCollection:
             albumList.append(alb)
         return albumList
 
-    def getAlbum(self, albID):
-        return findByAlbumID(self.albums, albID) or Album("")
+    def get_Album(self, albID):
+        return find_by_album_id(self.albums, albID) or Album("")
 
     def get_random_album(self, styleID=-2):
         if styleID > -2:
@@ -92,7 +93,7 @@ class AlbumCollection:
 
 
 if __name__ == "__main__":
-    from musicBase import *
+    from musicBase import MusicBase
 
     ac = AlbumCollection()
     ac.music_base = MusicBase()

@@ -8,12 +8,15 @@ import getopt
 
 print("Import modules...")
 
-from darkStyle import *
-from playerVLC import *
-from musicBase import *
+from PyQt5 import QtWidgets
+from darkStyle import darkStyle
+from playerVLC import PlayerVLC
+from database import Database
+from musicBase import MusicBase
 from translators import *
-from mainWindowLoader import *
+from mainWindowLoader import MainWindowLoader
 
+logger = logging.getLogger(__name__)
 root_logger = logging.getLogger()
 root_logger.setLevel("INFO")
 handler = logging.StreamHandler(sys.stdout)

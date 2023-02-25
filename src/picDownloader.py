@@ -1,13 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys
 import os
-
 import requests
 import tempfile
-
-import time
 
 
 class PicDownloader:

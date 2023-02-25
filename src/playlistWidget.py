@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5 import QtGui
-from PyQt5.QtCore import Qt, QSize, QCoreApplication
+from PyQt5.QtCore import Qt, QSize, QCoreApplication, pyqtSignal
 from PyQt5.QtWidgets import (
     QApplication,
     QWidget,
@@ -19,10 +18,10 @@ from PyQt5.QtWidgets import (
     QShortcut,
 )
 from PyQt5.QtGui import QPixmap
-from track import *
+from track import Track
 import requests
-from picFromUrlThread import *
-from tableWidgetDragRows import *
+from picFromUrlThread import PicFromUrlThread
+from tableWidgetDragRows import TableWidgetDragRows
 
 from vlc import EventType as vlcEventType
 from svgIcon import *
@@ -84,7 +83,7 @@ class PlayerControlsWidget(QWidget):
         lay.addWidget(self.volumeSlider)
 
 
-class playlistWidget(QDialog):
+class PlaylistWidget(QDialog):
     picFromUrlThread = None
     currentCoverPath = ""
     picBufferManager = None
@@ -427,7 +426,7 @@ class playlistWidget(QDialog):
         trk = self.player.getCurrentTrackPlaylist()
 
         if title in ["", "..."] and trk:
-            if trk.isRadio():
+            if trk.is_radio():
                 title = self.player.getNowPlaying()
                 if title == "...":
                     title = trk.radioName
@@ -544,7 +543,7 @@ class playlistWidget(QDialog):
         if self.picBufferManager is None:
             self.coverPixmap = QtGui.QPixmap(path)
         else:
-            self.coverPixmap = self.picBufferManager.getPic(path, "playlistWidget")
+            self.coverPixmap = self.picBufferManager.getPic(path, "PlaylistWidget")
 
         self.showScaledCover()
 
@@ -596,13 +595,13 @@ class playlistWidget(QDialog):
 
 if __name__ == "__main__":
     import sys
-    from playerVLC import *
+    from playerVLC import PlayerVLC
 
     player = PlayerVLC()
 
     app = QApplication(sys.argv)
 
-    playlist = playlistWidget(player)
+    playlist = PlaylistWidget(player)
 
     playlist.tableWidgetTracks.setColumnCount(4)
     playlist.tableWidgetTracks.setRowCount(5)

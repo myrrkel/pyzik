@@ -19,9 +19,9 @@ from PyQt5.QtWidgets import (
     QShortcut,
     QListWidgetItem,
 )
-
-from picFromUrlThread import *
-from fullScreenCoverWidget import *
+import os
+from picFromUrlThread import PicFromUrlThread
+from fullScreenCoverWidget import FullScreenCoverWidget
 
 _translate = QCoreApplication.translate
 
@@ -52,7 +52,7 @@ class thumbnailIcon(QtGui.QIcon):
         QtGui.QIcon.__init__(self)
         self.parent = parent
         self.path = ""
-        self.picFromUrlThread = pPicFromUrlThread()
+        self.picFromUrlThread = PicFromUrlThread()
         self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
         self.picFromUrlThread.url = url
         self.picFromUrlThread.start()
@@ -68,7 +68,7 @@ class thumbnailIcon(QtGui.QIcon):
         self.parent.setHidden(False)
 
 
-class thumbnailViewerWidget(QWidget):
+class ThumbnailViewerWidget(QWidget):
     def __init__(self, items):
         QWidget.__init__(self)
         self.items = items

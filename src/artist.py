@@ -3,7 +3,7 @@
 
 from operator import itemgetter, attrgetter
 import random
-from album import *
+from album import Album
 import formatString as FS
 import logging
 

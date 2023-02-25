@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from artist import *
+from artist import Artist
 import formatString as FS
 from operator import itemgetter, attrgetter
 from sortedcontainers import SortedKeyList

@@ -11,9 +11,9 @@ from datetime import datetime, timedelta
 import time
 import pytz
 import email.utils as eut
-from picFromUrlThread import *
+from picFromUrlThread import PicFromUrlThread
 from PyQt5.QtGui import QPixmap
-from picDownloader import *
+from picDownloader import PicDownloader
 
 
 def _json_object_hook(d):

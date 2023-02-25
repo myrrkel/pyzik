@@ -3,11 +3,11 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
-from radioManager import *
-from searchRadioThread import *
-from progressWidget import *
+from radioManager import RadioManager
+from searchRadioThread import SearchRadioThread
+from progressWidget import ProgressWidget
 from svgIcon import *
-from waitOverlayWidget import *
+from waitOverlayWidget import WaitOverlay
 
 
 class SearchControlsWidget(QtWidgets.QWidget):
@@ -28,7 +28,7 @@ class SearchControlsWidget(QtWidgets.QWidget):
         lay.addWidget(self.searchButton)
 
 
-class machineSelectorControlsWidget(QtWidgets.QWidget):
+class MachineSelectorControlsWidget(QtWidgets.QWidget):
     def __init__(self, parent=None, machines=[]):
         QtWidgets.QWidget.__init__(self, parent=parent)
         self.checks = []
@@ -70,7 +70,7 @@ class PlayControlsWidget(QtWidgets.QWidget):
         lay.addWidget(self.addButton)
 
 
-class searchRadioWidget(QtWidgets.QDialog):
+class SearchRadioWidget(QtWidgets.QDialog):
     radioAdded = pyqtSignal(int, name="radioAdded")
 
     def __init__(self, music_base, player, parent=None):
@@ -111,7 +111,7 @@ class searchRadioWidget(QtWidgets.QDialog):
         self.playControls.playButton.clicked.connect(self.onClickPlayRadio)
         self.playControls.addButton.clicked.connect(self.onAddPadio)
 
-        self.machineSelectorControls = machineSelectorControlsWidget(
+        self.machineSelectorControls = MachineSelectorControlsWidget(
             None, self.radioManager.machines
         )
 
@@ -252,8 +252,8 @@ class searchRadioWidget(QtWidgets.QDialog):
 
 if __name__ == "__main__":
     import sys
-    from musicBase import *
-    from playerVLC import *
+    from musicBase import MusicBase
+    from playerVLC import PlayerVLC
 
     app = QtWidgets.QApplication(sys.argv)
     mb = MusicBase()

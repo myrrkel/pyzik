@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys
 import os
 
 from PyQt5.QtCore import pyqtSignal, QThread
 import requests
 import urllib3
 import tempfile
-
-import time
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

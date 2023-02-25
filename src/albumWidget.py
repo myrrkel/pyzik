@@ -3,7 +3,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
-from historyManager import *
+from historyManager import HistoryManager
 from svgIcon import *
 
 
@@ -148,7 +148,7 @@ class albumInfoControlsWidget(QtWidgets.QWidget):
         # lay.addWidget(lay1)
 
 
-class albumWidget(QtWidgets.QDialog):
+class AlbumWidget(QtWidgets.QDialog):
     def __init__(self, album, parent):
         QtWidgets.QDialog.__init__(self, parent)
         self.album = album
@@ -209,7 +209,7 @@ class albumWidget(QtWidgets.QDialog):
 
 if __name__ == "__main__":
     import sys
-    from musicBase import *
+    from musicBase import MusicBase
 
 
     mb = MusicBase()

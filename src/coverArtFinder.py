@@ -4,6 +4,7 @@
 import sys
 import os
 import requests
+# from coverArtFinderDialog import CoverArtFinderDialog
 
 # from google_images_download import google_images_download as gid  # importing the library
 from google_images_download import googleimagesdownload as gid  # importing the library
@@ -70,13 +71,12 @@ class CoverArtFinder:
 if __name__ == "__main__":
     import sys
     import pyzik
-    from PyQt5 import QtCore, QtGui, QtWidgets
-    from coverArtFinderDialog import *
+    from PyQt5 import QtCore, QtGui, QtWidgets, QApplication
+    from coverArtFinderDialog import CoverArtFinderDialog
 
     app = QApplication(sys.argv)
 
     keyword = "jerusalem album 1972"
-    keyword = "IN FLAMES Clayman"
 
     caf_diag = CoverArtFinderDialog()
     caf_diag.keyword = keyword

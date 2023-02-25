@@ -1,9 +1,7 @@
-import sys
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
 
-import time
 
 
 class LoadAlbumFilesThread(QThread):

@@ -1,20 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
-from database import *
-from albumCollection import *
-from artistCollection import *
-from musicDirectoryCollection import *
-from musicGenres import *
-from historyManager import *
-from radioManager import *
+from database import Database
+from albumCollection import AlbumCollection
+from artistCollection import ArtistCollection
+from musicDirectoryCollection import MusicDirectoryCollection
+from musicGenres import MusicGenres
+from historyManager import HistoryManager
+from radioManager import RadioManager
 import logging
 
 logger = logging.getLogger(__name__)
-
-import os.path
-from PyQt5 import QtWidgets, QtGui, QtCore
 
 
 class MusicBase:
@@ -65,7 +61,7 @@ class MusicBase:
 
     def addAlbumsToArtists(self):
         for alb in self.albumCol.albums:
-            artistFound = self.artistCol.getArtistByID(alb.artistID)
+            artistFound = self.artistCol.get_artist_by_id(alb.artistID)
             if artistFound is not None:
                 alb.artist_name = artistFound.name
                 artistFound.addStyle(alb.styleIDSet)
