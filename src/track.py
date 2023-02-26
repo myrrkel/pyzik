@@ -301,7 +301,8 @@ if __name__ == "__main__":
     from music_base import MusicBase
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
+    dark = darkStyle.darkStyle()
+    app.setStyleSheet(dark.load_stylesheet_pyqt5())
     mb = MusicBase()
     mb.load_music_base()
     trk = Track("09. Not Suitable For Life", ".mp3", "/home/Documents/TEST/")

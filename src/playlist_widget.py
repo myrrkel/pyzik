@@ -282,7 +282,7 @@ class PlaylistWidget(QDialog):
         for i in range(0, self.tableWidgetTracks.rowCount()):
             idLine = self.tableWidgetTracks.item(i, 4).setText(str(i))
 
-    def on_track_moved(self, trackMove: (int, int)):
+    def on_track_moved(self, track_move: (int, int)):
         self.mediaList.lock()
         # Get new order of tracks
         new_order = []
@@ -290,7 +290,7 @@ class PlaylistWidget(QDialog):
             idLine = self.tableWidgetTracks.item(i, 4).text()
             new_order.append(int(idLine))
 
-        newCurrent = 0
+        new_current = 0
         currentIndex = self.player.get_current_index_playlist()
 
         # Backup current vlc media list
@@ -305,15 +305,15 @@ class PlaylistWidget(QDialog):
             if idLine != currentIndex:
                 self.mediaList.insert_media(tmp_mediaList[idLine], i)
             else:
-                newCurrent = i
+                new_current = i
 
         self.mediaList.unlock()
 
-        print("newCurrent=" + str(newCurrent))
+        print("new_current=" + str(new_current))
 
         self.player.refresh_media_list_player()
         self.show_media_list()
-        # self.player.resetCurrentItemIndex(newCurrent)
+        # self.player.resetCurrentItemIndex(new_current)
 
     def on_clear_playlist(self, event):
         # Remove all medias from the playlist except the current track
@@ -355,39 +355,39 @@ class PlaylistWidget(QDialog):
         i = 0
         for track in tracks:
             self.tableWidgetTracks.insertRow(i)
-            titleItem = QTableWidgetItem(track.get_track_title())
-            titleItem.setFlags(titleItem.flags() ^ Qt.ItemIsEditable)
-            self.tableWidgetTracks.setItem(i, 0, titleItem)
+            title_item = QTableWidgetItem(track.get_track_title())
+            title_item.setFlags(title_item.flags() ^ Qt.ItemIsEditable)
+            self.tableWidgetTracks.setItem(i, 0, title_item)
 
             if track.radio_name == "":
-                artistItem = QTableWidgetItem(track.get_artist_name())
-                artistItem.setFlags(artistItem.flags() ^ Qt.ItemIsEditable)
-                self.tableWidgetTracks.setItem(i, 1, artistItem)
+                artist_item = QTableWidgetItem(track.get_artist_name())
+                artist_item.setFlags(artist_item.flags() ^ Qt.ItemIsEditable)
+                self.tableWidgetTracks.setItem(i, 1, artist_item)
 
-                albumItem = QTableWidgetItem(track.get_album_title())
-                albumItem.setFlags(albumItem.flags() ^ Qt.ItemIsEditable)
-                self.tableWidgetTracks.setItem(i, 2, albumItem)
+                album_item = QTableWidgetItem(track.get_album_title())
+                album_item.setFlags(album_item.flags() ^ Qt.ItemIsEditable)
+                self.tableWidgetTracks.setItem(i, 2, album_item)
 
-                durationItem = QTableWidgetItem(track.get_duration_text())
-                durationItem.setFlags(durationItem.flags() ^ Qt.ItemIsEditable)
-                self.tableWidgetTracks.setItem(i, 3, durationItem)
+                duration_item = QTableWidgetItem(track.get_duration_text())
+                duration_item.setFlags(duration_item.flags() ^ Qt.ItemIsEditable)
+                self.tableWidgetTracks.setItem(i, 3, duration_item)
             else:
                 print("radioName=" + track.radioName)
-                artistItem = QTableWidgetItem(self.player.currentRadioName)
-                artistItem.setFlags(artistItem.flags() ^ Qt.ItemIsEditable)
-                self.tableWidgetTracks.setItem(i, 1, artistItem)
+                artist_item = QTableWidgetItem(self.player.currentRadioName)
+                artist_item.setFlags(artist_item.flags() ^ Qt.ItemIsEditable)
+                self.tableWidgetTracks.setItem(i, 1, artist_item)
 
-                albumItem = QTableWidgetItem(self.player.currentRadioName)
-                albumItem.setFlags(albumItem.flags() ^ Qt.ItemIsEditable)
-                self.tableWidgetTracks.setItem(i, 2, albumItem)
+                album_item = QTableWidgetItem(self.player.currentRadioName)
+                album_item.setFlags(album_item.flags() ^ Qt.ItemIsEditable)
+                self.tableWidgetTracks.setItem(i, 2, album_item)
 
-                durationItem = QTableWidgetItem(track.get_duration_text())
-                durationItem.setFlags(durationItem.flags() ^ Qt.ItemIsEditable)
-                self.tableWidgetTracks.setItem(i, 3, durationItem)
+                duration_item = QTableWidgetItem(track.get_duration_text())
+                duration_item.setFlags(duration_item.flags() ^ Qt.ItemIsEditable)
+                self.tableWidgetTracks.setItem(i, 3, duration_item)
 
-            orderItem = QTableWidgetItem(str(i))
-            orderItem.setFlags(orderItem.flags() ^ Qt.ItemIsEditable)
-            self.tableWidgetTracks.setItem(i, 4, orderItem)
+            order_item = QTableWidgetItem(str(i))
+            order_item.setFlags(order_item.flags() ^ Qt.ItemIsEditable)
+            self.tableWidgetTracks.setItem(i, 4, order_item)
 
             i += 1
 
@@ -418,11 +418,10 @@ class PlaylistWidget(QDialog):
             tracks.append(t)
 
         self.show_tracks(tracks)
-
         self.set_current_track()
 
     def set_current_track(self, title=""):
-        if self.isVisible() == False:
+        if not self.isVisible():
             return
 
         trk = self.player.get_current_track_playlist()
@@ -469,10 +468,10 @@ class PlaylistWidget(QDialog):
                         title = trk.radioName
                     item.setText(title)
                 else:
-                    nowPlaying = self.player.get_now_playing()
-                    if nowPlaying == "NO_META":
-                        nowPlaying = trk.radioName
-                    item.setText(nowPlaying)
+                    now_playing = self.player.get_now_playing()
+                    if now_playing == "NO_META":
+                        now_playing = trk.radioName
+                    item.setText(now_playing)
 
                 item1 = self.tableWidgetTracks.item(i, 1)
                 item1.setText(self.player.currentRadioName)
@@ -537,15 +536,15 @@ class PlaylistWidget(QDialog):
                 if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
                     self.coverPixmap = self.defaultPixmap
                 else:
-                    coverPath = trk.parentAlbum.get_cover_path()
+                    cover_path = trk.parentAlbum.get_cover_path()
 
-                    self.show_cover_pixmap(coverPath)
+                    self.show_cover_pixmap(cover_path)
 
     def show_cover_pixmap(self, path):
         if self.picBufferManager is None:
             self.coverPixmap = QtGui.QPixmap(path)
         else:
-            self.coverPixmap = self.picBufferManager.getPic(path, "PlaylistWidget")
+            self.coverPixmap = self.picBufferManager.get_pic(path, "PlaylistWidget")
 
         self.show_scaled_cover()
 
@@ -559,10 +558,10 @@ class PlaylistWidget(QDialog):
 
     def show_scaled_cover(self):
         if not self.coverPixmap.isNull():
-            scaledCover = self.coverPixmap.scaled(
+            scaled_cover = self.coverPixmap.scaled(
                 self.cover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
-            self.cover.setPixmap(scaledCover)
+            self.cover.setPixmap(scaled_cover)
 
         else:
             self.cover.clear()

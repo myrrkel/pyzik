@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from operator import itemgetter, attrgetter
-
-from album import Album
+from typing import List
 from database import Database
 from history_item import HistoryItem
 
@@ -15,71 +14,70 @@ class HistoryManager:
 
     def __init__(self, music_base=None):
         self.music_base = music_base
-        self.database = Database(isHistory=True)
-        self.log = []
+        self.database = Database(is_history=True)
+        self.history: List[HistoryItem] = list()
 
-    def initDataBase(self):
-        self.database.initDataBase()
+    def init_data_base(self):
+        self.database.init_data_base()
 
-    def loadHistory(self, withAlbums=True):
-        self.log = []
-        if withAlbums:
-            self.loadAlbumHistory()
-        self.loadTrackHistory()
-        self.loadRadioHistory()
-        self.log = sorted(
-            self.log, key=attrgetter("playDate", "historyType"), reverse=True
-        )
+    def load_history(self, with_albums=True):
+        self.history = []
+        if with_albums:
+            self.load_album_history()
+        self.load_track_history()
+        self.load_radio_history()
+        self.history = sorted(self.history, key=attrgetter("play_date", "history_type"),
+                              reverse=True)
 
-    def insertAlbumHistory(self, albumID):
+    def insert_album_history(self, album_id):
         """Insert album in history"""
-        self.database.insertAlbumHistory(albumID)
+        self.database.insert_album_history(album_id)
 
-    def loadAlbumHistory(self):
+    def load_album_history(self):
         req = """ 
         SELECT albumID, playDate 
         FROM playHistoryAlbum
         """
 
-        for rowHisto in self.database.getSelect(req):
+        for rowHisto in self.database.get_select(req):
             histo = HistoryItem(rowHisto[1])
-            histo.initHistoAlbum(rowHisto[0])
+            histo.init_histo_album(rowHisto[0])
             histo.data.get_album(self.music_base)
-            self.log.append(histo)
+            self.history.append(histo)
 
-    def insertTrackHistory(self, albumID, fileName):
+    def insert_track_history(self, album_id, file_name):
         """Insert track in history"""
-        self.database.insertTrackHistory(albumID, fileName)
+        self.database.insert_track_history(album_id, file_name)
 
-    def loadTrackHistory(self):
+    def load_track_history(self):
         req = """ 
         SELECT albumID, fileName, playDate 
         FROM playHistoryTrack
         """
 
-        for rowHisto in self.database.getSelect(req):
+        for rowHisto in self.database.get_select(req):
             histo = HistoryItem(rowHisto[2])
-            histo.initHistoTrack(rowHisto[0], rowHisto[1])
+            histo.init_histo_track(rowHisto[0], rowHisto[1])
             histo.data.get_album(self.music_base)
-            self.log.append(histo)
+            self.history.append(histo)
 
-    def insertRadioHistory(self, radioName, title):
+    def insert_radio_history(self, radio_name, title):
         """Insert radio title in history"""
-        self.database.insertRadioHistory(radioName, title)
+        self.database.insert_radio_history(radio_name, title)
 
-    def loadRadioHistory(self):
+    def load_radio_history(self):
         req = """ 
         SELECT radioName, title, playDate 
         FROM playHistoryRadio
         """
 
-        for rowHisto in self.database.getSelect(req):
+        for rowHisto in self.database.get_select(req):
             histo = HistoryItem(rowHisto[2])
-            histo.initHistoRadio(rowHisto[0], rowHisto[1])
-            self.log.append(histo)
+            histo.init_histo_radio(rowHisto[0], rowHisto[1])
+            self.history.append(histo)
 
-    def printAll(self):
-        for histo in self.log:
+    def print_all(self):
+        for histo in self.history:
             histo.print_data()
 
 
@@ -90,7 +88,7 @@ if __name__ == "__main__":
     mb.load_music_base(False)
 
     history = HistoryManager(mb)
-    history.printAll()
+    history.print_all()
 
     sql = """    INSERT INTO playHistoryRadio ({columns})
                     VALUES ('{radioName}','{title}',datetime('now','localtime'));

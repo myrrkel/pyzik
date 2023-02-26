@@ -22,16 +22,16 @@ class historyControlsWidget(QtWidgets.QWidget):
 
 
 class HistoryWidget(QtWidgets.QDialog):
-    def __init__(self, music_base, parent):
+    def __init__(self, music_base, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
         self.setWindowFlags(QtCore.Qt.Window)
 
         self.history = HistoryManager(music_base)
-        self.history.loadHistory(False)
+        self.history.load_history(False)
 
         self.initUI()
 
-        self.showHistoryItems(self.history.log)
+        self.showHistoryItems(self.history.history)
         self.initColumnHeaders()
 
     def initUI(self):
@@ -56,8 +56,8 @@ class HistoryWidget(QtWidgets.QDialog):
         self.retranslateUi()
 
     def onRefresh(self, event):
-        self.history.loadHistory(False)
-        self.showHistoryItems(self.history.log)
+        self.history.load_history(False)
+        self.showHistoryItems(self.history.history)
 
     def initTableWidgetItems(self):
         self.tableWidgetItems = QtWidgets.QTableWidget(self)
@@ -119,19 +119,19 @@ class HistoryWidget(QtWidgets.QDialog):
         i = 0
         for item in items:
             self.tableWidgetItems.insertRow(i)
-            titleItem = QtWidgets.QTableWidgetItem(item.getColumnText(0))
+            titleItem = QtWidgets.QTableWidgetItem(item.get_column_text(0))
             titleItem.setFlags(titleItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetItems.setItem(i, 0, titleItem)
 
-            artistItem = QtWidgets.QTableWidgetItem(item.getColumnText(1))
+            artistItem = QtWidgets.QTableWidgetItem(item.get_column_text(1))
             artistItem.setFlags(artistItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetItems.setItem(i, 1, artistItem)
 
-            albumItem = QtWidgets.QTableWidgetItem(item.getColumnText(2))
+            albumItem = QtWidgets.QTableWidgetItem(item.get_column_text(2))
             albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetItems.setItem(i, 2, albumItem)
 
-            durationItem = QtWidgets.QTableWidgetItem(item.getColumnText(3))
+            durationItem = QtWidgets.QTableWidgetItem(item.get_column_text(3))
             durationItem.setFlags(durationItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetItems.setItem(i, 3, durationItem)
 

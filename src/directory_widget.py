@@ -69,33 +69,33 @@ class DirectoryWidget(QWidget):
         self.DirButton.setObjectName("DirButton")
         self.gridLayout.addWidget(self.DirButton, 0, 3)
 
-        self.setLabel(_translate("directory", "Directory"))
+        self.set_label(_translate("directory", "Directory"))
         self.DirButton.setText("...")
 
-        self.DirButton.clicked.connect(self.onChangeDir)
+        self.DirButton.clicked.connect(self.on_change_dir)
 
-    def setLabel(self, text):
+    def set_label(self, text):
         self.labelDir.setText(text)
 
-    def setText(self, text):
+    def set_text(self, text):
         self.DirEdit.setText(text)
 
-    def getText(self):
+    def get_text(self):
         return self.DirEdit.text()
 
-    def selectDir(self):
+    def select_dir(self):
         file_diag = QFileDialog(self)
         directory = str(
             file_diag.getExistingDirectory(
                 self,
                 _translate("directory", "Select directory"),
-                directory=self.getText(),
+                directory=self.get_text(),
             )
         )
         return directory
 
-    def onChangeDir(self):
-        directory = self.selectDir()
+    def on_change_dir(self):
+        directory = self.select_dir()
         self.DirEdit.setText(directory)
 
 
@@ -108,7 +108,7 @@ class TestMainWindow(QMainWindow):
 
         layout = QGridLayout(widget)
         layout.addWidget(self.directory_selector)
-        self.directory_selector.setLabel("My Directory")
+        self.directory_selector.set_label("My Directory")
 
         self.setCentralWidget(widget)
 

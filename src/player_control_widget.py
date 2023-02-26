@@ -283,7 +283,7 @@ class PlayerControlWidget(QWidget):
             self.isWaitingCover = False
             # self.hideWaitOverlay()
         else:
-            self.coverPixmap = self.picBufferManager.getPic(path, "playerControl")
+            self.coverPixmap = self.picBufferManager.get_pic(path, "playerControl")
             self.isWaitingCover = False
             self.show_scaled_cover()
 
@@ -294,15 +294,12 @@ class PlayerControlWidget(QWidget):
         self.show_scaled_cover()
 
     def show_waiting_overlay(self):
-        # print("showWaitingOverlay")
-
         pix = QPixmap(100, 100)
         pix.fill(QtGui.QColor("transparent"))
         self.cover.setPixmap(pix)
 
         self.waitOverlay.showOverlay()
         self.waitOverlay.resize(self.cover.size())
-        # self.show()
 
     def show_scaled_cover(self):
         if not self.coverPixmap.isNull():
@@ -363,8 +360,8 @@ class PlayerControlWidget(QWidget):
         )
 
     def set_current_track_in_thread(self, title):
-        processThread = threading.Thread(target=self.set_current_track, args=[title])
-        processThread.start()
+        process_thread = threading.Thread(target=self.set_current_track, args=[title])
+        process_thread.start()
 
     def set_current_track(self, title=""):
         if self.player is None:
@@ -387,25 +384,25 @@ class PlayerControlWidget(QWidget):
 
     def show_cover(self, trk=None):
         if self.player.radioMode:
-            coverUrl = self.player.get_live_cover_url()
-            if coverUrl == "":
+            cover_url = self.player.get_live_cover_url()
+            if cover_url == "":
                 rad = self.player.get_current_radio()
                 if rad is not None:
-                    coverUrl = rad.get_radio_pic()
+                    cover_url = rad.get_radio_pic()
 
-            if coverUrl is None:
-                coverUrl = ""
-            logger.debug("showCover: %s", coverUrl)
-            if self.currentCoverPath == coverUrl:
+            if cover_url is None:
+                cover_url = ""
+            logger.debug("showCover: %s", cover_url)
+            if self.currentCoverPath == cover_url:
                 self.isWaitingCover = False
                 self.refresh_wait_overlay()
                 return
 
-            if coverUrl != "":
+            if cover_url != "":
                 self.coverPixmap = QPixmap()
                 self.cover.setPixmap(self.coverPixmap)
-                self.currentCoverPath = coverUrl
-                self.picFromUrlThread.url = coverUrl
+                self.currentCoverPath = cover_url
+                self.picFromUrlThread.url = cover_url
                 self.isWaitingCover = True
                 self.picFromUrlThread.start()
             else:
@@ -420,7 +417,7 @@ class PlayerControlWidget(QWidget):
                     self.coverPixmap = self.defaultPixmap
                 else:
                     self.currentCoverPath = trk.parentAlbum.get_cover_path()
-                    self.coverPixmap = self.picBufferManager.getPic(
+                    self.coverPixmap = self.picBufferManager.get_pic(
                         self.currentCoverPath, "playerControl"
                     )
 
@@ -514,5 +511,4 @@ class PlayerControlWidget(QWidget):
     def on_player_position_changed(self, event=None):
         if not self.isTimeSliderDown:
             pos = self.player.get_position()
-            # print('onPlayerPositionChanged='+str(pos))
             self.timeSlider.setValue(pos * 1000)

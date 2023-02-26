@@ -9,15 +9,6 @@
 
 # Import Libraries
 import sys
-
-import urllib.request
-from urllib.request import Request, urlopen
-from urllib.request import URLError, HTTPError
-from urllib.parse import quote
-import http.client
-from http.client import IncompleteRead, BadStatusLine
-http.client._MAXHEADERS = 1000
-
 import time  # Importing the time library to check the time of code execution
 import os
 import argparse
@@ -27,8 +18,16 @@ import json
 import re
 import codecs
 import socket
-
 import logging
+
+import urllib.request
+from urllib.request import Request, urlopen
+from urllib.request import URLError, HTTPError
+from urllib.parse import quote
+import http.client
+from http.client import IncompleteRead, BadStatusLine
+
+http.client._MAXHEADERS = 1000
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +37,7 @@ args_list = ["keywords", "keywords_from_file", "prefix_keywords", "suffix_keywor
              "output_directory", "image_directory", "no_directory", "proxy", "specific_site",
              "print_urls", "print_size", "print_paths", "metadata", "extract_metadata", "socket_timeout",
              "thumbnail", "thumbnail_only", "language", "prefix", "related_images", "safe_search", "no_numbering",
-             "offset", "no_download","save_source","silent_mode","ignore_urls"]
+             "offset", "no_download", "save_source", "silent_mode", "ignore_urls"]
 
 
 def user_input():

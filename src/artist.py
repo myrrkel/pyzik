@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from typing import List
 from operator import itemgetter, attrgetter
 import random
 from album import Album
-import format_string as FS
+import format_string
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-def getSimplestTitle(title, char):
+def get_simplest_title(title, char):
     simple = title.replace(".", char)
     simple = simple.replace(",", char)
     simple = simple.replace("'", char)
@@ -22,7 +23,7 @@ def getSimplestTitle(title, char):
     return simple
 
 
-def getAlternativeTitle(title):
+def get_alternative_title(title):
     alter = title
     if " & " in alter:
         alter = alter.replace(" & ", " And ")
@@ -31,8 +32,8 @@ def getAlternativeTitle(title):
     return alter
 
 
-def filterAlbumsByTitle(seq, title):
-    title = FS.get_search_key(title.upper())
+def filter_albums_by_title(seq, title):
+    title = format_string.get_search_key(title.upper())
 
     for el in seq:
         if el.get_search_key() == title:
@@ -45,13 +46,13 @@ class Artist:
     Artist's class, the have
     """
 
-    def __init__(self, name, id):
-        self.artist_id = id
+    def __init__(self, name, artist_id):
+        self.artist_id = artist_id
         self.name = self.format_name(name)
         self.countryID = 0
         self.categoryID = 0
         self.style_ids = set()
-        self.albums = []
+        self.albums: List[Album] = list()
         self.itemListViewArtist = None
         self.searchKey = ""
 
@@ -63,7 +64,7 @@ class Artist:
 
     def get_search_key(self):
         if self.searchKey == "":
-            self.searchKey = FS.get_search_key(self.name)
+            self.searchKey = format_string.get_search_key(self.name)
         return self.searchKey
 
     def print_infos(self):
@@ -87,6 +88,6 @@ class Artist:
 
     def find_albums(self, stitle):
         albumList = []
-        for alb in filterAlbumsByTitle(self.albums, stitle):
+        for alb in filter_albums_by_title(self.albums, stitle):
             albumList.append(alb)
         return albumList

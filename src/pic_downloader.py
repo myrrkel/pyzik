@@ -12,13 +12,13 @@ class PicDownloader:
     lastTempFile = ""
     lastUrl = ""
 
-    def getPic(self, url):
+    def get_pic(self, url):
         if url == "":
             self.lastUrl = url
             return
 
         if self.lastUrl != url:
-            self.cleanLastTempFile()
+            self.clean_last_temp_file()
             self.lastUrl = url
             response = requests.get(
                 url,
@@ -41,7 +41,7 @@ class PicDownloader:
 
         return self.lastTempFile
 
-    def cleanLastTempFile(self):
+    def clean_last_temp_file(self):
         if self.lastTempFile != "":
             print("CleanTempFile:" + self.lastTempFile)
             os.remove(self.lastTempFile)
@@ -52,4 +52,4 @@ if __name__ == "__main__":
     pDL = PicDownloader()
     url = "http://jamesostafford.files.wordpress.com/2012/03/41-edgar-broughton-band-inside-out.jpg"
 
-    pDL.getPic(url)
+    pDL.get_pic(url)

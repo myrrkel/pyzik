@@ -2,16 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import re
-import os
-
-import shutil
+from typing import List
 import fnmatch
-import track
+from track import Track
 import database
 from files_utils import *
 from utils import *
 from global_constants import *
-import format_string as FS
+import format_string
 import logging
 
 logger = logging.getLogger(__name__)
@@ -184,7 +182,7 @@ class Album:
         self.size = 0
         self.length = 0
         self.to_verify = False
-        self.tracks = []
+        self.tracks: List[Track] = list()
         self.images = []
         self.style_ids = set()
         self.doStop = False
@@ -221,7 +219,7 @@ class Album:
 
     def get_search_key(self):
         if self.searchKey == "":
-            self.searchKey = FS.get_search_key(self.title.upper())
+            self.searchKey = format_string.get_search_key(self.title.upper())
         return self.searchKey
 
     def print_infos(self):
@@ -406,35 +404,31 @@ class Album:
         files = os.listdir(current_dir)
         files.sort()
 
-        nTrack = track.Track("", "")
-
         for file in files:
             if self.doStop:
                 break
-            if os.path.isdir(os.path.join(current_dir, str(file))):
+            file = str(file)
+            if os.path.isdir(os.path.join(current_dir, file)):
                 # file is a directory
-                logger.debug("get_tracks() sub dir: %s ; %s", subdir, str(file))
-                res = self.get_tracks(
-                    os.path.join(subdir, str(file)), first_file_only=first_file_only
-                )
+                logger.debug("get_tracks() sub dir: %s ; %s", subdir, file)
+                res = self.get_tracks(os.path.join(subdir, file),
+                                      first_file_only=first_file_only)
             else:
                 for ext in musicFilesExtension:
                     if fnmatch.fnmatch(file.lower(), "*." + ext):
-                        sfile = str(file)
-
-                        if "." in sfile:
-                            filename, file_extension = os.path.splitext(sfile)
-                            itrack = track.Track(filename, file_extension, subdir)
-                            itrack.path = current_dir
-                            itrack.parentAlbum = self
+                        if "." in file:
+                            filename, file_extension = os.path.splitext(file)
+                            track = Track(filename, file_extension, subdir)
+                            track.path = current_dir
+                            track.parentAlbum = self
 
                             if first_file_only:
-                                itrack.get_mutagen_tags(self.get_album_dir())
-                                self.tracks.append(itrack)
-                                return itrack
+                                track.get_mutagen_tags(self.get_album_dir())
+                                self.tracks.append(track)
+                                return track
                             else:
-                                itrack.get_mutagen_tags(self.get_album_dir())
-                                self.tracks.append(itrack)
+                                track.get_mutagen_tags(self.get_album_dir())
+                                self.tracks.append(track)
                             break
         return res
 
@@ -468,8 +462,8 @@ class Album:
 
                 for ext in imageFilesExtension:
                     if fnmatch.fnmatch(file.lower(), "*." + ext):
-                        sfile = os.path.join(current_dir, file)
-                        self.images.append(sfile)
+                        file_name = os.path.join(current_dir, file)
+                        self.images.append(file_name)
                         break
 
     def get_cover(self):
@@ -554,19 +548,19 @@ class Album:
 
     def update_title(self):
         db = database.Database()
-        db.updateValue("albums", "title", self.title, "album_id", self.album_id)
+        db.update_value("albums", "title", self.title, "album_id", self.album_id)
 
     def update_year(self):
         db = database.Database()
-        db.updateValue("albums", "year", self.year, "album_id", self.album_id)
+        db.update_value("albums", "year", self.year, "album_id", self.album_id)
 
     def update_size(self):
         db = database.Database()
-        db.updateValue("albums", "size", self.size, "album_id", self.album_id)
+        db.update_value("albums", "size", self.size, "album_id", self.album_id)
 
     def update_length(self):
         db = database.Database()
-        db.updateValue("albums", "length", self.length, "album_id", self.album_id)
+        db.update_value("albums", "length", self.length, "album_id", self.album_id)
 
     def update(self):
         self.update_title()

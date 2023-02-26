@@ -19,7 +19,7 @@ class CustomControlsWidget(QtWidgets.QWidget):
 
 
 class CustomWidget(QtWidgets.QDialog):
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self)
         self.parent = parent
         self.setWindowFlags(QtCore.Qt.Window)
@@ -102,9 +102,9 @@ class CustomWidget(QtWidgets.QDialog):
         item.setText(_translate("history", "Album"))
 
         self.setWindowTitle(_translate("history", "History"))
-        self.historyControls.refreshButton.setText(_translate("history", "Refresh"))
+        self.historyControls.refreshButton.set_text(_translate("history", "Refresh"))
 
-    def showTableItems(self, items):
+    def show_table_items(self, items):
         self.tableWidgetItems.setStyleSheet(
             "selection-background-color: black;selection-color: white;"
         )
@@ -113,19 +113,19 @@ class CustomWidget(QtWidgets.QDialog):
         i = 0
         for item in items:
             self.tableWidgetItems.insertRow(i)
-            titleItem = QtWidgets.QTableWidgetItem(item.getColumnText(0))
+            titleItem = QtWidgets.QTableWidgetItem(item.get_column_text(0))
             titleItem.setFlags(titleItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetItems.setItem(i, 0, titleItem)
 
-            artistItem = QtWidgets.QTableWidgetItem(item.getColumnText(1))
+            artistItem = QtWidgets.QTableWidgetItem(item.get_column_text(1))
             artistItem.setFlags(artistItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetItems.setItem(i, 1, artistItem)
 
-            albumItem = QtWidgets.QTableWidgetItem(item.getColumnText(2))
+            albumItem = QtWidgets.QTableWidgetItem(item.get_column_text(2))
             albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetItems.setItem(i, 2, albumItem)
 
-            durationItem = QtWidgets.QTableWidgetItem(item.getColumnText(3))
+            durationItem = QtWidgets.QTableWidgetItem(item.get_column_text(3))
             durationItem.setFlags(durationItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetItems.setItem(i, 3, durationItem)
 
@@ -134,10 +134,7 @@ class CustomWidget(QtWidgets.QDialog):
 
 if __name__ == "__main__":
     import sys
-
     app = QtWidgets.QApplication(sys.argv)
-
-    custWidget = CustomWidget(app)
-
+    custWidget = CustomWidget()
     custWidget.show()
     sys.exit(app.exec_())

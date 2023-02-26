@@ -97,7 +97,7 @@ class RadioManager:
                 "http://www.dar.fm/uberstationurlxml.php?station_id="
                 + str(id)
                 + "&partner_token="
-                + darAPIKey
+                + dar_api_key
             )
             print(url)
             r = requests.get(url)
@@ -118,7 +118,7 @@ class RadioManager:
         search = urllib.parse.quote_plus(search)
         try:
             r = requests.post(
-                "http://api.dirble.com/v2/search?token=" + dirbleAPIKey,
+                "http://api.dirble.com/v2/search?token=" + dirble_api_key,
                 data={"query": search},
                 timeout=2,
             )
@@ -246,7 +246,7 @@ class RadioManager:
 
     def load_fav_radios(self):
         self.favRadios = []
-        for row in self.music_base.db.getSelect(
+        for row in self.music_base.db.get_select(
             """
             SELECT radioID, name, stream, image, thumb, categoryID, sortID
             FROM radios ORDER BY sortID"""

@@ -159,7 +159,7 @@ class ExploreEventsWidget(QtWidgets.QDialog):
 
     def load_dir_list(self, combo):
         model = QtGui.QStandardItemModel(combo)
-        for music_dir in self.musicbase.musicDirectoryCol.musicDirectories:
+        for music_dir in self.musicbase.musicDirectoryCol.music_directories:
             itemDir = QtGui.QStandardItem(music_dir.dirName)
             itemDir.music_dir = music_dir
             model.appendRow(itemDir)

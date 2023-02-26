@@ -1,27 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QSize, QCoreApplication
 from PyQt5.QtWidgets import (
     QApplication,
     QWidget,
-    QListWidget,
     QDialog,
     QPushButton,
     QVBoxLayout,
-    QHeaderView,
     QHBoxLayout,
-    QSlider,
     QSizePolicy,
-    QFrame,
-    QLabel,
-    QShortcut,
-    QListWidgetItem,
 )
 
 from pic_from_url_thread import PicFromUrlThread
-from full_screen_cover_widget import FullScreenCoverWidget
 from thumbnail_viewer_widget import ThumbnailViewerWidget
 from cover_art_finder import CoverArtFinder
 from svg_icon import *
@@ -31,12 +22,8 @@ logger = logging.getLogger(__name__)
 
 _translate = QCoreApplication.translate
 
-import sys
-import time
-
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
-
 from wait_overlay_widget import WaitOverlay
 
 

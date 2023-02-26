@@ -15,11 +15,10 @@ logger = logging.getLogger(__name__)
 class Database:
     """
     Do the SQL things
-
     """
 
-    def __init__(self, isHistory=False, db_path=""):
-        self.isHistory = isHistory
+    def __init__(self, is_history=False, db_path=""):
+        self.isHistory = is_history
 
         if self.isHistory:
             self.databaseName = "history.db"
@@ -34,23 +33,23 @@ class Database:
         self.connection = ""
         self.memoryConnection = ""
 
-        self.createConnection()
+        self.create_connection()
 
-    def initDataBase(self):
+    def init_data_base(self):
         print("Database in " + self.dataPath)
         if self.isHistory:
-            self.createTablePlayHistoryAlbum()
-            self.createTablePlayHistoryTrack()
-            self.createTablePlayHistoryRadio()
-            self.checkHistoryInMainDB()
+            self.create_table_play_history_album()
+            self.create_table_play_history_track()
+            self.create_table_play_history_radio()
+            self.check_history_in_main_db()
 
         else:
-            self.createTableArtists()
-            self.createTableAlbums()
-            self.createTableMusicDirectories()
-            self.createTableRadios()
+            self.create_table_artists()
+            self.create_table_albums()
+            self.create_table_music_directories()
+            self.create_table_radios()
 
-    def initMemoryDB(self):
+    def init_memory_db(self):
         # Read database to tempfile
 
         tempfile = StringIO()
@@ -69,11 +68,11 @@ class Database:
 
         self.connection = self.memoryConnection
 
-    def saveMemoryToDisc(self):
+    def save_memory_to_disc(self):
         copyfile(self.dataPath, self.dataPath + "k")
 
-        self.createConnection()
-        self.dropAll()
+        self.create_connection()
+        self.drop_all()
         with self.connection:
             for line in self.memoryConnection.iterdump():
                 if line not in (
@@ -84,7 +83,7 @@ class Database:
 
         self.connection.commit()
 
-    def createConnection(self):
+    def create_connection(self):
         """create a database connection to the SQLite database
         specified by self.dataPath
         :return: Connection object or None
@@ -108,91 +107,91 @@ class Database:
         except sqlite3.Error as e:
             print(e)
 
-    def execSQLWithoutResult(self, sql, attachMain=False):
+    def exec_sql_without_result(self, sql, attach_main=False):
         try:
             c = self.connection.cursor()
-            if attachMain:
+            if attach_main:
                 c.execute("ATTACH DATABASE '" + self.dataPathMain + "' as 'maindb';")
             c.execute("BEGIN;")
             c.execute(sql)
             c.execute("COMMIT;")
-            if attachMain:
+            if attach_main:
                 c.execute("DETACH DATABASE 'maindb';")
             return True
         except sqlite3.Error as e:
             print(e)
             return False
 
-    def dropTable(self, tableName, attachMain=False):
+    def drop_table(self, table_name, attach_main=False):
         """drop the table called tableName"""
-        print("dropTable " + tableName)
-        self.execSQLWithoutResult("DROP TABLE IF EXISTS " + tableName, attachMain)
+        print("dropTable " + table_name)
+        self.exec_sql_without_result("DROP TABLE IF EXISTS " + table_name, attach_main)
 
-    def checkHistoryInMainDB(self):
+    def check_history_in_main_db(self):
         if self.isHistory:
-            if self.tableExistsInMainDB("playHistoryRadio") > 0:
-                if self.getCountTableInMainDB("playHistoryRadio") > 0:
+            if self.table_exists_in_main_db("playHistoryRadio") > 0:
+                if self.get_count_table_in_main_db("playHistoryRadio") > 0:
                     query = """INSERT INTO playHistoryRadio (radioName, title, playDate) 
                            SELECT radioName, title, playDate FROM maindb.playHistoryRadio as phr;"""
-                    if self.execSQLWithoutResult(query, True):
-                        self.dropTable("maindb.playHistoryRadio", True)
+                    if self.exec_sql_without_result(query, True):
+                        self.drop_table("maindb.playHistoryRadio", True)
 
-            if self.tableExistsInMainDB("playHistoryAlbum") > 0:
-                if self.getCountTableInMainDB("playHistoryAlbum") > 0:
+            if self.table_exists_in_main_db("playHistoryAlbum") > 0:
+                if self.get_count_table_in_main_db("playHistoryAlbum") > 0:
                     query = """INSERT INTO playHistoryAlbum (albumID, playDate) 
                            SELECT albumID, playDate FROM maindb.playHistoryAlbum as pha;"""
-                    if self.execSQLWithoutResult(query, True):
-                        self.dropTable("maindb.playHistoryAlbum", True)
+                    if self.exec_sql_without_result(query, True):
+                        self.drop_table("maindb.playHistoryAlbum", True)
 
-            if self.tableExistsInMainDB("playHistoryTrack") > 0:
-                if self.getCountTableInMainDB("playHistoryTrack") > 0:
+            if self.table_exists_in_main_db("playHistoryTrack") > 0:
+                if self.get_count_table_in_main_db("playHistoryTrack") > 0:
                     query = """INSERT INTO playHistoryTrack (albumID, fileName, playDate) 
                            SELECT albumID, fileName, playDate FROM maindb.playHistoryTrack as pht;"""
-                    if self.execSQLWithoutResult(query, True):
-                        self.dropTable("maindb.playHistoryTrack", True)
+                    if self.exec_sql_without_result(query, True):
+                        self.drop_table("maindb.playHistoryTrack", True)
 
-    def dropAll(self):
+    def drop_all(self):
         if self.isHistory:
-            self.dropHistoryTables()
+            self.drop_history_tables()
         else:
-            self.dropAllTables()
-            self.dropTable("musicDirectories")
+            self.drop_all_tables()
+            self.drop_table("musicDirectories")
 
         self.vacuum()
 
-    def dropAllTables(self):
-        self.dropTable("artists")
-        self.dropTable("albums")
-        self.dropTable("radios")
+    def drop_all_tables(self):
+        self.drop_table("artists")
+        self.drop_table("albums")
+        self.drop_table("radios")
         # self.dropTable("musicDirectories")
 
-    def dropHistoryTables(self):
-        self.dropTable("playHistoryAlbum")
-        self.dropTable("playHistoryTrack")
-        self.dropTable("playHistoryRadio")
+    def drop_history_tables(self):
+        self.drop_table("playHistoryAlbum")
+        self.drop_table("playHistoryTrack")
+        self.drop_table("playHistoryRadio")
 
-    def insertLine(self, insertSQL):
+    def insert_line(self, insert_sql):
         """insert a line from the insertSQL statement"""
         try:
             c = self.connection.cursor()
-            c.execute(insertSQL)
+            c.execute(insert_sql)
             self.connection.commit()
             return c.lastrowid
         except sqlite3.Error as e:
             print(e)
             return -1
 
-    def createTableArtists(self):
-        sqlCreateTableArtist = """  CREATE TABLE IF NOT EXISTS artists (
+    def create_table_artists(self):
+        req = """  CREATE TABLE IF NOT EXISTS artists (
                                     artistID integer PRIMARY KEY,
                                     name text NOT NULL,
                                     countryID integer,
                                     categoryID integer
                                 ); """
-        self.execSQLWithoutResult(sqlCreateTableArtist)
+        self.exec_sql_without_result(req)
 
-    def createTableRadios(self):
-        sqlCreateTableRadio = """  CREATE TABLE IF NOT EXISTS radios (
+    def create_table_radios(self):
+        req = """  CREATE TABLE IF NOT EXISTS radios (
                                     radioID integer PRIMARY KEY,
                                     name text NOT NULL,
                                     stream text NOT NULL,
@@ -201,10 +200,10 @@ class Database:
                                     categoryID integer,
                                     sortID integer
                                 ); """
-        self.execSQLWithoutResult(sqlCreateTableRadio)
+        self.exec_sql_without_result(req)
 
-    def createTableAlbums(self):
-        sqlCreateTableAlbum = """ CREATE TABLE IF NOT EXISTS albums (
+    def create_table_albums(self):
+        req = """ CREATE TABLE IF NOT EXISTS albums (
                                         albumID integer PRIMARY KEY,
                                         title text NOT NULL,
                                         dirName text,
@@ -216,120 +215,115 @@ class Database:
                                         FOREIGN KEY (artistID) REFERENCES artists(artistID),
                                         FOREIGN KEY (musicDirectoryID) REFERENCES musicDirectories(musicDirectoryID)
                                     ); """
-        self.execSQLWithoutResult(sqlCreateTableAlbum)
+        self.exec_sql_without_result(req)
 
-        if not self.columnExistsInTable("albums", "creationDate"):
-            print("add column creationdate")
-            sqlAddcolumnDirType = """ ALTER TABLE albums ADD COLUMN creationDate date"""
-            self.execSQLWithoutResult(sqlAddcolumnDirType)
+        if not self.column_exists_in_table("albums", "creationDate"):
+            sql_add_column_dir_type = """ ALTER TABLE albums ADD COLUMN creationDate date"""
+            self.exec_sql_without_result(sql_add_column_dir_type)
 
-        if not self.columnExistsInTable("albums", "length"):
-            print("add column length")
-            sqlAddcolumnDirType = """ ALTER TABLE albums ADD COLUMN length int"""
-            self.execSQLWithoutResult(sqlAddcolumnDirType)
+        if not self.column_exists_in_table("albums", "length"):
+            sql_add_column_dir_type = """ ALTER TABLE albums ADD COLUMN length int"""
+            self.exec_sql_without_result(sql_add_column_dir_type)
 
-        if not self.columnExistsInTable("albums", "size"):
-            print("add column size")
-            sqlAddcolumnDirType = """ ALTER TABLE albums ADD COLUMN size int"""
-            self.execSQLWithoutResult(sqlAddcolumnDirType)
+        if not self.column_exists_in_table("albums", "size"):
+            sql_add_column_dir_type = """ ALTER TABLE albums ADD COLUMN size int"""
+            self.exec_sql_without_result(sql_add_column_dir_type)
 
-    def createTableMusicDirectories(self):
-        sqlCreateTableMusicDirectories = """ CREATE TABLE IF NOT EXISTS musicDirectories (
+    def create_table_music_directories(self):
+        req = """ CREATE TABLE IF NOT EXISTS musicDirectories (
                                         musicDirectoryID integer PRIMARY KEY,
                                         dirPath text NOT NULL,
                                         dirName text,
                                         styleID integer
                                     ); """
-        self.execSQLWithoutResult(sqlCreateTableMusicDirectories)
+        self.exec_sql_without_result(req)
 
-        if not self.columnExistsInTable("musicDirectories", "dirType"):
-            sqlAddcolumnDirType = """ ALTER TABLE musicDirectories ADD COLUMN dirType integer default 0 """
-            self.execSQLWithoutResult(sqlAddcolumnDirType)
+        if not self.column_exists_in_table("musicDirectories", "dirType"):
+            sql_add_column_dir_type = """ ALTER TABLE musicDirectories ADD COLUMN dirType integer default 0 """
+            self.exec_sql_without_result(sql_add_column_dir_type)
 
-    def createTablePlayHistoryAlbum(self):
-        sqlCreateTablePlayHistoryAlbum = """ CREATE TABLE IF NOT EXISTS playHistoryAlbum (
+    def create_table_play_history_album(self):
+        req = """ CREATE TABLE IF NOT EXISTS playHistoryAlbum (
                                         historyAlbumID integer PRIMARY KEY,
                                         albumID integer,
                                         playDate datetime,
                                         FOREIGN KEY (albumID) REFERENCES albums(albumID)
                                     ); """
-        self.execSQLWithoutResult(sqlCreateTablePlayHistoryAlbum)
+        self.exec_sql_without_result(req)
 
-    def createTablePlayHistoryTrack(self):
-        sqlCreateTablePlayHistoryTrack = """ CREATE TABLE IF NOT EXISTS playHistoryTrack (
+    def create_table_play_history_track(self):
+        req = """ CREATE TABLE IF NOT EXISTS playHistoryTrack (
                                         historyTrackID integer PRIMARY KEY,
                                         albumID integer,
                                         fileName text NOT NULL,
                                         playDate datetime,
                                         FOREIGN KEY (albumID) REFERENCES albums(albumID)
                                     ); """
-        self.execSQLWithoutResult(sqlCreateTablePlayHistoryTrack)
+        self.exec_sql_without_result(req)
 
-    def createTablePlayHistoryRadio(self):
-        sqlCreateTablePlayHistoryRadio = """ CREATE TABLE IF NOT EXISTS playHistoryRadio (
+    def create_table_play_history_radio(self):
+        req = """ CREATE TABLE IF NOT EXISTS playHistoryRadio (
                                         historyRadioID integer PRIMARY KEY,
                                         radioName text NOT NULL,
                                         title text,
                                         playDate datetime
                                     ); """
-        self.execSQLWithoutResult(sqlCreateTablePlayHistoryRadio)
+        self.exec_sql_without_result(req)
 
-        if not self.columnExistsInTable("playHistoryRadio", "radioID"):
-            sqlAddcolumnDirType = """ ALTER TABLE playHistoryRadio ADD COLUMN radioID integer default 0 """
-            self.execSQLWithoutResult(sqlAddcolumnDirType)
+        if not self.column_exists_in_table("playHistoryRadio", "radioID"):
+            sql_add_column_dir_type = """ ALTER TABLE playHistoryRadio ADD COLUMN radioID integer default 0 """
+            self.exec_sql_without_result(sql_add_column_dir_type)
 
-    def getSelect(self, select_sql, attachMain=False, params=None):
-        # print('getSelect: '+select_sql)
+    def get_select(self, select_sql, attach_main=False, params=None):
         c = self.connection.cursor()
         if params is None:
-            if attachMain:
+            if attach_main:
                 c.execute("ATTACH DATABASE '" + self.dataPathMain + "' as 'maindb';")
             c.execute(select_sql)
             rows = c.fetchall()
-            if attachMain:
+            if attach_main:
                 c.execute("DETACH DATABASE 'maindb';")
         else:
             c.execute(select_sql, params)
             rows = c.fetchall()
         return rows
 
-    def getCountTable(self, table):
-        result = self.getSelect("SELECT COUNT(*) FROM " + table + ";")
+    def get_count_table(self, table):
+        result = self.get_select("SELECT COUNT(*) FROM " + table + ";")
         print("count=" + str(result))
         return result[0][0]
 
-    def getCountTableInMainDB(self, table):
-        result = self.getSelect(
-            "SELECT COUNT(*) FROM maindb." + table + ";", attachMain=True
-        )
-        print("count=" + str(result))
-        return result[0][0]
+    def get_count_table_in_main_db(self, table):
+        try:
+            result = self.get_select(
+                "SELECT COUNT(*) FROM maindb." + table + ";", attach_main=True
+            )
+            print("count=" + str(result))
+            return result[0][0]
+        except Exception as err:
+            print(err)
+            pass
+        return 0
 
-    def tableExists(self, table):
-        query = (
-            "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='"
-            + table
-            + "'"
-        )
-        result = self.getSelect(query)
+    def table_exists(self, table):
+        query = f"SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='{table}'"
+        result = self.get_select(query)
         print("table " + table + " exists=" + str(result))
         return result[0][0]
 
-    def tableExistsInMainDB(self, table):
-        query = (
-            "SELECT COUNT(*) FROM maindb.sqlite_master WHERE type='table' AND name='"
-            + table
-            + "'"
-        )
-        result = self.getSelect(query, True)
-        # print("table "+table+" exists="+str(result))
-        return result[0][0]
+    def table_exists_in_main_db(self, table):
+        try:
+            query = f"SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='{table}'"
+            result = self.get_select(query, True)
+            return result[0][0]
+        except Exception as err:
+            print(err)
+            pass
+        return False
 
-    def columnExistsInTable(self, table, column):
-        # print('columnExistsInTable: '+table+"."+column)
-        sqlExists = "PRAGMA table_info('" + table + "');"
-        columns = []
-        columns = self.getSelect(sqlExists)
+    def column_exists_in_table(self, table, column):
+        req = "PRAGMA table_info('" + table + "');"
+        columns = self.get_select(req)
         for col in columns:
             if column == col[1]:
                 return True
@@ -347,26 +341,26 @@ class Database:
             print(e)
             return 0
 
-    def deleteWithID(self, table, idName, idValue):
+    def delete_with_id(self, table, id_name, id_value):
         """Delete a row from table where the id called idName == idValue"""
         rowcount = 0
         try:
             c = self.connection.cursor()
-            c.execute("DELETE FROM " + table + " WHERE " + idName + "=" + str(idValue))
+            c.execute("DELETE FROM " + table + " WHERE " + id_name + "=" + str(id_value))
             self.connection.commit()
             return c.rowcount
         except sqlite3.Error as e:
             print(e)
             return 0
 
-    def insertAlbum(self, album):
+    def insert_album(self, album):
         try:
             c = self.connection.cursor()
-            sqlInsertAlbum = """    INSERT INTO albums (title, artistID,dirPath,year,musicDirectoryID,creationDate)
+            req = """    INSERT INTO albums (title, artistID,dirPath,year,musicDirectoryID,creationDate)
                                 VALUES (?,?,?,?,?,date('now'));
                           """
             c.execute(
-                sqlInsertAlbum,
+                req,
                 (
                     album.title,
                     album.artist_id,
@@ -382,13 +376,13 @@ class Database:
 
         return album.album_id
 
-    def insertArtist(self, artist):
+    def insert_artist(self, artist):
         try:
             c = self.connection.cursor()
-            sqlInsertArtist = """    INSERT INTO artists (name)
+            req = """    INSERT INTO artists (name)
                                 VALUES (?);
                           """
-            c.execute(sqlInsertArtist, (artist.name,))
+            c.execute(req, (artist.name,))
             self.connection.commit()
             artist.artist_id = c.lastrowid
         except sqlite3.Error as e:
@@ -396,67 +390,62 @@ class Database:
 
         return artist.artist_id
 
-    def insertTrackHistory(self, albumID, fileName):
+    def insert_track_history(self, album_id, file_name):
         """Insert track in history"""
 
         try:
             c = self.connection.cursor()
-            sqlInsertTrackHistory = """    INSERT INTO playHistoryTrack (albumID, fileName, playDate)
+            req = """    INSERT INTO playHistoryTrack (albumID, fileName, playDate)
                         VALUES (?,?,datetime('now','localtime'));"""
 
-            c.execute(sqlInsertTrackHistory, (albumID, fileName))
+            c.execute(req, (album_id, file_name))
             self.connection.commit()
         except sqlite3.Error as e:
             print("insertTrackHistory error=" + str(e))
             return -1
 
-    def insertRadioHistory(self, radioName, title):
+    def insert_radio_history(self, radio_name, title):
         """Insert radio title in history"""
         try:
             c = self.connection.cursor()
-            sqlInsertRadioHistory = """    INSERT INTO playHistoryRadio (radioName, title, playDate)
+            req = """    INSERT INTO playHistoryRadio (radioName, title, playDate)
                         VALUES (?,?,datetime('now','localtime'));"""
 
-            c.execute(sqlInsertRadioHistory, (radioName, title))
+            c.execute(req, (radio_name, title))
             self.connection.commit()
         except sqlite3.Error as e:
             print("insertRadioHistory error=" + str(e))
             return -1
 
-    def insertAlbumHistory(self, albumID):
+    def insert_album_history(self, album_id):
         """Insert album in history"""
         try:
             c = self.connection.cursor()
-            sqlInsertAlbumHistory = """    INSERT INTO playHistoryAlbum (albumID, playDate)
+            req = """    INSERT INTO playHistoryAlbum (albumID, playDate)
                         VALUES (?,datetime('now','localtime'));"""
 
-            c.execute(sqlInsertAlbumHistory, (albumID,))
+            c.execute(req, (album_id,))
             self.connection.commit()
         except sqlite3.Error as e:
             print("insertAlbumHistory error=" + str(e))
             return -1
 
-        # sql = """    INSERT INTO playHistoryAlbum ({columns})
-        #                 VALUES ('{albumID}',datetime('now','localtime'));
-        #           """.format(columns="albumID, playDate",albumID=albumID)
-        # return self.database.insert(sql)
-
-    def updateValue(self, table, column, value, columnID, rowID):
+    def update_value(self, table, column, value, column_id, row_id):
         try:
             c = self.connection.cursor()
-            sqlUpdate = (
+            req = (
                 "UPDATE "
                 + table
                 + " SET "
                 + column
                 + "=? WHERE "
-                + columnID
+                + column_id
                 + "="
-                + str(rowID)
+                + str(row_id)
                 + ";"
             )
 
-            c.execute(sqlUpdate, (value,))
+            c.execute(req, (value,))
 
             self.connection.commit()
 

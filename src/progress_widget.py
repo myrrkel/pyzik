@@ -120,7 +120,8 @@ if __name__ == "__main__":
     from pyzik import *
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
+    dark = darkStyle.darkStyle()
+    app.setStyleSheet(dark.load_stylesheet_pyqt5())
 
     progress = ProgressWidget(app, can_be_closed=False, with_file_progress=True)
 

@@ -7,61 +7,61 @@ class HistoryItem:
     Defines different types of history items
     """
 
-    def __init__(self, playDate):
-        self.playDate = playDate
-        self.historyType = 0  # 2=Album, 1=Track, 3=Radio
+    def __init__(self, play_date):
+        self.play_date = play_date
+        self.history_type = 0  # 2=Album, 1=Track, 3=Radio
         self.data = None
 
-    def initHistoAlbum(self, albumID):
-        self.historyType = 1
-        self.data = dataHistoAlbum(albumID)
+    def init_histo_album(self, album_id):
+        self.history_type = 1
+        self.data = DataHistoryAlbum(album_id)
 
-    def initHistoTrack(self, albumID, fileName):
-        self.historyType = 2
-        self.data = dataHistoTrack(albumID, fileName)
+    def init_histo_track(self, album_id, file_name):
+        self.history_type = 2
+        self.data = DataHistoryTrack(album_id, file_name)
 
-    def initHistoRadio(self, radioName, title):
-        self.historyType = 3
-        self.data = dataHistoRadio(radioName, title)
+    def init_histo_radio(self, radio_name, title):
+        self.history_type = 3
+        self.data = DataHistoryRadio(radio_name, title)
 
-    def printData(self):
-        print(str(self.playDate) + " " + self.data.getInfo())
+    def print_data(self):
+        print(str(self.play_date) + " " + self.data.get_info())
 
-    def getColumnText(self, colID):
-        if colID == 0:
-            return str(self.playDate)
+    def get_column_text(self, col_id):
+        if col_id == 0:
+            return str(self.play_date)
         else:
-            return self.data.getColumnText(colID)
+            return self.data.get_column_text(col_id)
 
 
-class dataHistoAlbum:
-    def __init__(self, albumID):
-        self.album_id = albumID
+class DataHistoryAlbum:
+    def __init__(self, album_id):
+        self.album_id = album_id
         self.album = None
 
     def get_album(self, music_base):
         self.album = music_base.albumCol.get_album(self.album_id)
 
-    def getInfo(self):
+    def get_info(self):
         return "Artist: " + self.album.artist_name + " Album: " + self.album.title
 
-    def getColumnText(self, colID):
-        if colID == 1:
+    def get_column_text(self, col_id):
+        if col_id == 1:
             return ""
-        if colID == 2:
+        if col_id == 2:
             return self.album.artist_name
-        elif colID == 3:
+        elif col_id == 3:
             return self.album.title
         else:
             return ""
 
 
-class dataHistoTrack(dataHistoAlbum):
-    def __init__(self, albumID, fileName):
-        self.album_id = albumID
-        self.fileName = fileName
+class DataHistoryTrack(DataHistoryAlbum):
+    def __init__(self, album_id, file_name):
+        self.album_id = album_id
+        self.fileName = file_name
 
-    def getInfo(self):
+    def get_info(self):
         return (
             "Artist: "
             + self.album.artist_name
@@ -71,31 +71,31 @@ class dataHistoTrack(dataHistoAlbum):
             + self.fileName
         )
 
-    def getColumnText(self, colID):
-        if colID == 1:
+    def get_column_text(self, col_id):
+        if col_id == 1:
             return self.fileName
-        elif colID == 2:
+        elif col_id == 2:
             return self.album.artist_name
-        elif colID == 3:
+        elif col_id == 3:
             return self.album.title
         else:
             return ""
 
 
-class dataHistoRadio:
-    def __init__(self, radioName, title):
-        self.radioName = radioName
+class DataHistoryRadio:
+    def __init__(self, radio_name, title):
+        self.radioName = radio_name
         self.title = title
 
-    def getInfo(self):
+    def get_info(self):
         return "Radio: " + self.radioName + " Title: " + self.title
 
-    def getColumnText(self, colID):
-        if colID == 1:
+    def get_column_text(self, col_id):
+        if col_id == 1:
             return self.title
-        elif colID == 2:
+        elif col_id == 2:
             return self.radioName
-        elif colID == 3:
+        elif col_id == 3:
             return self.radioName
         else:
             return ""

@@ -215,10 +215,6 @@ if __name__ == "__main__":
     print("loadMusicBase")
     mb.load_music_base(False)
 
-    # alb = mb.albumCol.get_random_album()
-
-    # print("RamdomAlb="+alb.title)
-
     alb = mb.albumCol.get_album(1)
 
     app = QtWidgets.QApplication(sys.argv)

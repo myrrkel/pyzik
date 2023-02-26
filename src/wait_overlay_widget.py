@@ -76,7 +76,7 @@ class WaitOverlay(QWidget):
 
     def showOverlay(self):
         if self.timer == 0:
-            self.timer = self.startTimer(800 / self.nbDots)
+            self.timer = self.startTimer(int(800 / self.nbDots))
 
         self.show()
 

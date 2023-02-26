@@ -23,10 +23,10 @@ class SearchRadioThread(QThread):
     searchCurrentMachine = pyqtSignal(str, name="searchCurrentMachine")
     searchCompleted = pyqtSignal(int, name="searchCompleted")
 
-    def emitCurrentMachine(self, txt):
+    def emit_current_machine(self, txt):
         self.searchCurrentMachine.emit(txt + " - Results = " + str(len(self.resRadios)))
 
-    def emitProgress(self, val):
+    def emit_progress(self, val):
         if val != 0:
             self.searchProgress.emit((100 / self.machineNb) * val)
         else:
@@ -36,22 +36,22 @@ class SearchRadioThread(QThread):
         self.resRadios = []
         self.doStop = False
         i = 0
-        self.emitProgress(0)
+        self.emit_progress(0)
         if self.machines is None:
             self.machines = self.rm.machines
         self.machineNb = len(self.machines)
         for machine in self.machines:
             print(machine)
             i = i + 1
-            self.searchMachine(machine)
-            self.emitProgress(i)
+            self.search_machine(machine)
+            self.emit_progress(i)
             if self.doStop:
                 break
 
         self.searchCompleted.emit(1)
 
-    def searchMachine(self, machine):
-        self.emitCurrentMachine(machine)
+    def search_machine(self, machine):
+        self.emit_current_machine(machine)
         self.resRadios.extend(self.rm.search(self.search, machine))
 
     def stop(self):

@@ -21,7 +21,7 @@ class MusicBase:
 
     def __init__(self, db_path=""):
         self.db = Database(db_path=db_path)
-        self.db.initDataBase()
+        self.db.init_data_base()
         self.albumCol = AlbumCollection(self)
         self.artistCol = ArtistCollection(self)
         self.musicDirectoryCol = MusicDirectoryCollection(self)
@@ -31,9 +31,9 @@ class MusicBase:
         self.history = HistoryManager()
         self.radioMan = RadioManager(self)
 
-    def load_music_base(self, memoryDB=True):
-        if memoryDB:
-            self.db.initMemoryDB()
+    def load_music_base(self, memory_db=True):
+        if memory_db:
+            self.db.init_memory_db()
         self.musicDirectoryCol.load_music_directories()
         self.artistCol.load_artists()
         self.albumCol.load_albums()
@@ -41,7 +41,7 @@ class MusicBase:
         self.add_albums_to_artists()
         self.radioMan.load_fav_radios()
         self.init_available_genres()
-        self.history.initDataBase()
+        self.history.init_data_base()
 
     def refresh(self):
         self.add_genres_dir_to_albums()
@@ -53,41 +53,41 @@ class MusicBase:
         self.availableGenres = self.genres.get_available_genres_form_id_set(self.style_ids)
 
     def add_genres_dir_to_albums(self):
-        for alb in self.albumCol.albums:
-            md = self.musicDirectoryCol.get_music_directory(alb.music_directory_id)
-            if md != None:
-                if md.styleID >= -1:
-                    alb.add_style({md.styleID})
+        for album in self.albumCol.albums:
+            music_directory = self.musicDirectoryCol.get_music_directory(album.music_directory_id)
+            if music_directory is not None:
+                if music_directory.styleID >= -1:
+                    album.add_style({music_directory.styleID})
 
     def add_albums_to_artists(self):
-        for alb in self.albumCol.albums:
-            artistFound = self.artistCol.get_artist_by_id(alb.artist_id)
-            if artistFound is not None:
-                alb.artist_name = artistFound.name
-                artistFound.add_style(alb.style_ids)
-                artistFound.albums.append(alb)
+        for album in self.albumCol.albums:
+            artist_found = self.artistCol.get_artist_by_id(album.artist_id)
+            if artist_found is not None:
+                album.artist_name = artist_found.name
+                artist_found.add_style(album.style_ids)
+                artist_found.albums.append(album)
 
-    def delete_music_directory(self, musicDirectory):
-        self.musicDirectoryCol.delete_music_directory(musicDirectory)
+    def delete_music_directory(self, music_directory):
+        self.musicDirectoryCol.delete_music_directory(music_directory)
 
     def empty_datas(self):
         self.artistCol.artists = set()
         self.albumCol.albums = []
 
-    def generate_random_album_list(self, nb_alb=20, styleID=-2):
-        randomAlbList = []
+    def generate_random_album_list(self, nb_alb=20, style_id=-2):
+        random_alb_list = []
 
         for i in range(nb_alb):
             try_count = 0
-            alb = self.albumCol.get_random_album(styleID)
-            while alb in randomAlbList and try_count < 3:
-                alb = self.albumCol.get_random_album(styleID)
+            album = self.albumCol.get_random_album(style_id)
+            while album in random_alb_list and try_count < 3:
+                album = self.albumCol.get_random_album(style_id)
                 try_count += 1
 
-            if alb not in randomAlbList:
-                randomAlbList.append(alb)
+            if album not in random_alb_list:
+                random_alb_list.append(album)
 
-        return randomAlbList
+        return random_alb_list
 
     def import_albums(
         self,

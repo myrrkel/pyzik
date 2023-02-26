@@ -110,7 +110,7 @@ class MainWindowLoader(QMainWindow):
             self.defaultPixmap = get_svg_with_color_param("vinyl-record2.svg")
 
         self.fullScreenWidget = FullScreenWidget(self.player)
-        self.fullScreenWidget.connectPicDownloader(self.picFromUrlThread)
+        self.fullScreenWidget.connect_pic_downloader(self.picFromUrlThread)
         self.fullScreenWidget.defaultPixmap = self.defaultPixmap
         self.fullScreenWidget.picBufferManager = self.picBufferManager
         self.fullScreenCoverWidget = FullScreenCoverWidget()
@@ -254,7 +254,7 @@ class MainWindowLoader(QMainWindow):
         self.show_full_screen_cover()
 
     def show_full_screen_cover(self):
-        self.fullScreenCoverWidget.setPixmapFromUri(self.current_album.get_cover_path())
+        self.fullScreenCoverWidget.set_pixmap_from_uri(self.current_album.get_cover_path())
         self.fullScreenCoverWidget.show()
 
     def showEvent(self, event):
@@ -457,10 +457,10 @@ class MainWindowLoader(QMainWindow):
         self.exploreAlbumsDirectoriesThread.start()
 
     def on_menu_delete_database(self):
-        self.music_base.db.createConnection()
-        self.music_base.db.dropAllTables()
+        self.music_base.db.create_connection()
+        self.music_base.db.drop_all_tables()
         self.music_base.empty_datas()
-        self.music_base.db.initDataBase()
+        self.music_base.db.init_data_base()
         self.show_artists()
         self.init_album_table_widget()
         self.init_album_view()
@@ -478,10 +478,10 @@ class MainWindowLoader(QMainWindow):
         menu.exec(QtGui.QCursor.pos())
 
     def on_edit_album(self):
-        selRows = self.ui.tableWidgetAlbums.selectionModel().selectedRows()
-        if len(selRows) >= 0:
-            albumIDSel = self.ui.tableWidgetAlbums.item(selRows[0].row(), 2).text()
-            alb = self.music_base.albumCol.get_album(albumIDSel)
+        sel_rows = self.ui.tableWidgetAlbums.selectionModel().selectedRows()
+        if len(sel_rows) >= 0:
+            album_id_sel = self.ui.tableWidgetAlbums.item(sel_rows[0].row(), 2).text()
+            alb = self.music_base.albumCol.get_album(album_id_sel)
             if alb.album_id != 0:
                 self.editAlbumWidget = AlbumWidget(alb, self)
                 self.editAlbumWidget.show()
@@ -496,14 +496,14 @@ class MainWindowLoader(QMainWindow):
         self.ui.comboBoxStyle.clear()
         self.ui.comboBoxStyle.addItem(_translate("playlist", "All styles"), -2)
 
-        idSet = self.music_base.musicDirectoryCol.get_style_id_set()
-        for genre in self.music_base.genres.get_available_genres_form_id_set(idSet):
+        id_set = self.music_base.musicDirectoryCol.get_style_id_set()
+        for genre in self.music_base.genres.get_available_genres_form_id_set(id_set):
             self.ui.comboBoxStyle.addItem(genre[0], genre[1])
 
     def on_change_genre(self):
-        genreID = self.ui.comboBoxStyle.currentData()
+        genre_id = self.ui.comboBoxStyle.currentData()
 
-        if genreID < 0:
+        if genre_id < 0:
             self.set_hidden_all_artist_item(False)
         else:
             self.set_hidden_all_artist_item(True)
@@ -511,7 +511,7 @@ class MainWindowLoader(QMainWindow):
             model = self.ui.listViewArtists.model()
             for i in range(model.rowCount()):
                 itemArt = model.item(i)
-                if genreID in itemArt.artist.style_ids:
+                if genre_id in itemArt.artist.style_ids:
                     i = itemArt.row()
                     self.ui.listViewArtists.setRowHidden(i, False)
 
@@ -656,37 +656,37 @@ class MainWindowLoader(QMainWindow):
         if self.current_album.artist_id != artist.artist_id:
             self.current_album = artist.get_random_album()
 
-        indexToSel = 0
+        index_to_sel = 0
         i = 0
         artist.sort_albums()
         for alb in artist.albums:
             self.ui.tableWidgetAlbums.insertRow(i)
 
-            titleItem = QTableWidgetItem(alb.title)
-            titleItem.setFlags(titleItem.flags() ^ Qt.ItemIsEditable)
-            self.ui.tableWidgetAlbums.setItem(i, 0, titleItem)
+            title_item = QTableWidgetItem(alb.title)
+            title_item.setFlags(title_item.flags() ^ Qt.ItemIsEditable)
+            self.ui.tableWidgetAlbums.setItem(i, 0, title_item)
 
-            yearItem = QTableWidgetItem(str(alb.year))
-            yearItem.setFlags(yearItem.flags() ^ Qt.ItemIsEditable)
-            self.ui.tableWidgetAlbums.setItem(i, 1, yearItem)
+            year_item = QTableWidgetItem(str(alb.year))
+            year_item.setFlags(year_item.flags() ^ Qt.ItemIsEditable)
+            self.ui.tableWidgetAlbums.setItem(i, 1, year_item)
 
-            idItem = QTableWidgetItem(str(alb.album_id))
-            idItem.setFlags(idItem.flags() ^ Qt.ItemIsEditable)
-            self.ui.tableWidgetAlbums.setItem(i, 2, idItem)
+            id_item = QTableWidgetItem(str(alb.album_id))
+            id_item.setFlags(id_item.flags() ^ Qt.ItemIsEditable)
+            self.ui.tableWidgetAlbums.setItem(i, 2, id_item)
 
             if alb.album_id == self.current_album.album_id:
-                indexToSel = i
+                index_to_sel = i
 
             i += 1
 
-        self.ui.tableWidgetAlbums.selectRow(indexToSel)
+        self.ui.tableWidgetAlbums.selectRow(index_to_sel)
         self.ui.tableWidgetAlbums.scrollTo(
             self.ui.tableWidgetAlbums.currentIndex(), QAbstractItemView.PositionAtCenter
         )
 
     def init_album_view(self):
         self.current_album = None
-        self.ui.labelArtist.setText("")
+        self.ui.labelArtist.set_text("")
         self.ui.tableWidgetTracks.setRowCount(0)
         self.show_cover("")
 
@@ -749,7 +749,7 @@ class MainWindowLoader(QMainWindow):
     def play_album(self, alb):
         """Add tracks in playlist and start playing"""
 
-        self.music_base.history.insertAlbumHistory(alb.album_id)
+        self.music_base.history.insert_album_history(alb.album_id)
         self.player.play_album(alb)
 
         self.set_volume(self.get_volume_from_slider())
@@ -799,7 +799,7 @@ class MainWindowLoader(QMainWindow):
             title = None
             trk = self.player.get_current_track_playlist()
             if trk is not None and trk.parentAlbum is not None:
-                self.music_base.history.insertTrackHistory(
+                self.music_base.history.insert_track_history(
                     trk.parentAlbum.album_id, trk.get_file_path_in_album_dir()
                 )
         else:
@@ -807,14 +807,14 @@ class MainWindowLoader(QMainWindow):
                 return
             title = event
             if not title in ["...", "", "-"]:
-                self.music_base.history.insertRadioHistory(
+                self.music_base.history.insert_radio_history(
                     self.player.currentRadioName, title
                 )
 
         if self.playList is not None:
             self.playList.set_current_track(title)
         if self.fullScreenWidget is not None:
-            self.fullScreenWidget.setCurrentTrack(title)
+            self.fullScreenWidget.set_current_track(title)
         # if self.playerControl is not None:
         #    self.playerControl.setCurrentTrackInThread(title)
 
@@ -849,36 +849,36 @@ class MainWindowLoader(QMainWindow):
     Miscellaneous UI functions 
     """
 
-    def set_title_label(self, artName="", albTitle="", year=""):
-        if self.currentArtist is not None and artName == "":
-            artName = self.currentArtist.name
-        if self.current_album is not None and albTitle == "":
-            albTitle = self.current_album.title
+    def set_title_label(self, artist_name="", album_title="", year=""):
+        if self.currentArtist and not artist_name:
+            artist_name = self.currentArtist.name
+        if self.current_album and not album_title:
+            album_title = self.current_album.title
             year = self.current_album.year
 
-        sAlbum = albTitle
-        sYear = str(year)
-        if not sYear in ["0", ""]:
-            sAlbum += " (" + sYear + ")"
+        album_description = album_title
+        year = str(year)
+        if not year in ["0", ""]:
+            album_description += " (" + year + ")"
         sTitle = """<html><head/><body>
         <p><span style=\" font-size:14pt; font-weight:600;\">{Artist}</span></p>
         <p><span style=\" font-style:italic;\">{Album}</span></p>
         </body></html>"""
-        sTitle = sTitle.format(Artist=artName, Album=sAlbum)
+        sTitle = sTitle.format(Artist=artist_name, Album=album_description)
 
         self.ui.labelArtist.setText(sTitle)
 
-    def show_cover(self, path, pCoverPixmap=None):
+    def show_cover(self, path, p_cover_pixmap=None):
         if path == "":
             self.coverPixmap = self.defaultPixmap
         else:
             print("MyCover=" + path)
-            self.coverPixmap = self.picBufferManager.getPic(path, "main.albCover")
+            self.coverPixmap = self.picBufferManager.get_pic(path, "main.albCover")
 
-        scaledCover = self.coverPixmap.scaled(
+        scaled_cover = self.coverPixmap.scaled(
             self.ui.cover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
         )
-        self.ui.cover.setPixmap(scaledCover)
+        self.ui.cover.setPixmap(scaled_cover)
         self.ui.cover.show()
 
     def resizeEvent(self, event):
@@ -886,10 +886,10 @@ class MainWindowLoader(QMainWindow):
 
     def resize_cover(self):
         if not self.coverPixmap.isNull():
-            scaledCover = self.coverPixmap.scaled(
+            scaled_cover = self.coverPixmap.scaled(
                 self.ui.cover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
-            self.ui.cover.setPixmap(scaledCover)
+            self.ui.cover.setPixmap(scaled_cover)
 
     def init_player_buttons(self):
         self.ui.searchCoverButton.setText(_translate("coverArtFinder", "Cover finder"))
@@ -980,7 +980,7 @@ class MainWindowLoader(QMainWindow):
     def retranslateUi(self):
         self.ui.menuFavRadios.setTitle(_translate("radio", "Favorite radios"))
         self.init_extra_menu()
-        self.ui.searchCoverButton.setText(_translate("coverArtFinder", "Cover finder"))
+        self.ui.searchCoverButton.set_text(_translate("coverArtFinder", "Cover finder"))
         self.ui.retranslateUi(self)
 
 

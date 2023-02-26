@@ -70,11 +70,11 @@ class CoverArtFinder:
 
 if __name__ == "__main__":
     import sys
-    import pyzik
-    from PyQt5 import QtCore, QtGui, QtWidgets, QApplication
+
+    from PyQt5 import QtWidgets
     from cover_art_finder_dialog import CoverArtFinderDialog
 
-    app = QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
     keyword = "jerusalem album 1972"
 

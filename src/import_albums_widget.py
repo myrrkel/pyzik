@@ -109,7 +109,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
         self.wProgress.show()
         self.import_alb_thread = ImportAlbumsThread()
         self.import_alb_thread.alb_dict_list = alb_dict_list
-        self.import_alb_thread.musicbase = self.musicbase
+        self.import_alb_thread.music_base = self.musicbase
         self.import_alb_thread.album_import_progress.connect(self.wProgress.setValue)
         self.import_alb_thread.album_import_started_signal.connect(
             self.wProgress.setDirectoryText
@@ -152,7 +152,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
                 item.setCheckState(Qt.Unchecked)
 
     def explore_directory(self, event=False):
-        dir_path = self.from_directory.getText()
+        dir_path = self.from_directory.get_text()
         if not os.path.isdir(dir_path):
             QtWidgets.QMessageBox.warning(
                 self,
@@ -169,7 +169,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
 
     def load_dir_list(self, combo):
         model = QtGui.QStandardItemModel(combo)
-        for music_dir in self.musicbase.musicDirectoryCol.musicDirectories:
+        for music_dir in self.musicbase.musicDirectoryCol.music_directories:
             itemDir = QtGui.QStandardItem(music_dir.dirName)
             itemDir.music_dir = music_dir
             model.appendRow(itemDir)
@@ -224,7 +224,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
 
     def retranslateUi(self):
         self.setWindowTitle(_translate("menu", "Import albums"))
-        self.from_directory.setLabel(_translate("import albums", "From directory"))
+        self.from_directory.set_label(_translate("import albums", "From directory"))
         self.explore_button.setText(_translate("import albums", "Explore directory"))
         self.import_button.setText(
             _translate("import albums", "Import selected albums in music directories")
@@ -362,12 +362,13 @@ if __name__ == "__main__":
     from music_base import MusicBase
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
+    dark = darkStyle.darkStyle()
+    app.setStyleSheet(dark.load_stylesheet_pyqt5())
     mb = MusicBase()
     mb.load_music_base()
 
     importWidget = ImportAlbumsWidget(app, mb)
-    importWidget.from_directory.setText("/home/mperrocheau/Documents/TEST")
+    importWidget.from_directory.set_text("/home/mperrocheau/Documents/TEST")
 
     importWidget.show()
     sys.exit(app.exec_())

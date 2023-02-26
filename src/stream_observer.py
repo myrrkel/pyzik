@@ -1,22 +1,17 @@
-import sys
 import time
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
 
 from history_manager import HistoryManager
-from radio_manager import RadioManager
 
 
 class StreamObserver(QThread):
     """Watch what's playing and send title"""
 
     titleChanged = pyqtSignal(str, name="titleChanged")
-
-    # self.window = window
-
-    doStop = False
-    previousTitle = ""
-    currentVolume = 0
+    do_stop = False
+    previous_title = ""
+    current_volume = 0
     player = None
     history = HistoryManager()
     music_base = None
@@ -24,32 +19,32 @@ class StreamObserver(QThread):
     def run(self):
         msg = ""
         while True:
-            if self.doStop:
+            if self.do_stop:
                 break
 
-            if self.player.is_playing() == False:
-                self.previousTitle = ""
+            if not self.player.is_playing():
+                self.previous_title = ""
                 time.sleep(1)
                 continue
 
-            if self.player.radioMode == False:
-                self.previousTitle = ""
+            if not self.player.radioMode:
+                self.previous_title = ""
                 time.sleep(1)
                 continue
 
-            if self.player.radioMode == True:
-                if self.player.adblock == True:
+            if self.player.radioMode:
+                if self.player.adblock:
                     title = self.player.get_now_playing()
                     # print("streamObserver="+title+" "+self.player.getTitle()+" "+self.player.getArtist())
                     if title != "NO_META":
                         self.player.mute(False)
                         self.player.adKilled = False
-                        if self.previousTitle != title:
-                            self.previousTitle = title
+                        if self.previous_title != title:
+                            self.previous_title = title
                             self.player.currentRadioTitle = self.clean_title(title)
                             self.titleChanged.emit(self.clean_title(title))
                     else:
-                        if self.previousTitle == "Advert Killed!":
+                        if self.previous_title == "Advert Killed!":
                             self.player.stop()
                             time.sleep(2)
                             self.player.play()
@@ -60,18 +55,16 @@ class StreamObserver(QThread):
                             self.player.mute(True)
                             self.player.stop()
                             msg = "Advert Killed!"
-                            self.previousTitle = msg
+                            self.previous_title = msg
                             self.titleChanged.emit(msg)
                             time.sleep(2)
                             self.player.play()
 
                 else:
                     """No meta, no adblock"""
-                    # print("NOADBLOCK")
                     self.player.adKilled = False
                     trk = self.player.get_current_track_playlist()
                     if trk is not None:
-                        # print("rad:"+trk.radioName+" id:"+str(trk.radioID))
                         if trk.radio is not None:
                             rad = trk.radio
                             title = rad.get_current_track()
@@ -81,8 +74,8 @@ class StreamObserver(QThread):
                         else:
                             title = self.now_playing()
 
-                        if self.previousTitle != title:
-                            self.previousTitle = title
+                        if self.previous_title != title:
+                            self.previous_title = title
                             self.player.currentRadioTitle = title
                             print("EMIT= " + title)
                             self.titleChanged.emit(title)
@@ -90,11 +83,11 @@ class StreamObserver(QThread):
             time.sleep(1)
 
     def stop(self):
-        self.doStop = True
+        self.do_stop = True
 
     def reset_previous_title(self, event):
-        if self.previousTitle != "Advert Killed!":
-            self.previousTitle = ""
+        if self.previous_title != "Advert Killed!":
+            self.previous_title = ""
 
     def clean_title(self, title):
         clean = title.strip()

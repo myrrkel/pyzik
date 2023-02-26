@@ -24,12 +24,12 @@ class ExploreEventList(list):
                 "code": "ALBUM_DUPLICATE",
                 "label": _translate("events", "Album duplicate"),
             },
-            {"code": "ALBUM_TO_VERIFY", "label": _translate("Album to check")},
+            {"code": "ALBUM_TO_VERIFY", "label": _translate("event", "Album to check")},
             {
                 "code": "ALBUM_TO_VERIFY_NO_TAG",
-                "label": _translate("Album to check without tags"),
+                "label": _translate("event", "Album to check without tags"),
             },
-            {"code": "ALBUM_ADDED", "label": _translate("Album added")},
+            {"code": "ALBUM_ADDED", "label": _translate("event", "Album added")},
         ]
 
 

@@ -47,13 +47,13 @@ class FullScreenCoverWidget(QDialog):
 
         self.initUI()
 
-        self.setBackgroundBlack()
+        self.set_background_black()
 
     def show(self):
-        self.setBackgroundBlack()
+        self.set_background_black()
         self.showFullScreen()
 
-    def setBackgroundBlack(self):
+    def set_background_black(self):
         self.setStyleSheet("background-color:black;")
 
     def initUI(self):
@@ -74,26 +74,26 @@ class FullScreenCoverWidget(QDialog):
         self.close()
 
     def resizeEvent(self, event):
-        self.resizeCover()
+        self.resize_cover()
 
-    def resizeCover(self):
+    def resize_cover(self):
         if not self.coverPixmap.isNull():
             scaledCover = self.coverPixmap.scaled(
                 self.cover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
             self.cover.setPixmap(scaledCover)
 
-    def setPixmapFromUri(self, path):
+    def set_pixmap_from_uri(self, path):
         if self.picBufferManager is None:
             self.coverPixmap = QPixmap(path)
         else:
-            self.coverPixmap = self.picBufferManager.getPic(
+            self.coverPixmap = self.picBufferManager.get_pic(
                 path, "fullscreenCoverWidget"
             )
 
-        self.showCover()
+        self.show_cover()
 
-    def showCover(self):
+    def show_cover(self):
         if not self.coverPixmap.isNull():
             print("Pic size=" + str(self.cover.size()))
             scaledCover = self.coverPixmap.scaled(
@@ -104,9 +104,9 @@ class FullScreenCoverWidget(QDialog):
             self.cover.setPixmap(QPixmap())
         self.cover.show()
 
-    def initCover(self):
+    def init_cover(self):
         self.coverPixmap = QPixmap()
-        self.showCover()
+        self.show_cover()
 
 
 if __name__ == "__main__":
@@ -121,7 +121,7 @@ if __name__ == "__main__":
 
     url = "https://i3.radionomy.com/radios/400/ce7c17ce-4b4b-4698-8ed0-c2881eaf6e6b.png"
     pd = PicDownloader()
-    tempPath = pd.getPic(url)
-    fs.setPixmapFromUri(tempPath)
+    tempPath = pd.get_pic(url)
+    fs.set_pixmap_from_uri(tempPath)
 
     sys.exit(app.exec_())

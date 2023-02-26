@@ -74,7 +74,7 @@ class Radio:
         return 0
 
     def insert_radio(self, db):
-        db.createConnection()
+        db.create_connection()
 
         try:
             c = db.connection.cursor()
@@ -92,7 +92,7 @@ class Radio:
         if self.radioID == 0:
             self.insert_radio(db)
 
-        db.createConnection()
+        db.create_connection()
 
         try:
             c = db.connection.cursor()

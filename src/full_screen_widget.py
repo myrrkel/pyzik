@@ -54,17 +54,12 @@ class FullScreenWidget(QDialog):
         self.shortcutClose = QShortcut(QKeySequence("Escape"), self)
         self.shortcutClose.activated.connect(self.close)
 
-        # self.setCurrentTrack()
-        # self.setBackgroundBlack()
-        # self.setTitleLabel()
-        # self.cover.show()
-
     def show(self):
         self.showFullScreen()
-        self.setBackgroundBlack()
-        self.setCurrentTrack()
+        self.set_background_black()
+        self.set_current_track()
 
-    def setBackgroundBlack(self):
+    def set_background_black(self):
         self.setStyleSheet("background-color:black;")
 
     def initUI(self):
@@ -117,21 +112,21 @@ class FullScreenWidget(QDialog):
     def mousePressEvent(self, event):
         self.close()
 
-    def connectPicDownloader(self, picDl):
+    def connect_pic_downloader(self, picDl):
         self.picFromUrlThread = picDl
-        self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
+        self.picFromUrlThread.downloadCompleted.connect(self.on_pic_downloaded)
 
     def resizeEvent(self, event):
-        self.resizeCover()
+        self.resize_cover()
 
-    def resizeCover(self):
+    def resize_cover(self):
         if not self.coverPixmap.isNull():
             scaledCover = self.coverPixmap.scaled(
                 self.cover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
             self.cover.setPixmap(scaledCover)
 
-    def setCurrentTrack(self, title=""):
+    def set_current_track(self, title=""):
         if self.player is None:
             return
 
@@ -140,28 +135,28 @@ class FullScreenWidget(QDialog):
 
         self.currentTrack = self.player.get_current_track_playlist()
 
-        self.showCover(self.currentTrack)
+        self.show_cover(self.currentTrack)
 
-        self.setTitleLabel()
+        self.set_title_label()
 
-    def onPicDownloaded(self, path):
+    def on_pic_downloaded(self, path):
         print("fullscreenWidget onPicDownloaded=" + path)
-        self.showCoverPixmap(path)
+        self.show_cover_pixmap(path)
 
-    def showCover(self, trk):
+    def show_cover(self, trk):
         if self.player.radioMode:
-            coverUrl = self.player.get_live_cover_url()
-            if coverUrl == "":
+            cover_url = self.player.get_live_cover_url()
+            if cover_url == "":
                 rad = self.player.get_current_radio()
                 if rad is not None:
-                    coverUrl = rad.get_radio_pic()
+                    cover_url = rad.get_radio_pic()
 
-            if self.currentCoverPath == coverUrl:
+            if self.currentCoverPath == cover_url:
                 return
 
-            if coverUrl != "":
-                self.currentCoverPath = coverUrl
-                self.picFromUrlThread.url = coverUrl
+            if cover_url != "":
+                self.currentCoverPath = cover_url
+                self.picFromUrlThread.url = cover_url
                 self.picFromUrlThread.start()
 
         else:
@@ -175,13 +170,13 @@ class FullScreenWidget(QDialog):
                     if self.currentCoverPath == coverPath:
                         return
                     self.currentCoverPath = coverPath
-                    self.showCoverPixmap(coverPath)
+                    self.show_cover_pixmap(coverPath)
 
-    def showCoverPixmap(self, path):
+    def show_cover_pixmap(self, path):
         if self.picBufferManager is None:
             self.coverPixmap = QPixmap(path)
         else:
-            self.coverPixmap = self.picBufferManager.getPic(path, "fullscreenWidget")
+            self.coverPixmap = self.picBufferManager.get_pic(path, "fullscreenWidget")
 
         scaledCover = self.coverPixmap.scaled(
             self.cover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
@@ -189,37 +184,36 @@ class FullScreenWidget(QDialog):
         self.cover.setPixmap(scaledCover)
         self.cover.show()
 
-    def setTitleLabel(self):
-        artName = "Pyzik"
-        albTitle = ""
+    def set_title_label(self):
+        art_name = "Pyzik"
+        alb_title = ""
         year = ""
 
         # orange = QtGui.QColor(216, 119, 0)
-        colorName = orange.name()
+        color_name = orange.name()
 
         if self.currentTrack:
             if self.currentTrack.is_radio():
-                artName = self.currentTrack.radio.name
-                albTitle = self.currentTrack.radio.liveTrackTitle
-                if albTitle == "":
-                    albTitle = self.player.get_now_playing()
+                art_name = self.currentTrack.radio.name
+                alb_title = self.currentTrack.radio.liveTrackTitle
+                if alb_title == "":
+                    alb_title = self.player.get_now_playing()
             else:
-                artName = self.currentTrack.get_artist_name()
-                albTitle = self.currentTrack.get_album_title()
-                albTitle = albTitle + " - " + self.currentTrack.get_track_title()
+                art_name = self.currentTrack.get_artist_name()
+                alb_title = self.currentTrack.get_album_title()
+                alb_title = alb_title + " - " + self.currentTrack.get_track_title()
                 year = self.currentTrack.get_album_year()
 
-        sAlbum = albTitle
-        sYear = str(year)
-        if not sYear in ["0", ""]:
-            sAlbum += " (" + sYear + ")"
-        sTitle = """<html><head/><body>
-        <p><span style=\" color:{colorName}; font-size:28pt; text-shadow:white 0px 0px 4px; font-weight:600;\">{Artist}</span></p>
-        <p><span style=\" color:{colorName}; font-size:20pt; font-style:italic;\">{Album}</span></p>
+        album = alb_title
+        year = str(year)
+        if year not in ["0", ""]:
+            album += " (" + year + ")"
+        title = f"""<html><head/><body>
+        <p><span style=\" color:{color_name}; font-size:28pt; text-shadow:white 0px 0px 4px; font-weight:600;\">{art_name}</span></p>
+        <p><span style=\" color:{color_name}; font-size:20pt; font-style:italic;\">{album}</span></p>
         </body></html>"""
-        sTitle = sTitle.format(Artist=artName, Album=sAlbum, colorName=colorName)
 
-        self.labelTitle.setText(sTitle)
+        self.labelTitle.setText(title)
 
 
 if __name__ == "__main__":
@@ -234,9 +228,9 @@ if __name__ == "__main__":
 
     url = "https://i3.radionomy.com/radios/400/ce7c17ce-4b4b-4698-8ed0-c2881eaf6e6b.png"
     pd = PicDownloader()
-    tempPath = pd.getPic(url)
-    fs.onPicDownloaded(tempPath)
-    fs.setTitleLabel()
+    tempPath = pd.get_pic(url)
+    fs.on_pic_downloaded(tempPath)
+    fs.set_title_label()
 
     # fs.showFullScreen()
 
