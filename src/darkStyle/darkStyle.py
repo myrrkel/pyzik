@@ -32,7 +32,7 @@ with the correct rc file.
 """
 import logging
 import platform
-from globalConstants import *
+from global_constants import *
 from darkStyle.pyqt5_style_rc import *
 
 

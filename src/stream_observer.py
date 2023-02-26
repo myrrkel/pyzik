@@ -3,8 +3,8 @@ import time
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
 
-from historyManager import HistoryManager
-from radioManager import RadioManager
+from history_manager import HistoryManager
+from radio_manager import RadioManager
 
 
 class StreamObserver(QThread):

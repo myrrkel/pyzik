@@ -10,11 +10,11 @@ print("Import modules...")
 
 from PyQt5 import QtWidgets
 from darkStyle import darkStyle
-from playerVLC import PlayerVLC
+from player_vlc import PlayerVLC
 from database import Database
-from musicBase import MusicBase
+from music_base import MusicBase
 from translators import *
-from mainWindowLoader import MainWindowLoader
+from main_window_loader import MainWindowLoader
 
 logger = logging.getLogger(__name__)
 root_logger = logging.getLogger()

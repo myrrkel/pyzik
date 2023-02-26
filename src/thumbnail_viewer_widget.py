@@ -20,8 +20,8 @@ from PyQt5.QtWidgets import (
     QListWidgetItem,
 )
 import os
-from picFromUrlThread import PicFromUrlThread
-from fullScreenCoverWidget import FullScreenCoverWidget
+from pic_from_url_thread import PicFromUrlThread
+from full_screen_cover_widget import FullScreenCoverWidget
 
 _translate = QCoreApplication.translate
 

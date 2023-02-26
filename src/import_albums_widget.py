@@ -4,11 +4,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtCore import pyqtSignal
-from directoryWidget import DirectoryWidget
-from musicDirectory import MusicDirectory, ImportAlbumsThread
+from directory_widget import DirectoryWidget
+from music_directory import MusicDirectory, ImportAlbumsThread
 from database import Database
-from progressWidget import ProgressWidget
-from svgIcon import *
+from progress_widget import ProgressWidget
+from svg_icon import *
 import logging
 
 logger = logging.getLogger(__name__)
@@ -359,7 +359,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
 if __name__ == "__main__":
     import sys
     from pyzik import *
-    from musicBase import MusicBase
+    from music_base import MusicBase
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())

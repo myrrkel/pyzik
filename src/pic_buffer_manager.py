@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from picDownloader import PicDownloader
+from pic_downloader import PicDownloader
 from PyQt5.QtGui import QPixmap
 
 

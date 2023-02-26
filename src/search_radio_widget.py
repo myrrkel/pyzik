@@ -3,11 +3,11 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
-from radioManager import RadioManager
-from searchRadioThread import SearchRadioThread
-from progressWidget import ProgressWidget
-from svgIcon import *
-from waitOverlayWidget import WaitOverlay
+from radio_manager import RadioManager
+from search_radio_thread import SearchRadioThread
+from progress_widget import ProgressWidget
+from svg_icon import *
+from wait_overlay_widget import WaitOverlay
 
 
 class SearchControlsWidget(QtWidgets.QWidget):
@@ -252,8 +252,8 @@ class SearchRadioWidget(QtWidgets.QDialog):
 
 if __name__ == "__main__":
     import sys
-    from musicBase import MusicBase
-    from playerVLC import PlayerVLC
+    from music_base import MusicBase
+    from player_vlc import PlayerVLC
 
     app = QtWidgets.QApplication(sys.argv)
     mb = MusicBase()

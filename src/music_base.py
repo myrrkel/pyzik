@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from database import Database
-from albumCollection import AlbumCollection
-from artistCollection import ArtistCollection
-from musicDirectoryCollection import MusicDirectoryCollection
-from musicGenres import MusicGenres
-from historyManager import HistoryManager
-from radioManager import RadioManager
+from album_collection import AlbumCollection
+from artist_collection import ArtistCollection
+from music_directory_collection import MusicDirectoryCollection
+from music_genres import MusicGenres
+from history_manager import HistoryManager
+from radio_manager import RadioManager
 import logging
 
 logger = logging.getLogger(__name__)

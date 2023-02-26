@@ -5,8 +5,8 @@ from PyQt5.QtCore import pyqtSignal
 from shutil import copyfile
 from io import StringIO
 
-from progressWidget import *
-from globalConstants import *
+from progress_widget import *
+from global_constants import *
 import logging
 
 logger = logging.getLogger(__name__)

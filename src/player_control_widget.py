@@ -18,13 +18,13 @@ from PyQt5.QtWidgets import (
 )
 from track import *
 
-from picFromUrlThread import PicFromUrlThread
-from tableWidgetDragRows import TableWidgetDragRows
-from waitOverlayWidget import WaitOverlay
+from pic_from_url_thread import PicFromUrlThread
+from table_widget_drag_rows import TableWidgetDragRows
+from wait_overlay_widget import WaitOverlay
 from PyQt5.QtGui import QPixmap
 import threading
 
-from svgIcon import *
+from svg_icon import *
 import logging
 
 logger = logging.getLogger(__name__)

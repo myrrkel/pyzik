@@ -220,10 +220,6 @@ class PlayerVLC:
 
     def playFile(self, sfile):
         # create the media
-        print(sys.version)
-        if sys.version < "3":
-            sfile = unicode(sfile)
-
         media = self.instance.media_new(sfile)
         # put the media in the media player
         self.mediaPlayer.set_media(media)

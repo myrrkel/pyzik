@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 from collections import namedtuple
 
 from radio import Radio
-from globalConstants import *
+from global_constants import *
 
 import logging
 

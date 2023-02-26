@@ -8,10 +8,10 @@ import shutil
 import fnmatch
 import track
 import database
-from filesUtils import *
+from files_utils import *
 from utils import *
-from globalConstants import *
-import formatString as FS
+from global_constants import *
+import format_string as FS
 import logging
 
 logger = logging.getLogger(__name__)

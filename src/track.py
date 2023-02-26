@@ -298,7 +298,7 @@ class Track:
 if __name__ == "__main__":
     import sys
     from pyzik import *
-    from musicBase import MusicBase
+    from music_base import MusicBase
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())

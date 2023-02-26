@@ -3,7 +3,7 @@
 
 
 from PyQt5 import QtCore
-from globalConstants import *
+from global_constants import *
 
 
 class Translators:

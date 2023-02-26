@@ -3,7 +3,7 @@
 
 from PyQt5 import QtGui, QtSvg
 from PyQt5.QtCore import QFile, QXmlStreamReader, QByteArray, QTextStream
-from globalConstants import *
+from global_constants import *
 
 
 # orange = QtGui.QColor(216, 119, 0) #d87700

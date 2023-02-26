@@ -8,9 +8,9 @@ from PyQt5.QtWidgets import QDialog, QWidget, QShortcut, QAction, QWidget, QMain
 from PyQt5.QtGui import QPixmap, QIcon, QKeySequence, QFont, QKeySequence
 
 from track import Track
-from historyManager import HistoryManager
-from picFromUrlThread import PicFromUrlThread
-from globalConstants import *
+from history_manager import HistoryManager
+from pic_from_url_thread import PicFromUrlThread
+from global_constants import *
 
 
 class CustomControlsWidget(QWidget):
@@ -224,7 +224,7 @@ class FullScreenWidget(QDialog):
 
 if __name__ == "__main__":
     import sys
-    from picDownloader import PicDownloader
+    from pic_downloader import PicDownloader
 
     app = QApplication(sys.argv)
 

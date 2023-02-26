@@ -4,7 +4,7 @@
 from operator import itemgetter, attrgetter
 import random
 from album import Album
-import formatString as FS
+import format_string as FS
 import logging
 
 logger = logging.getLogger(__name__)

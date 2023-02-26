@@ -31,35 +31,35 @@ from PyQt5.QtGui import (
     QColor,
 )
 
-import mainWindow  # import of mainWindow.py made with pyuic5
+from main_window import Ui_MainWindow
 
 from darkStyle import darkStyle
-from playerVLC import vlc
+from player_vlc import vlc
 
-from musicBase import MusicBase
-from musicDirectory import MusicDirectory
+from music_base import MusicBase
+from music_directory import MusicDirectory
 from database import Database
 
-from dialogMusicDirectoriesLoader import DialogMusicDirectoriesLoader
-from streamObserver import StreamObserver
+from dialog_music_directories_loader import DialogMusicDirectoriesLoader
+from stream_observer import StreamObserver
 from artist import Artist
 from album import Album
-from albumThread import LoadAlbumFilesThread
-from musicBaseThread import ExploreAlbumsDirectoriesThread
-from playlistWidget import PlaylistWidget
-from historyWidget import HistoryWidget
-from searchRadioWidget import SearchRadioWidget
-from fullScreenWidget import FullScreenWidget
-from fullScreenCoverWidget import FullScreenCoverWidget
-from playerControlWidget import PlayerControlWidget
-from progressWidget import ProgressWidget
-from albumWidget import AlbumWidget
-from importAlbumsWidget import ImportAlbumsWidget
-from exploreEventsWidget import ExploreEventList, ExploreEventsWidget
-from coverArtFinderDialog import CoverArtFinderDialog
-from svgIcon import *
-from picFromUrlThread import PicFromUrlThread
-from picBufferManager import PicBufferManager
+from album_thread import LoadAlbumFilesThread
+from music_base_thread import ExploreAlbumsDirectoriesThread
+from playlist_widget import PlaylistWidget
+from history_widget import HistoryWidget
+from search_radio_widget import SearchRadioWidget
+from full_screen_widget import FullScreenWidget
+from full_screen_cover_widget import FullScreenCoverWidget
+from player_control_widget import PlayerControlWidget
+from progress_widget import ProgressWidget
+from album_widget import AlbumWidget
+from import_albums_widget import ImportAlbumsWidget
+from explore_events_widget import ExploreEventList, ExploreEventsWidget
+from cover_art_finder_dialog import CoverArtFinderDialog
+from svg_icon import *
+from pic_from_url_thread import PicFromUrlThread
+from pic_buffer_manager import PicBufferManager
 import logging
 
 logger = logging.getLogger(__name__)
@@ -121,7 +121,7 @@ class MainWindowLoader(QMainWindow):
 
         self.setWindowIcon(QtGui.QIcon(self.defaultPixmap))
 
-        self.ui = mainWindow.Ui_MainWindow()
+        self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.playerControl = PlayerControlWidget(self.player, self)
         self.playerControl.connectPicDownloader(self.picFromUrlThread)
@@ -978,7 +978,7 @@ class MainWindowLoader(QMainWindow):
         self.setTitleLabel()
 
     def retranslateUi(self):
-        self.ui.menuFavRadios.set_title(_translate("radio", "Favorite radios"))
+        self.ui.menuFavRadios.setTitle(_translate("radio", "Favorite radios"))
         self.initExtraMenu()
         self.ui.searchCoverButton.setText(_translate("coverArtFinder", "Cover finder"))
         self.ui.retranslateUi(self)

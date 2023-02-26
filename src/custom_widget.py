@@ -3,7 +3,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
-from historyManager import HistoryManager
+from history_manager import HistoryManager
 
 
 class CustomControlsWidget(QtWidgets.QWidget):

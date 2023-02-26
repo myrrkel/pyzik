@@ -4,12 +4,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtCore import pyqtSignal
-from directoryWidget import DirectoryWidget
-from musicDirectory import MusicDirectory
+from directory_widget import DirectoryWidget
+from music_directory import MusicDirectory
 from explore_event import ExploreEventList
-from importAlbumsWidget import set_check_state
+from import_albums_widget import set_check_state
 from database import Database
-from svgIcon import *
+from svg_icon import *
 import logging
 from darkStyle import darkStyle
 
@@ -371,7 +371,7 @@ class ExploreEventsWidget(QtWidgets.QDialog):
 if __name__ == "__main__":
     import sys
     from pyzik import *
-    from musicBase import MusicBase
+    from music_base import MusicBase
 
     app = QtWidgets.QApplication(sys.argv)
     dark = darkStyle.darkStyle()

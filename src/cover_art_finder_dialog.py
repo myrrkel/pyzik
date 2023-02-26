@@ -20,11 +20,11 @@ from PyQt5.QtWidgets import (
     QListWidgetItem,
 )
 
-from picFromUrlThread import PicFromUrlThread
-from fullScreenCoverWidget import FullScreenCoverWidget
-from thumbnailViewerWidget import ThumbnailViewerWidget
-from coverArtFinder import CoverArtFinder
-from svgIcon import *
+from pic_from_url_thread import PicFromUrlThread
+from full_screen_cover_widget import FullScreenCoverWidget
+from thumbnail_viewer_widget import ThumbnailViewerWidget
+from cover_art_finder import CoverArtFinder
+from svg_icon import *
 import logging
 
 logger = logging.getLogger(__name__)
@@ -37,7 +37,7 @@ import time
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
 
-from waitOverlayWidget import WaitOverlay
+from wait_overlay_widget import WaitOverlay
 
 
 class CoverFinderSearchThread(QThread):

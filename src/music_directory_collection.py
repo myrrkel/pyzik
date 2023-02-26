@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sqlite3
-from musicDirectory import MusicDirectory
+from music_directory import MusicDirectory
 from explore_event import ExploreEventList
 
 

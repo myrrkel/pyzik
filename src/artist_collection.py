@@ -3,7 +3,7 @@
 
 
 from artist import Artist
-import formatString as FS
+import format_string as FS
 from operator import itemgetter, attrgetter
 from sortedcontainers import SortedKeyList
 

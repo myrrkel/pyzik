@@ -21,11 +21,11 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QPixmap
 from track import Track
 import requests
-from picFromUrlThread import PicFromUrlThread
-from tableWidgetDragRows import TableWidgetDragRows
+from pic_from_url_thread import PicFromUrlThread
+from table_widget_drag_rows import TableWidgetDragRows
 
 from vlc import EventType as vlcEventType
-from svgIcon import *
+from svg_icon import *
 import logging
 
 logger = logging.getLogger(__name__)
@@ -596,7 +596,7 @@ class PlaylistWidget(QDialog):
 
 if __name__ == "__main__":
     import sys
-    from playerVLC import PlayerVLC
+    from player_vlc import PlayerVLC
 
     player = PlayerVLC()
 

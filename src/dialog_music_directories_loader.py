@@ -3,12 +3,12 @@
 
 import os
 from PyQt5 import QtWidgets, QtGui, QtCore
-import dialogMusicDirectories
-from musicBase import MusicBase
-from musicDirectory import MusicDirectory
+import dialog_music_directories
+from music_base import MusicBase
+from music_directory import MusicDirectory
 from database import Database
-from musicGenres import MusicGenres
-from svgIcon import *
+from music_genres import MusicGenres
+from svg_icon import *
 import logging
 
 logger = logging.getLogger(__name__)
@@ -19,7 +19,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         QtWidgets.QDialog.__init__(self, parent)
         self.music_base = music_base
         self.currentDir = None
-        self.ui = dialogMusicDirectories.Ui_Dialog()
+        self.ui = dialog_music_directories.Ui_Dialog()
         self.ui.setupUi(self)
         self.setWindowFlags(QtCore.Qt.Window)
         # self.setWindowTitle("PyZik")

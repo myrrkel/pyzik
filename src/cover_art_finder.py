@@ -72,7 +72,7 @@ if __name__ == "__main__":
     import sys
     import pyzik
     from PyQt5 import QtCore, QtGui, QtWidgets, QApplication
-    from coverArtFinderDialog import CoverArtFinderDialog
+    from cover_art_finder_dialog import CoverArtFinderDialog
 
     app = QApplication(sys.argv)
 

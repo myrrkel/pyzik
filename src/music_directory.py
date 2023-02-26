@@ -6,11 +6,11 @@ import sqlite3
 from explore_event import *
 from database import Database
 from album import Album
-from albumCollection import AlbumCollection
-from artistCollection import ArtistCollection
+from album_collection import AlbumCollection
+from artist_collection import ArtistCollection
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
-from filesUtils import *
+from files_utils import *
 
 logger = logging.getLogger(__name__)
 
