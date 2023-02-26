@@ -7,6 +7,8 @@ from PyQt5.QtCore import pyqtSignal
 from directoryWidget import DirectoryWidget
 from musicDirectory import MusicDirectory
 from explore_event import ExploreEventList
+from importAlbumsWidget import set_check_state
+from database import Database
 from svgIcon import *
 import logging
 from darkStyle import darkStyle
@@ -267,7 +269,7 @@ class ExploreEventsWidget(QtWidgets.QDialog):
             # self.tableWidgetItems.setItem(i, 0, item_code)
             i_col = self.add_item_to_line(i, i_col, item_code)
 
-            item_path = QtWidgets.QTableWidgetItem(item.dirPath)
+            item_path = QtWidgets.QTableWidgetItem(item.dir_path)
             item_path.setFlags(item_path.flags() ^ QtCore.Qt.ItemIsEditable)
             # self.tableWidgetItems.setItem(i, 1, item_path)
             i_col = self.add_item_to_line(i, i_col, item_path)
@@ -350,9 +352,9 @@ class ExploreEventsWidget(QtWidgets.QDialog):
         # GetArtist return a new artist if it doesn't exists in artistsCol
         if len(curArt) == 1:
             curArt = curArt[0]
-            alb.artistID = curArt.artistID
+            alb.artist_id = curArt.artist_id
             alb.artist_name = curArt.name.upper()
-            albums = curArt.findAlbums(alb.title)
+            albums = curArt.find_albums(alb.title)
             album_exists = len(albums) > 0
             albumExistItem = self.tableWidgetItems.cellWidget(row, 6)
             set_check_state(albumExistItem, album_exists)
@@ -375,7 +377,7 @@ if __name__ == "__main__":
     dark = darkStyle.darkStyle()
     app.setStyleSheet(dark.load_stylesheet_pyqt5())
     mb = MusicBase()
-    mb.loadMusicBase()
+    mb.load_music_base()
 
     importWidget = ExploreEventsWidget(app, mb)
     # importWidget.from_directory.setText('/home/mperrocheau/Documents/TEST')

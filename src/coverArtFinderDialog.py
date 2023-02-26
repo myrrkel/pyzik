@@ -125,7 +125,7 @@ class CoverArtFinderDialog(QDialog):
         layBt.addWidget(self.saveButton)
         layBt.addStretch()
 
-        self.thumbViewer.resetSelection()
+        self.thumbViewer.reset_selection()
 
         self.retranslateUi()
 
@@ -142,7 +142,7 @@ class CoverArtFinderDialog(QDialog):
 
     def search(self):
         if self.album is not None:
-            self.keyword = self.album.getCoverSearchText()
+            self.keyword = self.album.get_cover_search_text()
 
         keyword = self.keyword
 
@@ -183,12 +183,12 @@ class CoverArtFinderDialog(QDialog):
 
     def closeEvent(self, event):
         self.thumbViewer.thumbWidget.clear()
-        self.thumbViewer.removeTempFiles(self.coverSaved)
-        self.thumbViewer.resetSelection()
+        self.thumbViewer.remove_temp_files(self.coverSaved)
+        self.thumbViewer.reset_selection()
         self.close()
 
     def addThumbnailItem(self, url, thumbURL, name):
-        self.thumbViewer.addThumbnailItem(url, thumbURL, name)
+        self.thumbViewer.add_thumbnail_item(url, thumbURL, name)
 
     def showThumbnails(self):
         for thumb in self.items:

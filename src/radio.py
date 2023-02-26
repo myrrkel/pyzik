@@ -64,16 +64,16 @@ class Radio:
         self.categoryID = row[5]
         self.sortID = row[6]
 
-    def addCategorie(self, cat):
+    def add_categorie(self, cat):
         self.categories.append(cat)
 
-    def addStream(self, stream):
+    def add_stream(self, stream):
         self.streams.append(stream)
 
-    def getCategorieID(self):
+    def get_category_id(self):
         return 0
 
-    def insertRadio(self, db):
+    def insert_radio(self, db):
         db.createConnection()
 
         try:
@@ -88,9 +88,9 @@ class Radio:
         except sqlite3.Error as e:
             print(e)
 
-    def saveRadio(self, db):
+    def save_radio(self, db):
         if self.radioID == 0:
-            self.insertRadio(db)
+            self.insert_radio(db)
 
         db.createConnection()
 
@@ -106,7 +106,7 @@ class Radio:
                     self.stream,
                     self.image,
                     self.thumb,
-                    self.getCategorieID(),
+                    self.get_category_id(),
                     self.sortID,
                     self.radioID,
                 ),
@@ -116,7 +116,7 @@ class Radio:
         except sqlite3.Error as e:
             print(e)
 
-    def initWithDirbleRadio(self, dRadio, stream):
+    def init_with_dirble_radio(self, dRadio, stream):
         self.name = dRadio.name
         self.country = dRadio.country
 
@@ -128,16 +128,16 @@ class Radio:
 
         self.stream = stream
         for cat in dRadio.categories:
-            self.addCategorie(cat.title)
+            self.add_categorie(cat.title)
 
-    def initWithTuneinRadio(self, tRadio):
+    def init_with_tunein_radio(self, tRadio):
         self.name = tRadio.Title
         self.country = tRadio.Subtitle
         self.searchID = tRadio.GuideId
 
-    def getFIPLiveID(self):
+    def get_fip_live_id(self):
         fipID = -1
-        if self.isFIP(strict=True):
+        if self.is_fip(strict=True):
             fipID = 7
         elif "FIP " in self.name.upper():
             key = "webradio"
@@ -157,42 +157,42 @@ class Radio:
 
         return fipID
 
-    def isFIP(self, strict=False):
+    def is_fip(self, strict=False):
         radName = "FIP"
         if strict:
             return self.name.upper() == radName
         else:
             return self.name.upper() == radName or radName + " " in self.name.upper()
 
-    def isFranceMusique(self, strict=False):
+    def is_france_musique(self, strict=False):
         radName = "FRANCE MUSIQUE"
         if strict:
             return self.name.upper() == radName
         else:
             return self.name.upper() == radName or radName + " " in self.name.upper()
 
-    def isFranceInter(self, strict=False):
+    def is_france_inter(self, strict=False):
         radName = "FRANCE INTER"
         return self.name.upper() == radName
 
-    def isFranceCulture(self):
+    def is_france_culture(self):
         radName = "FRANCE CULTURE"
         return self.name.upper() == radName
 
-    def isFranceInfo(self):
+    def is_france_info(self):
         radName = "FRANCE INFO"
         return self.name.upper() == radName
 
-    def isTSFJazz(self):
+    def is_tsf_jazz(self):
         radName = "TSF JAZZ"
         return self.name.upper() == radName
 
-    def isKEXP(self):
+    def is_kexp(self):
         radName = "KEXP"
         return self.name.upper() == radName or radName + " " in self.name.upper()
 
-    def getFranceMusiqueLiveID(self, rurl):
-        if self.isFranceMusique(strict=True):
+    def get_france_musique_live_id(self, rurl):
+        if self.is_france_musique(strict=True):
             return 4
 
         try:
@@ -226,47 +226,47 @@ class Radio:
 
         return -1
 
-    def getCurrentTrack(self):
+    def get_current_track(self):
         title = ""
-        if self.isFIP():
-            liveUrl = "https://www.fip.fr/livemeta/" + str(self.getFIPLiveID())
-            title = self.getCurrentTrackRF(liveUrl)
+        if self.is_fip():
+            liveUrl = "https://www.fip.fr/livemeta/" + str(self.get_fip_live_id())
+            title = self.get_current_track_rf(liveUrl)
 
-        elif self.isFranceMusique():
+        elif self.is_france_musique():
             if self.liveID < 0:
-                self.liveID = int(self.getFranceMusiqueLiveID(self.stream))
+                self.liveID = int(self.get_france_musique_live_id(self.stream))
             if self.liveID < 0:
                 return ""
             liveUrl = "https://www.francemusique.fr/livemeta/pull/" + str(self.liveID)
-            title = self.getCurrentTrackRF(liveUrl)
+            title = self.get_current_track_rf(liveUrl)
 
-        elif self.isFranceInter():
+        elif self.is_france_inter():
             liveUrl = "https://www.francemusique.fr/livemeta/pull/1"
-            title = self.getCurrentTrackRF(liveUrl)
+            title = self.get_current_track_rf(liveUrl)
 
-        elif self.isFranceCulture():
+        elif self.is_france_culture():
             liveUrl = "https://www.francemusique.fr/livemeta/pull/5"
-            title = self.getCurrentTrackRF(liveUrl)
+            title = self.get_current_track_rf(liveUrl)
 
-        elif self.isFranceInfo():
+        elif self.is_france_info():
             liveUrl = "https://www.francemusique.fr/livemeta/pull/2"
-            title = self.getCurrentTrackRF(liveUrl)
+            title = self.get_current_track_rf(liveUrl)
 
-        elif self.isTSFJazz():
-            title = self.getCurrentTrackTSFJazz()
+        elif self.is_tsf_jazz():
+            title = self.get_current_track_tsf_jazz()
 
-        elif self.isKEXP():
-            title = self.getCurrentTrackKEXP()
+        elif self.is_kexp():
+            title = self.get_current_track_kexp()
 
         else:
             title = ""
 
-        title = self.cleanTitle(title)
+        title = self.clean_title(title)
         self.liveTrackTitle = title
 
         return title
 
-    def cleanTitle(self, title):
+    def clean_title(self, title):
         clean = title.strip()
         if clean == "|":
             clean = ""
@@ -276,7 +276,7 @@ class Radio:
             clean = ""
         return clean
 
-    def isTimeout(self, nbSec=10):
+    def is_timeout(self, nbSec=10):
         res = True
         tsNow = time.time()
         if self.liveTrackEnd is not None:
@@ -290,8 +290,8 @@ class Radio:
 
         return res
 
-    def getCurrentTrackTSFJazz(self):
-        if not self.isTimeout():
+    def get_current_track_tsf_jazz(self):
+        if not self.is_timeout():
             return self.liveTrackTitle
 
         url = "http://www.tsfjazz.com/getSongInformations.php"
@@ -299,8 +299,8 @@ class Radio:
         track = r.text.replace("|", " - ")
         return track
 
-    def getCurrentTrackKEXP(self):
-        if not self.isTimeout():
+    def get_current_track_kexp(self):
+        if not self.is_timeout():
             return self.liveTrackTitle
 
         currentTrack = ""
@@ -329,11 +329,11 @@ class Radio:
                     + str(datas.results[0].track.name)
                 )
             else:
-                currentTrack = self.getCurrentShowKEXP()
+                currentTrack = self.get_current_show_kexp()
 
         return currentTrack
 
-    def getCurrentShowKEXP(self):
+    def get_current_show_kexp(self):
         currentShow = ""
 
         try:
@@ -357,7 +357,7 @@ class Radio:
 
         return currentShow
 
-    def getCurrentTrackRF(self, liveUrl):
+    def get_current_track_rf(self, liveUrl):
         """
         Get live title from RF
         """
@@ -386,7 +386,7 @@ class Radio:
 
         # print(str(datas))
         if datas:
-            if self.isFranceInfo():
+            if self.is_france_info():
                 level = 1
             else:
                 level = 0
@@ -402,7 +402,7 @@ class Radio:
                     dateEnd = datetime.fromtimestamp(self.liveTrackEnd)
                     print("dateEnd=" + str(dateEnd))
                     currentTrack = ""
-                    if self.isFIP() or self.isFranceMusique():
+                    if self.is_fip() or self.is_france_musique():
                         if hasattr(stp, "visual") and stp.visual[:4].lower() == "http":
                             self.liveCoverUrl = stp.visual
                             print("visual=" + self.liveCoverUrl)
@@ -421,9 +421,9 @@ class Radio:
                             currentTrack = stp.title
 
                     if (
-                        self.isFranceInter()
-                        or self.isFranceInfo()
-                        or self.isFranceCulture()
+                        self.is_france_inter()
+                        or self.is_france_info()
+                        or self.is_france_culture()
                     ):
                         if hasattr(stp, "visual") and stp.visual[:3].lower() == "http":
                             self.liveCoverUrl = stp.visual
@@ -441,7 +441,7 @@ class Radio:
         print("trackTitle=" + str(currentTrack))
         return currentTrack
 
-    def printData(self):
+    def print_data(self):
         print(
             self.name
             + " # "
@@ -452,30 +452,30 @@ class Radio:
             + str(self.thumb)
         )
 
-    def getRadioPic(self):
+    def get_radio_pic(self):
         url = self.image
         if url == "":
             url = self.thumb
         return url
 
-    def getCategoriesText(self):
+    def get_categories_text(self):
         s = "; "
         return s.join(self.categories)
 
-    def getCoverUrl(self):
+    def get_cover_url(self):
         url = self.liveCoverUrl
         if url == "":
-            url = self.getRadioPic()
+            url = self.get_radio_pic()
         return url
 
-    def getCover(self):
+    def get_cover(self):
         return self.cover
 
-    def setCover(self, cover):
+    def set_cover(self, cover):
         self.cover = cover
 
-    def onCoverDownloaded(self, cover):
-        self.setCover(cover)
+    def on_cover_downloaded(self, cover):
+        self.set_cover(cover)
         self.coverDownloaded.emit(cover)
 
 
@@ -511,6 +511,6 @@ if __name__ == "__main__":
     rad = Radio()
     rad.stream = "https://direct.francemusique.fr/live/francemusiquelajazz-hifi.mp3"
     rad.name = "France Musique La Jazz"
-    print("Rad=" + rad.getCurrentTrack())
+    print("Rad=" + rad.get_current_track())
 
     sys.exit(app.exec_())

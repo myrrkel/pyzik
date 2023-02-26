@@ -36,11 +36,11 @@ class HistoryItem:
 
 class dataHistoAlbum:
     def __init__(self, albumID):
-        self.albumID = albumID
+        self.album_id = albumID
         self.album = None
 
-    def getAlbum(self, music_base):
-        self.album = music_base.albumCol.getAlbum(self.albumID)
+    def get_album(self, music_base):
+        self.album = music_base.albumCol.get_album(self.album_id)
 
     def getInfo(self):
         return "Artist: " + self.album.artist_name + " Album: " + self.album.title
@@ -58,7 +58,7 @@ class dataHistoAlbum:
 
 class dataHistoTrack(dataHistoAlbum):
     def __init__(self, albumID, fileName):
-        self.albumID = albumID
+        self.album_id = albumID
         self.fileName = fileName
 
     def getInfo(self):

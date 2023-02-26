@@ -11,10 +11,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def filterByTitle_ArtistID(seq, title, art_id):
+def filter_by_title_artist_id(seq, title, art_id):
     """not used any more, use artist.findAlbum()"""
     for el in seq:
-        if el.artistID == art_id:
+        if el.artist_id == art_id:
             if el.title == el.formatTitle(title):
                 yield el
                 break
@@ -26,11 +26,11 @@ def filterByTitle_ArtistID(seq, title, art_id):
 
 
 def find_by_album_id2(seq, alb_id):
-    return next(el for el in seq if int(el.albumID) == int(alb_id))
+    return next(el for el in seq if int(el.album_id) == int(alb_id))
 
 
 def find_by_album_id(seq, alb_id):
-    return next((el for el in seq if int(el.albumID) == int(alb_id)), None)
+    return next((el for el in seq if int(el.album_id) == int(alb_id)), None)
 
 
 class AlbumCollection:
@@ -45,14 +45,14 @@ class AlbumCollection:
         self.music_base = main_music_base
 
     def add_album(self, album):
-        if album.albumID == 0:
-            album.albumID = self.music_base.db.insertAlbum(album)
+        if album.album_id == 0:
+            album.album_id = self.music_base.db.insertAlbum(album)
 
-        album.musicDirectory = self.music_base.musicDirectoryCol.getMusicDirectory(
-            album.musicDirectoryID
+        album.music_directory = self.music_base.musicDirectoryCol.get_music_directory(
+            album.music_directory_id
         )
         self.albums.append(album)
-        return album.albumID
+        return album.album_id
 
     def print_albums(self):
         for alb in self.albums:
@@ -68,16 +68,16 @@ class AlbumCollection:
 
     def find_albums(self, stitle, artID):
         albumList = []
-        for alb in filterByTitle_ArtistID(self.albums, stitle, artID):
+        for alb in filter_by_title_artist_id(self.albums, stitle, artID):
             albumList.append(alb)
         return albumList
 
-    def get_Album(self, albID):
+    def get_album(self, albID):
         return find_by_album_id(self.albums, albID) or Album("")
 
     def get_random_album(self, styleID=-2):
         if styleID > -2:
-            albList = [alb for alb in self.albums if styleID in alb.styleIDSet]
+            albList = [alb for alb in self.albums if styleID in alb.style_ids]
         else:
             albList = self.albums
 
@@ -97,6 +97,6 @@ if __name__ == "__main__":
 
     ac = AlbumCollection()
     ac.music_base = MusicBase()
-    ac.music_base.loadMusicBase()
+    ac.music_base.load_music_base()
     ac.load_albums()
     ac.print_albums()

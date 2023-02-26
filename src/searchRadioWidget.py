@@ -42,7 +42,7 @@ class MachineSelectorControlsWidget(QtWidgets.QWidget):
             self.checks.append(check)
             self.lay.addWidget(check)
 
-    def getSelectedMAchines(self):
+    def get_selected_machines(self):
         machines = []
         for check in self.checks:
             if check.isChecked():
@@ -141,7 +141,7 @@ class SearchRadioWidget(QtWidgets.QDialog):
         self.wProgress.progressClosed.connect(self.searchRadioThread.stop)
         self.searchRadioThread.search = search
         self.searchRadioThread.machines = (
-            self.machineSelectorControls.getSelectedMAchines()
+            self.machineSelectorControls.get_selected_machines()
         )
         self.searchRadioThread.start()
 
@@ -157,7 +157,7 @@ class SearchRadioWidget(QtWidgets.QDialog):
         i = self.tableWidgetItems.currentRow()
         if i > -1:
             radio = self.radios[i]
-            radio.saveRadio(self.radioManager.music_base.db)
+            radio.save_radio(self.radioManager.music_base.db)
             self.radioAdded.emit(1)
 
     def onSearchComplete(self, event):
@@ -239,7 +239,7 @@ class SearchRadioWidget(QtWidgets.QDialog):
             artistItem.setFlags(artistItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetItems.setItem(i, 1, artistItem)
 
-            albumItem = QtWidgets.QTableWidgetItem(item.getCategoriesText())
+            albumItem = QtWidgets.QTableWidgetItem(item.get_categories_text())
             albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetItems.setItem(i, 2, albumItem)
 
@@ -257,11 +257,11 @@ if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
     mb = MusicBase()
-    mb.loadMusicBase(False)
+    mb.load_music_base(False)
 
     player = PlayerVLC()
 
-    searchWidget = searchRadioWidget(mb, player)
+    searchWidget = SearchRadioWidget(mb, player)
 
     searchWidget.show()
     sys.exit(app.exec_())

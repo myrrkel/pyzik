@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
 import time
 import platform
 from mutagen.id3 import ID3
@@ -36,7 +37,7 @@ class Track:
         self.sub_path = sub_path
         self.path = ""
         self.extension = extension
-        self.musicDirectoryID = ""
+        self.music_directory_id = ""
         self.mrl = ""
         self.parent_album = None
         self.radio_name = ""
@@ -121,7 +122,7 @@ class Track:
         return time.strftime("%H:%M:%S", time.gmtime(self.duration))
 
     def is_radio(self):
-        return self.radio_name != ""
+        return self.radio_name != "" or self.radio
 
     def extract_data_from_tags_with_vlc(self, player, dir):
         """
@@ -302,7 +303,7 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
     mb = MusicBase()
-    mb.loadMusicBase()
+    mb.load_music_base()
     trk = Track("09. Not Suitable For Life", ".mp3", "/home/Documents/TEST/")
     trk.path = "/home/Documents/TEST/"
     logger.debug(trk)

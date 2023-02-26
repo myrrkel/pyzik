@@ -143,7 +143,7 @@ if __name__ == "__main__":
     from musicBase import MusicBase
     mb = MusicBase()
 
-    mb.loadMusicBase(False)
+    mb.load_music_base(False)
 
     app = QtWidgets.QApplication(sys.argv)
 

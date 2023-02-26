@@ -5,7 +5,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtCore import pyqtSignal
 from directoryWidget import DirectoryWidget
-from musicDirectory import MusicDirectory
+from musicDirectory import MusicDirectory, ImportAlbumsThread
+from database import Database
+from progressWidget import ProgressWidget
 from svgIcon import *
 import logging
 
@@ -338,9 +340,9 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
         # GetArtist return a new artist if it doesn't exists in artistsCol
         if len(curArt) == 1:
             curArt = curArt[0]
-            alb.artistID = curArt.artistID
+            alb.artist_id = curArt.artist_id
             alb.artist_name = curArt.name.upper()
-            albums = curArt.findAlbums(alb.title)
+            albums = curArt.find_albums(alb.title)
             album_exists = len(albums) > 0
             albumExistItem = self.tableWidgetItems.cellWidget(row, 6)
             set_check_state(albumExistItem, album_exists)
@@ -362,7 +364,7 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     app.setStyleSheet(darkStyle.darkStyle.load_stylesheet_pyqt5())
     mb = MusicBase()
-    mb.loadMusicBase()
+    mb.load_music_base()
 
     importWidget = ImportAlbumsWidget(app, mb)
     importWidget.from_directory.setText("/home/mperrocheau/Documents/TEST")

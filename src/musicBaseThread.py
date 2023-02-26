@@ -44,7 +44,7 @@ class ExploreAlbumsDirectoriesThread(QThread):
         self.directoryChanged.emit("Saving datas...")
         self.music_base.db.saveMemoryToDisc()
         # self.music_base.artistCol.sortArtists()
-        self.music_base.initAvailableGenres()
+        self.music_base.init_available_genres()
         self.exploreCompleted.emit(1)
         self.quit()
 

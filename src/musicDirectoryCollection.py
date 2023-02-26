@@ -8,7 +8,7 @@ from explore_event import ExploreEventList
 
 def filterByID(seq, id):
     for el in seq:
-        if el.musicDirectoryID == id:
+        if el.music_directory_id == id:
             yield el
 
 
@@ -22,13 +22,13 @@ class MusicDirectoryCollection:
         self.music_base = mainMusicBase
 
     def addMusicDirectory(self, musicDirectory):
-        if musicDirectory.musicDirectoryID == 0:
-            musicDirectory.musicDirectoryID = self.insertMusicDirectoryDB(
+        if musicDirectory.music_directory_id == 0:
+            musicDirectory.music_directory_id = self.insertMusicDirectoryDB(
                 musicDirectory
             )
 
         self.musicDirectories.append(musicDirectory)
-        return musicDirectory.musicDirectoryID
+        return musicDirectory.music_directory_id
 
     def deleteMusicDirectory(self, musicDirectory):
         self.music_base.db.updateValue(
@@ -36,11 +36,11 @@ class MusicDirectoryCollection:
             "musicDirectoryID",
             "0",
             "musicDirectoryID",
-            musicDirectory.musicDirectoryID,
+            musicDirectory.music_directory_id,
         )
 
         if self.music_base.db.deleteWithID(
-            "musicDirectories", "musicDirectoryID", musicDirectory.musicDirectoryID
+            "musicDirectories", "musicDirectoryID", musicDirectory.music_directory_id
         ):
             self.musicDirectories.remove(musicDirectory)
             print("Directory removed")
@@ -65,16 +65,16 @@ class MusicDirectoryCollection:
                           """
             c.execute(
                 sqlInsertMusicDirectory,
-                (musicDirectory.dirPath, musicDirectory.dirName),
+                (musicDirectory.dir_path, musicDirectory.dirName),
             )
             self.music_base.db.connection.commit()
-            musicDirectory.musicDirectoryID = c.lastrowid
+            musicDirectory.music_directory_id = c.lastrowid
         except sqlite3.Error as e:
             print(e)
 
-        return musicDirectory.musicDirectoryID
+        return musicDirectory.music_directory_id
 
-    def loadMusicDirectories(self):
+    def load_music_directories(self):
         req = "SELECT musicDirectoryID, dirPath, dirName, ifnull(styleID,0), ifnull(dirType,0) as dirType FROM musicDirectories"
         for rowDir in self.music_base.db.getSelect(req):
             # print('{0} : {1}'.format(rowDir[0], rowDir[1]))
@@ -82,14 +82,14 @@ class MusicDirectoryCollection:
             dir.load(rowDir)
             self.addMusicDirectory(dir)
 
-    def getMusicDirectory(self, id):
+    def get_music_directory(self, id):
         resMB = None
         for mdir in filterByID(self.musicDirectories, id):
             resMB = mdir
         return resMB
 
-    def getStyleIDSet(self):
-        styleIDSet = set()
+    def get_style_id_set(self):
+        style_ids = set()
         for md in self.musicDirectories:
-            styleIDSet.add(md.styleID)
-        return styleIDSet
+            style_ids.add(md.styleID)
+        return style_ids

@@ -76,7 +76,7 @@ def main():
 
     mb = MusicBase(db_path=db_path)
     logger.info("Loading musicBase...")
-    mb.loadMusicBase()
+    mb.load_music_base()
     logger.info("Loading VLC player...")
     player = PlayerVLC()
 

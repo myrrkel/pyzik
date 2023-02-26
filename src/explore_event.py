@@ -36,18 +36,18 @@ class ExploreEventList(list):
 class ExploreEvent:
     def __init__(self, code, dirpath, albumID=0, artistID=0, album=None):
         self.event_code = code
-        self.dirPath = dirpath
-        self.artistID = artistID
-        self.albumID = albumID
+        self.dir_path = dirpath
+        self.artist_id = artistID
+        self.album_id = albumID
         self.album = album
 
     def get_text(self):
         if self.event_code == "ALBUM_DUPLICATE":
-            return "Album in " + self.dirPath + " already exists for this artist."
+            return "Album in " + self.dir_path + " already exists for this artist."
         if self.event_code == "ALBUM_TO_VERIFY":
-            return "Album in " + self.dirPath + " must be verified"
+            return "Album in " + self.dir_path + " must be verified"
         if self.event_code == "ALBUM_TO_VERIFY_NO_TAG":
-            return "Album in " + self.dirPath + " must be verified. No tag found."
+            return "Album in " + self.dir_path + " must be verified. No tag found."
         if self.event_code == "ALBUM_ADDED":
-            return "Album in " + self.dirPath + " added."
+            return "Album in " + self.dir_path + " added."
         return ""

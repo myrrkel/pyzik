@@ -32,10 +32,10 @@ def getAlternativeTitle(title):
 
 
 def filterAlbumsByTitle(seq, title):
-    title = FS.getSearchKey(title.upper())
+    title = FS.get_search_key(title.upper())
 
     for el in seq:
-        if el.getSearchKey() == title:
+        if el.get_search_key() == title:
             yield el
             break
 
@@ -46,11 +46,11 @@ class Artist:
     """
 
     def __init__(self, name, id):
-        self.artistID = id
+        self.artist_id = id
         self.name = self.format_name(name)
         self.countryID = 0
         self.categoryID = 0
-        self.styleIDSet = set()
+        self.style_ids = set()
         self.albums = []
         self.itemListViewArtist = None
         self.searchKey = ""
@@ -63,11 +63,11 @@ class Artist:
 
     def get_search_key(self):
         if self.searchKey == "":
-            self.searchKey = FS.getSearchKey(self.name)
+            self.searchKey = FS.get_search_key(self.name)
         return self.searchKey
 
     def print_infos(self):
-        print(self.name + " id=" + str(self.artistID))
+        print(self.name + " id=" + str(self.artist_id))
 
     def sort_albums(self):
         self.albums = sorted(self.albums, key=attrgetter("year", "title"))
@@ -83,7 +83,7 @@ class Artist:
         self.albums.append(alb)
 
     def add_style(self, idSet):
-        self.styleIDSet = self.styleIDSet.union(idSet)
+        self.style_ids = self.style_ids.union(idSet)
 
     def find_albums(self, stitle):
         albumList = []

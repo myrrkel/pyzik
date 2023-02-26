@@ -24,7 +24,7 @@ def deletePonctuation(value):
     return re.sub("\W+", "", value)
 
 
-def getSearchKey(value):
+def get_search_key(value):
     res = value.strip().upper()
     res = simplifiedString(res)
     res = deleteAccent(res)

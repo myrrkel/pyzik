@@ -369,18 +369,18 @@ class Database:
                 sqlInsertAlbum,
                 (
                     album.title,
-                    album.artistID,
-                    album.dirPath,
+                    album.artist_id,
+                    album.dir_path,
                     album.year,
-                    album.musicDirectoryID,
+                    album.music_directory_id,
                 ),
             )
             self.connection.commit()
-            album.albumID = c.lastrowid
+            album.album_id = c.lastrowid
         except sqlite3.Error as e:
             logger.error(e)
 
-        return album.albumID
+        return album.album_id
 
     def insertArtist(self, artist):
         try:
@@ -390,11 +390,11 @@ class Database:
                           """
             c.execute(sqlInsertArtist, (artist.name,))
             self.connection.commit()
-            artist.artistID = c.lastrowid
+            artist.artist_id = c.lastrowid
         except sqlite3.Error as e:
             print("InsertArtist error=" + str(e))
 
-        return artist.artistID
+        return artist.artist_id
 
     def insertTrackHistory(self, albumID, fileName):
         """Insert track in history"""

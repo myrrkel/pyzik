@@ -149,7 +149,7 @@ class albumInfoControlsWidget(QtWidgets.QWidget):
 
 
 class AlbumWidget(QtWidgets.QDialog):
-    def __init__(self, album, parent):
+    def __init__(self, album, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
         self.album = album
         self.setWindowFlags(QtCore.Qt.Window)
@@ -211,20 +211,19 @@ if __name__ == "__main__":
     import sys
     from musicBase import MusicBase
 
-
     mb = MusicBase()
     print("loadMusicBase")
-    mb.loadMusicBase(False)
+    mb.load_music_base(False)
 
-    # alb = mb.albumCol.getRandomAlbum()
+    # alb = mb.albumCol.get_random_album()
 
     # print("RamdomAlb="+alb.title)
 
-    alb = mb.albumCol.getAlbum(1)
+    alb = mb.albumCol.get_album(1)
 
     app = QtWidgets.QApplication(sys.argv)
 
-    custWidget = albumWidget(alb)
+    custWidget = AlbumWidget(alb)
 
     custWidget.show()
     sys.exit(app.exec_())

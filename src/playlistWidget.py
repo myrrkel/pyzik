@@ -16,6 +16,7 @@ from PyQt5.QtWidgets import (
     QFrame,
     QLabel,
     QShortcut,
+    QTableWidgetItem,
 )
 from PyQt5.QtGui import QPixmap
 from track import Track
@@ -353,20 +354,20 @@ class PlaylistWidget(QDialog):
         i = 0
         for track in tracks:
             self.tableWidgetTracks.insertRow(i)
-            titleItem = QTableWidgetItem(track.getTrackTitle())
+            titleItem = QTableWidgetItem(track.get_track_title())
             titleItem.setFlags(titleItem.flags() ^ Qt.ItemIsEditable)
             self.tableWidgetTracks.setItem(i, 0, titleItem)
 
-            if track.radioName == "":
-                artistItem = QTableWidgetItem(track.getArtistName())
+            if track.radio_name == "":
+                artistItem = QTableWidgetItem(track.get_artist_name())
                 artistItem.setFlags(artistItem.flags() ^ Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i, 1, artistItem)
 
-                albumItem = QTableWidgetItem(track.getAlbumTitle())
+                albumItem = QTableWidgetItem(track.get_album_title())
                 albumItem.setFlags(albumItem.flags() ^ Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i, 2, albumItem)
 
-                durationItem = QTableWidgetItem(track.getDurationText())
+                durationItem = QTableWidgetItem(track.get_duration_text())
                 durationItem.setFlags(durationItem.flags() ^ Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i, 3, durationItem)
             else:
@@ -379,7 +380,7 @@ class PlaylistWidget(QDialog):
                 albumItem.setFlags(albumItem.flags() ^ Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i, 2, albumItem)
 
-                durationItem = QTableWidgetItem(track.getDurationText())
+                durationItem = QTableWidgetItem(track.get_duration_text())
                 durationItem.setFlags(durationItem.flags() ^ Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i, 3, durationItem)
 
@@ -431,7 +432,7 @@ class PlaylistWidget(QDialog):
                 if title == "...":
                     title = trk.radioName
             else:
-                title = trk.getTrackTitle()
+                title = trk.get_track_title()
 
         logger.debug("setCurrentTrack window title %s", title)
         if title != "":
@@ -461,7 +462,7 @@ class PlaylistWidget(QDialog):
                 else:
                     print("trk is None")
 
-            if trk is not None and trk.radioName != "" and i == index:
+            if trk is not None and trk.radio_name != "" and i == index:
                 if title != "":
                     if title == "NO_META":
                         title = trk.radioName
@@ -513,7 +514,7 @@ class PlaylistWidget(QDialog):
             if cover_url == "":
                 rad = self.player.getCurrentRadio()
                 if rad is not None:
-                    cover_url = rad.getRadioPic()
+                    cover_url = rad.get_radio_pic()
 
             if cover_url is None:
                 cover_url = ""
@@ -535,7 +536,7 @@ class PlaylistWidget(QDialog):
                 if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
                     self.coverPixmap = self.defaultPixmap
                 else:
-                    coverPath = trk.parentAlbum.getCoverPath()
+                    coverPath = trk.parentAlbum.get_cover_path()
 
                     self.showCoverPixmap(coverPath)
 

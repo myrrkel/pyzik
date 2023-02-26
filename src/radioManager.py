@@ -19,11 +19,11 @@ def _json_object_hook(d):
     return namedtuple("X", d.keys())(*d.values())
 
 
-def json2obj(data):
+def json_to_obj(data):
     return json.loads(data, object_hook=_json_object_hook)
 
 
-def filterByRadioID(seq, RadID):
+def filter_by_radio_id(seq, RadID):
     for el in seq:
         if int(el.radioID) == int(RadID):
             yield el
@@ -38,13 +38,13 @@ class RadioManager:
         self.machines = ["RadioBrowser", "Dirble", "Dar", "Tunein"]
         self.favRadios = []
 
-    def getFavRadio(self, radioID):
+    def get_fav_radio(self, radioID):
         resRad = None
-        for rad in filterByRadioID(self.favRadios, radioID):
+        for rad in filter_by_radio_id(self.favRadios, radioID):
             resRad = rad
         return resRad
 
-    def getRedirection(self, url):
+    def get_redirection(self, url):
         redirection = ""
         try:
             r = requests.get(url, allow_redirects=False)
@@ -55,22 +55,22 @@ class RadioManager:
 
         return redirection
 
-    def searchDarRadios(self, search):
+    def search_dar_radios(self, search):
         darRadios = []
 
-        idList = self.searchDarRadiosID(search)
+        idList = self.search_dar_radios_id(search)
 
         for id in idList:
             print("IDDar=" + str(id))
             darStation = Radio()
-            darStation.stream, darStation.name = self.getDarStation(id)
-            darStation.stream = self.getRedirection(darStation.stream)
+            darStation.stream, darStation.name = self.get_dar_station(id)
+            darStation.stream = self.get_redirection(darStation.stream)
             # print(darStation.stream)
             darRadios.append(darStation)
 
         return darRadios
 
-    def searchDarRadiosID(self, search):
+    def search_dar_radios_id(self, search):
         rad_id_list = []
         search = urllib.parse.quote_plus("*" + search + "*")
         try:
@@ -88,7 +88,7 @@ class RadioManager:
 
         return rad_id_list
 
-    def getDarStation(self, id):
+    def get_dar_station(self, id):
         radio_url = ""
         name = ""
 
@@ -113,7 +113,7 @@ class RadioManager:
 
         return (radioUrl, name)
 
-    def searchDirbleRadios(self, search):
+    def search_dirble_radios(self, search):
         dirbleRadios = []
         search = urllib.parse.quote_plus(search)
         try:
@@ -122,7 +122,7 @@ class RadioManager:
                 data={"query": search},
                 timeout=2,
             )
-            dradios = json2obj(r.text)
+            dradios = json_to_obj(r.text)
             print("Dirble results=" + str(dradios))
             print("Status code=" + str(r.status_code))
             r.raise_for_status()
@@ -139,12 +139,12 @@ class RadioManager:
                     return []
                 for strm in dr.streams:
                     rad = Radio()
-                    rad.initWithDirbleRadio(dr, strm.stream)
+                    rad.init_with_dirble_radio(dr, strm.stream)
                     dirbleRadios.append(rad)
 
         return dirbleRadios
 
-    def searchRadioBrower(self, search):
+    def search_radio_brower(self, search):
         """
         Search radios with Radio Browser API
         """
@@ -157,7 +157,7 @@ class RadioManager:
         r = requests.post(
             "http://all.api.radio-browser.info/json/servers", headers=headers
         )
-        servers = json2obj(r.text)
+        servers = json_to_obj(r.text)
         logger.debug("Servers %s", servers)
         for server in servers:
             search_url = "http://%s/json/stations/search?name=%s" % (
@@ -166,7 +166,7 @@ class RadioManager:
             )
             try:
                 r = requests.post(search_url, headers=headers, data={"name": search})
-                tradios = json2obj(r.text)
+                tradios = json_to_obj(r.text)
                 break
             except requests.exceptions.HTTPError as err:
                 logger.error(err)
@@ -178,12 +178,12 @@ class RadioManager:
                 rad.stream = tr.url
                 rad.country = tr.country
                 rad.image = tr.favicon
-                rad.addCategorie(tr.tags)
+                rad.add_categorie(tr.tags)
                 rb_radios.append(rad)
 
         return rb_radios
 
-    def searchTuneinRadios(self, search):
+    def search_tunein_radios(self, search):
         tuneinRadios = []
         search = urllib.parse.quote_plus(search)
 
@@ -193,26 +193,26 @@ class RadioManager:
                 + search
                 + "&filter=s!&fullTextSearch=true&limit=20&formats=mp3,aac,ogg"
             )
-            tradios = json2obj(r.text)
+            tradios = json_to_obj(r.text)
         except requests.exceptions.HTTPError as err:
             print(err)
 
         if tradios:
             for tr in tradios.Items:
                 rad = Radio()
-                rad.initWithTuneinRadio(tr)
-                rad.stream = self.getTuneinStream(rad.searchID)
+                rad.init_with_tunein_radio(tr)
+                rad.stream = self.get_tunein_stream(rad.searchID)
                 tuneinRadios.append(rad)
 
         return tuneinRadios
 
-    def getTuneinStream(self, id):
+    def get_tunein_stream(self, id):
         try:
             url = "https://opml.radiotime.com/Tune.ashx?id=" + id + "&render=json"
             print(url)
             r = requests.get(url)
             # print(r.text)
-            station = json2obj(r.text)
+            station = json_to_obj(r.text)
 
         except requests.exceptions.HTTPError as err:
             print(err)
@@ -223,7 +223,7 @@ class RadioManager:
 
         return radioUrl
 
-    def getFuzzyGroovy(self):
+    def get_fuzzy_groovy(self):
         fg = Radio()
         fg.name = "Fuzzy & Groovy Rock Radio"
         fg.stream = "http://listen.radionomy.com/fuzzy-and-groovy.m3u"
@@ -234,17 +234,17 @@ class RadioManager:
     def search(self, search, machine=""):
         resRadios = []
         if machine == "" or machine == "Dar":
-            resRadios.extend(self.searchDarRadios(search))
+            resRadios.extend(self.search_dar_radios(search))
         if machine == "" or machine == "Dirble":
-            resRadios.extend(self.searchDirbleRadios(search))
+            resRadios.extend(self.search_dirble_radios(search))
         if machine == "" or machine == "Tunein":
-            resRadios.extend(self.searchTuneinRadios(search))
+            resRadios.extend(self.search_tunein_radios(search))
         if machine == "" or machine == "RadioBrowser":
-            resRadios.extend(self.searchRadioBrower(search))
+            resRadios.extend(self.search_radio_brower(search))
 
         return resRadios
 
-    def loadFavRadios(self):
+    def load_fav_radios(self):
         self.favRadios = []
         for row in self.music_base.db.getSelect(
             """
@@ -260,7 +260,7 @@ class RadioManager:
 if __name__ == "__main__":
     rm = RadioManager()
 
-    rm.searchDirbleRadios("fip")
+    rm.search_dirble_radios("fip")
 
     # radios = rm.searchRadioBrower("fip")
     # for rad in radios:

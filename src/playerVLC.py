@@ -196,7 +196,7 @@ class PlayerVLC:
         self.radioMode = False
         i = 0
         for trk in album.tracks:
-            path = trk.getFullFilePath()
+            path = trk.get_full_file_path()
             media = self.instance.media_new(path)
 
             self.mediaList.add_media(media)
@@ -210,7 +210,7 @@ class PlayerVLC:
 
     def addAlbum(self, album):
         for trk in album.tracks:
-            path = trk.getFullFilePath()
+            path = trk.get_full_file_path()
             media = self.instance.media_new(path)
             trk.radioName = ""
 
@@ -454,7 +454,7 @@ class PlayerVLC:
             artist = "NO_ARTIST"
         return artist
 
-    def getAlbum(self):
+    def get_album(self):
         album = ""
         m = self.mediaPlayer.get_media()
         if m is not None:

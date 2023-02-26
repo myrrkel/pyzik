@@ -391,7 +391,7 @@ class PlayerControlWidget(QWidget):
             if coverUrl == "":
                 rad = self.player.getCurrentRadio()
                 if rad is not None:
-                    coverUrl = rad.getRadioPic()
+                    coverUrl = rad.get_radio_pic()
 
             if coverUrl is None:
                 coverUrl = ""
@@ -419,7 +419,7 @@ class PlayerControlWidget(QWidget):
                     self.currentCoverPath = ""
                     self.coverPixmap = self.defaultPixmap
                 else:
-                    self.currentCoverPath = trk.parentAlbum.getCoverPath()
+                    self.currentCoverPath = trk.parentAlbum.get_cover_path()
                     self.coverPixmap = self.picBufferManager.getPic(
                         self.currentCoverPath, "playerControl"
                     )
@@ -477,9 +477,10 @@ class PlayerControlWidget(QWidget):
                 radioName = self.currentTrack.radio.name
                 trk_title = self.currentTrack.radio.liveTrackTitle
             if trk_title == "":
-                trk_title = self.player.getNowPlaying()
-            if trk_title == "NO_META":
-                trk_title = ""
+                now_playing = self.player.getNowPlaying()
+            if now_playing:
+                if trk_title == "NO_META":
+                    trk_title = ""
         else:
             radioName = title
             trk_title = ""

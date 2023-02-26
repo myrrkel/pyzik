@@ -57,9 +57,9 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.currentDir = md
         self.ui.wRight.setEnabled(True)
         self.ui.Name.setText(md.dirName)
-        self.ui.DirEdit.setText(md.dirPath)
+        self.ui.DirEdit.setText(md.dir_path)
         print("Current Style ID=", md.styleID)
-        print("Current MD ", md.dirName, md.musicDirectoryID)
+        print("Current MD ", md.dirName, md.music_directory_id)
         if md.styleID >= 0:
             i = self.ui.comboStyle.findData(md.styleID)
             self.ui.comboStyle.setCurrentIndex(i)
@@ -100,7 +100,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         model = self.ui.DirListView.model()
         i = indexes[0].row()
 
-        self.music_base.deleteMusicDirectory(self.currentDir)
+        self.music_base.delete_music_directory(self.currentDir)
         model.removeRow(i)
 
         if i >= model.rowCount() - 1:
@@ -116,7 +116,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
     def onChangeDir(self):
         sDir = self.selectDir()
         self.ui.DirEdit.text = sDir
-        self.currentDir.dirPath = sDir
+        self.currentDir.dir_path = sDir
 
     def onChangeGenre(self):
         if self.currentDir is not None:
@@ -172,7 +172,7 @@ if __name__ == "__main__":
 
     mb = MusicBase()
 
-    mb.musicDirectoryCol.loadMusicDirectories()
+    mb.musicDirectoryCol.load_music_directories()
 
     window = DialogMusicDirectoriesLoader(mb)
 

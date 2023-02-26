@@ -186,14 +186,14 @@ class Album:
         self.to_verify = False
         self.tracks = []
         self.images = []
-        self.style_id_set = set()
+        self.style_ids = set()
         self.doStop = False
         self.music_directory = music_directory
         self.coverPixmap = None  # QPixmap()
         if music_directory:
-            self.music_directoryID = music_directory.music_directoryID
+            self.music_directory_id = music_directory.music_directory_id
         else:
-            self.music_directoryID = 0
+            self.music_directory_id = 0
         self.searchKey = ""
 
         if dirname != "":
@@ -205,7 +205,7 @@ class Album:
         self.year = row[2]
         self.dir_path = row[3]
         self.artist_id = row[4]
-        self.music_directoryID = row[5]
+        self.music_directory_id = row[5]
         self.size = row[6]
         self.length = row[7]
 
@@ -221,7 +221,7 @@ class Album:
 
     def get_search_key(self):
         if self.searchKey == "":
-            self.searchKey = FS.getSearchKey(self.title.upper())
+            self.searchKey = FS.get_search_key(self.title.upper())
         return self.searchKey
 
     def print_infos(self):
@@ -234,8 +234,8 @@ class Album:
             + str(self.artist_id)
             + "  # Year: "
             + str(self.year)
-            + "  # music_directoryID: "
-            + str(self.music_directoryID)
+            + "  # music_directory_id: "
+            + str(self.music_directory_id)
             + "  # dir_path: "
             + str(self.dir_path)
         )
@@ -550,7 +550,7 @@ class Album:
         return files
 
     def add_style(self, idSet):
-        self.style_id_set = self.style_id_set.union(idSet)
+        self.style_ids = self.style_ids.union(idSet)
 
     def update_title(self):
         db = database.Database()

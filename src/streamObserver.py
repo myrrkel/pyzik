@@ -46,8 +46,8 @@ class StreamObserver(QThread):
                         self.player.adKilled = False
                         if self.previousTitle != title:
                             self.previousTitle = title
-                            self.player.currentRadioTitle = self.cleanTitle(title)
-                            self.titleChanged.emit(self.cleanTitle(title))
+                            self.player.currentRadioTitle = self.clean_title(title)
+                            self.titleChanged.emit(self.clean_title(title))
                     else:
                         if self.previousTitle == "Advert Killed!":
                             self.player.stop()
@@ -74,12 +74,12 @@ class StreamObserver(QThread):
                         # print("rad:"+trk.radioName+" id:"+str(trk.radioID))
                         if trk.radio is not None:
                             rad = trk.radio
-                            title = rad.getCurrentTrack()
+                            title = rad.get_current_track()
                             if title == "":
-                                title = self.nowPlaying()
+                                title = self.now_playing()
 
                         else:
-                            title = self.nowPlaying()
+                            title = self.now_playing()
 
                         if self.previousTitle != title:
                             self.previousTitle = title
@@ -92,11 +92,11 @@ class StreamObserver(QThread):
     def stop(self):
         self.doStop = True
 
-    def resetPreviousTitle(self, event):
+    def reset_previous_title(self, event):
         if self.previousTitle != "Advert Killed!":
             self.previousTitle = ""
 
-    def cleanTitle(self, title):
+    def clean_title(self, title):
         clean = title.strip()
         if clean == "|":
             clean = ""
@@ -106,5 +106,5 @@ class StreamObserver(QThread):
             clean = ""
         return clean
 
-    def nowPlaying(self):
-        return self.cleanTitle(self.player.getNowPlaying())
+    def now_playing(self):
+        return self.clean_title(self.player.getNowPlaying())

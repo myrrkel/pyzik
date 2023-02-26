@@ -154,7 +154,7 @@ class FullScreenWidget(QDialog):
             if coverUrl == "":
                 rad = self.player.getCurrentRadio()
                 if rad is not None:
-                    coverUrl = rad.getRadioPic()
+                    coverUrl = rad.get_radio_pic()
 
             if self.currentCoverPath == coverUrl:
                 return
@@ -171,7 +171,7 @@ class FullScreenWidget(QDialog):
                 if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
                     self.coverPixmap = self.defaultPixmap
                 else:
-                    coverPath = trk.parentAlbum.getCoverPath()
+                    coverPath = trk.parentAlbum.get_cover_path()
                     if self.currentCoverPath == coverPath:
                         return
                     self.currentCoverPath = coverPath

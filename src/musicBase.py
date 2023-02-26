@@ -26,55 +26,55 @@ class MusicBase:
         self.artistCol = ArtistCollection(self)
         self.musicDirectoryCol = MusicDirectoryCollection(self)
         self.genres = MusicGenres()
-        self.styleIDSet = set()
+        self.style_ids = set()
         self.availableGenres = set()
         self.history = HistoryManager()
         self.radioMan = RadioManager(self)
 
-    def loadMusicBase(self, memoryDB=True):
+    def load_music_base(self, memoryDB=True):
         if memoryDB:
             self.db.initMemoryDB()
-        self.musicDirectoryCol.loadMusicDirectories()
+        self.musicDirectoryCol.load_music_directories()
         self.artistCol.load_artists()
         self.albumCol.load_albums()
-        self.addGenresDirToAlbums()
-        self.addAlbumsToArtists()
-        self.radioMan.loadFavRadios()
-        self.initAvailableGenres()
+        self.add_genres_dir_to_albums()
+        self.add_albums_to_artists()
+        self.radioMan.load_fav_radios()
+        self.init_available_genres()
         self.history.initDataBase()
 
     def refresh(self):
-        self.addGenresDirToAlbums()
-        self.addAlbumsToArtists()
-        self.initAvailableGenres()
+        self.add_genres_dir_to_albums()
+        self.add_albums_to_artists()
+        self.init_available_genres()
 
-    def initAvailableGenres(self):
-        self.styleIDSet = self.musicDirectoryCol.getStyleIDSet()
-        self.availableGenres = self.genres.getAvailableGenresFormIDSet(self.styleIDSet)
+    def init_available_genres(self):
+        self.style_ids = self.musicDirectoryCol.get_style_id_set()
+        self.availableGenres = self.genres.getAvailableGenresFormIDSet(self.style_ids)
 
-    def addGenresDirToAlbums(self):
+    def add_genres_dir_to_albums(self):
         for alb in self.albumCol.albums:
-            md = self.musicDirectoryCol.getMusicDirectory(alb.musicDirectoryID)
+            md = self.musicDirectoryCol.get_music_directory(alb.music_directory_id)
             if md != None:
                 if md.styleID >= -1:
-                    alb.addStyle({md.styleID})
+                    alb.add_style({md.styleID})
 
-    def addAlbumsToArtists(self):
+    def add_albums_to_artists(self):
         for alb in self.albumCol.albums:
-            artistFound = self.artistCol.get_artist_by_id(alb.artistID)
+            artistFound = self.artistCol.get_artist_by_id(alb.artist_id)
             if artistFound is not None:
                 alb.artist_name = artistFound.name
-                artistFound.addStyle(alb.styleIDSet)
+                artistFound.add_style(alb.style_ids)
                 artistFound.albums.append(alb)
 
-    def deleteMusicDirectory(self, musicDirectory):
+    def delete_music_directory(self, musicDirectory):
         self.musicDirectoryCol.deleteMusicDirectory(musicDirectory)
 
-    def emptyDatas(self):
+    def empty_datas(self):
         self.artistCol.artists = set()
         self.albumCol.albums = []
 
-    def generateRandomAlbumList(self, nb_alb=20, styleID=-2):
+    def generate_random_album_list(self, nb_alb=20, styleID=-2):
         randomAlbList = []
 
         for i in range(nb_alb):
@@ -120,8 +120,8 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     mb = MusicBase()
-    mb.loadMusicBase()
-    randAlbumList = mb.generateRandomAlbumList(20)
+    mb.load_music_base()
+    randAlbumList = mb.generate_random_album_list(20)
 
     for alb in randAlbumList:
         print(alb.title)

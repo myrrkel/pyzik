@@ -44,7 +44,7 @@ class HistoryManager:
         for rowHisto in self.database.getSelect(req):
             histo = HistoryItem(rowHisto[1])
             histo.initHistoAlbum(rowHisto[0])
-            histo.data.getAlbum(self.music_base)
+            histo.data.get_album(self.music_base)
             self.log.append(histo)
 
     def insertTrackHistory(self, albumID, fileName):
@@ -60,7 +60,7 @@ class HistoryManager:
         for rowHisto in self.database.getSelect(req):
             histo = HistoryItem(rowHisto[2])
             histo.initHistoTrack(rowHisto[0], rowHisto[1])
-            histo.data.getAlbum(self.music_base)
+            histo.data.get_album(self.music_base)
             self.log.append(histo)
 
     def insertRadioHistory(self, radioName, title):
@@ -80,14 +80,14 @@ class HistoryManager:
 
     def printAll(self):
         for histo in self.log:
-            histo.printData()
+            histo.print_data()
 
 
 if __name__ == "__main__":
     from musicBase import MusicBase
 
     mb = MusicBase()
-    mb.loadMusicBase(False)
+    mb.load_music_base(False)
 
     history = HistoryManager(mb)
     history.printAll()

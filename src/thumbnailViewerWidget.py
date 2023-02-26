@@ -37,13 +37,13 @@ class ThumbnailItem(QListWidgetItem):
         self.setHidden(True)
         self.setSizeHint(QSize(200, 220))
 
-    def getURL(self):
+    def get_url(self):
         return self.url
 
-    def addTempFile(self, path):
-        self.parent.addTempFile(path)
+    def add_temp_file(self, path):
+        self.parent.add_temp_file(path)
 
-    def setTitle(self):
+    def set_title(self):
         self.setText(self.title)
 
 
@@ -53,17 +53,17 @@ class thumbnailIcon(QtGui.QIcon):
         self.parent = parent
         self.path = ""
         self.picFromUrlThread = PicFromUrlThread()
-        self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
+        self.picFromUrlThread.downloadCompleted.connect(self.on_pic_downloaded)
         self.picFromUrlThread.url = url
         self.picFromUrlThread.start()
 
-    def onPicDownloaded(self, path):
+    def on_pic_downloaded(self, path):
         self.path = path
         self.parent.path = self.path
-        self.parent.addTempFile(path)
+        self.parent.add_temp_file(path)
         self.addFile(path)
         self.parent.setIcon(self)
-        self.parent.setTitle()
+        self.parent.set_title()
         # self.parent.parent.thumbWidget.setSpacing(4)
         self.parent.setHidden(False)
 
@@ -78,13 +78,13 @@ class ThumbnailViewerWidget(QWidget):
         self.isDownloading = False
         self.fullScreenCover = FullScreenCoverWidget()
         self.picFromUrlThread = PicFromUrlThread()
-        self.picFromUrlThread.downloadCompleted.connect(self.onPicDownloaded)
+        self.picFromUrlThread.downloadCompleted.connect(self.on_pic_downloaded)
 
         self.setWindowFlags(Qt.Window)
         self.initUI()
         # self.show()
 
-    def resetSelection(self):
+    def reset_selection(self):
         self.selectedFile = ""
         self.selectedURL = ""
 
@@ -107,23 +107,23 @@ class ThumbnailViewerWidget(QWidget):
 
         self.vLayout.addWidget(self.thumbWidget)
 
-        self.thumbWidget.itemDoubleClicked.connect(self.showItem)
+        self.thumbWidget.itemDoubleClicked.connect(self.show_item)
 
-        self.thumbWidget.itemClicked.connect(self.onSelectedItem)
+        self.thumbWidget.itemClicked.connect(self.on_selected_item)
 
-    def onSelectedItem(self, item):
+    def on_selected_item(self, item):
         print("SelectedURL=" + item.url)
         self.selectedURL = item.url
         self.selectedFile = ""
 
-    def showItem(self, item):
+    def show_item(self, item):
         if self.isDownloading == False:
             self.fullScreenCover.show()
             self.fullScreenCover.initCover()
-            self.picFromUrlThread.url = item.getURL()
+            self.picFromUrlThread.url = item.get_url()
             self.picFromUrlThread.start()
 
-    def onPicDownloaded(self, uri):
+    def on_pic_downloaded(self, uri):
         self.tempFiles.append(uri)
         self.selectedFile = uri
         self.isDownloading = False
@@ -133,10 +133,10 @@ class ThumbnailViewerWidget(QWidget):
         self.fullScreenCover.showFullScreen()
         # self.fullScreenCover.show()
 
-    def addTempFile(self, path):
+    def add_temp_file(self, path):
         self.tempFiles.append(path)
 
-    def removeTempFiles(self, fileSaved=False):
+    def remove_temp_files(self, fileSaved=False):
         print("Remove temp thumb files:" + str(range(len(self.tempFiles))))
         for i in reversed(range(len(self.tempFiles))):
             uri = self.tempFiles[i]
@@ -147,7 +147,7 @@ class ThumbnailViewerWidget(QWidget):
                     os.remove(uri)
                 del self.tempFiles[i]
 
-    def addThumbnailItem(self, url, thumbURL, name):
+    def add_thumbnail_item(self, url, thumbURL, name):
         self.thumbWidget.addItem(ThumbnailItem(self, url, thumbURL, name))
 
     # def showThumbnails(self):
