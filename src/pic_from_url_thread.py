@@ -30,7 +30,7 @@ class PicFromUrlThread(QThread):
         if self.lastUrl != self.url:
             self.lastUrl = self.url
             self.lastTempFile = ""
-            self.removeLastTempFile()
+            self.remove_last_temp_file()
             headers = {
                 "User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 6.1; rv:2.2) Gecko/20110201"
             }
@@ -57,14 +57,14 @@ class PicFromUrlThread(QThread):
             if self.lastTempFile != "":
                 self.downloadCompleted.emit(str(self.lastTempFile))
 
-    def resetLastURL(self):
+    def reset_last_url(self):
         self.lastUrl = ""
 
-    def setURL(self, url):
-        self.lastTempFile
+    def set_url(self, url):
+
         self.url = url
 
-    def removeLastTempFile(self):
+    def remove_last_temp_file(self):
         if self.lastTempFile != "":
             print("removeLastTempFile:" + self.lastTempFile)
             os.remove(self.lastTempFile)

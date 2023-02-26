@@ -40,10 +40,9 @@ class CoverFinderSearchThread(QThread):
     def run(self):
         try:
             self.coverFinder.search(self.keyword)
-        except Exception as e:
-            logger.error(e)
-            raise e
-            self.quit()
+        except Exception as err:
+            logger.error(err)
+            pass
         self.resultFound.emit(1)
         self.quit()
 
