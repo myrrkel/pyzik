@@ -32,8 +32,8 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.ui.comboStyle.currentIndexChanged.connect(self.onChangeGenre)
         self.ui.comboDirType.currentIndexChanged.connect(self.onChangeDirType)
 
-        self.ui.AddButton.setIcon(getSvgIcon("folder_add.svg"))
-        self.ui.DeleteButton.setIcon(getSvgIcon("folder_delete.svg"))
+        self.ui.AddButton.setIcon(get_svg_icon("folder_add.svg"))
+        self.ui.DeleteButton.setIcon(get_svg_icon("folder_delete.svg"))
 
         self.loadDirList()
         self.showGenres()
@@ -44,7 +44,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
     def onDirChanged(self, item):
         if self.currentDir is not None:
             self.currentDir.music_base = self.music_base
-            self.currentDir.updateMusicDirectoryDB()
+            self.currentDir.update_music_directory_db()
         sel = self.ui.DirListView.selectionModel().selectedIndexes()
 
         nrow = item.row()
@@ -81,7 +81,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
                 self, "Give a name to your directory", "Directory name:", False, dirName
             )
             if (md.dirName != "") & ok:
-                self.music_base.musicDirectoryCol.addMusicDirectory(md)
+                self.music_base.musicDirectoryCol.add_music_directory(md)
 
                 print("Directory=" + sDir + " DirName=" + md.dirName)
 
@@ -137,7 +137,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
     def closeEvent(self, event):
         if self.currentDir is not None:
             self.currentDir.music_base = self.music_base
-            self.currentDir.updateMusicDirectoryDB()
+            self.currentDir.update_music_directory_db()
 
     def loadDirList(self):
         model = QtGui.QStandardItemModel(self.ui.DirListView)

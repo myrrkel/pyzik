@@ -16,7 +16,7 @@ class historyControlsWidget(QtWidgets.QWidget):
         _translate = QtCore.QCoreApplication.translate
         lay.addStretch()
         self.refreshButton = QtWidgets.QPushButton(_translate("history", "Refresh"))
-        self.refreshButton.setIcon(getSvgIcon("refresh.svg"))
+        self.refreshButton.setIcon(get_svg_icon("refresh.svg"))
         lay.addWidget(self.refreshButton)
         lay.addStretch()
 

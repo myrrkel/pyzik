@@ -23,12 +23,12 @@ class CoverArtFinder:
         params = [(4, "large"), (8, "medium")]
 
         for param in params:
-            items = self.searchWithParam(search_keyword, param[0], param[1])
+            items = self.search_with_param(search_keyword, param[0], param[1])
             if items:
                 self.items = self.items + items
         logger.debug("CoverArtFinder items %s", self.items)
 
-    def searchWithParam(self, search_keyword, limit=4, size="medium"):
+    def search_with_param(self, search_keyword, limit=4, size="medium"):
         response = gid()  # class instantiation
 
         records = gid_user_input()

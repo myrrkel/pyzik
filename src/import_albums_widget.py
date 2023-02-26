@@ -53,7 +53,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
             _translate("import albums", "Explore directory")
         )
         self.explore_button.clicked.connect(self.explore_directory)
-        self.explore_button.setIcon(getSvgIcon("folder_search.svg"))
+        self.explore_button.setIcon(get_svg_icon("folder_search.svg"))
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed
         )
@@ -87,7 +87,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
             _translate("import albums", "Import selected albums in music directories")
         )
         self.import_button.clicked.connect(self.import_albums)
-        self.import_button.setIcon(getSvgIcon("folder_import.svg"))
+        self.import_button.setIcon(get_svg_icon("folder_import.svg"))
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed
         )
@@ -322,7 +322,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
             check_tags_button = QtWidgets.QPushButton()
             check_tags_button.alb_item = item
             check_tags_button.clicked.connect(self.check_tags)
-            check_tags_button.setIcon(getSvgIcon("lightning2.svg"))
+            check_tags_button.setIcon(get_svg_icon("lightning2.svg"))
             self.tableWidgetItems.setCellWidget(i, 7, check_tags_button)
 
         hHeader = self.tableWidgetItems.horizontalHeader()

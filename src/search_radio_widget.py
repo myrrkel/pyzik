@@ -23,7 +23,7 @@ class SearchControlsWidget(QtWidgets.QWidget):
         self.searchEdit.setText("")
 
         self.searchButton = QtWidgets.QPushButton("Search")
-        self.searchButton.setIcon(getSvgIcon("radio-tower.svg"))
+        self.searchButton.setIcon(get_svg_icon("radio-tower.svg"))
         lay.addWidget(self.searchEdit)
         lay.addWidget(self.searchButton)
 
@@ -62,11 +62,11 @@ class PlayControlsWidget(QtWidgets.QWidget):
         _translate = QtCore.QCoreApplication.translate
 
         self.playButton = QtWidgets.QPushButton("Play")
-        self.playButton.setIcon(getSvgIcon("play.svg"))
+        self.playButton.setIcon(get_svg_icon("play.svg"))
         lay.addWidget(self.playButton)
 
         self.addButton = QtWidgets.QPushButton("Add")
-        self.addButton.setIcon(getSvgIcon("plus.svg"))
+        self.addButton.setIcon(get_svg_icon("plus.svg"))
         lay.addWidget(self.addButton)
 
 
@@ -146,12 +146,12 @@ class SearchRadioWidget(QtWidgets.QDialog):
         self.searchRadioThread.start()
 
     def onPlayPadio(self, item):
-        self.player.playRadioInThread(self.radios[item])
+        self.player.play_radio_in_thread(self.radios[item])
 
     def onClickPlayRadio(self, event):
         i = self.tableWidgetItems.currentRow()
         if i > -1:
-            self.player.playRadioInThread(self.radios[i])
+            self.player.play_radio_in_thread(self.radios[i])
 
     def onAddPadio(self, item):
         i = self.tableWidgetItems.currentRow()

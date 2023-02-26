@@ -27,7 +27,7 @@ class StreamObserver(QThread):
             if self.doStop:
                 break
 
-            if self.player.isPlaying() == False:
+            if self.player.is_playing() == False:
                 self.previousTitle = ""
                 time.sleep(1)
                 continue
@@ -39,7 +39,7 @@ class StreamObserver(QThread):
 
             if self.player.radioMode == True:
                 if self.player.adblock == True:
-                    title = self.player.getNowPlaying()
+                    title = self.player.get_now_playing()
                     # print("streamObserver="+title+" "+self.player.getTitle()+" "+self.player.getArtist())
                     if title != "NO_META":
                         self.player.mute(False)
@@ -69,7 +69,7 @@ class StreamObserver(QThread):
                     """No meta, no adblock"""
                     # print("NOADBLOCK")
                     self.player.adKilled = False
-                    trk = self.player.getCurrentTrackPlaylist()
+                    trk = self.player.get_current_track_playlist()
                     if trk is not None:
                         # print("rad:"+trk.radioName+" id:"+str(trk.radioID))
                         if trk.radio is not None:
@@ -107,4 +107,4 @@ class StreamObserver(QThread):
         return clean
 
     def now_playing(self):
-        return self.clean_title(self.player.getNowPlaying())
+        return self.clean_title(self.player.get_now_playing())

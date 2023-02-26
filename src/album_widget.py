@@ -28,7 +28,7 @@ class AlbumControlsWidget(QtWidgets.QWidget):
         self.saveButton = QtWidgets.QPushButton(_translate("album", "Save"))
         self.saveButton.setMinimumSize(QtCore.QSize(70, 27))
         # self.saveButton.setMaximumSize(QtCore.QSize(70, 27))
-        self.saveButton.setIcon(getSvgIcon("save.svg"))
+        self.saveButton.setIcon(get_svg_icon("save.svg"))
 
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed

@@ -50,7 +50,7 @@ class MusicBase:
 
     def init_available_genres(self):
         self.style_ids = self.musicDirectoryCol.get_style_id_set()
-        self.availableGenres = self.genres.getAvailableGenresFormIDSet(self.style_ids)
+        self.availableGenres = self.genres.get_available_genres_form_id_set(self.style_ids)
 
     def add_genres_dir_to_albums(self):
         for alb in self.albumCol.albums:
@@ -68,7 +68,7 @@ class MusicBase:
                 artistFound.albums.append(alb)
 
     def delete_music_directory(self, musicDirectory):
-        self.musicDirectoryCol.deleteMusicDirectory(musicDirectory)
+        self.musicDirectoryCol.delete_music_directory(musicDirectory)
 
     def empty_datas(self):
         self.artistCol.artists = set()

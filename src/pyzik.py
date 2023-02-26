@@ -88,8 +88,6 @@ def main():
     app.exec()
     window.threadStreamObserver.stop()
 
-    player.release()
-
     db = Database()
     db.vacuum()
 

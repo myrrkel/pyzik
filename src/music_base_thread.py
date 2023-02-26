@@ -36,7 +36,7 @@ class ExploreAlbumsDirectoriesThread(QThread):
             mdir.artistCol.db = db
             mdir.albumCol.db = db
 
-            mdir.exploreDirectory(self.progressChanged)
+            mdir.explore_directory(self.progressChanged)
             self.explore_events.extend(mdir.explore_events)
 
             if self.doStop:

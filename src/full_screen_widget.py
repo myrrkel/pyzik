@@ -138,7 +138,7 @@ class FullScreenWidget(QDialog):
         if self.isVisible() == False:
             return
 
-        self.currentTrack = self.player.getCurrentTrackPlaylist()
+        self.currentTrack = self.player.get_current_track_playlist()
 
         self.showCover(self.currentTrack)
 
@@ -150,9 +150,9 @@ class FullScreenWidget(QDialog):
 
     def showCover(self, trk):
         if self.player.radioMode:
-            coverUrl = self.player.getLiveCoverUrl()
+            coverUrl = self.player.get_live_cover_url()
             if coverUrl == "":
-                rad = self.player.getCurrentRadio()
+                rad = self.player.get_current_radio()
                 if rad is not None:
                     coverUrl = rad.get_radio_pic()
 
@@ -202,7 +202,7 @@ class FullScreenWidget(QDialog):
                 artName = self.currentTrack.radio.name
                 albTitle = self.currentTrack.radio.liveTrackTitle
                 if albTitle == "":
-                    albTitle = self.player.getNowPlaying()
+                    albTitle = self.player.get_now_playing()
             else:
                 artName = self.currentTrack.get_artist_name()
                 albTitle = self.currentTrack.get_album_title()

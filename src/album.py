@@ -538,7 +538,7 @@ class Album:
 
     def get_album_dir(self):
         if self.music_directory:
-            album_dir = os.path.join(self.music_directory.getDirPath(), self.dir_path)
+            album_dir = os.path.join(self.music_directory.get_dir_path(), self.dir_path)
             return album_dir
         else:
             return self.dir_path

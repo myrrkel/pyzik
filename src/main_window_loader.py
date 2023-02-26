@@ -67,7 +67,7 @@ logger = logging.getLogger(__name__)
 _translate = QCoreApplication.translate
 
 
-def openFile(filename):
+def open_file(filename):
     if sys.platform == "win32":
         os.startfile(filename)
     else:
@@ -107,7 +107,7 @@ class MainWindowLoader(QMainWindow):
 
         self.coverPixmap = QtGui.QPixmap()
         if not self.defaultPixmap:
-            self.defaultPixmap = getSvgWithColorParam("vinyl-record2.svg")
+            self.defaultPixmap = get_svg_with_color_param("vinyl-record2.svg")
 
         self.fullScreenWidget = FullScreenWidget(self.player)
         self.fullScreenWidget.connectPicDownloader(self.picFromUrlThread)
@@ -124,7 +124,7 @@ class MainWindowLoader(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.playerControl = PlayerControlWidget(self.player, self)
-        self.playerControl.connectPicDownloader(self.picFromUrlThread)
+        self.playerControl.connect_pic_downloader(self.picFromUrlThread)
         self.playerControl.defaultPixmap = self.defaultPixmap
         self.ui.verticalMainLayout.addWidget(self.playerControl)
         self.playerControl.hide()
@@ -134,63 +134,63 @@ class MainWindowLoader(QMainWindow):
         sizePolicy.setVerticalStretch(0)
         self.playerControl.setSizePolicy(sizePolicy)
 
-        self.initPlayerButtons()
+        self.init_player_buttons()
 
-        self.setTitleLabel("")
+        self.set_title_label("")
         self.setWindowTitle("Pyzik")
 
-        self.initAlbumTableWidget()
-        self.initTrackTableWidget()
+        self.init_album_table_widget()
+        self.init_track_table_widget()
 
-        self.showGenres()
-        self.showArtists()
-        self.loadSettings()
+        self.show_genres()
+        self.show_artists()
+        self.load_settings()
 
-        self.initRadioFavMenu()
-        self.initExtraMenu()
+        self.init_radio_fav_menu()
+        self.init_extra_menu()
 
         # Connect UI triggers
         self.ui.listViewArtists.selectionModel().currentChanged.connect(
-            self.onArtistChange
+            self.on_artist_change
         )
-        self.ui.actionMusic_directories.triggered.connect(self.onMenuMusicDirectories)
-        self.ui.actionExplore_music_directories.triggered.connect(self.onMenuExplore)
-        self.ui.actionRandom_album.triggered.connect(self.ramdomAlbum)
-        self.ui.actionDelete_database.triggered.connect(self.onMenuDeleteDatabase)
-        self.ui.actionFuzzyGroovy.triggered.connect(self.onPlayFuzzyGroovy)
-        self.ui.actionSearchRadio.triggered.connect(self.onPlaySearchRadio)
-        self.ui.actionPlaylist.triggered.connect(self.showPlaylist)
-        self.ui.actionHistory.triggered.connect(self.showHistory)
+        self.ui.actionMusic_directories.triggered.connect(self.on_menu_music_directories)
+        self.ui.actionExplore_music_directories.triggered.connect(self.on_menu_explore)
+        self.ui.actionRandom_album.triggered.connect(self.ramdom_album)
+        self.ui.actionDelete_database.triggered.connect(self.on_menu_delete_database)
+        self.ui.actionFuzzyGroovy.triggered.connect(self.on_play_fuzzy_groovy)
+        self.ui.actionSearchRadio.triggered.connect(self.on_play_search_radio)
+        self.ui.actionPlaylist.triggered.connect(self.show_playlist)
+        self.ui.actionHistory.triggered.connect(self.show_history)
         self.ui.actionLanguageSpanish.triggered.connect(
-            functools.partial(self.changeLanguage, "es")
+            functools.partial(self.change_language, "es")
         )
         self.ui.actionLanguageFrench.triggered.connect(
-            functools.partial(self.changeLanguage, "fr")
+            functools.partial(self.change_language, "fr")
         )
         self.ui.actionLanguageEnglish.triggered.connect(
-            functools.partial(self.changeLanguage, "en")
+            functools.partial(self.change_language, "en")
         )
-        self.ui.playButton.clicked.connect(self.onPlayAlbum)
-        self.ui.addAlbumButton.clicked.connect(self.onAddAlbum)
-        self.ui.searchCoverButton.clicked.connect(self.onSearchCoverAlbum)
+        self.ui.playButton.clicked.connect(self.on_play_album)
+        self.ui.addAlbumButton.clicked.connect(self.on_add_album)
+        self.ui.searchCoverButton.clicked.connect(self.on_search_cover_album)
         # self.ui.nextButton.clicked.connect(self.player.mediaListPlayer.next)
-        self.ui.openDirButton.clicked.connect(self.onOpenDir)
+        self.ui.openDirButton.clicked.connect(self.on_open_dir)
         # self.ui.previousButton.clicked.connect(self.player.mediaListPlayer.previous)
-        self.ui.searchEdit.textChanged.connect(self.filterArtists)
-        self.ui.searchEdit.returnPressed.connect(self.onSearchEnter)
+        self.ui.searchEdit.textChanged.connect(self.filter_artists)
+        self.ui.searchEdit.returnPressed.connect(self.on_search_enter)
         self.ui.tableWidgetAlbums.selectionModel().currentRowChanged.connect(
-            self.onAlbumChange
+            self.on_album_change
         )
         self.ui.tableWidgetAlbums.customContextMenuRequested.connect(
-            self.handleHeaderAlbumsMenu
+            self.handle_header_albums_menu
         )
 
-        self.ui.comboBoxStyle.currentIndexChanged.connect(self.filterArtists)
+        self.ui.comboBoxStyle.currentIndexChanged.connect(self.filter_artists)
 
         self.shortcutRandomAlbum = QShortcut(QtGui.QKeySequence("Ctrl+R"), self)
-        self.shortcutRandomAlbum.activated.connect(self.ramdomAlbum)
+        self.shortcutRandomAlbum.activated.connect(self.ramdom_album)
         self.shortcutPlaylist = QShortcut(QtGui.QKeySequence("Ctrl+P"), self)
-        self.shortcutPlaylist.activated.connect(self.showPlaylist)
+        self.shortcutPlaylist.activated.connect(self.show_playlist)
         self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
         self.shortcutPause.activated.connect(self.player.pause)
         self.shortcutFullScreen = QShortcut(QtGui.QKeySequence("Ctrl+F"), self)
@@ -198,16 +198,16 @@ class MainWindowLoader(QMainWindow):
 
         # Connect VLC triggers
         self.player.mpEnventManager.event_attach(
-            vlc.EventType.MediaPlayerMediaChanged, self.onPlayerMediaChangedVLC
+            vlc.EventType.MediaPlayerMediaChanged, self.on_player_media_changed_vlc
         )
         self.player.mpEnventManager.event_attach(
             vlc.EventType.MediaPlayerPaused, self.paused
         )
         self.player.mpEnventManager.event_attach(
-            vlc.EventType.MediaPlayerPlaying, self.isPlaying
+            vlc.EventType.MediaPlayerPlaying, self.is_playing
         )
         self.player.mpEnventManager.event_attach(
-            vlc.EventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged
+            vlc.EventType.MediaPlayerPositionChanged, self.on_player_position_changed
         )
         # self.player.mpEnventManager.event_attach(vlc.EventType.MediaPlayerAudioVolume , self.setVolumeSliderFromPlayer)
 
@@ -215,9 +215,9 @@ class MainWindowLoader(QMainWindow):
 
         self.playerControl.playerControls.volumeSlider.setMaximum(100)
         self.playerControl.playerControls.volumeSlider.setValue(self.volume)
-        self.player.setVolume(self.volume)
+        self.player.set_volume(self.volume)
         self.playerControl.playerControls.volumeSlider.valueChanged.connect(
-            self.setVolume
+            self.set_volume
         )
 
         # Write message in status bar
@@ -227,7 +227,7 @@ class MainWindowLoader(QMainWindow):
         self.threadStreamObserver.player = self.player
         self.threadStreamObserver.music_base = self.music_base
         self.threadStreamObserver.titleChanged.connect(
-            self.onPlayerMediaChangedStreamObserver
+            self.on_player_media_changed_stream_observer
         )
         self.player.mpEnventManager.event_attach(
             vlc.EventType.MediaPlayerStopped,
@@ -237,23 +237,23 @@ class MainWindowLoader(QMainWindow):
 
         self.loadAlbumFilesThread = LoadAlbumFilesThread()
         self.loadAlbumFilesThread.setTerminationEnabled(True)
-        self.loadAlbumFilesThread.imagesLoaded.connect(self.showAlbumCover)
-        self.loadAlbumFilesThread.tracksLoaded.connect(self.showAlbumTracks)
+        self.loadAlbumFilesThread.imagesLoaded.connect(self.show_album_cover)
+        self.loadAlbumFilesThread.tracksLoaded.connect(self.show_album_tracks)
 
         self.exploreAlbumsDirectoriesThread = ExploreAlbumsDirectoriesThread()
 
         self.ui.coverWidget.resizeEvent = self.resizeEvent
-        self.ui.coverWidget.mouseDoubleClickEvent = self.coverMouseDoubleClickEvent
+        self.ui.coverWidget.mouseDoubleClickEvent = self.cover_mouse_double_click_event
 
-        self.currentTrackChanged.connect(self.onCurrentTrackChanged)
-        self.showPlayerControlEmited.connect(self.showPlayerControl)
+        self.currentTrackChanged.connect(self.on_current_track_changed)
+        self.showPlayerControlEmited.connect(self.show_player_control)
 
         self.ui.searchEdit.setFocus()
 
-    def coverMouseDoubleClickEvent(self, event):
-        self.showFullScreenCover()
+    def cover_mouse_double_click_event(self, event):
+        self.show_full_screen_cover()
 
-    def showFullScreenCover(self):
+    def show_full_screen_cover(self):
         self.fullScreenCoverWidget.setPixmapFromUri(self.current_album.get_cover_path())
         self.fullScreenCoverWidget.show()
 
@@ -263,18 +263,18 @@ class MainWindowLoader(QMainWindow):
             self.player.playlistChangedEvent = self.playlistChanged
             self.player.currentRadioChangedEvent = self.currentRadioChanged
             self.player.titleChangedEvent = self.currentTrackChanged
-            self.ramdomAlbum()
+            self.ramdom_album()
             self.firstShow = False
 
-    def onExploreCompleted(self, event):
+    def on_explore_completed(self, event):
         logger.debug("onExploreCompleted")
-        events = self.music_base.musicDirectoryCol.getExploreEvents()
+        events = self.music_base.musicDirectoryCol.get_explore_events()
         # logger.debug("EXPLORE EVENTS=" + str([e.get_text() for e in events]))
         if events:
             self.open_explore_events_widget(events)
         self.music_base.db = Database()
-        self.showArtists()
-        self.showGenres()
+        self.show_artists()
+        self.show_genres()
 
     def open_explore_events_widget(self, events):
         if not hasattr(self, "explore_events_widget"):
@@ -285,20 +285,20 @@ class MainWindowLoader(QMainWindow):
             self.explore_events_widget.items = events
         self.explore_events_widget.show()
 
-    def onPlaySearchRadio(self):
+    def on_play_search_radio(self):
         if self.searchRadio is None:
             self.searchRadio = SearchRadioWidget(self.music_base, self.player, self)
-            self.searchRadio.radioAdded.connect(self.onAddFavRadio)
+            self.searchRadio.radioAdded.connect(self.on_add_fav_radio)
 
         self.searchRadio.show()
         self.searchRadio.activateWindow()
 
-    def onAddFavRadio(self):
+    def on_add_fav_radio(self):
         # self.music_base.db.initDataBase()
         self.music_base.radioMan.load_fav_radios()
-        self.initRadioFavMenu()
+        self.init_radio_fav_menu()
 
-    def ramdomAlbum(self):
+    def ramdom_album(self):
         styleID = self.ui.comboBoxStyle.currentData()
         alb = self.music_base.albumCol.get_random_album(styleID)
         self.current_album = alb
@@ -306,8 +306,8 @@ class MainWindowLoader(QMainWindow):
             print("RamdomAlb=" + alb.title)
             art = self.music_base.artistCol.get_artist_by_id(alb.artist_id)
             self.currentArtist = art
-            self.selectArtistListView(art)
-            self.showArtist(art)
+            self.select_artist_list_view(art)
+            self.show_artist(art)
             # self.showAlbum(alb)
 
     def open_import_album_widget(self):
@@ -315,7 +315,7 @@ class MainWindowLoader(QMainWindow):
             self.import_album_widget = ImportAlbumsWidget(self, self.music_base)
         self.import_album_widget.show()
 
-    def playRandomPlaylist(self):
+    def play_random_playlist(self):
         print("playRandomPlaylist")
         index = self.player.mediaList.count()
         styleID = self.ui.comboBoxStyle.currentData()
@@ -326,42 +326,42 @@ class MainWindowLoader(QMainWindow):
             alb.get_images()
             alb.get_cover()
             alb.get_tracks()
-            self.addAlbum(alb)
+            self.add_album(alb)
 
         self.player.radioMode = False
         self.player.mediaListPlayer.play_item_at_index(index)
 
-    def setVolume(self, volume):
-        self.player.setVolume(volume)
+    def set_volume(self, volume):
+        self.player.set_volume(volume)
 
-    def getVolumeFromSlider(self):
-        return self.playerControl.getVolume()
+    def get_volume_from_slider(self):
+        return self.playerControl.get_volume_slider()
 
-    def setVolumeSliderFromPlayer(self, event):
-        volume = self.player.getVolume()
-        self.playerControl.setVolume(volume)
+    def set_volume_slider_from_player(self, event):
+        volume = self.player.get_volume()
+        self.playerControl.set_volume(volume)
 
-    def onPlayerPositionChanged(self, event=None):
-        self.playerControl.onPlayerPositionChanged(event)
+    def on_player_position_changed(self, event=None):
+        self.playerControl.on_player_position_changed(event)
         if self.playList is not None:
-            self.playList.onPlayerPositionChanged(event)
+            self.playList.on_player_position_changed(event)
 
     def paused(self, event):
         print("Paused!")
 
-    def showPlayerControl(self, event):
+    def show_player_control(self, event):
         self.playerControl.show()
 
-    def isPlaying(self, event):
+    def is_playing(self, event):
         print("isPlaying!")
-        self.isPlayingSignal.emit(self.player.isPlaying())
+        self.isPlayingSignal.emit(self.player.is_playing())
         self.showPlayerControlEmited.emit("")
 
     """
     Init widgets
     """
 
-    def initAlbumTableWidget(self):
+    def init_album_table_widget(self):
         self.ui.tableWidgetAlbums.setRowCount(0)
         hHeader = self.ui.tableWidgetAlbums.horizontalHeader()
         vHeader = self.ui.tableWidgetAlbums.verticalHeader()
@@ -370,7 +370,7 @@ class MainWindowLoader(QMainWindow):
         hHeader.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         hHeader.hideSection(2)
 
-    def initTrackTableWidget(self):
+    def init_track_table_widget(self):
         self.ui.tableWidgetTracks.setRowCount(0)
         hHeader = self.ui.tableWidgetTracks.horizontalHeader()
         vHeader = self.ui.tableWidgetTracks.verticalHeader()
@@ -379,10 +379,10 @@ class MainWindowLoader(QMainWindow):
         hHeader.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         hHeader.hideSection(2)
 
-    def initExtraMenu(self):
+    def init_extra_menu(self):
         if not hasattr(self.ui, "actionRandomPlaylist"):
             self.ui.actionRandomPlaylist = QAction(self.ui.menuAlbums)
-            self.ui.actionRandomPlaylist.triggered.connect(self.playRandomPlaylist)
+            self.ui.actionRandomPlaylist.triggered.connect(self.play_random_playlist)
             self.ui.menuAlbums.addAction(self.ui.actionRandomPlaylist)
         self.ui.actionRandomPlaylist.setText(_translate("menu", "Random playlist"))
 
@@ -396,7 +396,7 @@ class MainWindowLoader(QMainWindow):
             _translate("menu", "Import albums")
         )
 
-    def initRadioFavMenu(self):
+    def init_radio_fav_menu(self):
         if not hasattr(self.ui, "menuFavRadios"):
             self.ui.menuFavRadios = QMenu(self.ui.menuRadios)
         else:
@@ -409,7 +409,7 @@ class MainWindowLoader(QMainWindow):
             self.ui.actionFavRadio.setText(rad.name)
             self.ui.menuFavRadios.addAction(self.ui.actionFavRadio)
             self.ui.actionFavRadio.triggered.connect(
-                functools.partial(self.onPlayFavRadio, rad.radioID)
+                functools.partial(self.on_play_fav_radio, rad.radioID)
             )
 
         self.ui.menuRadios.addAction(self.ui.menuFavRadios.menuAction())
@@ -419,26 +419,26 @@ class MainWindowLoader(QMainWindow):
     Menu Actions
     """
 
-    def onMenuMusicDirectories(self):
+    def on_menu_music_directories(self):
         self.music_base.db = Database()
         dirDiag = DialogMusicDirectoriesLoader(self.music_base, self)
         dirDiag.show()
         dirDiag.exec_()
 
-    def onPlayFuzzyGroovy(self):
+    def on_play_fuzzy_groovy(self):
         fg = self.music_base.radioMan.get_fuzzy_groovy()
-        self.playRadio(fg)
+        self.play_radio(fg)
 
-    def onPlayFavRadio(self, radioID):
+    def on_play_fav_radio(self, radioID):
         rad = self.music_base.radioMan.get_fav_radio(radioID)
-        self.playRadio(rad)
+        self.play_radio(rad)
 
-    def playRadio(self, radio):
-        self.playerControl.setTitleLabel(radio.name)
-        self.playerControl.showWaitingOverlay()
-        self.player.playRadioInThread(radio)
+    def play_radio(self, radio):
+        self.playerControl.set_title_label(radio.name)
+        self.playerControl.show_waiting_overlay()
+        self.player.play_radio_in_thread(radio)
 
-    def onMenuExplore(self):
+    def on_menu_explore(self):
         self.exploreAlbumsDirectoriesThread.music_base = self.music_base
         self.wProgress = ProgressWidget(self)
         self.exploreAlbumsDirectoriesThread.progressChanged.connect(
@@ -451,21 +451,21 @@ class MainWindowLoader(QMainWindow):
             self.wProgress.close
         )
         self.exploreAlbumsDirectoriesThread.exploreCompleted.connect(
-            self.onExploreCompleted
+            self.on_explore_completed
         )
         self.wProgress.progressClosed.connect(self.exploreAlbumsDirectoriesThread.stop)
         self.exploreAlbumsDirectoriesThread.start()
 
-    def onMenuDeleteDatabase(self):
+    def on_menu_delete_database(self):
         self.music_base.db.createConnection()
         self.music_base.db.dropAllTables()
         self.music_base.empty_datas()
         self.music_base.db.initDataBase()
-        self.showArtists()
-        self.initAlbumTableWidget()
-        self.initAlbumView()
+        self.show_artists()
+        self.init_album_table_widget()
+        self.init_album_view()
 
-    def handleHeaderAlbumsMenu(self, pos):
+    def handle_header_albums_menu(self, pos):
         # print('column(%d)' % self.ui.tableWidgetAlbums.horizontalHeader().logicalIndexAt(pos))
         menu = QMenu()
         actionEditAlbum = QAction(menu)
@@ -473,11 +473,11 @@ class MainWindowLoader(QMainWindow):
         actionEditAlbum.setText(_translate("album", "Edit"))
         menu.addAction(actionEditAlbum)
         # actionEditAlbum.triggered.connect(functools.partial(self.onPlayFavRadio, rad.radioID))
-        actionEditAlbum.triggered.connect(self.onEditAlbum)
+        actionEditAlbum.triggered.connect(self.on_edit_album)
 
         menu.exec(QtGui.QCursor.pos())
 
-    def onEditAlbum(self):
+    def on_edit_album(self):
         selRows = self.ui.tableWidgetAlbums.selectionModel().selectedRows()
         if len(selRows) >= 0:
             albumIDSel = self.ui.tableWidgetAlbums.item(selRows[0].row(), 2).text()
@@ -492,21 +492,21 @@ class MainWindowLoader(QMainWindow):
     Genre comboBox functions
     """
 
-    def showGenres(self):
+    def show_genres(self):
         self.ui.comboBoxStyle.clear()
         self.ui.comboBoxStyle.addItem(_translate("playlist", "All styles"), -2)
 
         idSet = self.music_base.musicDirectoryCol.get_style_id_set()
-        for genre in self.music_base.genres.getAvailableGenresFormIDSet(idSet):
+        for genre in self.music_base.genres.get_available_genres_form_id_set(idSet):
             self.ui.comboBoxStyle.addItem(genre[0], genre[1])
 
-    def onChangeGenre(self):
+    def on_change_genre(self):
         genreID = self.ui.comboBoxStyle.currentData()
 
         if genreID < 0:
-            self.setHiddenAllArtistItem(False)
+            self.set_hidden_all_artist_item(False)
         else:
-            self.setHiddenAllArtistItem(True)
+            self.set_hidden_all_artist_item(True)
 
             model = self.ui.listViewArtists.model()
             for i in range(model.rowCount()):
@@ -519,7 +519,7 @@ class MainWindowLoader(QMainWindow):
     Artist listView functions
     """
 
-    def showArtists(self):
+    def show_artists(self):
         # Add artists in the QListView
         model = QtGui.QStandardItemModel(self.ui.listViewArtists)
         for art in self.music_base.artistCol.artists:
@@ -531,30 +531,30 @@ class MainWindowLoader(QMainWindow):
         self.ui.listViewArtists.setModel(model)
         self.ui.listViewArtists.show()
         self.ui.listViewArtists.selectionModel().currentChanged.connect(
-            self.onArtistChange
+            self.on_artist_change
         )
 
-    def setHiddenAllArtistItem(self, hide):
+    def set_hidden_all_artist_item(self, hide):
         # Hide all artists
         model = self.ui.listViewArtists.model()
         for i in range(model.rowCount()):
             self.ui.listViewArtists.setRowHidden(i, hide)
 
-    def getFirstVisibleArtistItem(self):
+    def get_first_visible_artist_item(self):
         model = self.ui.listViewArtists.model()
         for i in range(model.rowCount()):
             if not self.ui.listViewArtists.isRowHidden(i):
                 return model.item(i)
 
-    def onArtistChange(self, item):
+    def on_artist_change(self, item):
         # When call from listView, item is a QModelIndex
         nrow = item.row()
 
         model = self.ui.listViewArtists.model()
         if self.currentArtist.artist_id != model.item(nrow).artist.artist_id:
-            self.showArtist(model.item(nrow).artist)
+            self.show_artist(model.item(nrow).artist)
 
-    def selectArtistListView(self, artist):
+    def select_artist_list_view(self, artist):
         item = artist.itemListViewArtist
 
         selModel = self.ui.listViewArtists.selectionModel()
@@ -569,35 +569,35 @@ class MainWindowLoader(QMainWindow):
     Search artist functions
     """
 
-    def onSearchEnter(self):
+    def on_search_enter(self):
         # After typing, the user hit enter
         # to select the first artist found
-        item = self.getFirstVisibleArtistItem()
+        item = self.get_first_visible_artist_item()
         if item is not None:
             selModel = self.ui.listViewArtists.selectionModel()
             selModel.reset()
             selModel.select(item.index(), QItemSelectionModel.Select)
-            self.showArtist(item.artist)
+            self.show_artist(item.artist)
 
-    def onSearchChange(self, event):
+    def on_search_change(self, event):
         # When user write a search, shows only matching artists
         search = self.ui.searchEdit.text()
 
         if len(search) == 0:
-            self.setHiddenAllArtistItem(False)
+            self.set_hidden_all_artist_item(False)
         else:
-            self.setHiddenAllArtistItem(True)
+            self.set_hidden_all_artist_item(True)
             items = self.ui.listViewArtists.model().findItems(search, Qt.MatchContains)
             for item in items:
                 i = item.row()
                 self.ui.listViewArtists.setRowHidden(i, False)
 
-    def filterArtists(self):
+    def filter_artists(self):
         genreID = self.ui.comboBoxStyle.currentData()
         search = self.ui.searchEdit.text()
 
         if (genreID is None or genreID == -2) and search == "":
-            self.setHiddenAllArtistItem(False)
+            self.set_hidden_all_artist_item(False)
         else:
             # self.setHiddenAllArtistItem(True)
 
@@ -616,7 +616,7 @@ class MainWindowLoader(QMainWindow):
     Album tableWidget functions
     """
 
-    def getAlbumFromTable(self):
+    def get_album_from_table(self):
         # Return the selected album
         selAlbItems = self.ui.tableWidgetAlbums.selectedItems()
         for item in selAlbItems:
@@ -628,20 +628,20 @@ class MainWindowLoader(QMainWindow):
                 print("Album is Empty. Item:" + str(item))
             return alb
 
-    def onAlbumChange(self, item):
+    def on_album_change(self, item):
         if item.row() >= 0:
             albumIDSel = self.ui.tableWidgetAlbums.item(item.row(), 2).text()
             alb = self.music_base.albumCol.get_album(albumIDSel)
             if alb.album_id != 0:
-                self.showAlbum(alb)
+                self.show_album(alb)
             else:
                 print("No album to show")
 
-    def showArtist(self, artist):
+    def show_artist(self, artist):
         self.currentArtist = artist
-        self.showAlbums(self.currentArtist)
+        self.show_albums(self.currentArtist)
 
-    def showAlbums(self, artist):
+    def show_albums(self, artist):
         # Add albums in the QTableView
         if artist == None:
             return
@@ -684,13 +684,13 @@ class MainWindowLoader(QMainWindow):
             self.ui.tableWidgetAlbums.currentIndex(), QAbstractItemView.PositionAtCenter
         )
 
-    def initAlbumView(self):
+    def init_album_view(self):
         self.current_album = None
         self.ui.labelArtist.setText("")
         self.ui.tableWidgetTracks.setRowCount(0)
-        self.showCover("")
+        self.show_cover("")
 
-    def showAlbum(self, album):
+    def show_album(self, album):
         print(
             "showAlbum: "
             + album.title
@@ -700,7 +700,7 @@ class MainWindowLoader(QMainWindow):
             + str(album.length)
         )
         self.current_album = album
-        self.setTitleLabel(self.currentArtist.name, album.title, album.year)
+        self.set_title_label(self.currentArtist.name, album.title, album.year)
         self.ui.tableWidgetTracks.setRowCount(0)
 
         # Start a thread to load album datas from directory
@@ -714,7 +714,7 @@ class MainWindowLoader(QMainWindow):
         self.loadAlbumFilesThread.player = self.player
         self.loadAlbumFilesThread.start()
 
-    def showAlbumTracks(self, result):
+    def show_album_tracks(self, result):
         # self.ui.tableWidgetTracks.setColumnCount(1)
         self.ui.tableWidgetTracks.setRowCount(0)
         i = 0
@@ -731,54 +731,54 @@ class MainWindowLoader(QMainWindow):
 
             i += 1
 
-    def showAlbumCover(self, result):
+    def show_album_cover(self, result):
         print("showAlbumCover= " + str(result) + " - " + self.current_album.cover)
         album = self.current_album
         if album is None:
             return
         if album.cover != "":
             # coverPixmap = album.getCoverPixmap()
-            self.showCover(album.get_cover_path())
+            self.show_cover(album.get_cover_path())
         else:
-            self.showCover("")
+            self.show_cover("")
 
     """
     Interactions with vlc module
     """
 
-    def playAlbum(self, alb):
+    def play_album(self, alb):
         """Add tracks in playlist and start playing"""
 
         self.music_base.history.insertAlbumHistory(alb.album_id)
-        self.player.playAlbum(alb)
+        self.player.play_album(alb)
 
-        self.setVolume(self.getVolumeFromSlider())
+        self.set_volume(self.get_volume_from_slider())
 
-    def addAlbum(self, alb):
+    def add_album(self, alb):
         """Add tracks in playlist and start playing"""
-        self.player.addAlbum(alb)
-        self.setVolume(self.getVolumeFromSlider())
+        self.player.add_album(alb)
+        self.set_volume(self.get_volume_from_slider())
 
-    def showPlaylist(self, showOnlyIfNew=False):
+    def show_playlist(self, showOnlyIfNew=False):
         isNew = False
         if self.playList is None:
             isNew = True
             self.playList = PlaylistWidget(self.player, self)
             self.playList.picBufferManager = self.picBufferManager
             self.playList.fullScreenWidget = self.fullScreenWidget
-            self.playList.connectPicDownloader(self.picFromUrlThread)
-            self.playList.trackChanged.connect(self.player.setPlaylistTrack)
+            self.playList.connect_pic_downloader(self.picFromUrlThread)
+            self.playList.trackChanged.connect(self.player.set_playlist_track)
             self.playList.currentRadioChanged = self.currentRadioChanged
             self.player.playlistChangedEvent = self.playlistChanged
             self.playList.playlistChanged = self.playlistChanged
 
-        self.playList.showMediaList()
+        self.playList.show_media_list()
 
         if isNew or showOnlyIfNew == False:
             self.playList.show()
             self.playList.activateWindow()
 
-    def showHistory(self):
+    def show_history(self):
         if self.histoWidget is None:
             self.histoWidget = HistoryWidget(self.music_base, self)
 
@@ -793,11 +793,11 @@ class MainWindowLoader(QMainWindow):
         self.fullScreenWidget.show()
         self.fullScreenWidget.activateWindow()
 
-    def onCurrentTrackChanged(self, event=None):
+    def on_current_track_changed(self, event=None):
         logger.debug("onCurrentTrackChanged %s", event)
         if not self.player.radioMode:
             title = None
-            trk = self.player.getCurrentTrackPlaylist()
+            trk = self.player.get_current_track_playlist()
             if trk is not None and trk.parentAlbum is not None:
                 self.music_base.history.insertTrackHistory(
                     trk.parentAlbum.album_id, trk.get_file_path_in_album_dir()
@@ -812,44 +812,44 @@ class MainWindowLoader(QMainWindow):
                 )
 
         if self.playList is not None:
-            self.playList.setCurrentTrack(title)
+            self.playList.set_current_track(title)
         if self.fullScreenWidget is not None:
             self.fullScreenWidget.setCurrentTrack(title)
         # if self.playerControl is not None:
         #    self.playerControl.setCurrentTrackInThread(title)
 
-    def onPlayerMediaChangedVLC(self, event):
+    def on_player_media_changed_vlc(self, event):
         print("onPlayerMediaChangedVLC")
         self.currentTrackChanged.emit("")
 
-    def onPlayerMediaChangedStreamObserver(self, title):
+    def on_player_media_changed_stream_observer(self, title):
         print("onPlayerMediaChangedStreamObserver=" + title)
         self.currentTrackChanged.emit(title)
 
-    def onPlayAlbum(self, item):
+    def on_play_album(self, item):
         if self.current_album:
             print("onPlayAlbum " + self.current_album.get_album_dir())
-            self.playAlbum(self.current_album)
+            self.play_album(self.current_album)
 
-    def onAddAlbum(self, item):
+    def on_add_album(self, item):
         if self.current_album:
             print("onAddAlbum " + self.current_album.get_album_dir())
-            self.addAlbum(self.current_album)
+            self.add_album(self.current_album)
 
-    def onSearchCoverAlbum(self):
+    def on_search_cover_album(self):
         self.coverFinder = CoverArtFinderDialog(self.current_album, self)
-        self.coverFinder.signalCoverSaved.connect(self.showAlbumCover)
+        self.coverFinder.signalCoverSaved.connect(self.show_album_cover)
         self.coverFinder.show()
 
-    def onOpenDir(self):
+    def on_open_dir(self):
         if self.current_album:
-            openFile(self.current_album.get_album_dir())
+            open_file(self.current_album.get_album_dir())
 
     """
     Miscellaneous UI functions 
     """
 
-    def setTitleLabel(self, artName="", albTitle="", year=""):
+    def set_title_label(self, artName="", albTitle="", year=""):
         if self.currentArtist is not None and artName == "":
             artName = self.currentArtist.name
         if self.current_album is not None and albTitle == "":
@@ -868,7 +868,7 @@ class MainWindowLoader(QMainWindow):
 
         self.ui.labelArtist.setText(sTitle)
 
-    def showCover(self, path, pCoverPixmap=None):
+    def show_cover(self, path, pCoverPixmap=None):
         if path == "":
             self.coverPixmap = self.defaultPixmap
         else:
@@ -882,16 +882,16 @@ class MainWindowLoader(QMainWindow):
         self.ui.cover.show()
 
     def resizeEvent(self, event):
-        self.resizeCover()
+        self.resize_cover()
 
-    def resizeCover(self):
+    def resize_cover(self):
         if not self.coverPixmap.isNull():
             scaledCover = self.coverPixmap.scaled(
                 self.ui.cover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
             self.ui.cover.setPixmap(scaledCover)
 
-    def initPlayerButtons(self):
+    def init_player_buttons(self):
         self.ui.searchCoverButton.setText(_translate("coverArtFinder", "Cover finder"))
         self.ui.playButton.setToolTip(self.ui.playButton.text())
         self.ui.openDirButton.setToolTip(self.ui.openDirButton.text())
@@ -903,10 +903,10 @@ class MainWindowLoader(QMainWindow):
         self.ui.addAlbumButton.setText("")
         self.ui.searchCoverButton.setText("")
 
-        self.ui.playButton.setIcon(getSvgIcon("play-circle.svg"))
-        self.ui.addAlbumButton.setIcon(getSvgIcon("add_music.svg"))
-        self.ui.openDirButton.setIcon(getSvgIcon("folder-open.svg"))
-        self.ui.searchCoverButton.setIcon(getSvgIcon("picture.svg"))
+        self.ui.playButton.setIcon(get_svg_icon("play-circle.svg"))
+        self.ui.addAlbumButton.setIcon(get_svg_icon("add_music.svg"))
+        self.ui.openDirButton.setIcon(get_svg_icon("folder-open.svg"))
+        self.ui.searchCoverButton.setIcon(get_svg_icon("picture.svg"))
 
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -937,29 +937,29 @@ class MainWindowLoader(QMainWindow):
             self.searchRadio.close()
         if self.coverFinder is not None:
             self.coverFinder.close()
-        self.saveSettings()
+        self.save_settings()
 
-    def saveSettings(self):
+    def save_settings(self):
         if self.player is not None:
-            curVolume = self.player.getVolume()
+            curVolume = self.player.get_volume()
         else:
             curVolume = self.volume
 
         if curVolume is not None and curVolume > 0:
             self.settings.setValue("volume", curVolume)
 
-    def loadSettings(self):
+    def load_settings(self):
         if self.settings.contains("volume"):
             self.volume = self.settings.value("volume", type=int)
         else:
             self.volume = 100
 
-    def changeLanguage(self, locale):
+    def change_language(self, locale):
         # translator for built-in qt strings
         self.translator.unInstallTranslators()
         self.translator.installTranslators(locale)
         self.retranslateUi()
-        self.initPlayerButtons()
+        self.init_player_buttons()
         if self.playList is not None:
             self.playList.retranslateUi()
         if self.histoWidget is not None:
@@ -975,11 +975,11 @@ class MainWindowLoader(QMainWindow):
 
         self.update()
         self.setWindowTitle("Pyzik")
-        self.setTitleLabel()
+        self.set_title_label()
 
     def retranslateUi(self):
         self.ui.menuFavRadios.setTitle(_translate("radio", "Favorite radios"))
-        self.initExtraMenu()
+        self.init_extra_menu()
         self.ui.searchCoverButton.setText(_translate("coverArtFinder", "Cover finder"))
         self.ui.retranslateUi(self)
 

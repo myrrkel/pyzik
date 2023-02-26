@@ -114,7 +114,7 @@ class Track:
             return self.title
 
     def get_duration(self, player, dir):
-        media = player.getParsedMedia(os.path.join(dir, self.get_file_path_in_album_dir()))
+        media = player.get_parsed_media(os.path.join(dir, self.get_file_path_in_album_dir()))
         self.duration = media.get_duration()
         return self.duration
 
@@ -129,7 +129,7 @@ class Track:
         Extract ID3 metadatas with VLC
         Using Mutagen is faster
         """
-        parsed_media = player.getParsedMedia(
+        parsed_media = player.get_parsed_media(
             os.path.join(dir, self.get_file_path_in_album_dir())
         )
         self.title = parsed_media.get_meta(0)

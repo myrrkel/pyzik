@@ -116,7 +116,7 @@ class CoverArtFinderDialog(QDialog):
         layBt = QHBoxLayout(self.btWidget)
 
         self.saveButton = QPushButton(_translate("coverArtFinder", "Save cover"))
-        self.saveButton.setIcon(getSvgIcon("save.svg"))
+        self.saveButton.setIcon(get_svg_icon("save.svg"))
         self.saveButton.clicked.connect(self.saveCover)
         sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         self.saveButton.setSizePolicy(sizePolicy)
