@@ -292,10 +292,12 @@ class Radio:
         if not self.is_timeout():
             return self.live_track_title
 
-        url = "http://www.tsfjazz.com/getSongInformations.php"
+        url = "https://api.tsfjazz.com/api/tracklists/current/TSF?radio=TSF"
         r = requests.get(url)
-        track = r.text.replace("|", " - ")
-        return track
+        datas = json2obj(r.text)
+        self.live_cover_url = datas.thumbnail_medium
+        current_track = datas.artist + ' - ' + datas.title
+        return current_track
 
     def get_current_track_kexp(self):
         if not self.is_timeout():
