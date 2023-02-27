@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 from collections import namedtuple
 
 from radio import Radio
-from global_constants import *
+from limbo import *
 
 import logging
 
@@ -184,27 +184,25 @@ class RadioManager:
         return rb_radios
 
     def search_tunein_radios(self, search):
-        tuneinRadios = []
+        tunein_radios = []
         search = urllib.parse.quote_plus(search)
-
         try:
-            r = requests.post(
-                "https://api.radiotime.com/profiles?query="
-                + search
-                + "&filter=s!&fullTextSearch=true&limit=20&formats=mp3,aac,ogg"
-            )
-            tradios = json_to_obj(r.text)
+            url = f"https://api.radiotime.com/profiles?query={search}"
+            url += "&filter=s!&fullTextSearch=true&limit=20&formats=mp3,aac,ogg"
+            r = requests.post(url)
+            stations = json_to_obj(r.text)
         except requests.exceptions.HTTPError as err:
-            print(err)
+            logger.error(err)
+            return
 
-        if tradios:
-            for tr in tradios.Items:
-                rad = Radio()
-                rad.init_with_tunein_radio(tr)
-                rad.stream = self.get_tunein_stream(rad.search_id)
-                tuneinRadios.append(rad)
+        if stations:
+            for station in stations.Items:
+                radio = Radio()
+                radio.init_with_tunein_radio(station)
+                radio.stream = self.get_tunein_stream(radio.search_id)
+                tunein_radios.append(radio)
 
-        return tuneinRadios
+        return tunein_radios
 
     def get_tunein_stream(self, id):
         try:
@@ -226,23 +224,23 @@ class RadioManager:
     def get_fuzzy_groovy(self):
         fg = Radio()
         fg.name = "Fuzzy & Groovy Rock Radio"
-        fg.stream = "http://listen.radionomy.com/fuzzy-and-groovy.m3u"
-        fg.image = "https://i3.radionomy.com/radios/400/ce7c17ce-4b4b-4698-8ed0-c2881eaf6e6b.png"
+        fg.stream = "https://open.spotify.com/playlist/4kZWpuho3TE3wlBIZz3LHL?si=0d36d0e19fb94e49"
+        fg.image = "https://i.scdn.co/image/ab67706c0000da848b6ee2995e737eb987d45ad3"
         fg.adblock = True
         return fg
 
     def search(self, search, machine=""):
-        resRadios = []
+        res_radios = []
         if machine == "" or machine == "Dar":
-            resRadios.extend(self.search_dar_radios(search))
+            res_radios.extend(self.search_dar_radios(search))
         if machine == "" or machine == "Dirble":
-            resRadios.extend(self.search_dirble_radios(search))
+            res_radios.extend(self.search_dirble_radios(search))
         if machine == "" or machine == "Tunein":
-            resRadios.extend(self.search_tunein_radios(search))
+            res_radios.extend(self.search_tunein_radios(search))
         if machine == "" or machine == "RadioBrowser":
-            resRadios.extend(self.search_radio_brower(search))
+            res_radios.extend(self.search_radio_brower(search))
 
-        return resRadios
+        return res_radios
 
     def load_fav_radios(self):
         self.favRadios = []

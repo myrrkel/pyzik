@@ -13,33 +13,33 @@ class SearchRadioThread(QThread):
 
     doStop = False
     search = ""
-    rm = RadioManager()
+    radio_manager = RadioManager()
 
-    resRadios = []
+    res_radios = []
 
-    machineNb = 0
+    machine_nb = 0
 
-    searchProgress = pyqtSignal(int, name="searchProgress")
-    searchCurrentMachine = pyqtSignal(str, name="searchCurrentMachine")
-    searchCompleted = pyqtSignal(int, name="searchCompleted")
+    search_progress = pyqtSignal(int, name="searchProgress")
+    search_current_machine = pyqtSignal(str, name="searchCurrentMachine")
+    search_completed = pyqtSignal(int, name="searchCompleted")
 
     def emit_current_machine(self, txt):
-        self.searchCurrentMachine.emit(txt + " - Results = " + str(len(self.resRadios)))
+        self.search_current_machine.emit(txt + " - Results = " + str(len(self.res_radios)))
 
     def emit_progress(self, val):
         if val != 0:
-            self.searchProgress.emit((100 / self.machineNb) * val)
+            self.search_progress.emit((100 / self.machine_nb) * val)
         else:
-            self.searchProgress.emit(0)
+            self.search_progress.emit(0)
 
     def run(self):
-        self.resRadios = []
+        self.res_radios = []
         self.doStop = False
         i = 0
         self.emit_progress(0)
         if self.machines is None:
-            self.machines = self.rm.machines
-        self.machineNb = len(self.machines)
+            self.machines = self.radio_manager.machines
+        self.machine_nb = len(self.machines)
         for machine in self.machines:
             print(machine)
             i = i + 1
@@ -48,12 +48,12 @@ class SearchRadioThread(QThread):
             if self.doStop:
                 break
 
-        self.searchCompleted.emit(1)
+        self.search_completed.emit(1)
 
     def search_machine(self, machine):
         self.emit_current_machine(machine)
-        self.resRadios.extend(self.rm.search(self.search, machine))
+        self.res_radios.extend(self.radio_manager.search(self.search, machine))
 
     def stop(self):
         self.doStop = True
-        self.searchCompleted.emit(1)
+        self.search_completed.emit(1)

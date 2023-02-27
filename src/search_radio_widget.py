@@ -133,11 +133,11 @@ class SearchRadioWidget(QtWidgets.QDialog):
         search = self.searchControls.searchEdit.text()
 
         self.wProgress = ProgressWidget(self)
-        self.searchRadioThread.searchProgress.connect(self.wProgress.set_value)
-        self.searchRadioThread.searchCurrentMachine.connect(
+        self.searchRadioThread.search_progress.connect(self.wProgress.set_value)
+        self.searchRadioThread.search_current_machine.connect(
             self.wProgress.set_directory_text
         )
-        self.searchRadioThread.searchCompleted.connect(self.on_search_complete)
+        self.searchRadioThread.search_completed.connect(self.on_search_complete)
         self.wProgress.progressClosed.connect(self.searchRadioThread.stop)
         self.searchRadioThread.search = search
         self.searchRadioThread.machines = (
@@ -161,7 +161,7 @@ class SearchRadioWidget(QtWidgets.QDialog):
             self.radioAdded.emit(1)
 
     def on_search_complete(self, event):
-        self.radios = self.searchRadioThread.resRadios
+        self.radios = self.searchRadioThread.res_radios
         self.show_items(self.radios)
         self.init_column_headers()
         self.wProgress.close()
