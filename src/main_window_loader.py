@@ -402,7 +402,7 @@ class MainWindowLoader(QMainWindow):
             for action in self.ui.menuFavRadios.actions():
                 self.ui.menuFavRadios.removeAction(action)
 
-        for rad in self.music_base.radio_manager.favRadios:
+        for rad in self.music_base.radio_manager.fav_radios:
             self.ui.actionFavRadio = QAction(self.ui.menuFavRadios)
             self.ui.actionFavRadio.setObjectName("actionFavRadio_" + rad.name)
             self.ui.actionFavRadio.setText(rad.name)

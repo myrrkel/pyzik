@@ -61,7 +61,7 @@ To make a Windows EXE Installer:
 ## News
 + Grab covers from Google Image
 + Full screen mode with current track and cover art
-+ Radio finder (with RadioBrower, Tunein, Dar or Dirble)
++ Radio finder (with Radio Brower or Tunein)
 + Played tracks and radio history
 + Music style filter
 + Playing radio without ads
