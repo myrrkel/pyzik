@@ -30,26 +30,27 @@ from wait_overlay_widget import WaitOverlay
 class CoverFinderSearchThread(QThread):
     """Read datas from files in the album folder"""
 
-    doStop = False
+    do_stop = False
     music_base = None
-    resultFound = pyqtSignal(int, name="resultFound")
+    result_found = pyqtSignal(int, name="resultFound")
 
-    coverFinder = None
+    cover_finder = None
     keyword = ""
 
     def run(self):
         try:
-            self.coverFinder.search(self.keyword)
+            self.cover_finder.search(self.keyword)
         except Exception as err:
             logger.error(err)
             pass
-        self.resultFound.emit(1)
+        self.result_found.emit(1)
         self.quit()
 
 
 class CoverArtFinderDialog(QDialog):
-    signalCoverSaved = pyqtSignal(int, name="coverSaved")
-    picFromUrlThread = None
+    signal_cover_saved = pyqtSignal(int, name="coverSaved")
+    pic_from_url_thread = None
+    selected_file = ''
 
     def __init__(self, album=None, parent=None):
         QDialog.__init__(self, parent)
@@ -60,12 +61,12 @@ class CoverArtFinderDialog(QDialog):
 
         self.coverFinder = CoverArtFinder()
         self.coverFinderThread = CoverFinderSearchThread()
-        self.coverFinderThread.coverFinder = self.coverFinder
-        self.coverFinderThread.resultFound.connect(self.onCoverFinderResult)
+        self.coverFinderThread.cover_finder = self.coverFinder
+        self.coverFinderThread.result_found.connect(self.on_cover_finder_result)
 
-        if self.picFromUrlThread is None:
-            self.picFromUrlThread = PicFromUrlThread()
-        self.picFromUrlThread.downloadCompleted.connect(self.onSelectedPicDownloaded)
+        if self.pic_from_url_thread is None:
+            self.pic_from_url_thread = PicFromUrlThread()
+        self.pic_from_url_thread.downloadCompleted.connect(self.on_selected_pic_downloaded)
 
         self.setWindowFlags(Qt.Window)
         self.initUI()
@@ -103,7 +104,7 @@ class CoverArtFinderDialog(QDialog):
 
         self.saveButton = QPushButton(_translate("coverArtFinder", "Save cover"))
         self.saveButton.setIcon(get_svg_icon("save.svg"))
-        self.saveButton.clicked.connect(self.saveCover)
+        self.saveButton.clicked.connect(self.save_cover)
         sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         self.saveButton.setSizePolicy(sizePolicy)
 
@@ -115,7 +116,7 @@ class CoverArtFinderDialog(QDialog):
 
         self.retranslateUi()
 
-        self.overlay.showOverlay()
+        self.overlay.show_overlay()
 
     def resizeEvent(self, event):
         self.overlay.resize(event.size())
@@ -134,32 +135,32 @@ class CoverArtFinderDialog(QDialog):
 
         print("CoverArtFinder search=" + keyword)
 
-        self.coverFinderThread.coverFinder = self.coverFinder
+        self.coverFinderThread.cover_finder = self.coverFinder
         self.coverFinderThread.keyword = keyword
         self.coverFinderThread.start()
 
-    def saveCover(self):
+    def save_cover(self):
         url = self.thumbViewer.selectedURL
         if url != "":
-            self.selectedFile = self.thumbViewer.selectedFile
-            if self.selectedFile == "":
-                self.picFromUrlThread.url = url
-                self.picFromUrlThread.start()
+            self.selected_file = self.thumbViewer.selectedFile
+            if self.selected_file == "":
+                self.pic_from_url_thread.url = url
+                self.pic_from_url_thread.start()
             else:
-                self.saveSelectedCover()
+                self.save_selected_cover()
 
-    def onSelectedPicDownloaded(self, uri):
-        self.selectedFile = uri
-        self.saveSelectedCover()
+    def on_selected_pic_downloaded(self, uri):
+        self.selected_file = uri
+        self.save_selected_cover()
 
-    def saveSelectedCover(self):
-        self.album.cutCoverFromPath(self.selectedFile)
+    def save_selected_cover(self):
+        self.album.cutCoverFromPath(self.selected_file)
         self.coverSaved = True
-        self.signalCoverSaved.emit(1)
+        self.signal_cover_saved.emit(1)
         print("saveSelectedCover")
         self.close()
 
-    def onCoverFinderResult(self, result):
+    def on_cover_finder_result(self, result):
         if not self.coverFinder.items:
             return
         self.items = self.coverFinder.items

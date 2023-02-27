@@ -94,17 +94,17 @@ class ProgressWidget(QtWidgets.QDialog):
 
         self.show()
 
-    def setValue(self, value):
+    def set_value(self, value):
         self.progress.setValue(value)
         self.setWindowTitle(str(value) + "%")
 
-    def setProgressLabel(self, value):
+    def set_progress_label(self, value):
         self.progress_label.setText(value)
 
-    def setDirectoryText(self, value):
+    def set_directory_text(self, value):
         self.directory.setText(value)
 
-    def setFileText(self, value):
+    def set_file_text(self, value):
         if self.with_file_progress:
             self.file.setText(value)
 
@@ -116,7 +116,6 @@ class ProgressWidget(QtWidgets.QDialog):
 
 
 if __name__ == "__main__":
-    import sys
     from pyzik import *
 
     app = QtWidgets.QApplication(sys.argv)

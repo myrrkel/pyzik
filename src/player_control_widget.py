@@ -103,24 +103,24 @@ class PlayerControlsWidget(QWidget):
 
 
 class PlayerControlWidget(QWidget):
-    mediaList = None
+    media_list = None
     player = None
-    picFromUrlThread = None
+    pic_from_url_thread = None
     nextPosition = 0
-    isTimeSliderDown = False
-    currentTrack = None
-    currentCoverPath = ""
-    trackChanged = pyqtSignal(int, name="trackChanged")
-    coverChanged = pyqtSignal(int, name="coverChanged")
+    is_time_slider_down = False
+    current_track = None
+    current_cover_path = ""
+    track_changed = pyqtSignal(int, name="trackChanged")
+    cover_changed = pyqtSignal(int, name="coverChanged")
 
     def __init__(self, player, parent):
-        QDialog.__init__(self)
+        QWidget.__init__(self)
         self.parent = parent
-        self.picBufferManager = parent.picBufferManager
+        self.pic_buffer_manager = parent.pic_buffer_manager
 
         self.setWindowFlags(Qt.Window)
         self.player = player
-        self.mediaList = self.player.mediaList
+        self.media_list = self.player.media_list
 
         self.isWaitingCover = False
 
@@ -141,7 +141,7 @@ class PlayerControlWidget(QWidget):
         self.set_current_track(event)
 
     def refresh_wait_overlay(self):
-        if self.player.radioMode:
+        if self.player.radio_mode:
             if self.isWaitingCover == False and self.player.is_playing_radio() == True:
                 print("PlayerControlWidget refreshWaitOverlay hide")
                 self.hide_wait_overlay()
@@ -156,7 +156,7 @@ class PlayerControlWidget(QWidget):
         print("PlayerControlWidget CurrentRadio changed!")
 
         self.set_radio_label_text()
-        self.currentCoverPath = ""
+        self.current_cover_path = ""
         self.refresh_wait_overlay()
 
     def cover_mouse_double_click_event(self, event):
@@ -232,7 +232,7 @@ class PlayerControlWidget(QWidget):
         self.cover.setPixmap(self.coverPixmap)
         self.cover.show()
         self.cover.mouseDoubleClickEvent = self.cover_mouse_double_click_event
-        self.waitOverlay = WaitOverlay(self.cover, 12, 25, orange, 0)
+        self.waitOverlay = WaitOverlay(self.cover, 12, 25, ORANGE, 0)
         # self.hideWaitOverlay()
 
         self.labelTitle = QLabel()
@@ -256,20 +256,20 @@ class PlayerControlWidget(QWidget):
         self.mainFrame.setLayout(self.vLayout)
         self.hMainLayout.addWidget(self.mainFrame)
 
-        if self.picFromUrlThread is None:
-            self.picFromUrlThread = PicFromUrlThread()
+        if self.pic_from_url_thread is None:
+            self.pic_from_url_thread = PicFromUrlThread()
 
         self.retranslateUi()
 
     def connect_pic_downloader(self, picDl):
-        self.picFromUrlThread = picDl
-        self.picFromUrlThread.downloadCompleted.connect(self.on_pic_downloaded)
+        self.pic_from_url_thread = picDl
+        self.pic_from_url_thread.downloadCompleted.connect(self.on_pic_downloaded)
 
     def on_pause(self, event):
         self.player.pause()
 
     def show_default_pixmap(self):
-        if self.player.radioMode:
+        if self.player.radio_mode:
             self.coverPixmap = self.defaultRadioPix
         else:
             self.coverPixmap = self.defaultPixmap
@@ -283,7 +283,7 @@ class PlayerControlWidget(QWidget):
             self.isWaitingCover = False
             # self.hideWaitOverlay()
         else:
-            self.coverPixmap = self.picBufferManager.get_pic(path, "playerControl")
+            self.coverPixmap = self.pic_buffer_manager.get_pic(path, "playerControl")
             self.isWaitingCover = False
             self.show_scaled_cover()
 
@@ -298,7 +298,7 @@ class PlayerControlWidget(QWidget):
         pix.fill(QtGui.QColor("transparent"))
         self.cover.setPixmap(pix)
 
-        self.waitOverlay.showOverlay()
+        self.waitOverlay.show_overlay()
         self.waitOverlay.resize(self.cover.size())
 
     def show_scaled_cover(self):
@@ -326,13 +326,13 @@ class PlayerControlWidget(QWidget):
 
     def set_is_time_slider_down(self, event=None):
         print("setIsTimeSliderDown")
-        self.isTimeSliderDown = True
+        self.is_time_slider_down = True
         if event is not None:
             return event.accept()
 
     def set_is_time_slider_released(self, event=None):
         print("setIsTimeSliderReleased")
-        self.isTimeSliderDown = False
+        self.is_time_slider_down = False
         if event is not None:
             return event.accept()
 
@@ -376,14 +376,14 @@ class PlayerControlWidget(QWidget):
             self.show_cover()
             return
 
-        self.currentTrack = trk
+        self.current_track = trk
 
         self.set_title_label()
 
         self.show_cover(trk)
 
     def show_cover(self, trk=None):
-        if self.player.radioMode:
+        if self.player.radio_mode:
             cover_url = self.player.get_live_cover_url()
             if cover_url == "":
                 rad = self.player.get_current_radio()
@@ -393,7 +393,7 @@ class PlayerControlWidget(QWidget):
             if cover_url is None:
                 cover_url = ""
             logger.debug("showCover: %s", cover_url)
-            if self.currentCoverPath == cover_url:
+            if self.current_cover_path == cover_url:
                 self.isWaitingCover = False
                 self.refresh_wait_overlay()
                 return
@@ -401,10 +401,10 @@ class PlayerControlWidget(QWidget):
             if cover_url != "":
                 self.coverPixmap = QPixmap()
                 self.cover.setPixmap(self.coverPixmap)
-                self.currentCoverPath = cover_url
-                self.picFromUrlThread.url = cover_url
+                self.current_cover_path = cover_url
+                self.pic_from_url_thread.url = cover_url
                 self.isWaitingCover = True
-                self.picFromUrlThread.start()
+                self.pic_from_url_thread.start()
             else:
                 self.show_default_pixmap()
                 self.refresh_wait_overlay()
@@ -413,12 +413,12 @@ class PlayerControlWidget(QWidget):
             self.isWaitingCover = False
             if trk is not None and trk.parentAlbum is not None:
                 if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
-                    self.currentCoverPath = ""
+                    self.current_cover_path = ""
                     self.coverPixmap = self.defaultPixmap
                 else:
-                    self.currentCoverPath = trk.parentAlbum.get_cover_path()
-                    self.coverPixmap = self.picBufferManager.get_pic(
-                        self.currentCoverPath, "playerControl"
+                    self.current_cover_path = trk.parentAlbum.get_cover_path()
+                    self.coverPixmap = self.pic_buffer_manager.get_pic(
+                        self.current_cover_path, "playerControl"
                     )
 
                 self.show_scaled_cover()
@@ -431,8 +431,8 @@ class PlayerControlWidget(QWidget):
             self.set_radio_label_text(title)
             return
 
-        if self.currentTrack:
-            if self.currentTrack.is_radio():
+        if self.current_track:
+            if self.current_track.is_radio():
                 self.set_radio_label_text()
                 self.timeSlider.setVisible(False)
             else:
@@ -440,13 +440,13 @@ class PlayerControlWidget(QWidget):
                 self.timeSlider.setVisible(True)
 
     def set_track_label_text(self):
-        if self.currentTrack is None:
+        if self.current_track is None:
             return
 
-        art_name = self.currentTrack.get_artist_name()
-        alb_title = self.currentTrack.get_album_title()
-        trk_title = self.currentTrack.get_track_title()
-        year = self.currentTrack.get_album_year()
+        art_name = self.current_track.get_artist_name()
+        alb_title = self.current_track.get_album_title()
+        trk_title = self.current_track.get_track_title()
+        year = self.current_track.get_album_year()
 
         if alb_title != "":
             alb_title = " - " + alb_title
@@ -466,27 +466,28 @@ class PlayerControlWidget(QWidget):
 
     def set_radio_label_text(self, title=""):
         trk_title = ""
-        radioName = ""
+        radio_name = ""
+        now_playing = ""
         if title == "":
-            if self.currentTrack is None:
+            if self.current_track is None:
                 return
-            if self.currentTrack.radio:
-                radioName = self.currentTrack.radio.name
-                trk_title = self.currentTrack.radio.liveTrackTitle
+            if self.current_track.radio:
+                radio_name = self.current_track.radio.name
+                trk_title = self.current_track.radio.live_track_title
             if trk_title == "":
                 now_playing = self.player.get_now_playing()
             if now_playing:
                 if trk_title == "NO_META":
                     trk_title = ""
         else:
-            radioName = title
+            radio_name = title
             trk_title = ""
 
         title_html = """<html><head/><body>
-        <p><span style=\" font-size:15pt; text-shadow:white 0px 0px 4px; font-weight:600;\">{radioName}</span>
+        <p><span style=\" font-size:15pt; text-shadow:white 0px 0px 4px; font-weight:600;\">{radio_name}</span>
         <span style=\" font-size:12pt; font-style:italic;\">{trk_title}</span></p>
         </body></html>"""
-        title_html = title_html.format(radioName=radioName, trk_title=trk_title)
+        title_html = title_html.format(radio_name=radio_name, trk_title=trk_title)
 
         self.labelTitle.setText(title_html)
 
@@ -494,7 +495,7 @@ class PlayerControlWidget(QWidget):
         print("onTimeSliderIsReleased")
 
         self.player.set_position(self.nextPosition)
-        self.isTimeSliderDown = False
+        self.is_time_slider_down = False
         # self.player.setPosition(self.nextPosition)
 
     def set_player_position(self, pos):
@@ -509,6 +510,6 @@ class PlayerControlWidget(QWidget):
         self.playerControls.volumeSlider.setValue(vol)
 
     def on_player_position_changed(self, event=None):
-        if not self.isTimeSliderDown:
+        if not self.is_time_slider_down:
             pos = self.player.get_position()
             self.timeSlider.setValue(pos * 1000)

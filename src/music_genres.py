@@ -156,18 +156,18 @@ class MusicGenres:
     ]
 
     def __init__(self):
-        self.genresTab = self.create_genre_tab()
-        self.genresTabSorted = sorted(self.genresTab, key=lambda x: x[0])
+        self.genres_tab = self.create_genre_tab()
+        self.genres_tab_sorted = sorted(self.genres_tab, key=lambda x: x[0])
 
     def create_genre_tab(self):
         return list((genre, id) for id, genre in enumerate(self.musicGenres, -1))
 
     def print_genres(self):
-        for genre in self.genresTab:
+        for genre in self.genres_tab:
             print(genre[0])
 
     def get_genre_by_id(self, id):
-        return next(el for el in self.genresTab if int(el[1]) == int(id))
+        return next(el for el in self.genres_tab if int(el[1]) == int(id))
 
     def get_available_genres_form_id_set(self, id_set):
         # self.printGenres()

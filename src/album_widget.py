@@ -43,7 +43,7 @@ class AlbumControlsWidget(QtWidgets.QWidget):
         lay.addStretch()
 
 
-class albumInfoControlsWidget(QtWidgets.QWidget):
+class AlbumInfoControlsWidget(QtWidgets.QWidget):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent=parent)
 
@@ -155,7 +155,7 @@ class AlbumWidget(QtWidgets.QDialog):
         self.setWindowFlags(QtCore.Qt.Window)
 
         self.initUI()
-        self.setValues()
+        self.set_values()
 
         # self.showTableItems(self.mainItem.items)
         # self.initColumnHeaders()
@@ -176,11 +176,11 @@ class AlbumWidget(QtWidgets.QDialog):
         self.resize(400, 120)
         # self.initTableWidgetItems()
 
-        self.albumInfoControls = albumInfoControlsWidget(self)
+        self.albumInfoControls = AlbumInfoControlsWidget(self)
         layout.addWidget(self.albumInfoControls)
 
         self.albumControls = AlbumControlsWidget(self)
-        self.albumControls.saveButton.clicked.connect(self.onSave)
+        self.albumControls.saveButton.clicked.connect(self.on_save)
 
         # layout.addWidget(self.tableWidgetItems)
 
@@ -188,13 +188,13 @@ class AlbumWidget(QtWidgets.QDialog):
 
         self.retranslateUi()
 
-    def setValues(self):
+    def set_values(self):
         self.albumInfoControls.titleEdit.setText(self.album.title)
-        self.albumInfoControls.yearSpin.setValue(self.album.year)
+        self.albumInfoControls.yearSpin.setValue(self.album.year_to_num)
 
-    def onSave(self, event):
+    def on_save(self, event):
         self.album.title = self.albumInfoControls.titleEdit.text()
-        self.album.year = self.albumInfoControls.yearSpin.value()
+        self.album.year_to_num = self.albumInfoControls.yearSpin.value()
         self.album.update()
         self.close()
 
@@ -215,7 +215,7 @@ if __name__ == "__main__":
     print("loadMusicBase")
     mb.load_music_base(False)
 
-    alb = mb.albumCol.get_album(1)
+    alb = mb.album_col.get_album(1)
 
     app = QtWidgets.QApplication(sys.argv)
 

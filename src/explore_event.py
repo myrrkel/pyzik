@@ -34,11 +34,11 @@ class ExploreEventList(list):
 
 
 class ExploreEvent:
-    def __init__(self, code, dirpath, albumID=0, artistID=0, album=None):
+    def __init__(self, code, dir_path, album_id=0, artist_id=0, album=None):
         self.event_code = code
-        self.dir_path = dirpath
-        self.artist_id = artistID
-        self.album_id = albumID
+        self.dir_path = dir_path
+        self.artist_id = artist_id
+        self.album_id = album_id
         self.album = album
 
     def get_text(self):

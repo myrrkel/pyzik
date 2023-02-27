@@ -58,7 +58,7 @@ class ArtistCollection:
 
     def print_artists(self):
         for art in self.artists:
-            art.printInfos()
+            art.print_infos()
 
     def load_artists(self):
         for rowArt in self.music_base.db.get_select(

@@ -84,7 +84,7 @@ class SearchRadioWidget(QtWidgets.QDialog):
 
         self.initUI()
 
-        self.initColumnHeaders()
+        self.init_column_headers()
 
         self.searchControls.searchEdit.setFocus()
         self.setTabOrder(
@@ -102,14 +102,14 @@ class SearchRadioWidget(QtWidgets.QDialog):
         sizePolicy.setVerticalStretch(100)
         self.setSizePolicy(sizePolicy)
         self.resize(600, 400)
-        self.initTableWidgetItems()
+        self.init_table_widget_items()
 
         self.searchControls = SearchControlsWidget()
         self.searchControls.searchButton.clicked.connect(self.onSearch)
 
         self.playControls = PlayControlsWidget()
-        self.playControls.playButton.clicked.connect(self.onClickPlayRadio)
-        self.playControls.addButton.clicked.connect(self.onAddPadio)
+        self.playControls.playButton.clicked.connect(self.on_click_play_radio)
+        self.playControls.addButton.clicked.connect(self.on_add_padio)
 
         self.machineSelectorControls = MachineSelectorControlsWidget(
             None, self.radioManager.machines
@@ -129,15 +129,15 @@ class SearchRadioWidget(QtWidgets.QDialog):
         self.overlay.resize(event.size())
 
     def onSearch(self, event):
-        self.overlay.showOverlay()
+        self.overlay.show_overlay()
         search = self.searchControls.searchEdit.text()
 
         self.wProgress = ProgressWidget(self)
-        self.searchRadioThread.searchProgress.connect(self.wProgress.setValue)
+        self.searchRadioThread.searchProgress.connect(self.wProgress.set_value)
         self.searchRadioThread.searchCurrentMachine.connect(
-            self.wProgress.setDirectoryText
+            self.wProgress.set_directory_text
         )
-        self.searchRadioThread.searchCompleted.connect(self.onSearchComplete)
+        self.searchRadioThread.searchCompleted.connect(self.on_search_complete)
         self.wProgress.progressClosed.connect(self.searchRadioThread.stop)
         self.searchRadioThread.search = search
         self.searchRadioThread.machines = (
@@ -145,29 +145,29 @@ class SearchRadioWidget(QtWidgets.QDialog):
         )
         self.searchRadioThread.start()
 
-    def onPlayPadio(self, item):
+    def on_play_padio(self, item):
         self.player.play_radio_in_thread(self.radios[item])
 
-    def onClickPlayRadio(self, event):
+    def on_click_play_radio(self, event):
         i = self.tableWidgetItems.currentRow()
         if i > -1:
             self.player.play_radio_in_thread(self.radios[i])
 
-    def onAddPadio(self, item):
+    def on_add_padio(self, item):
         i = self.tableWidgetItems.currentRow()
         if i > -1:
             radio = self.radios[i]
             radio.save_radio(self.radioManager.music_base.db)
             self.radioAdded.emit(1)
 
-    def onSearchComplete(self, event):
+    def on_search_complete(self, event):
         self.radios = self.searchRadioThread.resRadios
-        self.showItems(self.radios)
-        self.initColumnHeaders()
+        self.show_items(self.radios)
+        self.init_column_headers()
         self.wProgress.close()
         self.overlay.hide()
 
-    def initTableWidgetItems(self):
+    def init_table_widget_items(self):
         self.tableWidgetItems = QtWidgets.QTableWidget(self)
 
         self.tableWidgetItems.setGeometry(0, 0, 600, 300)
@@ -194,11 +194,11 @@ class SearchRadioWidget(QtWidgets.QDialog):
         item = QtWidgets.QTableWidgetItem()
         self.tableWidgetItems.setHorizontalHeaderItem(4, item)
 
-        self.tableWidgetItems.cellDoubleClicked.connect(self.onPlayPadio)
+        self.tableWidgetItems.cellDoubleClicked.connect(self.on_play_padio)
 
-        self.initColumnHeaders()
+        self.init_column_headers()
 
-    def initColumnHeaders(self):
+    def init_column_headers(self):
         hHeader = self.tableWidgetItems.horizontalHeader()
         vHeader = self.tableWidgetItems.verticalHeader()
         vHeader.hide()
@@ -222,7 +222,7 @@ class SearchRadioWidget(QtWidgets.QDialog):
         self.playControls.playButton.setText(_translate("searchRadio", "Play"))
         self.playControls.addButton.setText(_translate("searchRadio", "Add"))
 
-    def showItems(self, items):
+    def show_items(self, items):
         self.tableWidgetItems.setStyleSheet(
             "selection-background-color: black;selection-color: white;"
         )
@@ -231,21 +231,21 @@ class SearchRadioWidget(QtWidgets.QDialog):
         i = 0
         for item in items:
             self.tableWidgetItems.insertRow(i)
-            titleItem = QtWidgets.QTableWidgetItem(item.name)
-            titleItem.setFlags(titleItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i, 0, titleItem)
+            title_item = QtWidgets.QTableWidgetItem(item.name)
+            title_item.setFlags(title_item.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.tableWidgetItems.setItem(i, 0, title_item)
 
-            artistItem = QtWidgets.QTableWidgetItem(item.country)
-            artistItem.setFlags(artistItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i, 1, artistItem)
+            artist_item = QtWidgets.QTableWidgetItem(item.country)
+            artist_item.setFlags(artist_item.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.tableWidgetItems.setItem(i, 1, artist_item)
 
-            albumItem = QtWidgets.QTableWidgetItem(item.get_categories_text())
-            albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i, 2, albumItem)
+            album_item = QtWidgets.QTableWidgetItem(item.get_categories_text())
+            album_item.setFlags(album_item.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.tableWidgetItems.setItem(i, 2, album_item)
 
-            durationItem = QtWidgets.QTableWidgetItem(item.stream)
-            durationItem.setFlags(durationItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i, 3, durationItem)
+            duration_item = QtWidgets.QTableWidgetItem(item.stream)
+            duration_item.setFlags(duration_item.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.tableWidgetItems.setItem(i, 3, duration_item)
 
             i += 1
 

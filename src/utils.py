@@ -1,4 +1,4 @@
-def year(s):
+def year_to_num(s):
     """
     Convert a string made of numbers into a year
     Return 0 if string s is not a year, else return the year on 4 digits. ex: "73"-->1973
@@ -15,11 +15,11 @@ def year(s):
     return res
 
 
-def isYear(s):
+def is_year(s):
     return s.isdigit() and (len(s) in (4, 2))
 
 
-def capitaliseWord(word):
+def capitalise_word(word):
     res = ""
     for i, l in enumerate(word):
         if i == 0:

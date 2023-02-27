@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
 import sys
 import logging
 import getopt
-
-print("Import modules...")
 
 from PyQt5 import QtWidgets
 from darkStyle import darkStyle
@@ -59,7 +56,7 @@ def main():
     logger.info("Loading translations...")
     tr = Translators(app)
     localeLanguage = QtCore.QLocale.system().name()
-    tr.installTranslators(localeLanguage)
+    tr.install_translators(localeLanguage)
 
     # Load & Set the DarkStyleSheet
     if style_name:
@@ -90,6 +87,8 @@ def main():
 
     db = Database()
     db.vacuum()
+
+    player.release()
 
     sys.exit()
 

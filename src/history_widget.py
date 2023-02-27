@@ -7,7 +7,7 @@ from history_manager import HistoryManager
 from svg_icon import *
 
 
-class historyControlsWidget(QtWidgets.QWidget):
+class HistoryControlsWidget(QtWidgets.QWidget):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent=parent)
 
@@ -31,8 +31,8 @@ class HistoryWidget(QtWidgets.QDialog):
 
         self.initUI()
 
-        self.showHistoryItems(self.history.history)
-        self.initColumnHeaders()
+        self.show_history_items(self.history.history)
+        self.init_column_headers()
 
     def initUI(self):
         layout = QtWidgets.QVBoxLayout()
@@ -45,9 +45,9 @@ class HistoryWidget(QtWidgets.QDialog):
         sizePolicy.setVerticalStretch(100)
         self.setSizePolicy(sizePolicy)
         self.resize(550, 400)
-        self.initTableWidgetItems()
+        self.init_table_widget_items()
 
-        self.historyControls = historyControlsWidget()
+        self.historyControls = HistoryControlsWidget()
         self.historyControls.refreshButton.clicked.connect(self.onRefresh)
 
         layout.addWidget(self.tableWidgetItems)
@@ -57,9 +57,9 @@ class HistoryWidget(QtWidgets.QDialog):
 
     def onRefresh(self, event):
         self.history.load_history(False)
-        self.showHistoryItems(self.history.history)
+        self.show_history_items(self.history.history)
 
-    def initTableWidgetItems(self):
+    def init_table_widget_items(self):
         self.tableWidgetItems = QtWidgets.QTableWidget(self)
 
         self.tableWidgetItems.setGeometry(0, 0, 550, 300)
@@ -86,9 +86,9 @@ class HistoryWidget(QtWidgets.QDialog):
         item = QtWidgets.QTableWidgetItem()
         self.tableWidgetItems.setHorizontalHeaderItem(4, item)
 
-        self.initColumnHeaders()
+        self.init_column_headers()
 
-    def initColumnHeaders(self):
+    def init_column_headers(self):
         hHeader = self.tableWidgetItems.horizontalHeader()
         vHeader = self.tableWidgetItems.verticalHeader()
         vHeader.hide()
@@ -110,30 +110,28 @@ class HistoryWidget(QtWidgets.QDialog):
         self.setWindowTitle(_translate("history", "History"))
         self.historyControls.refreshButton.setText(_translate("history", "Refresh"))
 
-    def showHistoryItems(self, items):
-        self.tableWidgetItems.setStyleSheet(
-            "selection-background-color: black;selection-color: white;"
-        )
+    def show_history_items(self, items):
+        self.tableWidgetItems.setStyleSheet("selection-background-color: black;selection-color: white;")
         self.tableWidgetItems.setColumnCount(4)
         self.tableWidgetItems.setRowCount(0)
         i = 0
         for item in items:
             self.tableWidgetItems.insertRow(i)
-            titleItem = QtWidgets.QTableWidgetItem(item.get_column_text(0))
-            titleItem.setFlags(titleItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i, 0, titleItem)
+            title_item = QtWidgets.QTableWidgetItem(item.get_column_text(0))
+            title_item.setFlags(title_item.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.tableWidgetItems.setItem(i, 0, title_item)
 
-            artistItem = QtWidgets.QTableWidgetItem(item.get_column_text(1))
-            artistItem.setFlags(artistItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i, 1, artistItem)
+            artist_item = QtWidgets.QTableWidgetItem(item.get_column_text(1))
+            artist_item.setFlags(artist_item.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.tableWidgetItems.setItem(i, 1, artist_item)
 
-            albumItem = QtWidgets.QTableWidgetItem(item.get_column_text(2))
-            albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i, 2, albumItem)
+            album_item = QtWidgets.QTableWidgetItem(item.get_column_text(2))
+            album_item.setFlags(album_item.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.tableWidgetItems.setItem(i, 2, album_item)
 
-            durationItem = QtWidgets.QTableWidgetItem(item.get_column_text(3))
-            durationItem.setFlags(durationItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i, 3, durationItem)
+            duration_item = QtWidgets.QTableWidgetItem(item.get_column_text(3))
+            duration_item.setFlags(duration_item.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.tableWidgetItems.setItem(i, 3, duration_item)
 
             i += 1
 

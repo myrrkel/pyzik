@@ -61,7 +61,7 @@ class CoverArtFinder:
             print(e)
             return False
 
-        items, errorCount, abs_path = response._get_all_items(
+        items, error_count, abs_path = response._get_all_items(
             raw_html, main_directory, dir_name, limit, arguments
         )  # get all image items and download images
 

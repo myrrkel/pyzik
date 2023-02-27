@@ -8,8 +8,8 @@ class LoadAlbumFilesThread(QThread):
     do_stop = False
     album = None
 
-    imagesLoaded = pyqtSignal(int, name="imagesLoaded")
-    tracksLoaded = pyqtSignal(int, name="tracksLoaded")
+    images_loaded = pyqtSignal(int, name="imagesLoaded")
+    tracks_loaded = pyqtSignal(int, name="tracksLoaded")
 
     def run(self):
         self.do_stop = False
@@ -23,8 +23,8 @@ class LoadAlbumFilesThread(QThread):
         self.album.get_tracks()
         if self.do_stop:
             return
-        self.tracksLoaded.emit(1)
-        self.imagesLoaded.emit(1)
+        self.tracks_loaded.emit(1)
+        self.images_loaded.emit(1)
         self.quit()
 
     def stop(self):

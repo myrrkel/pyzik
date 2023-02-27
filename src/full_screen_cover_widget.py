@@ -78,10 +78,10 @@ class FullScreenCoverWidget(QDialog):
 
     def resize_cover(self):
         if not self.coverPixmap.isNull():
-            scaledCover = self.coverPixmap.scaled(
+            scaled_cover = self.coverPixmap.scaled(
                 self.cover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
-            self.cover.setPixmap(scaledCover)
+            self.cover.setPixmap(scaled_cover)
 
     def set_pixmap_from_uri(self, path):
         if self.picBufferManager is None:
@@ -96,10 +96,10 @@ class FullScreenCoverWidget(QDialog):
     def show_cover(self):
         if not self.coverPixmap.isNull():
             print("Pic size=" + str(self.cover.size()))
-            scaledCover = self.coverPixmap.scaled(
+            scaled_cover = self.coverPixmap.scaled(
                 self.cover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
-            self.cover.setPixmap(scaledCover)
+            self.cover.setPixmap(scaled_cover)
         else:
             self.cover.setPixmap(QPixmap())
         self.cover.show()

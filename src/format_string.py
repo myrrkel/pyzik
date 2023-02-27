@@ -9,25 +9,25 @@ Useful functions to format titles, dir name...
 """
 
 
-def deleteAccent(value):
+def delete_accent(value):
     return str(unicodedata.normalize("NFD", value).encode("ascii", "ignore"))
 
 
-def simplifiedString(value):
+def simplified_string(value):
     res = value.replace("THE ", "")
     res = res.replace("&", "AND")
 
     return res
 
 
-def deletePonctuation(value):
+def delete_ponctuation(value):
     return re.sub("\W+", "", value)
 
 
 def get_search_key(value):
     res = value.strip().upper()
-    res = simplifiedString(res)
-    res = deleteAccent(res)
-    res = deletePonctuation(res)
+    res = simplified_string(res)
+    res = delete_accent(res)
+    res = delete_ponctuation(res)
     res = res.replace(" ", "")
     return res

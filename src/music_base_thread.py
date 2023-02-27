@@ -25,16 +25,16 @@ class ExploreAlbumsDirectoriesThread(QThread):
         db.init_memory_db()
         self.explore_events = []
         self.music_base.db = db
-        self.music_base.musicDirectoryCol.db = db
+        self.music_base.music_directory_col.db = db
 
-        for mdir in self.music_base.musicDirectoryCol.music_directories:
-            logger.debug("explore=" + mdir.dirName)
-            self.directoryChanged.emit(mdir.dirName)
+        for mdir in self.music_base.music_directory_col.music_directories:
+            logger.debug("explore=" + mdir.directory_name)
+            self.directoryChanged.emit(mdir.directory_name)
             mdir.db = db
-            mdir.artistCol = self.music_base.artistCol
-            mdir.albumCol = self.music_base.albumCol
-            mdir.artistCol.db = db
-            mdir.albumCol.db = db
+            mdir.artist_col = self.music_base.artist_col
+            mdir.album_col = self.music_base.album_col
+            mdir.artist_col.db = db
+            mdir.album_col.db = db
 
             mdir.explore_directory(self.progressChanged)
             self.explore_events.extend(mdir.explore_events)

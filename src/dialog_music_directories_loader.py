@@ -39,7 +39,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.show_genres()
 
     def on_name_changed(self, item):
-        self.currentDir.dirName = self.ui.Name.text()
+        self.currentDir.directory_name = self.ui.Name.text()
 
     def on_dir_changed(self, item):
         if self.currentDir is not None:
@@ -47,52 +47,52 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
             self.currentDir.update_music_directory_db()
         sel = self.ui.DirListView.selectionModel().selectedIndexes()
 
-        nrow = item.row()
+        row = item.row()
         model = self.ui.DirListView.model()
 
-        modelitem = model.item(nrow)
-        if not modelitem:
+        model_item = model.item(row)
+        if not model_item:
             return
-        md = modelitem.musicDir
+        md = model_item.musicDir
         self.currentDir = md
         self.ui.wRight.setEnabled(True)
-        self.ui.Name.set_text(md.dirName)
-        self.ui.DirEdit.set_text(md.dir_path)
-        print("Current Style ID=", md.styleID)
-        print("Current MD ", md.dirName, md.music_directory_id)
-        if md.styleID >= 0:
-            i = self.ui.comboStyle.findData(md.styleID)
+        self.ui.Name.setText(md.directory_name)
+        self.ui.DirEdit.setText(md.dir_path)
+        print("Current Style ID=", md.style_id)
+        print("Current MD ", md.directory_name, md.music_directory_id)
+        if md.style_id >= 0:
+            i = self.ui.comboStyle.findData(md.style_id)
             self.ui.comboStyle.setCurrentIndex(i)
         else:
             self.ui.comboStyle.setCurrentIndex(-1)
 
-        self.ui.comboDirType.setCurrentIndex(md.dirType)
+        self.ui.comboDirType.setCurrentIndex(md.dir_type)
 
         self.ui.wRight.setEnabled(True)
 
     def on_add_dir(self):
         success = False
-        sDir = self.select_dir()
-        if sDir != "":
-            md = MusicDirectory(self.music_base, sDir)
-            dirName = os.path.basename(sDir)
-            print("Add directory " + dirName)
-            md.dirName, ok = QtWidgets.QInputDialog.getText(
-                self, "Give a name to your directory", "Directory name:", QtWidgets.QLineEdit.EchoMode(), dirName
+        directory = self.select_dir()
+        if directory != "":
+            md = MusicDirectory(self.music_base, directory)
+            dir_name = os.path.basename(directory)
+            print("Add directory " + dir_name)
+            md.directory_name, ok = QtWidgets.QInputDialog.getText(
+                self, "Give a name to your directory", "Directory name:", QtWidgets.QLineEdit.EchoMode(), dir_name
             )
-            if (md.dirName != "") & ok:
-                self.music_base.musicDirectoryCol.add_music_directory(md)
+            if (md.directory_name != "") & ok:
+                self.music_base.music_directory_col.add_music_directory(md)
 
-                print("Directory=" + sDir + " DirName=" + md.dirName)
+                print("Directory=" + directory + " DirName=" + md.directory_name)
 
                 model = self.ui.DirListView.model()
-                itemDir = QtGui.QStandardItem(md.dirName)
-                itemDir.musicDir = md
-                model.appendRow(itemDir)
+                item_dir = QtGui.QStandardItem(md.directory_name)
+                item_dir.musicDir = md
+                model.appendRow(item_dir)
                 index = model.createIndex(model.rowCount() - 1, 0)
-                selmodel = self.ui.DirListView.selectionModel()
-                selmodel.clear()
-                selmodel.select(index, QtCore.QItemSelectionModel.Select)
+                sel_model = self.ui.DirListView.selectionModel()
+                sel_model.clear()
+                sel_model.select(index, QtCore.QItemSelectionModel.Select)
                 self.on_dir_changed(index)
 
     def on_delete_dir(self):
@@ -114,21 +114,21 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.on_dir_changed(index)
 
     def on_change_dir(self):
-        sDir = self.select_dir()
-        self.ui.DirEdit.text = sDir
-        self.currentDir.dir_path = sDir
+        directory = self.select_dir()
+        self.ui.DirEdit.text = directory
+        self.currentDir.dir_path = directory
 
     def on_change_genre(self):
         if self.currentDir is not None:
-            currentData = self.ui.comboStyle.currentData()
-            if currentData:
-                self.currentDir.styleID = currentData
-                print("New Genre ID=", self.currentDir.styleID)
+            current_data = self.ui.comboStyle.currentData()
+            if current_data:
+                self.currentDir.style_id = current_data
+                print("New Genre ID=", self.currentDir.style_id)
 
     def on_change_dir_type(self):
         if self.currentDir is not None:
-            self.currentDir.dirType = self.ui.comboDirType.currentIndex()
-            print("New Dir Type ID=", self.currentDir.dirType)
+            self.currentDir.dir_type = self.ui.comboDirType.currentIndex()
+            print("New Dir Type ID=", self.currentDir.dir_type)
 
     def select_dir(self):
         return str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory"))
@@ -140,16 +140,16 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
 
     def load_dir_list(self):
         model = QtGui.QStandardItemModel(self.ui.DirListView)
-        for musicDir in self.music_base.musicDirectoryCol.music_directories:
-            itemDir = QtGui.QStandardItem(musicDir.dirName)
-            itemDir.musicDir = musicDir
-            model.appendRow(itemDir)
+        for musicDir in self.music_base.music_directory_col.music_directories:
+            item_dir = QtGui.QStandardItem(musicDir.directory_name)
+            item_dir.musicDir = musicDir
+            model.appendRow(item_dir)
         self.ui.DirListView.setModel(model)
         self.ui.DirListView.selectionModel().currentChanged.connect(self.on_dir_changed)
 
     def show_genres(self):
         self.ui.comboStyle.clear()
-        for genre in self.music_base.genres.genresTabSorted:
+        for genre in self.music_base.genres.genres_tab_sorted:
             self.ui.comboStyle.addItem(genre[0], genre[1])
 
 
@@ -172,7 +172,7 @@ if __name__ == "__main__":
 
     mb = MusicBase()
 
-    mb.musicDirectoryCol.load_music_directories()
+    mb.music_directory_col.load_music_directories()
 
     window = DialogMusicDirectoriesLoader(mb)
 

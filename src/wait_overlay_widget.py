@@ -13,30 +13,30 @@ class WaitOverlay(QWidget):
     def __init__(
         self,
         parent=None,
-        nbDots=15,
-        circleSize=30,
+        nb_dots=15,
+        circle_size=30,
         color=None,
-        backgroundOpacity=40,
-        hideOnClick=False,
+        background_opacity=40,
+        hide_on_click=False,
     ):
         QWidget.__init__(self, parent)
 
         self.counter = 0
 
         self.parent = parent
-        self.nbDots = nbDots
-        self.circleSize = circleSize
-        self.hideOnClick = hideOnClick
+        self.nb_dots = nb_dots
+        self.circle_size = circle_size
+        self.hide_on_click = hide_on_click
 
         if color is None:
             self.color = QColor(100, 100, 100)
         else:
             self.color = color
 
-        self.colorLight = self.color.lighter(150)
-        self.colorLight.setAlpha(200)
+        self.color_light = self.color.lighter(150)
+        self.color_light.setAlpha(200)
 
-        self.backgroundOpacity = backgroundOpacity
+        self.background_opacity = background_opacity
 
         palette = QPalette(self.palette())
         palette.setColor(palette.Background, Qt.transparent)
@@ -48,22 +48,22 @@ class WaitOverlay(QWidget):
         painter.setRenderHint(QPainter.Antialiasing)
 
         painter.fillRect(
-            event.rect(), QBrush(QColor(255, 255, 255, self.backgroundOpacity))
+            event.rect(), QBrush(QColor(255, 255, 255, self.background_opacity))
         )
         painter.setPen(QPen(Qt.NoPen))
 
-        for i in range(self.nbDots):
-            if self.counter % self.nbDots == i:
+        for i in range(self.nb_dots):
+            if self.counter % self.nb_dots == i:
                 painter.setBrush(QBrush(self.color))
             else:
-                painter.setBrush(QBrush(self.colorLight))
+                painter.setBrush(QBrush(self.color_light))
 
             painter.drawEllipse(
                 (self.width() - 0) / 2
-                + self.circleSize * math.cos(2 * math.pi * i / self.nbDots)
+                + self.circle_size * math.cos(2 * math.pi * i / self.nb_dots)
                 - 5,
                 (self.height() - 0) / 2
-                + self.circleSize * math.sin(2 * math.pi * i / self.nbDots)
+                + self.circle_size * math.sin(2 * math.pi * i / self.nb_dots)
                 - 5,
                 10,
                 10,
@@ -74,9 +74,9 @@ class WaitOverlay(QWidget):
     def showEvent(self, event):
         event.accept()
 
-    def showOverlay(self):
+    def show_overlay(self):
         if self.timer == 0:
-            self.timer = self.startTimer(int(800 / self.nbDots))
+            self.timer = self.startTimer(int(800 / self.nb_dots))
 
         self.show()
 
@@ -85,7 +85,7 @@ class WaitOverlay(QWidget):
         self.update()
 
     def mouseReleaseEvent(self, event):
-        if self.hideOnClick:
+        if self.hide_on_click:
             self.hide()
 
 
@@ -102,9 +102,9 @@ class MainWindow(QMainWindow):
         layout.addWidget(button, 1, 1, 1, 1)
 
         self.setCentralWidget(widget)
-        self.overlay = WaitOverlay(self.centralWidget(), hideOnClick=True)
+        self.overlay = WaitOverlay(self.centralWidget(), hide_on_click=True)
         self.overlay.hide()
-        button.clicked.connect(self.overlay.showOverlay)
+        button.clicked.connect(self.overlay.show_overlay)
 
     def resizeEvent(self, event):
         self.overlay.resize(event.size())

@@ -28,8 +28,8 @@ class Database:
         if db_path:
             self.dataPath = db_path
         else:
-            self.dataPath = dataDir + "/data/" + self.databaseName
-        self.dataPathMain = dataDir + "/data/pyzik.db"
+            self.dataPath = DATA_DIR + "/data/" + self.databaseName
+        self.dataPathMain = DATA_DIR + "/data/pyzik.db"
         self.connection = ""
         self.memoryConnection = ""
 
@@ -88,9 +88,9 @@ class Database:
         specified by self.dataPath
         :return: Connection object or None
         """
-        dirPath, db_file = os.path.split(self.dataPath)
-        if not os.path.exists(dirPath):
-            os.makedirs(dirPath)
+        dir_path, db_file = os.path.split(self.dataPath)
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
 
         try:
             self.connection = sqlite3.connect(self.dataPath)
@@ -365,7 +365,7 @@ class Database:
                     album.title,
                     album.artist_id,
                     album.dir_path,
-                    album.year,
+                    album.year_to_num,
                     album.music_directory_id,
                 ),
             )

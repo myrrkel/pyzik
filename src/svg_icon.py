@@ -14,20 +14,20 @@ def get_svg_icon(file_name):
 
 
 def get_colored_svg(file_name, color_to_replace="black"):
-    svg = QtGui.QPixmap(appDir + "/img/" + file_name)
+    svg = QtGui.QPixmap(APP_DIR + "/img/" + file_name)
     mask = svg.createMaskFromColor(QtGui.QColor(color_to_replace), Qt.MaskOutColor)
-    svg.fill(orange)
+    svg.fill(ORANGE)
     svg.setMask(mask)
 
     return svg
 
 
 def get_colored_svg2(file_name, color_to_replace="black"):
-    svg = QtGui.QPixmap(appDir + "/img/" + file_name)
+    svg = QtGui.QPixmap(APP_DIR + "/img/" + file_name)
     mask = svg.createMaskFromColor(QtGui.QColor(color_to_replace), Qt.MaskInColor)
 
     p = QtGui.QPainter(svg)
-    p.setPen(orange)
+    p.setPen(ORANGE)
     p.drawPixmap(svg.rect(), mask, mask.rect())
     p.end()
 
@@ -35,13 +35,13 @@ def get_colored_svg2(file_name, color_to_replace="black"):
 
 
 def get_svg_with_color_param(
-    file_name, destName="logo.svg", color_to_replace="#color", newColor="#D87700"
+    file_name, dest_name="logo.svg", color_to_replace="#color", new_color="#D87700"
 ):
-    file = QFile(appDir + "/img/" + file_name)
+    file = QFile(APP_DIR + "/img/" + file_name)
     file.open(QFile.ReadOnly | QFile.Text)
-    textStream = QTextStream(file)
-    svgData = textStream.readAll()
-    svgData = svgData.replace(color_to_replace, newColor)
+    text_stream = QTextStream(file)
+    svg_data = text_stream.readAll()
+    svg_data = svg_data.replace(color_to_replace, new_color)
 
     file.close()
 
@@ -52,12 +52,12 @@ def get_svg_with_color_param(
 
     painter.begin(pix)
 
-    rend = QtSvg.QSvgRenderer(QByteArray(svgData.encode()))
+    rend = QtSvg.QSvgRenderer(QByteArray(svg_data.encode()))
     img = rend.render(painter)
     painter.end()
 
-    if destName != "":
-        pix.save(appDir + "/img/" + destName)
+    if dest_name != "":
+        pix.save(APP_DIR + "/img/" + dest_name)
 
     return pix
 
@@ -65,11 +65,11 @@ def get_svg_with_color_param(
 def get_colored_pixmap_svg(file_name, color_to_replace="black"):
     svg = QtGui.QPixmap(50, 50)
     svg.fill(QtGui.QColor("transparent"))
-    svg.load(appDir + "/img/" + file_name)
+    svg.load(APP_DIR + "/img/" + file_name)
     mask = svg.createMaskFromColor(QtGui.QColor(color_to_replace), Qt.MaskOutColor)
-    svg.fill(orange)
+    svg.fill(ORANGE)
     svg.setMask(mask)
-    svg.load(appDir + "/img/" + file_name)
+    svg.load(APP_DIR + "/img/" + file_name)
 
     return svg
 

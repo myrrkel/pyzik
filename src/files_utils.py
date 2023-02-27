@@ -32,16 +32,16 @@ def move_directory_file_by_file(
         os.rmdir(from_path)
 
 
-def getFolderSize(folder):
+def get_folder_size(folder):
     if not os.path.isdir(folder):
         return 0
     total_size = os.path.getsize(folder)
     for item in os.listdir(folder):
-        itempath = os.path.join(folder, item)
-        if os.path.isfile(itempath):
-            total_size += os.path.getsize(itempath)
-        elif os.path.isdir(itempath):
-            total_size += getFolderSize(itempath)
+        item_path = os.path.join(folder, item)
+        if os.path.isfile(item_path):
+            total_size += os.path.getsize(item_path)
+        elif os.path.isdir(item_path):
+            total_size += get_folder_size(item_path)
     return total_size
 
 
@@ -55,7 +55,7 @@ def convert_size(size_bytes):
     return "%s %s" % (s, size_name[i])
 
 
-def getFileName(path):
+def get_file_name(path):
     filename = os.path.basename(path)
     filename, file_extension = os.path.splitext(filename)
     return filename

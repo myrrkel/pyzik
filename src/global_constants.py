@@ -4,36 +4,23 @@ import sys
 
 from PyQt5.QtCore import Qt, QSettings
 from PyQt5.QtGui import QColor
-from limbo import *
 
-global appName
-appName = "pyzik"
-global appAuthor
-appAuthor = "myrrkel"
+APP_NAME = "pyzik"
+APP_AUTHOR = "myrrkel"
+MUSIC_FILE_EXTENSIONS = ["mp3", "ogg", "mpc", "flac", "m4a", "wma"]
+IMAGE_FILE_EXTENSIONS = ["jpg", "jpeg", "png"]
+DATA_DIR = user_data_dir(APP_NAME, APP_AUTHOR)
 
-global musicFilesExtension
-musicFilesExtension = ["mp3", "ogg", "mpc", "flac", "m4a", "wma"]
-global pictureFilesExtension
-imageFilesExtension = ["jpg", "jpeg", "png"]
-
-global dataDir
-dataDir = user_data_dir(appName, appAuthor)
-
-global appDir
 if os.path.basename(sys.executable) == "pyzik":
-    appDir = os.path.dirname(os.path.realpath(sys.executable))
+    APP_DIR = os.path.dirname(os.path.realpath(sys.executable))
 else:
-    appDir = os.path.dirname(os.path.realpath(sys.argv[0]))
+    APP_DIR = os.path.dirname(os.path.realpath(sys.argv[0]))
 
-global settings
 settings = QSettings("pyzik", "pyzik")
 
-global theme_color
-
 if settings.contains("theme_color"):
-    theme_color = settings.value("theme_color", type=str)
+    THEME_COLOR = settings.value("theme_color", type=str)
 else:
-    theme_color = ""
+    THEME_COLOR = ""
 
-global orange
-orange = QColor(216, 119, 0)
+ORANGE = QColor(216, 119, 0)

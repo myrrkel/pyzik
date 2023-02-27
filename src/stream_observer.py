@@ -27,21 +27,21 @@ class StreamObserver(QThread):
                 time.sleep(1)
                 continue
 
-            if not self.player.radioMode:
+            if not self.player.radio_mode:
                 self.previous_title = ""
                 time.sleep(1)
                 continue
 
-            if self.player.radioMode:
+            if self.player.radio_mode:
                 if self.player.adblock:
                     title = self.player.get_now_playing()
                     # print("streamObserver="+title+" "+self.player.getTitle()+" "+self.player.getArtist())
                     if title != "NO_META":
                         self.player.mute(False)
-                        self.player.adKilled = False
+                        self.player.ad_killed = False
                         if self.previous_title != title:
                             self.previous_title = title
-                            self.player.currentRadioTitle = self.clean_title(title)
+                            self.player.current_radio_title = self.clean_title(title)
                             self.titleChanged.emit(self.clean_title(title))
                     else:
                         if self.previous_title == "Advert Killed!":
@@ -51,7 +51,7 @@ class StreamObserver(QThread):
 
                         else:
                             # It's an advert!
-                            self.player.adKilled = True
+                            self.player.ad_killed = True
                             self.player.mute(True)
                             self.player.stop()
                             msg = "Advert Killed!"
@@ -62,7 +62,7 @@ class StreamObserver(QThread):
 
                 else:
                     """No meta, no adblock"""
-                    self.player.adKilled = False
+                    self.player.ad_killed = False
                     trk = self.player.get_current_track_playlist()
                     if trk is not None:
                         if trk.radio is not None:
@@ -76,7 +76,7 @@ class StreamObserver(QThread):
 
                         if self.previous_title != title:
                             self.previous_title = title
-                            self.player.currentRadioTitle = title
+                            self.player.current_radio_title = title
                             print("EMIT= " + title)
                             self.titleChanged.emit(title)
 

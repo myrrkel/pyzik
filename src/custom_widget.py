@@ -53,7 +53,7 @@ class CustomWidget(QtWidgets.QDialog):
     def onAction(self, event):
         print("Action!")
 
-    def initTableWidgetItems(self):
+    def init_table_widget_items(self):
         self.tableWidgetItems = QtWidgets.QTableWidget(self)
 
         self.tableWidgetItems.setGeometry(0, 0, 550, 300)
@@ -80,9 +80,9 @@ class CustomWidget(QtWidgets.QDialog):
         item = QtWidgets.QTableWidgetItem()
         self.tableWidgetItems.setHorizontalHeaderItem(4, item)
 
-        self.initColumnHeaders()
+        self.init_column_headers()
 
-    def initColumnHeaders(self):
+    def init_column_headers(self):
         hHeader = self.tableWidgetItems.horizontalHeader()
         vHeader = self.tableWidgetItems.verticalHeader()
         vHeader.hide()

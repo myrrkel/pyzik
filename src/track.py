@@ -87,7 +87,7 @@ class Track:
 
     def get_album_year(self):
         if self.parent_album is not None and self.year == 0:
-            return self.parent_album.year
+            return self.parent_album.year_to_num
         else:
             return self.year
 
@@ -222,7 +222,7 @@ class Track:
         if tag_dict:
             y = tag_dict.get("TYER")
             if y:
-                return year(y)
+                return year_to_num(y)
             else:
                 y = tag_dict.get("TDRC")
                 if y:
@@ -230,7 +230,7 @@ class Track:
                     if len(str_y) > 4:
                         logger.debug("datas: %s", str_y)
                         str_y = str_y[:4]
-                    return year(str_y)
+                    return year_to_num(str_y)
 
         return 0
 
@@ -289,10 +289,6 @@ class Track:
 
         if self.title in ("", "None"):
             self.title = self.file_name
-
-    def on_cover_downloaded(self, cover):
-        self.set_cover(cover)
-        self.cover_downloaded.emit(cover)
 
 
 if __name__ == "__main__":

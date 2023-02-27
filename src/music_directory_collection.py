@@ -60,7 +60,7 @@ class MusicDirectoryCollection:
             req = """INSERT INTO musicDirectories (dirPath, dirName)
                                 VALUES (?,?);
                           """
-            c.execute(req, (music_directory.dir_path, music_directory.dirName))
+            c.execute(req, (music_directory.dir_path, music_directory.directory_name))
             self.music_base.db.connection.commit()
             music_directory.music_directory_id = c.lastrowid
         except sqlite3.Error as e:
@@ -84,5 +84,5 @@ class MusicDirectoryCollection:
     def get_style_id_set(self):
         style_ids = set()
         for md in self.music_directories:
-            style_ids.add(md.styleID)
+            style_ids.add(md.style_id)
         return style_ids

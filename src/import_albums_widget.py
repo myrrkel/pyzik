@@ -80,7 +80,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
         combo_layout.addWidget(self.defaut_music_directory)
         self.main_layout.addWidget(combo_with_label)
 
-        self.initTableWidgetItems()
+        self.init_table_widget_items()
         self.main_layout.addWidget(self.tableWidgetItems)
 
         self.import_button = QtWidgets.QPushButton(
@@ -97,7 +97,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
 
         self.retranslateUi()
 
-        self.initColumnHeaders()
+        self.init_column_headers()
 
     def import_albums(self):
         alb_dict_list = self.get_albums_dict_list()
@@ -105,17 +105,17 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
         self.wProgress = ProgressWidget(
             self, can_be_closed=False, with_file_progress=True
         )
-        self.wProgress.setProgressLabel(_translate("import albums", "Copying:"))
+        self.wProgress.set_progress_label(_translate("import albums", "Copying:"))
         self.wProgress.show()
         self.import_alb_thread = ImportAlbumsThread()
         self.import_alb_thread.alb_dict_list = alb_dict_list
         self.import_alb_thread.music_base = self.musicbase
-        self.import_alb_thread.album_import_progress.connect(self.wProgress.setValue)
+        self.import_alb_thread.album_import_progress.connect(self.wProgress.set_value)
         self.import_alb_thread.album_import_started_signal.connect(
-            self.wProgress.setDirectoryText
+            self.wProgress.set_directory_text
         )
         self.import_alb_thread.file_copy_started_signal.connect(
-            self.wProgress.setFileText
+            self.wProgress.set_file_text
         )
         self.import_alb_thread.import_completed_signal.connect(self.explore_completed)
         self.import_alb_thread.start()
@@ -165,17 +165,17 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
             res = music_dir.explore_albums_to_import()
             for alb in res:
                 logger.debug(alb)
-            self.showTableItems(res)
+            self.show_table_items(res)
 
     def load_dir_list(self, combo):
         model = QtGui.QStandardItemModel(combo)
-        for music_dir in self.musicbase.musicDirectoryCol.music_directories:
-            itemDir = QtGui.QStandardItem(music_dir.dirName)
-            itemDir.music_dir = music_dir
-            model.appendRow(itemDir)
+        for music_dir in self.musicbase.music_directory_col.music_directories:
+            item_dir = QtGui.QStandardItem(music_dir.directory_name)
+            item_dir.music_dir = music_dir
+            model.appendRow(item_dir)
         combo.setModel(model)
 
-    def initTableWidgetItems(self):
+    def init_table_widget_items(self):
         self.tableWidgetItems = QtWidgets.QTableWidget(self)
 
         self.tableWidgetItems.setGeometry(0, 0, 550, 300)
@@ -208,7 +208,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
         item = QtWidgets.QTableWidgetItem()
         self.tableWidgetItems.setHorizontalHeaderItem(7, item)
 
-    def initColumnHeaders(self):
+    def init_column_headers(self):
         hHeader = self.tableWidgetItems.horizontalHeader()
         vHeader = self.tableWidgetItems.verticalHeader()
         vHeader.hide()
@@ -251,7 +251,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
         item = self.tableWidgetItems.horizontalHeaderItem(7)
         item.setText(_translate("import albums", "Read Tags"))
 
-    def showTableItems(self, items):
+    def show_table_items(self, items):
         self.tableWidgetItems.setStyleSheet(
             "selection-background-color: black;selection-color: white;"
         )
@@ -260,15 +260,15 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
 
         for i, item in enumerate(items):
             self.tableWidgetItems.insertRow(i)
-            selItem = QtWidgets.QTableWidgetItem()
-            selItem.setFlags(
+            sel_item = QtWidgets.QTableWidgetItem()
+            sel_item.setFlags(
                 QtCore.Qt.ItemIsUserCheckable
                 | QtCore.Qt.ItemIsEditable
                 | QtCore.Qt.ItemIsEnabled
             )
-            selItem.setCheckState(QtCore.Qt.Checked)
-            selItem.alb_item = item
-            self.tableWidgetItems.setItem(i, 0, selItem)
+            sel_item.setCheckState(QtCore.Qt.Checked)
+            sel_item.alb_item = item
+            self.tableWidgetItems.setItem(i, 0, sel_item)
 
             combo_music_directory = QtWidgets.QComboBox()
             combo_music_directory.wheelEvent = lambda event: None
@@ -278,21 +278,21 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
             )
             self.tableWidgetItems.setCellWidget(i, 1, combo_music_directory)
 
-            artistItem = QtWidgets.QTableWidgetItem(item["alb"].artist_name)
-            artistItem.setFlags(artistItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i, 2, artistItem)
+            artist_item = QtWidgets.QTableWidgetItem(item["alb"].artist_name)
+            artist_item.setFlags(artist_item.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.tableWidgetItems.setItem(i, 2, artist_item)
 
-            albumItem = QtWidgets.QTableWidgetItem(item["alb"].title)
-            albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i, 3, albumItem)
+            album_item = QtWidgets.QTableWidgetItem(item["alb"].title)
+            album_item.setFlags(album_item.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.tableWidgetItems.setItem(i, 3, album_item)
 
-            yearItem = QtWidgets.QTableWidgetItem(str(item["alb"].year))
-            yearItem.setFlags(yearItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i, 4, yearItem)
+            year_item = QtWidgets.QTableWidgetItem(str(item["alb"].year_to_num))
+            year_item.setFlags(year_item.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.tableWidgetItems.setItem(i, 4, year_item)
 
-            dirItem = QtWidgets.QTableWidgetItem(item["album_dir"])
-            dirItem.setFlags(dirItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidgetItems.setItem(i, 5, dirItem)
+            dir_item = QtWidgets.QTableWidgetItem(item["album_dir"])
+            dir_item.setFlags(dir_item.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.tableWidgetItems.setItem(i, 5, dir_item)
 
             # albumExistItem = QtWidgets.QTableWidgetItem()
             # albumExistItem.setFlags(albumExistItem.flags() ^ QtCore.Qt.ItemIsEditable)
@@ -336,23 +336,23 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
         logger.info(row)
         alb = check_tags_button.alb_item["alb"]
         alb.getTagsFromFirstFile()
-        curArt = self.musicbase.artistCol.findArtists(alb.artist_name)
+        artist = self.musicbase.artist_col.findArtists(alb.artist_name)
         # GetArtist return a new artist if it doesn't exists in artistsCol
-        if len(curArt) == 1:
-            curArt = curArt[0]
-            alb.artist_id = curArt.artist_id
-            alb.artist_name = curArt.name.upper()
-            albums = curArt.find_albums(alb.title)
+        if len(artist) == 1:
+            artist = artist[0]
+            alb.artist_id = artist.artist_id
+            alb.artist_name = artist.name.upper()
+            albums = artist.find_albums(alb.title)
             album_exists = len(albums) > 0
-            albumExistItem = self.tableWidgetItems.cellWidget(row, 6)
-            set_check_state(albumExistItem, album_exists)
+            album_exist_item = self.tableWidgetItems.cellWidget(row, 6)
+            set_check_state(album_exist_item, album_exists)
 
-        artistItem = self.tableWidgetItems.item(row, 2)
-        albumItem = self.tableWidgetItems.item(row, 3)
-        yearItem = self.tableWidgetItems.item(row, 4)
-        artistItem.setText(alb.artist_name)
-        albumItem.setText(alb.title)
-        yearItem.setText(str(alb.year))
+        artist_item = self.tableWidgetItems.item(row, 2)
+        album_item = self.tableWidgetItems.item(row, 3)
+        year_item = self.tableWidgetItems.item(row, 4)
+        artist_item.setText(alb.artist_name)
+        album_item.setText(alb.title)
+        year_item.setText(str(alb.year_to_num))
         logger.info("%s - %s", alb.artist_name, alb.title)
 
 

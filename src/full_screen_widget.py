@@ -144,7 +144,7 @@ class FullScreenWidget(QDialog):
         self.show_cover_pixmap(path)
 
     def show_cover(self, trk):
-        if self.player.radioMode:
+        if self.player.radio_mode:
             cover_url = self.player.get_live_cover_url()
             if cover_url == "":
                 rad = self.player.get_current_radio()
@@ -160,17 +160,16 @@ class FullScreenWidget(QDialog):
                 self.picFromUrlThread.start()
 
         else:
-            # self.picFromUrlThread.resetLastURL()
             if trk is not None and trk.parentAlbum is not None:
                 print("fullscreenWidget trk.parentAlbum.cover=" + trk.parentAlbum.cover)
                 if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
                     self.coverPixmap = self.defaultPixmap
                 else:
-                    coverPath = trk.parentAlbum.get_cover_path()
-                    if self.currentCoverPath == coverPath:
+                    cover_path = trk.parentAlbum.get_cover_path()
+                    if self.currentCoverPath == cover_path:
                         return
-                    self.currentCoverPath = coverPath
-                    self.show_cover_pixmap(coverPath)
+                    self.currentCoverPath = cover_path
+                    self.show_cover_pixmap(cover_path)
 
     def show_cover_pixmap(self, path):
         if self.picBufferManager is None:
@@ -178,10 +177,10 @@ class FullScreenWidget(QDialog):
         else:
             self.coverPixmap = self.picBufferManager.get_pic(path, "fullscreenWidget")
 
-        scaledCover = self.coverPixmap.scaled(
+        scaled_cover = self.coverPixmap.scaled(
             self.cover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
         )
-        self.cover.setPixmap(scaledCover)
+        self.cover.setPixmap(scaled_cover)
         self.cover.show()
 
     def set_title_label(self):
@@ -190,12 +189,12 @@ class FullScreenWidget(QDialog):
         year = ""
 
         # orange = QtGui.QColor(216, 119, 0)
-        color_name = orange.name()
+        color_name = ORANGE.name()
 
         if self.currentTrack:
             if self.currentTrack.is_radio():
                 art_name = self.currentTrack.radio.name
-                alb_title = self.currentTrack.radio.liveTrackTitle
+                alb_title = self.currentTrack.radio.live_track_title
                 if alb_title == "":
                     alb_title = self.player.get_now_playing()
             else:

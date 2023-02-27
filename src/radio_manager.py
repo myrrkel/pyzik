@@ -25,7 +25,7 @@ def json_to_obj(data):
 
 def filter_by_radio_id(seq, RadID):
     for el in seq:
-        if int(el.radioID) == int(RadID):
+        if int(el.radio_id) == int(RadID):
             yield el
             break
 
@@ -178,7 +178,7 @@ class RadioManager:
                 rad.stream = tr.url
                 rad.country = tr.country
                 rad.image = tr.favicon
-                rad.add_categorie(tr.tags)
+                rad.add_category(tr.tags)
                 rb_radios.append(rad)
 
         return rb_radios
@@ -201,7 +201,7 @@ class RadioManager:
             for tr in tradios.Items:
                 rad = Radio()
                 rad.init_with_tunein_radio(tr)
-                rad.stream = self.get_tunein_stream(rad.searchID)
+                rad.stream = self.get_tunein_stream(rad.search_id)
                 tuneinRadios.append(rad)
 
         return tuneinRadios

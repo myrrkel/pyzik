@@ -40,7 +40,7 @@ class DataHistoryAlbum:
         self.album = None
 
     def get_album(self, music_base):
-        self.album = music_base.albumCol.get_album(self.album_id)
+        self.album = music_base.album_col.get_album(self.album_id)
 
     def get_info(self):
         return "Artist: " + self.album.artist_name + " Album: " + self.album.title
@@ -58,6 +58,7 @@ class DataHistoryAlbum:
 
 class DataHistoryTrack(DataHistoryAlbum):
     def __init__(self, album_id, file_name):
+        DataHistoryAlbum.__init__(self, album_id)
         self.album_id = album_id
         self.fileName = file_name
 

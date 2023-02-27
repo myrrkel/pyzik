@@ -32,7 +32,7 @@ class ThumbnailItem(QListWidgetItem):
         self.path = ""
         self.parent = parent
         self.title = name
-        self.thumbIcon = thumbnailIcon(self, thumb_url)
+        self.thumbIcon = ThumbnailIcon(self, thumb_url)
         QListWidgetItem.__init__(self, self.thumbIcon, "")
         self.setHidden(True)
         self.setSizeHint(QSize(200, 220))
@@ -47,7 +47,7 @@ class ThumbnailItem(QListWidgetItem):
         self.setText(self.title)
 
 
-class thumbnailIcon(QtGui.QIcon):
+class ThumbnailIcon(QtGui.QIcon):
     def __init__(self, parent, url):
         QtGui.QIcon.__init__(self)
         self.parent = parent

@@ -49,12 +49,12 @@ class Artist:
     def __init__(self, name, artist_id):
         self.artist_id = artist_id
         self.name = self.format_name(name)
-        self.countryID = 0
-        self.categoryID = 0
+        self.country_id = 0
+        self.category_id = 0
         self.style_ids = set()
         self.albums: List[Album] = list()
-        self.itemListViewArtist = None
-        self.searchKey = ""
+        self.item_list_view_artist = None
+        self.search_key = ""
 
     def get_name(self):
         return self.name
@@ -63,9 +63,9 @@ class Artist:
         return name.upper()
 
     def get_search_key(self):
-        if self.searchKey == "":
-            self.searchKey = format_string.get_search_key(self.name)
-        return self.searchKey
+        if self.search_key == "":
+            self.search_key = format_string.get_search_key(self.name)
+        return self.search_key
 
     def print_infos(self):
         print(self.name + " id=" + str(self.artist_id))
@@ -74,20 +74,20 @@ class Artist:
         self.albums = sorted(self.albums, key=attrgetter("year", "title"))
 
     def get_random_album(self):
-        nbAlbum = len(self.albums)
-        if nbAlbum > 0:
-            irandom = random.randint(0, nbAlbum - 1)
-            resAlb = self.albums[irandom]
-            return resAlb
+        nb_album = len(self.albums)
+        if nb_album > 0:
+            int_random = random.randint(0, nb_album - 1)
+            res_alb = self.albums[int_random]
+            return res_alb
 
     def add_album(self, alb):
         self.albums.append(alb)
 
-    def add_style(self, idSet):
-        self.style_ids = self.style_ids.union(idSet)
+    def add_style(self, id_set):
+        self.style_ids = self.style_ids.union(id_set)
 
-    def find_albums(self, stitle):
-        albumList = []
-        for alb in filter_albums_by_title(self.albums, stitle):
-            albumList.append(alb)
-        return albumList
+    def find_albums(self, title):
+        album_list = []
+        for alb in filter_albums_by_title(self.albums, title):
+            album_list.append(alb)
+        return album_list

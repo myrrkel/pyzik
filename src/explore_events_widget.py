@@ -20,12 +20,12 @@ _translate = QtCore.QCoreApplication.translate
 class ExploreEventsWidget(QtWidgets.QDialog):
     items = ExploreEventList()
 
-    def __init__(self, parent, musicbase=None, items=[]):
+    def __init__(self, parent, music_base=None, items=[]):
         QtWidgets.QDialog.__init__(self)
         self.parent = parent
-        self.musicbase = musicbase
+        self.music_base = music_base
         self.items = items
-        self.musicbase.db = Database()
+        self.music_base.db = Database()
         self.setWindowFlags(QtCore.Qt.Window)
 
         self.initUI()
@@ -78,7 +78,7 @@ class ExploreEventsWidget(QtWidgets.QDialog):
         # combo_layout.addWidget(self.defaut_music_directory)
         # self.main_layout.addWidget(combo_with_label)
 
-        self.initTableWidgetItems()
+        self.init_table_widget_items()
         self.main_layout.addWidget(self.tableWidgetItems)
 
         # self.import_button = QtWidgets.QPushButton(_translate("explore event", "Import selected albums in music directories"))
@@ -91,9 +91,9 @@ class ExploreEventsWidget(QtWidgets.QDialog):
 
         self.retranslateUi()
 
-        self.initColumnHeaders()
+        self.init_column_headers()
 
-        self.showTableItems(self.items)
+        self.show_table_items(self.items)
 
         self.show_header()
 
@@ -159,13 +159,13 @@ class ExploreEventsWidget(QtWidgets.QDialog):
 
     def load_dir_list(self, combo):
         model = QtGui.QStandardItemModel(combo)
-        for music_dir in self.musicbase.musicDirectoryCol.music_directories:
-            itemDir = QtGui.QStandardItem(music_dir.dirName)
+        for music_dir in self.music_base.music_directory_col.music_directories:
+            itemDir = QtGui.QStandardItem(music_dir.directory_name)
             itemDir.music_dir = music_dir
             model.appendRow(itemDir)
         combo.setModel(model)
 
-    def initTableWidgetItems(self):
+    def init_table_widget_items(self):
         self.tableWidgetItems = QtWidgets.QTableWidget(self)
 
         self.tableWidgetItems.setGeometry(0, 0, 550, 300)
@@ -198,7 +198,7 @@ class ExploreEventsWidget(QtWidgets.QDialog):
         item = QtWidgets.QTableWidgetItem()
         self.tableWidgetItems.setHorizontalHeaderItem(7, item)
 
-    def initColumnHeaders(self):
+    def init_column_headers(self):
         hHeader = self.tableWidgetItems.horizontalHeader()
         vHeader = self.tableWidgetItems.verticalHeader()
         vHeader.hide()
@@ -241,7 +241,7 @@ class ExploreEventsWidget(QtWidgets.QDialog):
         self.tableWidgetItems.setItem(line, col, item)
         return col + 1
 
-    def showTableItems(self, items):
+    def show_table_items(self, items):
         items = items.filter_exclude_code("ALBUM_ADDED")
         self.tableWidgetItems.setStyleSheet(
             "selection-background-color: black;selection-color: white;"
@@ -348,7 +348,7 @@ class ExploreEventsWidget(QtWidgets.QDialog):
         logger.info(row)
         alb = check_tags_button.alb_item["alb"]
         alb.getTagsFromFirstFile()
-        curArt = self.musicbase.artistCol.findArtists(alb.artist_name)
+        curArt = self.music_base.artist_col.findArtists(alb.artist_name)
         # GetArtist return a new artist if it doesn't exists in artistsCol
         if len(curArt) == 1:
             curArt = curArt[0]
@@ -364,7 +364,7 @@ class ExploreEventsWidget(QtWidgets.QDialog):
         yearItem = self.tableWidgetItems.item(row, 4)
         artistItem.setText(alb.artist_name)
         albumItem.setText(alb.title)
-        yearItem.setText(str(alb.year))
+        yearItem.setText(str(alb.year_to_num))
         logger.info("%s - %s", alb.artist_name, alb.title)
 
 

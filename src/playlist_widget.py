@@ -101,7 +101,7 @@ class PlaylistWidget(QDialog):
         if parent:
             self.parent = parent
         self.player = player
-        self.mediaList = self.player.mediaList
+        self.mediaList = self.player.media_list
         self.fullScreenWidget = None
 
         if self.picFromUrlThread is None:
@@ -373,11 +373,11 @@ class PlaylistWidget(QDialog):
                 self.tableWidgetTracks.setItem(i, 3, duration_item)
             else:
                 print("radioName=" + track.radioName)
-                artist_item = QTableWidgetItem(self.player.currentRadioName)
+                artist_item = QTableWidgetItem(self.player.current_radio_name)
                 artist_item.setFlags(artist_item.flags() ^ Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i, 1, artist_item)
 
-                album_item = QTableWidgetItem(self.player.currentRadioName)
+                album_item = QTableWidgetItem(self.player.current_radio_name)
                 album_item.setFlags(album_item.flags() ^ Qt.ItemIsEditable)
                 self.tableWidgetTracks.setItem(i, 2, album_item)
 
@@ -397,7 +397,7 @@ class PlaylistWidget(QDialog):
     def show_media_list(self):
         tracks = []
 
-        self.mediaList = self.player.mediaList
+        self.mediaList = self.player.media_list
         for i in range(self.mediaList.count()):
             m = self.mediaList.item_at_index(i)
             if m is None:
@@ -453,7 +453,7 @@ class PlaylistWidget(QDialog):
 
             if trk is None:
                 self.show_default_pixmap()
-                if self.player.radioMode:
+                if self.player.radio_mode:
                     item.setText(title)
                     item1 = self.tableWidgetTracks.item(i, 1)
                     item1.setText("")
@@ -474,9 +474,9 @@ class PlaylistWidget(QDialog):
                     item.setText(now_playing)
 
                 item1 = self.tableWidgetTracks.item(i, 1)
-                item1.setText(self.player.currentRadioName)
+                item1.setText(self.player.current_radio_name)
                 item2 = self.tableWidgetTracks.item(i, 2)
-                item2.setText(self.player.currentRadioName)
+                item2.setText(self.player.current_radio_name)
 
             f = item.font()
             if i == index:
@@ -484,7 +484,7 @@ class PlaylistWidget(QDialog):
                     self.show_cover(trk)
                 f.setBold(True)
                 f.setItalic(True)
-                color = orange
+                color = ORANGE
             else:
                 f.setBold(False)
                 f.setItalic(False)
@@ -508,7 +508,7 @@ class PlaylistWidget(QDialog):
         self.init_column_headers()
 
     def show_cover(self, trk):
-        if self.player.radioMode:
+        if self.player.radio_mode:
             self.coverPixmap = QPixmap()
             cover_url = self.player.get_live_cover_url()
             if cover_url == "":
@@ -549,7 +549,7 @@ class PlaylistWidget(QDialog):
         self.show_scaled_cover()
 
     def show_default_pixmap(self):
-        if self.player.radioMode:
+        if self.player.radio_mode:
             self.coverPixmap = self.defaultRadioPix
         else:
             self.coverPixmap = self.defaultPixmap

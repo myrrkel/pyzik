@@ -43,7 +43,7 @@ class darkStyle:
         # Load the stylesheet content from resources
         from PyQt5.QtCore import QFile, QTextStream
 
-        f = QFile(appDir + "/darkStyle/style.qss")
+        f = QFile(APP_DIR + "/darkStyle/style.qss")
         if not f.exists():
             print("Unable to load stylesheet, file not found in " "resources")
             return ""

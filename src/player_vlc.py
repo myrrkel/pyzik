@@ -53,99 +53,83 @@ class PlayerVLC:
         self.instance = vlc.Instance("--quiet")
 
         # creating an empty vlc media player
-        self.mediaPlayer = self.instance.media_player_new()
+        self.media_player = self.instance.media_player_new()
         self.mediaListPlayer = self.instance.media_list_player_new()
-        self.mediaList = self.instance.media_list_new()
-        self.mpEnventManager = self.mediaPlayer.event_manager()
+        self.media_list = self.instance.media_list_new()
+        self.player_event_manager = self.media_player.event_manager()
 
-        self.radioMode = False
-        self.currentRadioTitle = ""
-        self.currentRadioName = ""
-        self.currentRadio = False
+        self.radio_mode = False
+        self.current_radio_title = ""
+        self.current_radio_name = ""
+        self.current_radio = False
         self.adblock = False
-        self.adKilled = False
-        self.loadingRadio = False
-        self.playlistChangedEvent = pyqtSignal(int, name="playlistChanged")
-        self.currentRadioChangedEvent = pyqtSignal(int, name="currentRadioChanged")
-        self.titleChangedEvent = pyqtSignal(str, name="titleChanged")
+        self.ad_killed = False
+        self.loading_radio = False
+        self.playlist_changed_event = pyqtSignal(int, name="playlistChanged")
+        self.current_radio_changed_event = pyqtSignal(int, name="currentRadioChanged")
+        self.title_changed_event = pyqtSignal(str, name="titleChanged")
 
-        self.nowPlaying = ""
+        self.now_playing = ""
 
         self.init_media_list()
 
         print("VLC version = " + str(vlc.libvlc_get_version()))
 
-        # void prepareRender(void* p_audio_data, uint8_t** pp_pcm_buffer , size_t size); // Audio prerender callback
-        # void handleStream(void* p_audio_data, uint8_t* p_pcm_buffer, unsigned int channels, unsigned int rate, unsigned int nb_samples, unsigned int bits_per_sample, size_t size, int64_t pts); // Audio postrender callback
-
-    @c.CFUNCTYPE(
-        c.c_void_p,
-        c_uint8_p,
-        c.c_uint,
-        c.c_uint,
-        c.c_uint,
-        c.c_uint,
-        c.c_size_t,
-        c.c_int64,
-    )
-
     def release(self):
-        self.mediaPlayer.release()
+        self.media_player.release()
         self.mediaListPlayer.release()
         self.instance.release()
 
     def get_album_from_mrl(self, mrl):
-        trackData = [item for item in self.tracksDatas if item[0] == mrl]
+        track_data = [item for item in self.tracksDatas if item[0] == mrl]
 
-        if trackData is not None:
-            if len(trackData) > 0:
-                return trackData[0][1]
+        if track_data is not None:
+            if len(track_data) > 0:
+                return track_data[0][1]
             else:
                 return None
         else:
             return None
 
     def get_track_from_mrl(self, mrl):
-        trackData = [item for item in self.tracksDatas if item[0] == mrl]
+        track_data = [item for item in self.tracksDatas if item[0] == mrl]
 
-        if trackData is not None:
-            if len(trackData) > 0:
-                return trackData[0][2]
+        if track_data is not None:
+            if len(track_data) > 0:
+                return track_data[0][2]
             else:
-                trackData = [item for item in self.tracksDatas if item[1] == mrl]
-                if len(trackData) > 0:
-                    return trackData[0][2]
+                track_data = [item for item in self.tracksDatas if item[1] == mrl]
+                if len(track_data) > 0:
+                    return track_data[0][2]
                 else:
                     return None
         else:
             return None
 
     def is_playing(self):
-        return self.mediaPlayer.is_playing()
+        return self.media_player.is_playing()
 
     def is_playing_radio(self):
-        return (
-                self.adKilled == False and self.is_playing() and self.loadingRadio == False
-        )
+        return not self.ad_killed and self.is_playing() and not self.loading_radio
 
     def get_current_index_playlist(self):
-        m = self.mediaPlayer.get_media()
-        index = self.mediaList.index_of_item(m)
+        m = self.media_player.get_media()
+        index = self.media_list.index_of_item(m)
         if index == -1:
-            if self.mediaList.count() > 0:
+            if self.media_list.count() > 0:
                 index = self.find_item_index_in_playlist(m.get_mrl())
 
         return index
 
     def get_current_mrl_playlist(self):
-        m = self.mediaPlayer.get_media()
+        m = self.media_player.get_media()
         if m is not None:
             return m.get_mrl()
         else:
             return None
 
     def get_item_at_index(self, index):
-        return self.mediaList.item_at_index(index)
+        return self.media_list.item_at_index(index)
 
     def get_track_at_index(self, index):
         item = self.get_item_at_index(index)
@@ -154,7 +138,7 @@ class PlayerVLC:
 
     def find_item_index_in_playlist(self, mrl):
         res = 0
-        for i in range(self.mediaList.count()):
+        for i in range(self.media_list.count()):
             item = self.get_item_at_index(i)
             if item.get_mrl() == mrl:
                 return i
@@ -169,20 +153,20 @@ class PlayerVLC:
             return None
 
     def play_album(self, album, autoplay=True):
-        self.radioMode = False
+        self.radio_mode = False
         i = 0
         for trk in album.tracks:
             path = trk.get_full_file_path()
             media = self.instance.media_new(path)
 
-            self.mediaList.add_media(media)
+            self.media_list.add_media(media)
             self.tracksDatas.append((media.get_mrl(), "", trk))
 
             if i == 0 and autoplay:
-                index = self.mediaList.count() - 1
+                index = self.media_list.count() - 1
                 self.mediaListPlayer.play_item_at_index(index)
             i += 1
-        self.playlistChangedEvent.emit(1)
+        self.playlist_changed_event.emit(1)
 
     def add_album(self, album):
         for trk in album.tracks:
@@ -190,41 +174,41 @@ class PlayerVLC:
             media = self.instance.media_new(path)
             trk.radioName = ""
 
-            self.mediaList.add_media(media)
+            self.media_list.add_media(media)
             self.tracksDatas.append((media.get_mrl(), "", trk))
-        self.playlistChangedEvent.emit(1)
+        self.playlist_changed_event.emit(1)
 
-    def play_file(self, sfile):
+    def play_file(self, file):
         # create the media
-        media = self.instance.media_new(sfile)
+        media = self.instance.media_new(file)
         # put the media in the media player
-        self.mediaPlayer.set_media(media)
+        self.media_player.set_media(media)
 
         # parse the metadata of the file
         media.parse()
-        self.mediaPlayer.play()
+        self.media_player.play()
 
-    def add_file(self, sfile):
-        media = self.instance.media_new(sfile)
+    def add_file(self, file):
+        media = self.instance.media_new(file)
         media.parse()
-        self.mediaList.add_media(media)
-        self.playlistChangedEvent.emit(1)
+        self.media_list.add_media(media)
+        self.playlist_changed_event.emit(1)
 
-    def add_file_list(self, fileList):
-        for sfile in fileList:
-            self.mediaList.add_media(self.instance.media_new(sfile))
+    def add_file_list(self, file_list):
+        for file in file_list:
+            self.media_list.add_media(self.instance.media_new(file))
 
     def play_media_list(self):
         self.mediaListPlayer.play()
 
     def stop(self):
-        self.mediaPlayer.stop()
+        self.media_player.stop()
 
     def play(self):
-        self.mediaPlayer.play()
+        self.media_player.play()
 
     def pause(self):
-        self.mediaPlayer.pause()
+        self.media_player.pause()
 
     def next(self):
         self.mediaListPlayer.next()
@@ -236,7 +220,7 @@ class PlayerVLC:
         self.mediaListPlayer.reset_current_item_index(index)
 
     def mute(self, value):
-        self.mediaPlayer.audio_set_mute(value)
+        self.media_player.audio_set_mute(value)
 
     def pause_media_list(self):
         self.mediaListPlayer.pause()
@@ -244,138 +228,138 @@ class PlayerVLC:
     def init_media_list(self):
         # self.mediaList.release()
         # self.mediaListPlayer.release()
-        if self.mediaList is not None:
-            self.mediaList.release()
+        if self.media_list is not None:
+            self.media_list.release()
 
-        self.mediaList = self.instance.media_list_new()
-        self.mediaListPlayer.set_media_player(self.mediaPlayer)
-        self.mediaListPlayer.set_media_list(self.mediaList)
+        self.media_list = self.instance.media_list_new()
+        self.mediaListPlayer.set_media_player(self.media_player)
+        self.mediaListPlayer.set_media_list(self.media_list)
 
     def refresh_media_list_player(self):
-        self.mediaListPlayer.set_media_list(self.mediaList)
+        self.mediaListPlayer.set_media_list(self.media_list)
 
     def drop_media_list(self):
         self.mediaListPlayer.stop()
-        self.mediaList.unlock()
-        for i in reversed(range(0, self.mediaList.count())):
-            self.mediaList.remove_index(i)
-        self.playlistChangedEvent.emit(1)
+        self.media_list.unlock()
+        for i in reversed(range(0, self.media_list.count())):
+            self.media_list.remove_index(i)
+        self.playlist_changed_event.emit(1)
 
     def remove_all_tracks(self):
         # Remove all medias from the playlist except the current track
-        currentIndex = self.get_current_index_playlist()
-        for i in reversed(range(0, self.mediaList.count())):
-            if i != currentIndex:
-                self.mediaList.remove_index(i)
-        self.playlistChangedEvent.emit(1)
+        current_index = self.get_current_index_playlist()
+        for i in reversed(range(0, self.media_list.count())):
+            if i != current_index:
+                self.media_list.remove_index(i)
+        self.playlist_changed_event.emit(1)
 
     def get_volume(self):
         """Get the volume from the player"""
-        volume = int(self.mediaPlayer.audio_get_volume())
+        volume = int(self.media_player.audio_get_volume())
         return volume
 
     def set_volume(self, Volume):
         """Set the volume"""
-        self.mediaPlayer.audio_set_volume(Volume)
+        self.media_player.audio_set_volume(Volume)
 
     def get_position(self):
         """Get the position in media"""
-        return self.mediaPlayer.get_position()
+        return self.media_player.get_position()
 
     def set_position(self, pos):
         """Set the position in media"""
-        return self.mediaPlayer.set_position(pos)
+        return self.media_player.set_position(pos)
 
-    def get_parsed_media(self, sfile):
-        media = self.get_media(sfile)
+    def get_parsed_media(self, file):
+        media = self.get_media(file)
         media.parse()
         return media
 
-    def get_media(self, sfile):
-        media = self.instance.media_new(sfile)
+    def get_media(self, file):
+        media = self.instance.media_new(file)
         return media
 
     def play_radio_in_thread(self, radio):
-        processThread = threading.Thread(target=self.play_radio, args=[radio])
-        processThread.start()
+        process_thread = threading.Thread(target=self.play_radio, args=[radio])
+        process_thread.start()
 
     def play_radio(self, radio):
-        self.radioMode = True
-        self.currentRadio = radio
-        self.loadingRadio = True
+        self.radio_mode = True
+        self.current_radio = radio
+        self.loading_radio = True
         self.adblock = radio.adblock
         self.drop_media_list()
         media = self.instance.media_new(radio.stream)
 
-        self.mediaList.add_media(media)
-        self.playlistChangedEvent.emit(1)
-        self.currentRadioName = radio.name
-        self.currentRadioTitle = "..."
+        self.media_list.add_media(media)
+        self.playlist_changed_event.emit(1)
+        self.current_radio_name = radio.name
+        self.current_radio_title = "..."
         logger.info("playRadio %s", radio.name)
-        self.titleChangedEvent.emit(radio.name)
+        self.title_changed_event.emit(radio.name)
         self.play_media_list()
         trk = Track()
-        trk.radioID = radio.radioID
+        trk.radioID = radio.radio_id
         trk.radioName = radio.name
         trk.radioStream = radio.stream
         trk.radio = radio
 
         # Wait until playing start.
-        startSince = 0
+        start_since = 0
         while self.is_playing() == 0:
             time.sleep(0.05)
-            startSince = startSince + 0.05
+            start_since = start_since + 0.05
             # Get current state.
             state = self.get_state()
             if state == "State.Ended":
                 self.stop()
-                self.radioMode = False
+                self.radio_mode = False
                 return
 
             if state != "State.Opening":
                 logger.debug("VLC state=" + state)
 
-            if startSince > 5:
+            if start_since > 5:
                 # Find out if stream is working.
                 if state == "vlc.State.Error" or state == "State.Error":
                     print("Stream is dead. Current state = {}".format(state))
                     self.stop()
-                    self.radioMode = False
+                    self.radio_mode = False
                     return
                 elif state == "State.Ended":
                     self.stop()
-                    self.radioMode = False
+                    self.radio_mode = False
                     return
                 else:
                     print("VLC state=" + state)
 
-        self.loadingRadio = False
+        self.loading_radio = False
         mrl = self.get_current_mrl_playlist()
         print(radio.name + " mrl=" + mrl)
         self.tracksDatas.append((mrl, radio.stream, trk))
-        self.currentRadioChangedEvent.emit(1)
+        self.current_radio_changed_event.emit(1)
 
     def get_state(self):
-        return str(self.mediaPlayer.get_state())
+        return str(self.media_player.get_state())
 
     def get_now_playing(self):
-        if not self.radioMode:
-            return self.currentRadioTitle
-        m = self.mediaPlayer.get_media()
+        if not self.radio_mode:
+            return self.current_radio_title
+        m = self.media_player.get_media()
         if m is not None:
-            nowPlaying = m.get_meta(12)
-            if nowPlaying is not None:
-                if self.nowPlaying != nowPlaying:
-                    self.nowPlaying = nowPlaying
-                    print("PlayerVLC NowPlaying = " + nowPlaying)
-                return cleanTitle(nowPlaying)
+            now_playing = m.get_meta(12)
+            if now_playing is not None:
+                if self.now_playing != now_playing:
+                    self.now_playing = now_playing
+                    print("PlayerVLC NowPlaying = " + now_playing)
+                return cleanTitle(now_playing)
             else:
                 if self.adblock:
                     print("PlayerVLC NowPlaying = NO_META")
                     return "NO_META"
                 else:
-                    print("PlayerVLC NowPlaying = " + self.currentRadioTitle)
-                    return self.currentRadioTitle
+                    print("PlayerVLC NowPlaying = " + self.current_radio_title)
+                    return self.current_radio_title
         else:
             print("PlayerVLC NowPlaying = NO_STREAM_MEDIA")
             return "NO_STREAM_MEDIA"
@@ -384,7 +368,7 @@ class PlayerVLC:
         url = ""
         rad = self.get_current_radio()
         if rad is not None:
-            url = rad.liveCoverUrl
+            url = rad.live_cover_url
         return url
 
     def get_current_radio(self):
@@ -408,7 +392,7 @@ class PlayerVLC:
 
     def get_title(self):
         title = ""
-        m = self.mediaPlayer.get_media()
+        m = self.media_player.get_media()
         if m is not None:
             title = m.get_meta(0)
         else:
@@ -417,45 +401,37 @@ class PlayerVLC:
 
     def get_artist(self):
         artist = ""
-        m = self.mediaPlayer.get_media()
-        if m is not None:
+        m = self.media_player.get_media()
+        if m:
             artist = m.get_meta(1)
-            if artist == None:
-                artist = "NO_ARTIST"
-        else:
-            artist = "NO_ARTIST"
-        return artist
+        return artist or "NO_ARTIST"
 
     def get_album(self):
         album = ""
-        m = self.mediaPlayer.get_media()
-        if m is not None:
+        m = self.media_player.get_media()
+        if m:
             album = m.get_meta(4)
-        else:
-            album = "NO_ALBUM"
-        return album
+        return album or "NO_ALBUM"
 
     def get_track_number(self):
         number = 0
-        m = self.mediaPlayer.get_media()
-        if m is not None:
+        m = self.media_player.get_media()
+        if m:
             number = int(m.get_meta(5))
-        else:
-            number = 0
-        return number
+        return number or 0
 
     def get_date(self):
         year = ""
-        m = self.mediaPlayer.get_media()
-        if m is not None:
+        m = self.media_player.get_media()
+        if m:
             year = m.get_meta(8)
         return year
 
     def set_playlist_track(self, index):
         print("setPlaylistTrack=" + str(index))
         trk = self.get_track_at_index(index)
-        self.radioMode = trk.radio_name != ""
-        print("radioMode=" + str(self.radioMode))
+        self.radio_mode = trk.radio_name != ""
+        print("radioMode=" + str(self.radio_mode))
 
         self.mediaListPlayer.play_item_at_index(index)
 

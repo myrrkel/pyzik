@@ -127,12 +127,12 @@ def title_except(title):
     exceptions = ["a", "an", "of", "the", "is", "in", "to"]
     word_list = re.split(" ", title)
 
-    final = [capitaliseWord(word_list[0])]
+    final = [capitalise_word(word_list[0])]
     for word in word_list[1:]:
         if str.lower(word) in exceptions:
             final.append(word.lower())
         else:
-            final.append(capitaliseWord(word))
+            final.append(capitalise_word(word))
     return " ".join(final)
 
 
@@ -170,11 +170,11 @@ class Album:
     Album's class, each album is in a directory name.
     """
 
-    def __init__(self, dirname="", music_directory=None):
+    def __init__(self, dir_name="", music_directory=None):
         self.album_id = 0
         self.title = ""
-        self.dir_name = dirname
-        self.dir_path = dirname
+        self.dir_name = dir_name
+        self.dir_path = dir_name
         self.artist_id = ""
         self.artist_name = ""
         self.year = 0
@@ -185,16 +185,16 @@ class Album:
         self.tracks: List[Track] = list()
         self.images = []
         self.style_ids = set()
-        self.doStop = False
+        self.do_stop = False
         self.music_directory = music_directory
-        self.coverPixmap = None  # QPixmap()
+        self.cover_pixmap = None  # QPixmap()
         if music_directory:
             self.music_directory_id = music_directory.music_directory_id
         else:
             self.music_directory_id = 0
         self.searchKey = ""
 
-        if dirname != "":
+        if dir_name != "":
             self.extract_data_from_dir_name()
 
     def load(self, row):
@@ -249,10 +249,10 @@ class Album:
                 res_val, res_left = string_to_split, ""
 
         if res_val and string_separator["var"] == "year":
-            if not (res_val.isdigit() and isYear(res_val)):
+            if not (res_val.isdigit() and is_year(res_val)):
                 return False
             else:
-                res_val = year(res_val)
+                res_val = year_to_num(res_val)
 
         if res_val:
             return res_val, res_left
@@ -325,7 +325,7 @@ class Album:
         self.artist_name = self.artist_name.strip().upper()
         self.title = self.format_title(self.title)
 
-        if isYear(self.artist_name) or not self.title or not self.artist_name:
+        if is_year(self.artist_name) or not self.title or not self.artist_name:
             self.to_verify = True
 
     def get_year_from_tags(self):
@@ -390,7 +390,7 @@ class Album:
     def get_tracks(self, subdir="", first_file_only=False):
         if subdir == "":
             self.tracks = []
-        self.doStop = False
+        self.do_stop = False
         if not self.check_dir():
             return False
         res = False
@@ -405,7 +405,7 @@ class Album:
         files.sort()
 
         for file in files:
-            if self.doStop:
+            if self.do_stop:
                 break
             file = str(file)
             if os.path.isdir(os.path.join(current_dir, file)):
@@ -414,7 +414,7 @@ class Album:
                 res = self.get_tracks(os.path.join(subdir, file),
                                       first_file_only=first_file_only)
             else:
-                for ext in musicFilesExtension:
+                for ext in MUSIC_FILE_EXTENSIONS:
                     if fnmatch.fnmatch(file.lower(), "*." + ext):
                         if "." in file:
                             filename, file_extension = os.path.splitext(file)
@@ -433,7 +433,7 @@ class Album:
         return res
 
     def get_images(self, subdir=""):
-        self.doStop = False
+        self.do_stop = False
         if not self.check_dir():
             return False
 
@@ -448,7 +448,7 @@ class Album:
         files.sort()
 
         for file in files:
-            if self.doStop:
+            if self.do_stop:
                 break
             if os.path.isdir(os.path.join(current_dir, str(file))):
                 # file is a directory
@@ -460,7 +460,7 @@ class Album:
                         os.path.join(current_dir, "cover.jpg"),
                     )
 
-                for ext in imageFilesExtension:
+                for ext in IMAGE_FILE_EXTENSIONS:
                     if fnmatch.fnmatch(file.lower(), "*." + ext):
                         file_name = os.path.join(current_dir, file)
                         self.images.append(file_name)
@@ -485,7 +485,7 @@ class Album:
             cover_found = ""
             for keyword in keywords:
                 cover_found = next(
-                    (x for x in self.images if keyword == getFileName(x.lower())), ""
+                    (x for x in self.images if keyword == get_file_name(x.lower())), ""
                 )
                 if cover_found != "":
                     self.cover = cover_found
@@ -495,10 +495,8 @@ class Album:
                 for keyword in keywords:
                     cover_found = next(
                         (
-                            x
-                            for x in self.images
-                            if keyword in getFileName(x.lower())
-                            and "back" not in getFileName(x.lower())
+                            x for x in self.images
+                            if keyword in get_file_name(x.lower()) and "back" not in get_file_name(x.lower())
                         ),
                         "",
                     )
@@ -521,14 +519,14 @@ class Album:
 
     def check_dir(self):
         if self.music_directory:
-            albDir = self.get_album_dir()
-            if albDir:
-                return os.path.exists(albDir)
+            alb_dir = self.get_album_dir()
+            if alb_dir:
+                return os.path.exists(alb_dir)
         else:
             return False
 
     def set_do_stop(self):
-        self.doStop = True
+        self.do_stop = True
 
     def get_album_dir(self):
         if self.music_directory:
@@ -543,8 +541,8 @@ class Album:
             files.append(track.getFilePath())
         return files
 
-    def add_style(self, idSet):
-        self.style_ids = self.style_ids.union(idSet)
+    def add_style(self, id_set):
+        self.style_ids = self.style_ids.union(id_set)
 
     def update_title(self):
         db = database.Database()
@@ -575,7 +573,7 @@ class Album:
         self.cover = "cover.jpg"
 
     def get_album_size(self):
-        size = getFolderSize(self.get_album_dir())
+        size = get_folder_size(self.get_album_dir())
         print(self.title + " size=" + convert_size(self.size))
         if size > 0 and size != self.size:
             self.size = size
