@@ -13,7 +13,6 @@ import pytz
 import email.utils as eut
 from pic_from_url_thread import PicFromUrlThread
 from PyQt5.QtGui import QPixmap
-from pic_downloader import PicDownloader
 
 
 def _json_object_hook(d):

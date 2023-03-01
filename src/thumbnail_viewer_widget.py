@@ -53,7 +53,7 @@ class ThumbnailIcon(QtGui.QIcon):
         self.parent = parent
         self.path = ""
         self.picFromUrlThread = PicFromUrlThread()
-        self.picFromUrlThread.downloadCompleted.connect(self.on_pic_downloaded)
+        self.picFromUrlThread.download_completed.connect(self.on_pic_downloaded)
         self.picFromUrlThread.url = url
         self.picFromUrlThread.start()
 
@@ -78,7 +78,7 @@ class ThumbnailViewerWidget(QWidget):
         self.isDownloading = False
         self.fullScreenCover = FullScreenCoverWidget()
         self.picFromUrlThread = PicFromUrlThread()
-        self.picFromUrlThread.downloadCompleted.connect(self.on_pic_downloaded)
+        self.picFromUrlThread.download_completed.connect(self.on_pic_downloaded)
 
         self.setWindowFlags(Qt.Window)
         self.initUI()

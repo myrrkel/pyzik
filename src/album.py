@@ -567,9 +567,8 @@ class Album:
     def cut_cover_from_path(self, path):
         dest_file = os.path.join(self.get_album_dir(), "cover.jpg")
         if os.path.isfile(dest_file):
-            os.replace(path, dest_file)
-        else:
-            shutil.move(path, dest_file)
+            os.remove(dest_file)
+        shutil.move(path, dest_file)
         self.cover = "cover.jpg"
 
     def get_album_size(self):

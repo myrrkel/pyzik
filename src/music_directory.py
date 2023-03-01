@@ -120,7 +120,7 @@ class MusicDirectory:
 
                 # Artist name and album title has been found
                 cur_art = self.artist_col.get_artist(album.artist_name)
-                # GetArtist return a new artist if it doesn't exists in artistsCol
+                # GetArtist return a new artist if it doesn't exist in artistsCol
                 if cur_art:
                     album.artist_id = cur_art.artist_id
                     album.artist_name = cur_art.name.upper()

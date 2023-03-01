@@ -10,3 +10,4 @@ pytz
 pyinstaller
 appdirs
 musicbrainzngs
+pyqtdarktheme

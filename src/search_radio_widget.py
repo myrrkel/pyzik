@@ -78,9 +78,9 @@ class SearchRadioWidget(QtWidgets.QDialog):
         self.setWindowFlags(QtCore.Qt.Window)
 
         self.radios = []
-        self.radioManager = RadioManager(music_base)
+        self.radio_manager = RadioManager(music_base)
         self.player = player
-        self.searchRadioThread = SearchRadioThread()
+        self.search_radio_thread = SearchRadioThread()
 
         self.initUI()
 
@@ -105,14 +105,14 @@ class SearchRadioWidget(QtWidgets.QDialog):
         self.init_table_widget_items()
 
         self.searchControls = SearchControlsWidget()
-        self.searchControls.searchButton.clicked.connect(self.onSearch)
+        self.searchControls.searchButton.clicked.connect(self.on_search)
 
         self.playControls = PlayControlsWidget()
         self.playControls.playButton.clicked.connect(self.on_click_play_radio)
         self.playControls.addButton.clicked.connect(self.on_add_padio)
 
         self.machineSelectorControls = MachineSelectorControlsWidget(
-            None, self.radioManager.machines
+            None, self.radio_manager.machines
         )
 
         self.mainLayout.addWidget(self.searchControls)
@@ -128,22 +128,22 @@ class SearchRadioWidget(QtWidgets.QDialog):
     def resizeEvent(self, event):
         self.overlay.resize(event.size())
 
-    def onSearch(self, event):
+    def on_search(self, event):
         self.overlay.show_overlay()
         search = self.searchControls.searchEdit.text()
 
         self.wProgress = ProgressWidget(self)
-        self.searchRadioThread.search_progress.connect(self.wProgress.set_value)
-        self.searchRadioThread.search_current_machine.connect(
+        self.search_radio_thread.search_progress.connect(self.wProgress.set_value)
+        self.search_radio_thread.search_current_machine.connect(
             self.wProgress.set_directory_text
         )
-        self.searchRadioThread.search_completed.connect(self.on_search_complete)
-        self.wProgress.progressClosed.connect(self.searchRadioThread.stop)
-        self.searchRadioThread.search = search
-        self.searchRadioThread.machines = (
+        self.search_radio_thread.search_completed.connect(self.on_search_complete)
+        self.wProgress.progressClosed.connect(self.search_radio_thread.stop)
+        self.search_radio_thread.search = search
+        self.search_radio_thread.machines = (
             self.machineSelectorControls.get_selected_machines()
         )
-        self.searchRadioThread.start()
+        self.search_radio_thread.start()
 
     def on_play_padio(self, item):
         self.player.play_radio_in_thread(self.radios[item])
@@ -157,11 +157,11 @@ class SearchRadioWidget(QtWidgets.QDialog):
         i = self.tableWidgetItems.currentRow()
         if i > -1:
             radio = self.radios[i]
-            radio.save_radio(self.radioManager.music_base.db)
+            radio.save_radio(self.radio_manager.music_base.db)
             self.radioAdded.emit(1)
 
     def on_search_complete(self, event):
-        self.radios = self.searchRadioThread.res_radios
+        self.radios = self.search_radio_thread.res_radios
         self.show_items(self.radios)
         self.init_column_headers()
         self.wProgress.close()

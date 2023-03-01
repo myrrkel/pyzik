@@ -2,11 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5 import QtGui, QtSvg
-from PyQt5.QtCore import QFile, QXmlStreamReader, QByteArray, QTextStream
+from PyQt5.QtCore import Qt, QFile, QXmlStreamReader, QByteArray, QTextStream
 from global_constants import *
-
-
-# orange = QtGui.QColor(216, 119, 0) #d87700
 
 
 def get_svg_icon(file_name):

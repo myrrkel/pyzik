@@ -3,7 +3,7 @@
 
 
 class MusicGenres:
-    musicGenres = [
+    music_genres = [
         "None",
         "Blues",
         "Classic Rock",
@@ -160,7 +160,7 @@ class MusicGenres:
         self.genres_tab_sorted = sorted(self.genres_tab, key=lambda x: x[0])
 
     def create_genre_tab(self):
-        return list((genre, id) for id, genre in enumerate(self.musicGenres, -1))
+        return list((genre, id) for id, genre in enumerate(self.music_genres, -1))
 
     def print_genres(self):
         for genre in self.genres_tab:

@@ -5,8 +5,9 @@ import sys
 import logging
 import getopt
 
-from PyQt5 import QtWidgets
-from darkStyle import darkStyle
+from PyQt5 import QtWidgets, Qt
+from PyQt5.QtGui import QPalette
+import qdarktheme
 from player_vlc import PlayerVLC
 from database import Database
 from music_base import MusicBase
@@ -55,22 +56,37 @@ def main():
 
     logger.info("Loading translations...")
     tr = Translators(app)
-    localeLanguage = QtCore.QLocale.system().name()
-    tr.install_translators(localeLanguage)
+    locale_language = QtCore.QLocale.system().name()
+    tr.install_translators(locale_language)
 
     # Load & Set the DarkStyleSheet
+    logger.info("Available system styles: %s", QtWidgets.QStyleFactory.keys())
     if style_name:
-        logger.info("Available system styles: %s", QtWidgets.QStyleFactory.keys())
         try:
             q_style = QtWidgets.QStyleFactory.create(style_name)
             app.setStyle(q_style)
         except Exception as e:
             logger.error(e)
+
+        palette = QPalette()
+        palette.setColor(QPalette.Window, QColor(53, 53, 53))
+        palette.setColor(QPalette.WindowText, Qt.white)
+        palette.setColor(QPalette.Base, QColor(25, 25, 25))
+        palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+        palette.setColor(QPalette.ToolTipBase, Qt.white)
+        palette.setColor(QPalette.ToolTipText, Qt.white)
+        palette.setColor(QPalette.Text, Qt.white)
+        palette.setColor(QPalette.Button, QColor(53, 53, 53))
+        palette.setColor(QPalette.ButtonText, Qt.white)
+        palette.setColor(QPalette.BrightText, Qt.red)
+        palette.setColor(QPalette.Link, QColor(42, 130, 218))
+        palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+        palette.setColor(QPalette.HighlightedText, Qt.black)
+        app.setPalette(palette)
     else:
         logger.info("Loading DarkStyleSheet...")
-        ds = darkStyle.darkStyle()
-        app.setStyleSheet(ds.load_stylesheet_pyqt5())
 
+        app.setStyleSheet(qdarktheme.load_stylesheet("light"))
     mb = MusicBase(db_path=db_path)
     logger.info("Loading musicBase...")
     mb.load_music_base()

@@ -60,7 +60,7 @@ class DataHistoryTrack(DataHistoryAlbum):
     def __init__(self, album_id, file_name):
         DataHistoryAlbum.__init__(self, album_id)
         self.album_id = album_id
-        self.fileName = file_name
+        self.file_name = file_name
 
     def get_info(self):
         return (
@@ -69,12 +69,12 @@ class DataHistoryTrack(DataHistoryAlbum):
             + " Album: "
             + self.album.title
             + " File: "
-            + self.fileName
+            + self.file_name
         )
 
     def get_column_text(self, col_id):
         if col_id == 1:
-            return self.fileName
+            return self.file_name
         elif col_id == 2:
             return self.album.artist_name
         elif col_id == 3:
@@ -85,18 +85,18 @@ class DataHistoryTrack(DataHistoryAlbum):
 
 class DataHistoryRadio:
     def __init__(self, radio_name, title):
-        self.radioName = radio_name
+        self.radio_name = radio_name
         self.title = title
 
     def get_info(self):
-        return "Radio: " + self.radioName + " Title: " + self.title
+        return "Radio: " + self.radio_name + " Title: " + self.title
 
     def get_column_text(self, col_id):
         if col_id == 1:
             return self.title
         elif col_id == 2:
-            return self.radioName
+            return self.radio_name
         elif col_id == 3:
-            return self.radioName
+            return self.radio_name
         else:
             return ""

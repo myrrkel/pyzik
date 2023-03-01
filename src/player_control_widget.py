@@ -1,22 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtCore import Qt, QSize, QCoreApplication, pyqtSignal
+from PyQt5 import QtCore
+from PyQt5.QtCore import Qt, QCoreApplication, pyqtSignal, QSize
+
 from PyQt5.QtWidgets import (
-    QApplication,
     QWidget,
-    QDialog,
     QPushButton,
     QVBoxLayout,
-    QHeaderView,
     QHBoxLayout,
     QSlider,
     QSizePolicy,
     QFrame,
     QLabel,
-    QShortcut,
 )
-from track import *
+# from track import *
 
 from pic_from_url_thread import PicFromUrlThread
 from table_widget_drag_rows import TableWidgetDragRows
@@ -118,7 +116,7 @@ class PlayerControlWidget(QWidget):
         self.parent = parent
         self.pic_buffer_manager = parent.pic_buffer_manager
 
-        self.setWindowFlags(Qt.Window)
+        self.setWindowFlags(QtCore.Qt.Window)
         self.player = player
         self.media_list = self.player.media_list
 
@@ -263,7 +261,7 @@ class PlayerControlWidget(QWidget):
 
     def connect_pic_downloader(self, picDl):
         self.pic_from_url_thread = picDl
-        self.pic_from_url_thread.downloadCompleted.connect(self.on_pic_downloaded)
+        self.pic_from_url_thread.download_completed.connect(self.on_pic_downloaded)
 
     def on_pause(self, event):
         self.player.pause()

@@ -114,7 +114,7 @@ class FullScreenWidget(QDialog):
 
     def connect_pic_downloader(self, picDl):
         self.picFromUrlThread = picDl
-        self.picFromUrlThread.downloadCompleted.connect(self.on_pic_downloaded)
+        self.picFromUrlThread.download_completed.connect(self.on_pic_downloaded)
 
     def resizeEvent(self, event):
         self.resize_cover()
@@ -230,13 +230,5 @@ if __name__ == "__main__":
     tempPath = pd.get_pic(url)
     fs.on_pic_downloaded(tempPath)
     fs.set_title_label()
-
-    # fs.showFullScreen()
-
-    # tempPath = "/tmp/tmp8mfrufdl"
-    # fs.setCoverPic(tempPath)
-
-    # url = "C:\\Users\\MP05~1.OCT\\AppData\\Local\\Temp\\tmpp9wk96vu"
-    # playlist.onPicDownloaded(url)
 
     sys.exit(app.exec_())

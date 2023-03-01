@@ -343,7 +343,6 @@ class Database:
 
     def delete_with_id(self, table, id_name, id_value):
         """Delete a row from table where the id called idName == idValue"""
-        rowcount = 0
         try:
             c = self.connection.cursor()
             c.execute("DELETE FROM " + table + " WHERE " + id_name + "=" + str(id_value))

@@ -11,7 +11,7 @@ from radio_manager import RadioManager
 class SearchRadioThread(QThread):
     """search radios"""
 
-    doStop = False
+    do_stop = False
     search = ""
     radio_manager = RadioManager()
 
@@ -34,7 +34,7 @@ class SearchRadioThread(QThread):
 
     def run(self):
         self.res_radios = []
-        self.doStop = False
+        self.do_stop = False
         i = 0
         self.emit_progress(0)
         if self.machines is None:
@@ -45,7 +45,7 @@ class SearchRadioThread(QThread):
             i = i + 1
             self.search_machine(machine)
             self.emit_progress(i)
-            if self.doStop:
+            if self.do_stop:
                 break
 
         self.search_completed.emit(1)
@@ -55,5 +55,5 @@ class SearchRadioThread(QThread):
         self.res_radios.extend(self.radio_manager.search(self.search, machine))
 
     def stop(self):
-        self.doStop = True
+        self.do_stop = True
         self.search_completed.emit(1)

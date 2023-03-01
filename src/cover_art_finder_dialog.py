@@ -57,16 +57,16 @@ class CoverArtFinderDialog(QDialog):
         self.items = []
         self.album = album
         self.keyword = ""
-        self.coverSaved = False
+        self.cover_saved = False
 
-        self.coverFinder = CoverArtFinder()
-        self.coverFinderThread = CoverFinderSearchThread()
-        self.coverFinderThread.cover_finder = self.coverFinder
-        self.coverFinderThread.result_found.connect(self.on_cover_finder_result)
+        self.cover_finder = CoverArtFinder()
+        self.cover_finder_thread = CoverFinderSearchThread()
+        self.cover_finder_thread.cover_finder = self.cover_finder
+        self.cover_finder_thread.result_found.connect(self.on_cover_finder_result)
 
         if self.pic_from_url_thread is None:
             self.pic_from_url_thread = PicFromUrlThread()
-        self.pic_from_url_thread.downloadCompleted.connect(self.on_selected_pic_downloaded)
+        self.pic_from_url_thread.download_completed.connect(self.on_selected_pic_downloaded)
 
         self.setWindowFlags(Qt.Window)
         self.initUI()
@@ -135,9 +135,9 @@ class CoverArtFinderDialog(QDialog):
 
         print("CoverArtFinder search=" + keyword)
 
-        self.coverFinderThread.cover_finder = self.coverFinder
-        self.coverFinderThread.keyword = keyword
-        self.coverFinderThread.start()
+        self.cover_finder_thread.cover_finder = self.cover_finder
+        self.cover_finder_thread.keyword = keyword
+        self.cover_finder_thread.start()
 
     def save_cover(self):
         url = self.thumbViewer.selectedURL
@@ -154,23 +154,23 @@ class CoverArtFinderDialog(QDialog):
         self.save_selected_cover()
 
     def save_selected_cover(self):
-        self.album.cutCoverFromPath(self.selected_file)
-        self.coverSaved = True
+        self.album.cut_cover_from_path(self.selected_file)
+        self.cover_saved = True
         self.signal_cover_saved.emit(1)
         print("saveSelectedCover")
         self.close()
 
     def on_cover_finder_result(self, result):
-        if not self.coverFinder.items:
+        if not self.cover_finder.items:
             return
-        self.items = self.coverFinder.items
+        self.items = self.cover_finder.items
         logger.debug("ITEMS : %s", self.items)
         self.showThumbnails()
         self.overlay.hide()
 
     def closeEvent(self, event):
         self.thumbViewer.thumbWidget.clear()
-        self.thumbViewer.remove_temp_files(self.coverSaved)
+        self.thumbViewer.remove_temp_files(self.cover_saved)
         self.thumbViewer.reset_selection()
         self.close()
 

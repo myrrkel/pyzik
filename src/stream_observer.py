@@ -8,7 +8,7 @@ from history_manager import HistoryManager
 class StreamObserver(QThread):
     """Watch what's playing and send title"""
 
-    titleChanged = pyqtSignal(str, name="titleChanged")
+    title_changed = pyqtSignal(str, name="titleChanged")
     do_stop = False
     previous_title = ""
     current_volume = 0
@@ -42,7 +42,7 @@ class StreamObserver(QThread):
                         if self.previous_title != title:
                             self.previous_title = title
                             self.player.current_radio_title = self.clean_title(title)
-                            self.titleChanged.emit(self.clean_title(title))
+                            self.title_changed.emit(self.clean_title(title))
                     else:
                         if self.previous_title == "Advert Killed!":
                             self.player.stop()
@@ -56,7 +56,7 @@ class StreamObserver(QThread):
                             self.player.stop()
                             msg = "Advert Killed!"
                             self.previous_title = msg
-                            self.titleChanged.emit(msg)
+                            self.title_changed.emit(msg)
                             time.sleep(2)
                             self.player.play()
 
@@ -78,7 +78,7 @@ class StreamObserver(QThread):
                             self.previous_title = title
                             self.player.current_radio_title = title
                             print("EMIT= " + title)
-                            self.titleChanged.emit(title)
+                            self.title_changed.emit(title)
 
             time.sleep(1)
 

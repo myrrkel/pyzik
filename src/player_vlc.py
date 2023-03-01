@@ -172,7 +172,7 @@ class PlayerVLC:
         for trk in album.tracks:
             path = trk.get_full_file_path()
             media = self.instance.media_new(path)
-            trk.radioName = ""
+            trk.radio_name = ""
 
             self.media_list.add_media(media)
             self.tracksDatas.append((media.get_mrl(), "", trk))

@@ -21,24 +21,8 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QSizePolicy,
 )
-from PyQt5.QtGui import (
-    QPixmap,
-    QIcon,
-    QKeySequence,
-    QCursor,
-    QStandardItemModel,
-    QStandardItem,
-    QColor,
-)
-
 from main_window import Ui_MainWindow
-
-from darkStyle import darkStyle
 from player_vlc import vlc
-
-from music_base import MusicBase
-from music_directory import MusicDirectory
-from database import Database
 
 from dialog_music_directories_loader import DialogMusicDirectoriesLoader
 from stream_observer import StreamObserver
@@ -227,7 +211,7 @@ class MainWindowLoader(QMainWindow):
         self.threadStreamObserver = StreamObserver()
         self.threadStreamObserver.player = self.player
         self.threadStreamObserver.music_base = self.music_base
-        self.threadStreamObserver.titleChanged.connect(
+        self.threadStreamObserver.title_changed.connect(
             self.on_player_media_changed_stream_observer
         )
         self.player.player_event_manager.event_attach(
@@ -440,16 +424,16 @@ class MainWindowLoader(QMainWindow):
     def on_menu_explore(self):
         self.exploreAlbumsDirectoriesThread.music_base = self.music_base
         self.wProgress = ProgressWidget(self)
-        self.exploreAlbumsDirectoriesThread.progressChanged.connect(
+        self.exploreAlbumsDirectoriesThread.progress_changed.connect(
             self.wProgress.set_value
         )
-        self.exploreAlbumsDirectoriesThread.directoryChanged.connect(
+        self.exploreAlbumsDirectoriesThread.directory_changed.connect(
             self.wProgress.set_directory_text
         )
-        self.exploreAlbumsDirectoriesThread.exploreCompleted.connect(
+        self.exploreAlbumsDirectoriesThread.explore_completed.connect(
             self.wProgress.close
         )
-        self.exploreAlbumsDirectoriesThread.exploreCompleted.connect(
+        self.exploreAlbumsDirectoriesThread.explore_completed.connect(
             self.on_explore_completed
         )
         self.wProgress.progressClosed.connect(self.exploreAlbumsDirectoriesThread.stop)
@@ -769,7 +753,7 @@ class MainWindowLoader(QMainWindow):
             self.playlist.trackChanged.connect(self.player.set_playlist_track)
             self.playlist.currentRadioChanged = self.current_radio_changed
             self.player.playlist_changed_event = self.playlist_changed
-            self.playlist.playlistChanged = self.playlist_changed
+            self.playlist.playlist_changed = self.playlist_changed
 
         self.playlist.show_media_list()
 

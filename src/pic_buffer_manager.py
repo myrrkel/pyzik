@@ -11,17 +11,6 @@ class PicBufferItem:
     def __init__(self, path, user):
         self.path = path
         self.pix = QPixmap(path)
-        self.users.append(user)
-
-    def add_user(self, user):
-        self.users.append(user)
-
-    def remove_user(self, user):
-        if user in self.users:
-            i = self.users.index(user)
-            self.users.remove(i)
-
-        return len(self.users)
 
 
 class PicBufferManager:
@@ -38,11 +27,9 @@ class PicBufferManager:
         item = self.find_item(path)
         if item is not None:
             pix = item.pix
-            item.add_user(user)
         else:
             item = PicBufferItem(path, user)
             pix = item.pix
-            item.add_user(user)
             self.items.append(item)
             self.check_buffer_size()
 
