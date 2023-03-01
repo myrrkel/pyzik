@@ -2,16 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtCore import pyqtSignal
-from directory_widget import DirectoryWidget
-from music_directory import MusicDirectory
+from PyQt5.QtCore import Qt
 from explore_event import ExploreEventList
 from import_albums_widget import set_check_state
 from database import Database
-from svg_icon import *
 import logging
-from darkStyle import darkStyle
 
 logger = logging.getLogger(__name__)
 _translate = QtCore.QCoreApplication.translate
@@ -52,86 +47,15 @@ class ExploreEventsWidget(QtWidgets.QDialog):
         sizePolicy.setHeightForWidth(self.header_label.sizePolicy().hasHeightForWidth())
         self.main_layout.addWidget(self.header_label)
 
-        # self.from_directory = directoryWidget(self)
-        # self.main_layout.addWidget(self.from_directory)
-
-        # self.explore_button = QtWidgets.QPushButton(_translate("explore event", "Explore directory"))
-        # self.explore_button.clicked.connect(self.explore_directory)
-        # self.explore_button.setIcon(getSvgIcon("folder_search.svg"))
-        # sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        # self.explore_button.setSizePolicy(sizePolicy)
-        # self.main_layout.addWidget(self.explore_button)
-        # self.main_layout.setAlignment(self.explore_button, Qt.AlignHCenter)
-
-        # self.defaut_music_directory = QtWidgets.QComboBox()
-        # self.defaut_music_directory.currentIndexChanged.connect(self.on_change_to_directory)
-        # self.load_dir_list(self.defaut_music_directory)
-        # combo_with_label = QtWidgets.QWidget()
-        # combo_layout = QtWidgets.QHBoxLayout(combo_with_label)
-        # combo_layout.setContentsMargins(0, 0, 0, 0)
-        # sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        # sizePolicy.setHorizontalStretch(100)
-        # sizePolicy.setVerticalStretch(0)
-        # self.defaut_music_directory.setSizePolicy(sizePolicy)
-        # self.defaut_music_directory_label = QtWidgets.QLabel(self)
-        # combo_layout.addWidget(self.defaut_music_directory_label)
-        # combo_layout.addWidget(self.defaut_music_directory)
-        # self.main_layout.addWidget(combo_with_label)
-
         self.init_table_widget_items()
         self.main_layout.addWidget(self.tableWidgetItems)
-
-        # self.import_button = QtWidgets.QPushButton(_translate("explore event", "Import selected albums in music directories"))
-        # self.import_button.clicked.connect(self.import_albums)
-        # self.import_button.setIcon(getSvgIcon("folder_import.svg"))
-        # sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        # self.import_button.setSizePolicy(sizePolicy)
-        # self.main_layout.addWidget(self.import_button)
-        # self.main_layout.setAlignment(self.import_button, Qt.AlignHCenter)
 
         self.retranslateUi()
 
         self.init_column_headers()
-
-        self.show_table_items(self.items)
-
-        self.show_header()
-
-    # def import_albums(self):
-    #     alb_dict_list = self.get_albums_dict_list()
-    #
-    #     self.wProgress = progressWidget(self, can_be_closed=False, with_file_progress=True)
-    #     self.wProgress.setProgressLabel(_translate("explore event", "Copying:"))
-    #     self.wProgress.show()
-    #     self.import_alb_thread = ImportAlbumsThread()
-    #     self.import_alb_thread.alb_dict_list = alb_dict_list
-    #     self.import_alb_thread.musicbase = self.musicbase
-    #     self.import_alb_thread.album_import_progress.connect(self.wProgress.setValue)
-    #     self.import_alb_thread.album_import_started_signal.connect(self.wProgress.setDirectoryText)
-    #     self.import_alb_thread.file_copy_started_signal.connect(self.wProgress.setFileText)
-    #     self.import_alb_thread.import_completed_signal.connect(self.explore_completed)
-    #     self.import_alb_thread.start()
-
-    # def explore_completed(self):
-    #     self.wProgress.close()
-    #     self.explore_directory()
-
-    # def get_albums_dict_list(self):
-    #     alb_dict_list = []
-    #     for row in range(self.tableWidgetItems.rowCount()):
-    #         item = self.tableWidgetItems.item(row, 0)
-    #         if item.checkState():
-    #             alb_dict = item.alb_item
-    #             cell_dir = self.tableWidgetItems.cellWidget(row, 1)
-    #             alb_dict['to_dir'] = cell_dir.model().item(cell_dir.currentIndex()).music_dir
-    #             alb_dict_list.append(alb_dict)
-    #     return alb_dict_list
-
-    # def on_change_to_directory(self, event):
-    #     if hasattr(self, 'tableWidgetItems'):
-    #         for row in range(self.tableWidgetItems.rowCount()):
-    #             cell_dir = self.tableWidgetItems.cellWidget(row, 1)
-    #             cell_dir.setCurrentIndex(self.defaut_music_directory.currentIndex())
+        if self.items:
+            self.show_table_items(self.items)
+            self.show_header()
 
     def show_header(self):
         self.header_label.setText("Album added: %s" % self.items.count_album_added())
@@ -144,25 +68,12 @@ class ExploreEventsWidget(QtWidgets.QDialog):
             else:
                 item.setCheckState(Qt.Unchecked)
 
-    # def explore_directory(self, event):
-    #     dir_path = self.from_directory.getText()
-    #     if not os.path.isdir(dir_path):
-    #         QtWidgets.QMessageBox.warning(self, _translate("directory", "You must select a directory."),
-    #                                       _translate("directory", "You must select a directory."),
-    #                                       QtWidgets.QMessageBox.Ok)
-    #     else:
-    #         music_dir = MusicDirectory(self.musicbase, dir_path)
-    #         res = music_dir.explore_albums_to_import()
-    #         for alb in res:
-    #             logger.debug(alb)
-    #         self.showTableItems(res)
-
     def load_dir_list(self, combo):
         model = QtGui.QStandardItemModel(combo)
         for music_dir in self.music_base.music_directory_col.music_directories:
-            itemDir = QtGui.QStandardItem(music_dir.directory_name)
-            itemDir.music_dir = music_dir
-            model.appendRow(itemDir)
+            item_dir = QtGui.QStandardItem(music_dir.directory_name)
+            item_dir.music_dir = music_dir
+            model.appendRow(item_dir)
         combo.setModel(model)
 
     def init_table_widget_items(self):
@@ -199,18 +110,18 @@ class ExploreEventsWidget(QtWidgets.QDialog):
         self.tableWidgetItems.setHorizontalHeaderItem(7, item)
 
     def init_column_headers(self):
-        hHeader = self.tableWidgetItems.horizontalHeader()
-        vHeader = self.tableWidgetItems.verticalHeader()
-        vHeader.hide()
+        horizontal_header = self.tableWidgetItems.horizontalHeader()
+        vertical_header = self.tableWidgetItems.verticalHeader()
+        vertical_header.hide()
 
-        # hHeader.resizeSections(QtWidgets.QHeaderView.ResizeToContents)
-        # hHeader.setSectionResizeMode(QtWidgets.QHeaderView.Interactive)
+        # horizontal_header.resizeSections(QtWidgets.QHeaderView.ResizeToContents)
+        # horizontal_header.setSectionResizeMode(QtWidgets.QHeaderView.Interactive)
 
-        hHeader.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-        hHeader.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
-        hHeader.setSectionResizeMode(6, QtWidgets.QHeaderView.ResizeToContents)
+        horizontal_header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        horizontal_header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
+        horizontal_header.setSectionResizeMode(6, QtWidgets.QHeaderView.ResizeToContents)
         # self.tableWidgetItems.setColumnHidden(5, True)
-        hHeader.sectionClicked.connect(self.toggle_selected_row, Qt.UniqueConnection)
+        horizontal_header.sectionClicked.connect(self.toggle_selected_row, QtCore.Qt.UniqueConnection)
 
     def retranslateUi(self):
         self.setWindowTitle(_translate("menu", "Explore Events"))
@@ -290,53 +201,6 @@ class ExploreEventsWidget(QtWidgets.QDialog):
                 # self.tableWidgetItems.setItem(i, 4, item_year)
                 i_col = self.add_item_to_line(i, i_col, item_year)
 
-            # selItem = QtWidgets.QTableWidgetItem()
-            # selItem.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled)
-            # selItem.setCheckState(QtCore.Qt.Checked)
-            # selItem.alb_item = item
-            # self.tableWidgetItems.setItem(i, 0, selItem)
-            #
-            # combo_music_directory = QtWidgets.QComboBox()
-            # combo_music_directory.wheelEvent = lambda event: None
-            # self.load_dir_list(combo_music_directory)
-            # combo_music_directory.setCurrentIndex(self.defaut_music_directory.currentIndex())
-            # self.tableWidgetItems.setCellWidget(i, 1, combo_music_directory)
-            #
-            # artistItem = QtWidgets.QTableWidgetItem(item['alb'].artist_name)
-            # artistItem.setFlags(artistItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            # self.tableWidgetItems.setItem(i, 2, artistItem)
-            #
-            # albumItem = QtWidgets.QTableWidgetItem(item['alb'].title)
-            # albumItem.setFlags(albumItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            # self.tableWidgetItems.setItem(i, 3, albumItem)
-            #
-            #
-            # yearItem = QtWidgets.QTableWidgetItem(str(item['alb'].year))
-            # yearItem.setFlags(yearItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            # self.tableWidgetItems.setItem(i, 4, yearItem)
-            #
-            # dirItem = QtWidgets.QTableWidgetItem(item['album_dir'])
-            # dirItem.setFlags(dirItem.flags() ^ QtCore.Qt.ItemIsEditable)
-            # self.tableWidgetItems.setItem(i, 5, dirItem)
-            #
-            #
-            # albumExistItem = QtWidgets.QCheckBox()
-            # albumExistItem.setTristate(False)
-            # set_check_state(albumExistItem, item['album_exists'])
-            #
-            # albumExistItem.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-            # albumExistItem.sizePolicy().setHorizontalStretch(100)
-            # albumExistItem.setMaximumSize(100, 200)
-            # albumExistItem.mouseReleaseEvent = lambda event: None
-            # albumExistItem.setStyleSheet("background-color: rgba(0, 0, 0, 0.0);")
-            # self.tableWidgetItems.setCellWidget(i, 6, albumExistItem)
-            #
-            # check_tags_button = QtWidgets.QPushButton()
-            # check_tags_button.alb_item = item
-            # check_tags_button.clicked.connect(self.check_tags)
-            # check_tags_button.setIcon(getSvgIcon("lightning2.svg"))
-            # self.tableWidgetItems.setCellWidget(i, 7, check_tags_button)
-
         hHeader = self.tableWidgetItems.horizontalHeader()
         hHeader.resizeSections(QtWidgets.QHeaderView.ResizeToContents)
         hHeader.setSectionResizeMode(QtWidgets.QHeaderView.Interactive)
@@ -348,23 +212,23 @@ class ExploreEventsWidget(QtWidgets.QDialog):
         logger.info(row)
         alb = check_tags_button.alb_item["alb"]
         alb.getTagsFromFirstFile()
-        curArt = self.music_base.artist_col.findArtists(alb.artist_name)
+        artist = self.music_base.artist_col.findArtists(alb.artist_name)
         # GetArtist return a new artist if it doesn't exists in artistsCol
-        if len(curArt) == 1:
-            curArt = curArt[0]
-            alb.artist_id = curArt.artist_id
-            alb.artist_name = curArt.name.upper()
-            albums = curArt.find_albums(alb.title)
+        if len(artist) == 1:
+            artist = artist[0]
+            alb.artist_id = artist.artist_id
+            alb.artist_name = artist.name.upper()
+            albums = artist.find_albums(alb.title)
             album_exists = len(albums) > 0
-            albumExistItem = self.tableWidgetItems.cellWidget(row, 6)
-            set_check_state(albumExistItem, album_exists)
+            album_exist_item = self.tableWidgetItems.cellWidget(row, 6)
+            set_check_state(album_exist_item, album_exists)
 
-        artistItem = self.tableWidgetItems.item(row, 2)
-        albumItem = self.tableWidgetItems.item(row, 3)
-        yearItem = self.tableWidgetItems.item(row, 4)
-        artistItem.setText(alb.artist_name)
-        albumItem.setText(alb.title)
-        yearItem.setText(str(alb.year_to_num))
+        artist_item = self.tableWidgetItems.item(row, 2)
+        album_item = self.tableWidgetItems.item(row, 3)
+        year_item = self.tableWidgetItems.item(row, 4)
+        artist_item.setText(alb.artist_name)
+        album_item.setText(alb.title)
+        year_item.setText(str(alb.year_to_num))
         logger.info("%s - %s", alb.artist_name, alb.title)
 
 
@@ -374,8 +238,7 @@ if __name__ == "__main__":
     from music_base import MusicBase
 
     app = QtWidgets.QApplication(sys.argv)
-    dark = darkStyle.darkStyle()
-    app.setStyleSheet(dark.load_stylesheet_pyqt5())
+    app.setStyleSheet(qdarktheme.load_stylesheet("dark"))
     mb = MusicBase()
     mb.load_music_base()
 

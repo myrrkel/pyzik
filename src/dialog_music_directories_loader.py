@@ -155,7 +155,6 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
 
 if __name__ == "__main__":
     import sys
-    from darkStyle import darkStyle
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -166,9 +165,7 @@ if __name__ == "__main__":
 
     app.installTranslator(translator)
 
-    # Load & Set the DarkStyleSheet
-    dark = darkStyle.darkStyle()
-    app.setStyleSheet(dark.load_stylesheet_pyqt5())
+    app.setStyleSheet(qdarktheme.load_stylesheet("dark"))
 
     mb = MusicBase()
 

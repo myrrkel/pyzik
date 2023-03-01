@@ -86,7 +86,7 @@ def main():
     else:
         logger.info("Loading DarkStyleSheet...")
 
-        app.setStyleSheet(qdarktheme.load_stylesheet("light"))
+        app.setStyleSheet(qdarktheme.load_stylesheet("dark"))
     mb = MusicBase(db_path=db_path)
     logger.info("Loading musicBase...")
     mb.load_music_base()

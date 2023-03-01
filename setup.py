@@ -14,8 +14,8 @@ if platform.system() == "Windows":
 
 path = sys.path.append("src")
 includes = []
-#includes = ["PyQt5","darkStyle"]
-includefiles = ["src/img","src/darkStyle","src/translation"]
+
+includefiles = ["src/img", "src/translation"]
 includefiles = includefiles+ glob.glob("src/translation/*.qm")
 excludes = ["setuptools","cx_Freeze",
                         "PyQt5.QtWebEngine",

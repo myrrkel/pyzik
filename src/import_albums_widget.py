@@ -24,11 +24,11 @@ def set_check_state(check_item, bool_state):
 
 
 class ImportAlbumsWidget(QtWidgets.QDialog):
-    def __init__(self, parent, musicbase=None):
+    def __init__(self, parent, music_base=None):
         QtWidgets.QDialog.__init__(self)
         self.parent = parent
-        self.musicbase = musicbase
-        self.musicbase.db = Database()
+        self.music_base = music_base
+        self.music_base.db = Database()
         self.setWindowFlags(QtCore.Qt.Window)
 
         self.initUI()
@@ -109,7 +109,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
         self.wProgress.show()
         self.import_alb_thread = ImportAlbumsThread()
         self.import_alb_thread.alb_dict_list = alb_dict_list
-        self.import_alb_thread.music_base = self.musicbase
+        self.import_alb_thread.music_base = self.music_base
         self.import_alb_thread.album_import_progress.connect(self.wProgress.set_value)
         self.import_alb_thread.album_import_started_signal.connect(
             self.wProgress.set_directory_text
@@ -161,7 +161,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
                 QtWidgets.QMessageBox.Ok,
             )
         else:
-            music_dir = MusicDirectory(self.musicbase, dir_path)
+            music_dir = MusicDirectory(self.music_base, dir_path)
             res = music_dir.explore_albums_to_import()
             for alb in res:
                 logger.debug(alb)
@@ -169,7 +169,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
 
     def load_dir_list(self, combo):
         model = QtGui.QStandardItemModel(combo)
-        for music_dir in self.musicbase.music_directory_col.music_directories:
+        for music_dir in self.music_base.music_directory_col.music_directories:
             item_dir = QtGui.QStandardItem(music_dir.directory_name)
             item_dir.music_dir = music_dir
             model.appendRow(item_dir)
@@ -336,7 +336,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
         logger.info(row)
         alb = check_tags_button.alb_item["alb"]
         alb.getTagsFromFirstFile()
-        artist = self.musicbase.artist_col.findArtists(alb.artist_name)
+        artist = self.music_base.artist_col.findArtists(alb.artist_name)
         # GetArtist return a new artist if it doesn't exists in artistsCol
         if len(artist) == 1:
             artist = artist[0]
@@ -362,8 +362,7 @@ if __name__ == "__main__":
     from music_base import MusicBase
 
     app = QtWidgets.QApplication(sys.argv)
-    dark = darkStyle.darkStyle()
-    app.setStyleSheet(dark.load_stylesheet_pyqt5())
+    app.setStyleSheet(qdarktheme.load_stylesheet("dark"))
     mb = MusicBase()
     mb.load_music_base()
 
