@@ -46,7 +46,7 @@ def print(txt):
 
 
 class PlayerVLC:
-    tracksDatas = []
+    tracks_datas = []
 
     def __init__(self):
         # creating a basic vlc instance
@@ -81,7 +81,7 @@ class PlayerVLC:
         self.instance.release()
 
     def get_album_from_mrl(self, mrl):
-        track_data = [item for item in self.tracksDatas if item[0] == mrl]
+        track_data = [item for item in self.tracks_datas if item[0] == mrl]
 
         if track_data is not None:
             if len(track_data) > 0:
@@ -92,13 +92,13 @@ class PlayerVLC:
             return None
 
     def get_track_from_mrl(self, mrl):
-        track_data = [item for item in self.tracksDatas if item[0] == mrl]
+        track_data = [item for item in self.tracks_datas if item[0] == mrl]
 
         if track_data is not None:
             if len(track_data) > 0:
                 return track_data[0][2]
             else:
-                track_data = [item for item in self.tracksDatas if item[1] == mrl]
+                track_data = [item for item in self.tracks_datas if item[1] == mrl]
                 if len(track_data) > 0:
                     return track_data[0][2]
                 else:
@@ -160,7 +160,7 @@ class PlayerVLC:
             media = self.instance.media_new(path)
 
             self.media_list.add_media(media)
-            self.tracksDatas.append((media.get_mrl(), "", trk))
+            self.tracks_datas.append((media.get_mrl(), "", trk))
 
             if i == 0 and autoplay:
                 index = self.media_list.count() - 1
@@ -175,18 +175,25 @@ class PlayerVLC:
             trk.radio_name = ""
 
             self.media_list.add_media(media)
-            self.tracksDatas.append((media.get_mrl(), "", trk))
+            self.tracks_datas.append((media.get_mrl(), "", trk))
         self.playlist_changed_event.emit(1)
 
-    def play_file(self, file):
+    def play_file(self, file, track=False):
         # create the media
         media = self.instance.media_new(file)
+        self.tracks_datas.append((media.get_mrl(), "", track))
         # put the media in the media player
+        self.media_list.add_media(media)
         self.media_player.set_media(media)
 
         # parse the metadata of the file
         media.parse()
         self.media_player.play()
+
+    def play_track(self, track: Track):
+        self.play_file(track.get_full_file_path(), track)
+
+        self.playlist_changed_event.emit(1)
 
     def add_file(self, file):
         media = self.instance.media_new(file)
@@ -258,9 +265,9 @@ class PlayerVLC:
         volume = int(self.media_player.audio_get_volume())
         return volume
 
-    def set_volume(self, Volume):
+    def set_volume(self, volume):
         """Set the volume"""
-        self.media_player.audio_set_volume(Volume)
+        self.media_player.audio_set_volume(volume)
 
     def get_position(self):
         """Get the position in media"""
@@ -336,7 +343,7 @@ class PlayerVLC:
         self.loading_radio = False
         mrl = self.get_current_mrl_playlist()
         print(radio.name + " mrl=" + mrl)
-        self.tracksDatas.append((mrl, radio.stream, trk))
+        self.tracks_datas.append((mrl, radio.stream, trk))
         self.current_radio_changed_event.emit(1)
 
     def get_state(self):
@@ -391,7 +398,6 @@ class PlayerVLC:
         return title
 
     def get_title(self):
-        title = ""
         m = self.media_player.get_media()
         if m is not None:
             title = m.get_meta(0)

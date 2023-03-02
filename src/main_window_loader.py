@@ -167,6 +167,9 @@ class MainWindowLoader(QMainWindow):
         self.ui.tableWidgetAlbums.selectionModel().currentRowChanged.connect(
             self.on_album_change
         )
+        self.ui.tableWidgetTracks.cellDoubleClicked.connect(
+            self.on_play_track_selected
+        )
         self.ui.tableWidgetAlbums.customContextMenuRequested.connect(
             self.handle_header_albums_menu
         )
@@ -605,21 +608,26 @@ class MainWindowLoader(QMainWindow):
         selAlbItems = self.ui.tableWidgetAlbums.selectedItems()
         for item in selAlbItems:
             r = item.row()
-            albumIDSel = self.ui.tableWidgetAlbums.item(r, 2).text()
+            selected_album_id = self.ui.tableWidgetAlbums.item(r, 2).text()
 
-            alb = self.music_base.album_col.get_album(albumIDSel)
+            alb = self.music_base.album_col.get_album(selected_album_id)
             if alb.album_id == 0:
                 print("Album is Empty. Item:" + str(item))
             return alb
 
     def on_album_change(self, item):
         if item.row() >= 0:
-            albumIDSel = self.ui.tableWidgetAlbums.item(item.row(), 2).text()
-            alb = self.music_base.album_col.get_album(albumIDSel)
+            selected_album_id = self.ui.tableWidgetAlbums.item(item.row(), 2).text()
+            alb = self.music_base.album_col.get_album(selected_album_id)
             if alb.album_id != 0:
                 self.show_album(alb)
             else:
                 print("No album to show")
+
+    def on_play_track_selected(self, item):
+        if item >= 0:
+            track = self.ui.tableWidgetTracks.item(item, 0).track
+            self.player.play_track(track)
 
     def show_artist(self, artist):
         self.currentArtist = artist
@@ -706,6 +714,7 @@ class MainWindowLoader(QMainWindow):
             self.ui.tableWidgetTracks.insertRow(i)
 
             titleItem = QTableWidgetItem(track.title)
+            titleItem.track = track
             titleItem.setFlags(titleItem.flags() ^ Qt.ItemIsEditable)
             self.ui.tableWidgetTracks.setItem(i, 0, titleItem)
 
@@ -743,10 +752,10 @@ class MainWindowLoader(QMainWindow):
         self.player.add_album(alb)
         self.set_volume(self.get_volume_from_slider())
 
-    def show_playlist(self, showOnlyIfNew=False):
-        isNew = False
+    def show_playlist(self, show_only_if_new=False):
+        is_new = False
         if self.playlist is None:
-            isNew = True
+            is_new = True
             self.playlist = PlaylistWidget(self.player, self)
             self.playlist.picBufferManager = self.pic_buffer_manager
             self.playlist.fullScreenWidget = self.fullScreenWidget
@@ -758,7 +767,7 @@ class MainWindowLoader(QMainWindow):
 
         self.playlist.show_media_list()
 
-        if isNew or showOnlyIfNew == False:
+        if is_new or not show_only_if_new:
             self.playlist.show()
             self.playlist.activateWindow()
 
