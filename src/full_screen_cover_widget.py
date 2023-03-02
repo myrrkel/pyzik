@@ -87,7 +87,7 @@ class FullScreenCoverWidget(QDialog):
         if self.picBufferManager is None:
             self.coverPixmap = QPixmap(path)
         else:
-            self.coverPixmap = self.picBufferManager.get_pic(path, "fullscreenCoverWidget")
+            self.coverPixmap = self.picBufferManager.get_pic(path)
 
         self.show_cover()
 

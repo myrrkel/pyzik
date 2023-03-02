@@ -8,7 +8,7 @@ from PyQt5.QtGui import QPixmap
 class PicBufferItem:
     users = []
 
-    def __init__(self, path, user):
+    def __init__(self, path):
         self.path = path
         self.pix = QPixmap(path)
 
@@ -23,12 +23,12 @@ class PicBufferManager:
 
     items = []
 
-    def get_pic(self, path, user):
+    def get_pic(self, path):
         item = self.find_item(path)
         if item is not None:
             pix = item.pix
         else:
-            item = PicBufferItem(path, user)
+            item = PicBufferItem(path)
             pix = item.pix
             self.items.append(item)
             self.check_buffer_size()
@@ -51,6 +51,6 @@ class PicBufferManager:
 
 if __name__ == "__main__":
     pDL = PicDownloader()
-    url = "http://jamesostafford.files.wordpress.com/2012/03/41-edgar-broughton-band-inside-out.jpg"
+    url = "https://jamesostafford.files.wordpress.com/2012/03/41-edgar-broughton-band-inside-out.jpg"
 
     pDL.get_pic(url)

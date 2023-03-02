@@ -281,7 +281,7 @@ class PlayerControlWidget(QWidget):
             self.isWaitingCover = False
             # self.hideWaitOverlay()
         else:
-            self.coverPixmap = self.pic_buffer_manager.get_pic(path, "playerControl")
+            self.coverPixmap = self.pic_buffer_manager.get_pic(path)
             self.isWaitingCover = False
             self.show_scaled_cover()
 
@@ -415,9 +415,7 @@ class PlayerControlWidget(QWidget):
                     self.coverPixmap = self.defaultPixmap
                 else:
                     self.current_cover_path = trk.parentAlbum.get_cover_path()
-                    self.coverPixmap = self.pic_buffer_manager.get_pic(
-                        self.current_cover_path, "playerControl"
-                    )
+                    self.coverPixmap = self.pic_buffer_manager.get_pic(self.current_cover_path)
 
                 self.show_scaled_cover()
 

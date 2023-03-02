@@ -24,7 +24,6 @@ import requests
 from pic_from_url_thread import PicFromUrlThread
 from table_widget_drag_rows import TableWidgetDragRows
 
-from vlc import EventType as vlcEventType
 from svg_icon import *
 import logging
 
@@ -159,7 +158,6 @@ class PlaylistWidget(QDialog):
         self.timeSlider.sliderPressed.connect(self.set_is_time_slider_down)
         self.timeSlider.sliderReleased.connect(self.on_time_slider_is_released)
         self.timeSlider.sliderMoved.connect(self.set_player_position)
-        # self.player.mpEnventManager.event_attach(vlcEventType.MediaPlayerPositionChanged, self.onPlayerPositionChanged)
 
         self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
         self.shortcutPause.activated.connect(self.player.pause)
@@ -172,7 +170,7 @@ class PlaylistWidget(QDialog):
         self.hLayout.setSpacing(6)
         self.mainFrame.setLayout(self.hLayout)
 
-        self.coverPixmap = QtGui.QPixmap()
+        self.cover_pixmap = QtGui.QPixmap()
         self.defaultRadioPix = get_svg_with_color_param("radio.svg", "", "#000000")
         self.defaultPixmap = QtGui.QPixmap()
 
@@ -185,7 +183,7 @@ class PlaylistWidget(QDialog):
         self.cover.setSizePolicy(sizePolicy)
         self.cover.setMinimumSize(QSize(200, 200))
         self.cover.setMaximumSize(QSize(200, 200))
-        self.cover.setPixmap(self.coverPixmap)
+        self.cover.setPixmap(self.cover_pixmap)
 
         self.hLayout.addWidget(self.cover)
         self.hLayout.addWidget(self.tableWidgetTracks)
@@ -509,7 +507,7 @@ class PlaylistWidget(QDialog):
 
     def show_cover(self, trk):
         if self.player.radio_mode:
-            self.coverPixmap = QPixmap()
+            self.cover_pixmap = QPixmap()
             cover_url = self.player.get_live_cover_url()
             if cover_url == "":
                 rad = self.player.get_current_radio()
@@ -534,7 +532,7 @@ class PlaylistWidget(QDialog):
             if trk is not None and trk.parentAlbum is not None:
                 print("playlistWidget trk.parentAlbum.cover=" + trk.parentAlbum.cover)
                 if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
-                    self.coverPixmap = self.defaultPixmap
+                    self.cover_pixmap = self.defaultPixmap
                 else:
                     cover_path = trk.parentAlbum.get_cover_path()
 
@@ -542,23 +540,23 @@ class PlaylistWidget(QDialog):
 
     def show_cover_pixmap(self, path):
         if self.picBufferManager is None:
-            self.coverPixmap = QtGui.QPixmap(path)
+            self.cover_pixmap = QtGui.QPixmap(path)
         else:
-            self.coverPixmap = self.picBufferManager.get_pic(path, "PlaylistWidget")
+            self.cover_pixmap = self.picBufferManager.get_pic(path)
 
         self.show_scaled_cover()
 
     def show_default_pixmap(self):
         if self.player.radio_mode:
-            self.coverPixmap = self.defaultRadioPix
+            self.cover_pixmap = self.defaultRadioPix
         else:
-            self.coverPixmap = self.defaultPixmap
+            self.cover_pixmap = self.defaultPixmap
 
         self.show_scaled_cover()
 
     def show_scaled_cover(self):
-        if not self.coverPixmap.isNull():
-            scaled_cover = self.coverPixmap.scaled(
+        if not self.cover_pixmap.isNull():
+            scaled_cover = self.cover_pixmap.scaled(
                 self.cover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
             self.cover.setPixmap(scaled_cover)

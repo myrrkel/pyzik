@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys
 import logging
 import getopt
 
-from PyQt5 import QtWidgets, Qt
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette
 import qdarktheme
 from player_vlc import PlayerVLC

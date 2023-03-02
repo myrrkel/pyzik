@@ -23,6 +23,7 @@ from PyQt5.QtWidgets import (
 )
 from main_window import Ui_MainWindow
 from player_vlc import vlc
+from database import Database
 
 from dialog_music_directories_loader import DialogMusicDirectoriesLoader
 from stream_observer import StreamObserver
@@ -669,7 +670,7 @@ class MainWindowLoader(QMainWindow):
 
     def init_album_view(self):
         self.current_album = None
-        self.ui.labelArtist.set_text("")
+        self.ui.labelArtist.setText("")
         self.ui.tableWidgetTracks.setRowCount(0)
         self.show_cover("")
 
@@ -856,7 +857,7 @@ class MainWindowLoader(QMainWindow):
             self.cover_pixmap = self.default_pixmap
         else:
             print("MyCover=" + path)
-            self.cover_pixmap = self.pic_buffer_manager.get_pic(path, "main.albCover")
+            self.cover_pixmap = self.pic_buffer_manager.get_pic(path)
 
         scaled_cover = self.cover_pixmap.scaled(
             self.ui.cover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation

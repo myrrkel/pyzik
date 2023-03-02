@@ -12,37 +12,37 @@ logger = logging.getLogger(__name__)
 class PicDownloader:
     """Get a pic from an url"""
 
-    lastTempFile = ""
-    lastUrl = ""
+    last_temp_file = ""
+    last_url = ""
 
     def get_pic(self, pic_url):
         if pic_url == "":
-            self.lastUrl = pic_url
+            self.last_url = pic_url
             return
 
-        if self.lastUrl != pic_url:
+        if self.last_url != pic_url:
             self.clean_last_temp_file()
-            self.lastUrl = pic_url
+            self.last_url = pic_url
             response = requests.get(pic_url)
             if response.status_code == 404:
-                self.lastTempFile = ""
+                self.last_temp_file = ""
                 return ""
 
             data = response.content
             temp = tempfile.NamedTemporaryFile(delete=False)
             temp.write(data)
-            self.lastTempFile = temp.name
+            self.last_temp_file = temp.name
             temp.close()
 
-        return self.lastTempFile
+        return self.last_temp_file
 
     def clean_last_temp_file(self):
-        if self.lastTempFile != "":
+        if self.last_temp_file != "":
             try:
-                os.remove(self.lastTempFile)
+                os.remove(self.last_temp_file)
             except Exception as err:
                 logger.info(err)
-            self.lastTempFile = ""
+            self.last_temp_file = ""
 
 
 if __name__ == "__main__":

@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import sqlite3, os
-from PyQt5.QtCore import pyqtSignal
+import sqlite3
 from shutil import copyfile
 from io import StringIO
-
-from progress_widget import *
+from utils import year_to_num
 from global_constants import *
 import logging
 
@@ -364,7 +362,7 @@ class Database:
                     album.title,
                     album.artist_id,
                     album.dir_path,
-                    album.year_to_num,
+                    year_to_num(album.year),
                     album.music_directory_id,
                 ),
             )

@@ -3,6 +3,8 @@ def year_to_num(s):
     Convert a string made of numbers into a year
     Return 0 if string s is not a year, else return the year on 4 digits. ex: "73"-->1973
     """
+    if isinstance(s, int):
+        return s
     res = 0
     if str.isdigit(s):
         if len(s) == 4:
