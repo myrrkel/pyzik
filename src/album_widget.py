@@ -190,11 +190,11 @@ class AlbumWidget(QtWidgets.QDialog):
 
     def set_values(self):
         self.albumInfoControls.titleEdit.setText(self.album.title)
-        self.albumInfoControls.yearSpin.setValue(self.album.year_to_num)
+        self.albumInfoControls.yearSpin.setValue(self.album.year)
 
     def on_save(self, event):
         self.album.title = self.albumInfoControls.titleEdit.text()
-        self.album.year_to_num = self.albumInfoControls.yearSpin.value()
+        self.album.year = self.albumInfoControls.yearSpin.value()
         self.album.update()
         self.close()
 

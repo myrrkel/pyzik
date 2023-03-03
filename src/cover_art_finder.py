@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from ast import literal_eval
 import urllib.request
 from urllib.parse import quote
 
@@ -15,45 +16,47 @@ class CoverArtFinder:
     items = []
 
     def search(self, search_keyword):
-        params = [(4, "large"), (8, "medium")]
+        self.items = []
+        params = [(20, "large"), (20, "medium")]
 
         for param in params:
             items = self.search_with_param(search_keyword, param[0], param[1])
             if items:
-                if len(items) > 10:
-                    items = items[:10]
                 self.items = self.items + items
         logger.debug("CoverArtFinder items %s", self.items)
 
-    def search_with_param(self, search_keyword, limit=4, size="medium"):
+    def search_with_param(self, search_keyword, limit=0, size="medium"):
         arguments = {'language': False, 'format': 'jpg', "keywords": search_keyword,
                      "limit": limit, "size": size, "aspect_ratio": "square"}
         url = self.search_url(search_keyword, arguments)
-        return self.get_google_result(url)
+        return self.get_google_result(url, limit=limit)
 
-    def get_google_result(self, url):
+    def get_google_result(self, url, limit=0):
         try:
             headers = {
                 'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"}
             req = urllib.request.Request(url, headers=headers)
             res = urllib.request.urlopen(req)
             result = str(res.read().decode('utf-8'))
+            return self.get_images_from_result(result, limit)
         except Exception as err:
             logger.error(err)
-        return self.get_images_from_result(result)
+            pass
 
-    def get_images_from_result(self, page):
+    def get_images_from_result(self, result, limit=0):
         data_start = 'AF_initDataCallback('
-        start_line = page.find(data_start)
-        end_object = page.find(');</script>', start_line + 1)
-        start_line = page.find(data_start, end_object)
-        end_object = page.find(');</script>', start_line + 1)
-        object_raw = str(page[start_line + len(data_start):end_object])
-        str_data = object_raw.replace('key:', '"key":').replace('data:', '"data":').replace('null', 'None')
+        start_line = result.find(data_start)
+        end_object = result.find(');</script>', start_line + 1)
+        start_line = result.find(data_start, end_object)
+        end_object = result.find(');</script>', start_line + 1)
+        object_raw = str(result[start_line + len(data_start):end_object])
+        str_data = object_raw.replace('key:', "'key':").replace('data:', "'data':").replace('hash:', "'hash':").replace('null', 'None')
         str_data = str_data.replace('true', 'True').replace('false', 'False').replace('sideChannel', '"sideChannel"')
-        datas = eval(str_data)
+        datas = literal_eval(str_data)
         dict_list = self.get_dict_in_list(datas.get('data', []))
         image_list = self.images_from_datas(dict_list)
+        if limit:
+            image_list = image_list[:limit]
 
         return image_list
 

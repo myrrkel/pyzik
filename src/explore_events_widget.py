@@ -228,7 +228,7 @@ class ExploreEventsWidget(QtWidgets.QDialog):
         year_item = self.tableWidgetItems.item(row, 4)
         artist_item.setText(alb.artist_name)
         album_item.setText(alb.title)
-        year_item.setText(str(alb.year_to_num))
+        year_item.setText(str(alb.year))
         logger.info("%s - %s", alb.artist_name, alb.title)
 
 

@@ -87,7 +87,7 @@ class Track:
 
     def get_album_year(self):
         if self.parent_album is not None and self.year == 0:
-            return self.parent_album.year_to_num
+            return self.parent_album.year
         else:
             return self.year
 

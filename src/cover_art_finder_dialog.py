@@ -34,7 +34,7 @@ class CoverFinderSearchThread(QThread):
     music_base = None
     result_found = pyqtSignal(int, name="resultFound")
 
-    cover_finder = None
+    cover_finder = CoverArtFinder()
     keyword = ""
 
     def run(self):
@@ -59,9 +59,8 @@ class CoverArtFinderDialog(QDialog):
         self.keyword = ""
         self.cover_saved = False
 
-        self.cover_finder = CoverArtFinder()
         self.cover_finder_thread = CoverFinderSearchThread()
-        self.cover_finder_thread.cover_finder = self.cover_finder
+        self.cover_finder = self.cover_finder_thread.cover_finder
         self.cover_finder_thread.result_found.connect(self.on_cover_finder_result)
 
         if self.pic_from_url_thread is None:
@@ -130,13 +129,7 @@ class CoverArtFinderDialog(QDialog):
     def search(self):
         if self.album is not None:
             self.keyword = self.album.get_cover_search_text()
-
-        keyword = self.keyword
-
-        print("CoverArtFinder search=" + keyword)
-
-        self.cover_finder_thread.cover_finder = self.cover_finder
-        self.cover_finder_thread.keyword = keyword
+        self.cover_finder_thread.keyword = self.keyword
         self.cover_finder_thread.start()
 
     def save_cover(self):

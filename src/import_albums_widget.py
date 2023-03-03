@@ -286,7 +286,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
             album_item.setFlags(album_item.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetItems.setItem(i, 3, album_item)
 
-            year_item = QtWidgets.QTableWidgetItem(str(item["alb"].year_to_num))
+            year_item = QtWidgets.QTableWidgetItem(str(item["alb"].year))
             year_item.setFlags(year_item.flags() ^ QtCore.Qt.ItemIsEditable)
             self.tableWidgetItems.setItem(i, 4, year_item)
 
@@ -352,7 +352,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
         year_item = self.tableWidgetItems.item(row, 4)
         artist_item.setText(alb.artist_name)
         album_item.setText(alb.title)
-        year_item.setText(str(alb.year_to_num))
+        year_item.setText(str(alb.year))
         logger.info("%s - %s", alb.artist_name, alb.title)
 
 

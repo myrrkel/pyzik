@@ -546,19 +546,19 @@ class Album:
 
     def update_title(self):
         db = database.Database()
-        db.update_value("albums", "title", self.title, "album_id", self.album_id)
+        db.update_value("albums", "title", self.title, "albumID", self.album_id)
 
     def update_year(self):
         db = database.Database()
-        db.update_value("albums", "year", self.year, "album_id", self.album_id)
+        db.update_value("albums", "year", self.year, "albumID", self.album_id)
 
     def update_size(self):
         db = database.Database()
-        db.update_value("albums", "size", self.size, "album_id", self.album_id)
+        db.update_value("albums", "size", self.size, "albumID", self.album_id)
 
     def update_length(self):
         db = database.Database()
-        db.update_value("albums", "length", self.length, "album_id", self.album_id)
+        db.update_value("albums", "length", self.length, "albumID", self.album_id)
 
     def update(self):
         self.update_title()

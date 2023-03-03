@@ -21,13 +21,19 @@ class PicDownloader:
             return
 
         if self.last_url != pic_url:
-            self.clean_last_temp_file()
+            # self.clean_last_temp_file()
             self.last_url = pic_url
-            response = requests.get(pic_url)
-            if response.status_code == 404:
-                self.last_temp_file = ""
-                return ""
-
+            try:
+                headers = {
+                    'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"}
+                response = requests.get(pic_url, headers=headers)
+                if response.status_code != 200:
+                    logger.error(response.content)
+                    self.last_temp_file = ""
+                    return ""
+            except Exception as err:
+                logger.error(err)
+                return
             data = response.content
             temp = tempfile.NamedTemporaryFile(delete=False)
             temp.write(data)
@@ -41,7 +47,8 @@ class PicDownloader:
             try:
                 os.remove(self.last_temp_file)
             except Exception as err:
-                logger.info(err)
+                logger.error(err)
+                pass
             self.last_temp_file = ""
 
 
