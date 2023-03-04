@@ -188,6 +188,7 @@ class Album:
         self.do_stop = False
         self.music_directory = music_directory
         self.cover_pixmap = None  # QPixmap()
+        self.cover_saved = False
         if music_directory:
             self.music_directory_id = music_directory.music_directory_id
         else:

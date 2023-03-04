@@ -16,7 +16,7 @@ from PyQt5.QtCore import QThread
 
 from src.pic_from_url_thread import PicFromUrlThread
 from src.cover_art_finder import CoverArtFinder
-import svg_icon as svg
+import src.svg_icon as svg
 
 from .wait_overlay_widget import WaitOverlay
 from .thumbnail_viewer_widget import ThumbnailViewerWidget
@@ -140,6 +140,7 @@ class CoverArtFinderDialog(QDialog):
                 self.pic_from_url_thread.url = url
                 self.pic_from_url_thread.start()
             else:
+                self.album.cover = ''
                 self.save_selected_cover()
 
     def on_selected_pic_downloaded(self, uri):
@@ -149,6 +150,8 @@ class CoverArtFinderDialog(QDialog):
     def save_selected_cover(self):
         self.album.cut_cover_from_path(self.selected_file)
         self.cover_saved = True
+        self.album.cover_saved = True
+        self.album.cover = ''
         self.signal_cover_saved.emit(1)
         print("saveSelectedCover")
         self.close()

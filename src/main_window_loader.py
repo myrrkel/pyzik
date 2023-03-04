@@ -731,7 +731,14 @@ class MainWindowLoader(QMainWindow):
             # coverPixmap = album.getCoverPixmap()
             self.show_cover(album.get_cover_path())
         else:
-            self.show_cover("")
+            if album.cover_saved:
+                album.images = []
+                album.get_images()
+                album.get_cover()
+                self.pic_buffer_manager.items = []
+                self.show_cover(album.get_cover_path())
+            else:
+                self.show_cover("")
 
     """
     Interactions with vlc module

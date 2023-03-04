@@ -584,7 +584,6 @@ class PlaylistWidget(QDialog):
     def on_player_position_changed(self, event=None):
         if not self.isTimeSliderDown:
             pos = self.player.get_position()
-            # print('onPlayerPositionChanged='+str(pos))
             self.timeSlider.setValue(pos * 1000)
 
     def on_playlist_changed(self, event):

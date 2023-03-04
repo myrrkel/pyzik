@@ -13,7 +13,9 @@ from PyQt5.QtWidgets import (
 )
 from src.pic_from_url_thread import PicFromUrlThread
 from .full_screen_cover_widget import FullScreenCoverWidget
+import logging
 
+logger = logging.getLogger(__name__)
 _translate = QCoreApplication.translate
 
 
@@ -50,13 +52,16 @@ class ThumbnailIcon(QtGui.QIcon):
 
     def on_pic_downloaded(self, path):
         self.path = path
-        self.parent.path = self.path
-        self.parent.add_temp_file(path)
-        self.addFile(path)
-        self.parent.setIcon(self)
-        self.parent.set_title()
-        # self.parent.parent.thumbWidget.setSpacing(4)
-        self.parent.setHidden(False)
+        if self.parent:
+            try:
+                self.parent.path = self.path
+                self.parent.add_temp_file(path)
+                self.addFile(path)
+                self.parent.setIcon(self)
+                self.parent.set_title()
+                self.parent.setHidden(False)
+            except Exception as err:
+                logger.error(err)
 
 
 class ThumbnailViewerWidget(QWidget):
@@ -73,7 +78,6 @@ class ThumbnailViewerWidget(QWidget):
 
         self.setWindowFlags(Qt.Window)
         self.initUI()
-        # self.show()
 
     def reset_selection(self):
         self.selectedFile = ""
