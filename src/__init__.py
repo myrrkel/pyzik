@@ -1,2 +1,1 @@
-def main():
-    from pyzik import *
+import qdarktheme

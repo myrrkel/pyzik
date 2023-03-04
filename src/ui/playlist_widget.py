@@ -19,12 +19,12 @@ from PyQt5.QtWidgets import (
     QTableWidgetItem,
 )
 from PyQt5.QtGui import QPixmap
-from track import Track
+from src.track import Track
 import requests
-from pic_from_url_thread import PicFromUrlThread
-from table_widget_drag_rows import TableWidgetDragRows
+from src.pic_from_url_thread import PicFromUrlThread
+from .table_widget_drag_rows import TableWidgetDragRows
 
-from svg_icon import *
+from src.svg_icon import *
 import logging
 
 logger = logging.getLogger(__name__)

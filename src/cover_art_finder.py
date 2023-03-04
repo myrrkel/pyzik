@@ -63,12 +63,12 @@ class CoverArtFinder:
         replacements = [('key:', "'key':"),
                         ('data:', "'data':"),
                         ('hash:', "'hash':"),
-                        ('sideChannel', ''"sideChannel"''),
+                        ('sideChannel', '"sideChannel"'),
                         ('null', "None"),
                         ('true', "True"),
                         ('false', "False")]
         for replacement in replacements:
-            str_data = str_data.replace(replacement)
+            str_data = str_data.replace(replacement[0], replacement[1])
         return str_data
 
     def get_dict_in_list(self, data_list):

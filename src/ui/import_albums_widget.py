@@ -4,11 +4,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtCore import pyqtSignal
-from directory_widget import DirectoryWidget
-from music_directory import MusicDirectory, ImportAlbumsThread
-from database import Database
-from progress_widget import ProgressWidget
-from svg_icon import *
+from .directory_widget import DirectoryWidget
+from src.music_directory import MusicDirectory, ImportAlbumsThread
+from src.database import Database
+from .progress_widget import ProgressWidget
+from src.svg_icon import *
 import logging
 
 logger = logging.getLogger(__name__)

@@ -11,20 +11,20 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QSizePolicy,
 )
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import QThread
 
-from pic_from_url_thread import PicFromUrlThread
-from thumbnail_viewer_widget import ThumbnailViewerWidget
-from cover_art_finder import CoverArtFinder
-from svg_icon import *
+from src.pic_from_url_thread import PicFromUrlThread
+from src.cover_art_finder import CoverArtFinder
+from src.svg_icon import *
+
+from .wait_overlay_widget import WaitOverlay
+from .thumbnail_viewer_widget import ThumbnailViewerWidget
 import logging
 
 logger = logging.getLogger(__name__)
 
 _translate = QCoreApplication.translate
-
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtCore import QThread
-from wait_overlay_widget import WaitOverlay
 
 
 class CoverFinderSearchThread(QThread):

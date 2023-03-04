@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QSizePolicy,
 )
-from main_window import Ui_MainWindow
+from ui.main_window import Ui_MainWindow
 from player_vlc import vlc
 from database import Database
 
@@ -31,17 +31,19 @@ from artist import Artist
 from album import Album
 from album_thread import LoadAlbumFilesThread
 from music_base_thread import ExploreAlbumsDirectoriesThread
-from playlist_widget import PlaylistWidget
-from history_widget import HistoryWidget
-from search_radio_widget import SearchRadioWidget
-from full_screen_widget import FullScreenWidget
-from full_screen_cover_widget import FullScreenCoverWidget
-from player_control_widget import PlayerControlWidget
-from progress_widget import ProgressWidget
-from album_widget import AlbumWidget
-from import_albums_widget import ImportAlbumsWidget
-from explore_events_widget import ExploreEventList, ExploreEventsWidget
-from cover_art_finder_dialog import CoverArtFinderDialog
+from ui.playlist_widget import PlaylistWidget
+from ui.history_widget import HistoryWidget
+from ui.search_radio_widget import SearchRadioWidget
+from ui.full_screen_widget import FullScreenWidget
+from ui.full_screen_cover_widget import FullScreenCoverWidget
+from ui.player_control_widget import PlayerControlWidget
+from ui.progress_widget import ProgressWidget
+from ui.album_widget import AlbumWidget
+from ui.import_albums_widget import ImportAlbumsWidget
+from ui.explore_events_widget import ExploreEventsWidget
+from explore_event import ExploreEventList
+from ui.cover_art_finder_dialog import CoverArtFinderDialog
+
 from svg_icon import *
 from pic_from_url_thread import PicFromUrlThread
 from pic_buffer_manager import PicBufferManager

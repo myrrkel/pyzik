@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5 import QtCore
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt, QCoreApplication, pyqtSignal, QSize
 
 from PyQt5.QtWidgets import (
@@ -14,21 +15,16 @@ from PyQt5.QtWidgets import (
     QFrame,
     QLabel,
 )
-# from track import *
 
-from pic_from_url_thread import PicFromUrlThread
-from table_widget_drag_rows import TableWidgetDragRows
-from wait_overlay_widget import WaitOverlay
-from PyQt5.QtGui import QPixmap
+from src.pic_from_url_thread import PicFromUrlThread
+from src.svg_icon import *
+from .wait_overlay_widget import WaitOverlay
+
 import threading
-
-from svg_icon import *
 import logging
 
-logger = logging.getLogger(__name__)
-
 white = QtGui.QColor(255, 255, 255)
-
+logger = logging.getLogger(__name__)
 _translate = QCoreApplication.translate
 
 

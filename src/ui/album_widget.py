@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSignal
-from history_manager import HistoryManager
-from svg_icon import *
+from src import svg_icon
 
 
 class AlbumControlsWidget(QtWidgets.QWidget):
@@ -28,7 +26,7 @@ class AlbumControlsWidget(QtWidgets.QWidget):
         self.saveButton = QtWidgets.QPushButton(_translate("album", "Save"))
         self.saveButton.setMinimumSize(QtCore.QSize(70, 27))
         # self.saveButton.setMaximumSize(QtCore.QSize(70, 27))
-        self.saveButton.setIcon(get_svg_icon("save.svg"))
+        self.saveButton.setIcon(svg_icon.get_svg_icon("save.svg"))
 
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed

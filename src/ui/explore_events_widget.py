@@ -3,9 +3,9 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
-from explore_event import ExploreEventList
-from import_albums_widget import set_check_state
-from database import Database
+from src.explore_event import ExploreEventList
+from .import_albums_widget import set_check_state
+from src.database import Database
 import logging
 
 logger = logging.getLogger(__name__)
