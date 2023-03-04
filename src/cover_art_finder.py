@@ -33,8 +33,8 @@ class CoverArtFinder:
 
     def get_google_result(self, url, limit=0):
         try:
-            headers = {
-                'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"}
+            headers = {'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                                     "(KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"}
             req = urllib.request.Request(url, headers=headers)
             res = urllib.request.urlopen(req)
             result = str(res.read().decode('utf-8'))
@@ -50,8 +50,7 @@ class CoverArtFinder:
         start_line = result.find(data_start, end_object)
         end_object = result.find(');</script>', start_line + 1)
         object_raw = str(result[start_line + len(data_start):end_object])
-        str_data = object_raw.replace('key:', "'key':").replace('data:', "'data':").replace('hash:', "'hash':").replace('null', 'None')
-        str_data = str_data.replace('true', 'True').replace('false', 'False').replace('sideChannel', '"sideChannel"')
+        str_data = self.replace_strings(object_raw)
         datas = literal_eval(str_data)
         dict_list = self.get_dict_in_list(datas.get('data', []))
         image_list = self.images_from_datas(dict_list)
@@ -59,6 +58,18 @@ class CoverArtFinder:
             image_list = image_list[:limit]
 
         return image_list
+
+    def replace_strings(self, str_data):
+        replacements = [('key:', "'key':"),
+                        ('data:', "'data':"),
+                        ('hash:', "'hash':"),
+                        ('sideChannel', ''"sideChannel"''),
+                        ('null', "None"),
+                        ('true', "True"),
+                        ('false', "False")]
+        for replacement in replacements:
+            str_data = str_data.replace(replacement)
+        return str_data
 
     def get_dict_in_list(self, data_list):
         dict_list = []
@@ -118,11 +129,10 @@ class CoverArtFinder:
 
     def search_url(self, search_term, arguments):
         params = self.get_url_parameters(arguments)
-        url = 'https://www.google.com/search?q=' + quote(
-            search_term.encode(
-                'utf-8')) + '&espv=2&biw=1366&bih=667&site=webhp&source=lnms&tbm=isch' + params + '&sa=X&ei=XosDVaCXD8TasATItgE&ved=0CAcQ_AUoAg'
-
-        return url
+        url = 'https://www.google.com/search?q='
+        search_term = quote(search_term.encode('utf-8'))
+        search_term += '&espv=2&biw=1366&bih=667&site=webhp&source=lnms&tbm=isch' + params
+        return url + search_term
 
 
 if __name__ == "__main__":

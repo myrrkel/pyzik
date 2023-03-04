@@ -54,5 +54,9 @@ class PicDownloader:
 
 if __name__ == "__main__":
     downloader = PicDownloader()
-    url = "https://jamesostafford.files.wordpress.com/2012/03/41-edgar-broughton-band-inside-out.jpg"
+    # url = "https://jamesostafford.files.wordpress.com/2012/03/41-edgar-broughton-band-inside-out.jpg"
+    url = "https://i.discogs.com/HiAz203qbRHstUt2itZvExE0" \
+          "7nabIlYYsHgfdykAcKY/rs:fit/g:sm/q:90/h:600/w:600/czM6" \
+          "Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTIxODQz/MjItMT" \
+          "Q4Nzc4NTg1/Ni02NzM4LmpwZWc.jpeg"
     downloader.get_pic(url)
