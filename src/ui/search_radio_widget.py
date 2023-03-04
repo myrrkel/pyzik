@@ -5,7 +5,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from src.radio_manager import RadioManager
 from src.search_radio_thread import SearchRadioThread
-from src.svg_icon import *
+import src.svg_icon as svg
 from .progress_widget import ProgressWidget
 from .wait_overlay_widget import WaitOverlay
 
@@ -23,7 +23,7 @@ class SearchControlsWidget(QtWidgets.QWidget):
         self.searchEdit.setText("")
 
         self.searchButton = QtWidgets.QPushButton("Search")
-        self.searchButton.setIcon(get_svg_icon("radio-tower.svg"))
+        self.searchButton.setIcon(svg.get_svg_icon("radio-tower.svg"))
         lay.addWidget(self.searchEdit)
         lay.addWidget(self.searchButton)
 
@@ -62,11 +62,11 @@ class PlayControlsWidget(QtWidgets.QWidget):
         _translate = QtCore.QCoreApplication.translate
 
         self.playButton = QtWidgets.QPushButton("Play")
-        self.playButton.setIcon(get_svg_icon("play.svg"))
+        self.playButton.setIcon(svg.get_svg_icon("play.svg"))
         lay.addWidget(self.playButton)
 
         self.addButton = QtWidgets.QPushButton("Add")
-        self.addButton.setIcon(get_svg_icon("plus.svg"))
+        self.addButton.setIcon(svg.get_svg_icon("plus.svg"))
         lay.addWidget(self.addButton)
 
 
@@ -252,8 +252,8 @@ class SearchRadioWidget(QtWidgets.QDialog):
 
 if __name__ == "__main__":
     import sys
-    from music_base import MusicBase
-    from player_vlc import PlayerVLC
+    from src.music_base import MusicBase
+    from src.player_vlc import PlayerVLC
 
     app = QtWidgets.QApplication(sys.argv)
     mb = MusicBase()

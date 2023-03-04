@@ -4,11 +4,21 @@
 import shutil
 import glob
 import os
+import subprocess
+import sys
 import logging
 import time
 import math
 
 logger = logging.getLogger(__name__)
+
+
+def open_file(filename):
+    if sys.platform == "win32":
+        os.startfile(filename)
+    else:
+        opener = "open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, filename])
 
 
 def move_directory_file_by_file(

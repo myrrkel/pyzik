@@ -139,7 +139,7 @@ if __name__ == "__main__":
     import sys
 
     from PyQt5 import QtWidgets
-    from cover_art_finder_dialog import CoverArtFinderDialog
+    from ui.cover_art_finder_dialog import CoverArtFinderDialog
 
     app = QtWidgets.QApplication(sys.argv)
 

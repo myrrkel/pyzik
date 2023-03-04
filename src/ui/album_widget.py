@@ -207,7 +207,7 @@ class AlbumWidget(QtWidgets.QDialog):
 
 if __name__ == "__main__":
     import sys
-    from music_base import MusicBase
+    from src.music_base import MusicBase
 
     mb = MusicBase()
     print("loadMusicBase")

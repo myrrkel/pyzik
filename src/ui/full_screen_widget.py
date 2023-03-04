@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
-from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication, QSize
-from PyQt5.QtWidgets import QDialog, QWidget, QShortcut, QAction, QWidget, QMainWindow, \
+from PyQt5.QtCore import Qt, QCoreApplication, QSize
+from PyQt5.QtWidgets import QDialog, QShortcut, QWidget, \
     QSizePolicy, QLabel, QFrame, QVBoxLayout, QHBoxLayout, QApplication, QPushButton
-from PyQt5.QtGui import QPixmap, QIcon, QKeySequence, QFont, QKeySequence
+from PyQt5.QtGui import QPixmap, QFont, QKeySequence
 
-from track import Track
-from history_manager import HistoryManager
-from pic_from_url_thread import PicFromUrlThread
-from global_constants import *
+from src.track import Track
+from src.pic_from_url_thread import PicFromUrlThread
+from src import ORANGE
 
 
 class CustomControlsWidget(QWidget):
@@ -217,7 +215,7 @@ class FullScreenWidget(QDialog):
 
 if __name__ == "__main__":
     import sys
-    from pic_downloader import PicDownloader
+    from src.pic_downloader import PicDownloader
 
     app = QApplication(sys.argv)
 

@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import subprocess
 import functools
-
+import PyQt5.QtGui as QtGui
 from PyQt5.QtCore import (
-    Qt,
-    QSettings,
     QCoreApplication,
     QItemSelectionModel,
     pyqtSignal,
     QSize,
+    QSettings,
+    Qt,
+)
+from PyQt5.QtGui import (
+    QPixmap,
+    QKeySequence,
+    QCursor,
 )
 from PyQt5.QtWidgets import (
     QTableWidgetItem,
@@ -23,14 +27,18 @@ from PyQt5.QtWidgets import (
 )
 from ui.main_window import Ui_MainWindow
 from player_vlc import vlc
-from database import Database
-
 from dialog_music_directories_loader import DialogMusicDirectoriesLoader
 from stream_observer import StreamObserver
 from artist import Artist
 from album import Album
 from album_thread import LoadAlbumFilesThread
 from music_base_thread import ExploreAlbumsDirectoriesThread
+import svg_icon as svg
+from pic_from_url_thread import PicFromUrlThread
+from pic_buffer_manager import PicBufferManager
+from files_utils import open_file
+import database
+
 from ui.playlist_widget import PlaylistWidget
 from ui.history_widget import HistoryWidget
 from ui.search_radio_widget import SearchRadioWidget
@@ -41,25 +49,12 @@ from ui.progress_widget import ProgressWidget
 from ui.album_widget import AlbumWidget
 from ui.import_albums_widget import ImportAlbumsWidget
 from ui.explore_events_widget import ExploreEventsWidget
-from explore_event import ExploreEventList
 from ui.cover_art_finder_dialog import CoverArtFinderDialog
 
-from svg_icon import *
-from pic_from_url_thread import PicFromUrlThread
-from pic_buffer_manager import PicBufferManager
 import logging
 
 logger = logging.getLogger(__name__)
-# orange = QtGui.QColor(216, 119, 0)
 _translate = QCoreApplication.translate
-
-
-def open_file(filename):
-    if sys.platform == "win32":
-        os.startfile(filename)
-    else:
-        opener = "open" if sys.platform == "darwin" else "xdg-open"
-        subprocess.call([opener, filename])
 
 
 class MainWindowLoader(QMainWindow):
@@ -92,10 +87,10 @@ class MainWindowLoader(QMainWindow):
         self.cover_finder = None
         self.import_album_widget = None
 
-        self.cover_pixmap = QtGui.QPixmap()
+        self.cover_pixmap = QPixmap()
 
         if not self.default_pixmap:
-            self.default_pixmap = get_svg_with_color_param("vinyl-record2.svg")
+            self.default_pixmap = svg.get_svg_with_color_param("vinyl-record2.svg")
 
         self.fullScreenWidget = FullScreenWidget(self.player)
         self.fullScreenWidget.connect_pic_downloader(self.pic_from_url_thread)
@@ -178,13 +173,13 @@ class MainWindowLoader(QMainWindow):
 
         self.ui.comboBoxStyle.currentIndexChanged.connect(self.filter_artists)
 
-        self.shortcutRandomAlbum = QShortcut(QtGui.QKeySequence("Ctrl+R"), self)
+        self.shortcutRandomAlbum = QShortcut(QKeySequence("Ctrl+R"), self)
         self.shortcutRandomAlbum.activated.connect(self.random_album)
-        self.shortcutPlaylist = QShortcut(QtGui.QKeySequence("Ctrl+P"), self)
+        self.shortcutPlaylist = QShortcut(QKeySequence("Ctrl+P"), self)
         self.shortcutPlaylist.activated.connect(self.show_playlist)
-        self.shortcutPause = QShortcut(QtGui.QKeySequence("Space"), self)
+        self.shortcutPause = QShortcut(QKeySequence("Space"), self)
         self.shortcutPause.activated.connect(self.player.pause)
-        self.shortcutFullScreen = QShortcut(QtGui.QKeySequence("Ctrl+F"), self)
+        self.shortcutFullScreen = QShortcut(QKeySequence("Ctrl+F"), self)
         self.shortcutFullScreen.activated.connect(self.showFullScreen)
 
         # Connect VLC triggers
@@ -263,7 +258,7 @@ class MainWindowLoader(QMainWindow):
         # logger.debug("EXPLORE EVENTS=" + str([e.get_text() for e in events]))
         if events:
             self.open_explore_events_widget(events)
-        self.music_base.db = Database()
+        self.music_base.db = database.Database()
         self.show_artists()
         self.show_genres()
 
@@ -285,7 +280,6 @@ class MainWindowLoader(QMainWindow):
         self.search_radio.activateWindow()
 
     def on_add_fav_radio(self):
-        # self.music_base.db.initDataBase()
         self.music_base.radio_manager.load_fav_radios()
         self.init_radio_fav_menu()
 
@@ -409,7 +403,7 @@ class MainWindowLoader(QMainWindow):
     """
 
     def on_menu_music_directories(self):
-        self.music_base.db = Database()
+        self.music_base.db = database.Database()
         dirDiag = DialogMusicDirectoriesLoader(self.music_base, self)
         dirDiag.show()
         dirDiag.exec_()
@@ -464,7 +458,7 @@ class MainWindowLoader(QMainWindow):
         # actionEditAlbum.triggered.connect(functools.partial(self.onPlayFavRadio, rad.radioID))
         actionEditAlbum.triggered.connect(self.on_edit_album)
 
-        menu.exec(QtGui.QCursor.pos())
+        menu.exec(QCursor.pos())
 
     def on_edit_album(self):
         sel_rows = self.ui.tableWidgetAlbums.selectionModel().selectedRows()
@@ -712,6 +706,8 @@ class MainWindowLoader(QMainWindow):
         # self.ui.tableWidgetTracks.setColumnCount(1)
         self.ui.tableWidgetTracks.setRowCount(0)
         i = 0
+        if not self.current_album:
+            return
         for track in self.current_album.tracks:
             self.ui.tableWidgetTracks.insertRow(i)
 
@@ -898,10 +894,10 @@ class MainWindowLoader(QMainWindow):
         self.ui.addAlbumButton.setText("")
         self.ui.searchCoverButton.setText("")
 
-        self.ui.playButton.setIcon(get_svg_icon("play-circle.svg"))
-        self.ui.addAlbumButton.setIcon(get_svg_icon("add_music.svg"))
-        self.ui.openDirButton.setIcon(get_svg_icon("folder-open.svg"))
-        self.ui.searchCoverButton.setIcon(get_svg_icon("picture.svg"))
+        self.ui.playButton.setIcon(svg.get_svg_icon("play-circle.svg"))
+        self.ui.addAlbumButton.setIcon(svg.get_svg_icon("add_music.svg"))
+        self.ui.openDirButton.setIcon(svg.get_svg_icon("folder-open.svg"))
+        self.ui.searchCoverButton.setIcon(svg.get_svg_icon("picture.svg"))
 
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)

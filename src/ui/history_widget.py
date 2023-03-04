@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSignal
-from history_manager import HistoryManager
-from svg_icon import *
+from src.history_manager import HistoryManager
+import src.svg_icon as svg
 
 
 class HistoryControlsWidget(QtWidgets.QWidget):
@@ -16,7 +15,7 @@ class HistoryControlsWidget(QtWidgets.QWidget):
         _translate = QtCore.QCoreApplication.translate
         lay.addStretch()
         self.refreshButton = QtWidgets.QPushButton(_translate("history", "Refresh"))
-        self.refreshButton.setIcon(get_svg_icon("refresh.svg"))
+        self.refreshButton.setIcon(svg.get_svg_icon("refresh.svg"))
         lay.addWidget(self.refreshButton)
         lay.addStretch()
 
@@ -138,7 +137,7 @@ class HistoryWidget(QtWidgets.QDialog):
 
 if __name__ == "__main__":
     import sys
-    from music_base import MusicBase
+    from src.music_base import MusicBase
     mb = MusicBase()
 
     mb.load_music_base(False)

@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
 from PyQt5 import QtWidgets, QtGui, QtCore
 from ui.music_directories_dialog import Ui_Dialog
 from music_base import MusicBase
 from music_directory import MusicDirectory
-from svg_icon import *
+import svg_icon as svg
 import logging
 
 logger = logging.getLogger(__name__)
@@ -29,8 +30,8 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.ui.comboStyle.currentIndexChanged.connect(self.on_change_genre)
         self.ui.comboDirType.currentIndexChanged.connect(self.on_change_dir_type)
 
-        self.ui.AddButton.setIcon(get_svg_icon("folder_add.svg"))
-        self.ui.DeleteButton.setIcon(get_svg_icon("folder_delete.svg"))
+        self.ui.AddButton.setIcon(svg.get_svg_icon("folder_add.svg"))
+        self.ui.DeleteButton.setIcon(svg.get_svg_icon("folder_delete.svg"))
 
         self.load_dir_list()
         self.show_genres()

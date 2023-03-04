@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import Qt
 from .directory_widget import DirectoryWidget
 from src.music_directory import MusicDirectory, ImportAlbumsThread
 from src.database import Database
 from .progress_widget import ProgressWidget
-from src.svg_icon import *
+import src.svg_icon as svg
 import logging
 
 logger = logging.getLogger(__name__)
@@ -53,7 +53,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
             _translate("import albums", "Explore directory")
         )
         self.explore_button.clicked.connect(self.explore_directory)
-        self.explore_button.setIcon(get_svg_icon("folder_search.svg"))
+        self.explore_button.setIcon(svg.get_svg_icon("folder_search.svg"))
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed
         )
@@ -87,7 +87,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
             _translate("import albums", "Import selected albums in music directories")
         )
         self.import_button.clicked.connect(self.import_albums)
-        self.import_button.setIcon(get_svg_icon("folder_import.svg"))
+        self.import_button.setIcon(svg.get_svg_icon("folder_import.svg"))
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed
         )
@@ -322,7 +322,7 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
             check_tags_button = QtWidgets.QPushButton()
             check_tags_button.alb_item = item
             check_tags_button.clicked.connect(self.check_tags)
-            check_tags_button.setIcon(get_svg_icon("lightning2.svg"))
+            check_tags_button.setIcon(svg.get_svg_icon("lightning2.svg"))
             self.tableWidgetItems.setCellWidget(i, 7, check_tags_button)
 
         hHeader = self.tableWidgetItems.horizontalHeader()
@@ -358,12 +358,11 @@ class ImportAlbumsWidget(QtWidgets.QDialog):
 
 if __name__ == "__main__":
     import sys
-    from pyzik import *
-    from music_base import MusicBase
+    from src import music_base, qdarktheme
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyleSheet(qdarktheme.load_stylesheet("dark"))
-    mb = MusicBase()
+    mb = music_base.MusicBase()
     mb.load_music_base()
 
     importWidget = ImportAlbumsWidget(app, mb)

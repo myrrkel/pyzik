@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import math, sys
+import math
+import sys
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QPalette
+from PyQt5.QtWidgets import QWidget, QMainWindow, QTextEdit, QGridLayout, QPushButton, QApplication
 
 
 class WaitOverlay(QWidget):

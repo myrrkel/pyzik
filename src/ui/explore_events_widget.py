@@ -234,8 +234,8 @@ class ExploreEventsWidget(QtWidgets.QDialog):
 
 if __name__ == "__main__":
     import sys
-    from pyzik import *
-    from music_base import MusicBase
+    from src import *
+    from src.music_base import MusicBase
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyleSheet(qdarktheme.load_stylesheet("dark"))

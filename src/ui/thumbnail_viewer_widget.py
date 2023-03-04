@@ -1,25 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QSize, QCoreApplication
 from PyQt5.QtWidgets import (
-    QApplication,
     QWidget,
     QListWidget,
-    QDialog,
-    QPushButton,
     QVBoxLayout,
-    QHeaderView,
-    QHBoxLayout,
-    QSlider,
     QSizePolicy,
-    QFrame,
-    QLabel,
-    QShortcut,
     QListWidgetItem,
 )
-import os
 from src.pic_from_url_thread import PicFromUrlThread
 from .full_screen_cover_widget import FullScreenCoverWidget
 

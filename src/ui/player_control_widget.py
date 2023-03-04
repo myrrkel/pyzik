@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtGui
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt, QCoreApplication, pyqtSignal, QSize
 
@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import (
 )
 
 from src.pic_from_url_thread import PicFromUrlThread
-from src.svg_icon import *
+import src.svg_icon as svg
 from .wait_overlay_widget import WaitOverlay
 
 import threading
@@ -52,28 +52,28 @@ class PlayerControlsWidget(QWidget):
 
         self.pauseButton = QPushButton()
         self.pauseButton.setToolTip(_translate("playlist", "Pause"))
-        self.pauseButton.setIcon(get_svg_icon("pause.svg"))
+        self.pauseButton.setIcon(svg.get_svg_icon("pause.svg"))
 
         layBt.addWidget(self.pauseButton)
 
         self.previousButton = QPushButton()
         self.previousButton.setToolTip(_translate("playlist", "Previous"))
-        self.previousButton.setIcon(get_svg_icon("step-backward.svg"))
+        self.previousButton.setIcon(svg.get_svg_icon("step-backward.svg"))
         layBt.addWidget(self.previousButton)
 
         self.nextButton = QPushButton()
         self.nextButton.setToolTip(_translate("playlist", "Next"))
-        self.nextButton.setIcon(get_svg_icon("step-forward.svg"))
+        self.nextButton.setIcon(svg.get_svg_icon("step-forward.svg"))
         layBt.addWidget(self.nextButton)
 
         self.fullscreenButton = QPushButton()
         self.fullscreenButton.setToolTip(_translate("playlist", "Full screen"))
-        self.fullscreenButton.setIcon(get_svg_icon("fullscreen.svg"))
+        self.fullscreenButton.setIcon(svg.get_svg_icon("fullscreen.svg"))
         layBt.addWidget(self.fullscreenButton)
 
         self.playlistButton = QPushButton()
         self.playlistButton.setToolTip(_translate("playlist", "Playlist"))
-        self.playlistButton.setIcon(get_svg_icon("playlist.svg"))
+        self.playlistButton.setIcon(svg.get_svg_icon("playlist.svg"))
         layBt.addWidget(self.playlistButton)
 
         self.frameBt.setMaximumSize(QSize(300, 40))
@@ -118,7 +118,7 @@ class PlayerControlWidget(QWidget):
 
         self.isWaitingCover = False
 
-        self.defaultRadioPix = get_svg_with_color_param("radio.svg", "", "#000000")
+        self.defaultRadioPix = svg.get_svg_with_color_param("radio.svg", "", "#000000")
 
         self.initUI()
 
@@ -226,7 +226,7 @@ class PlayerControlWidget(QWidget):
         self.cover.setPixmap(self.coverPixmap)
         self.cover.show()
         self.cover.mouseDoubleClickEvent = self.cover_mouse_double_click_event
-        self.waitOverlay = WaitOverlay(self.cover, 12, 25, ORANGE, 0)
+        self.waitOverlay = WaitOverlay(self.cover, 12, 25, svg.ORANGE, 0)
         # self.hideWaitOverlay()
 
         self.labelTitle = QLabel()

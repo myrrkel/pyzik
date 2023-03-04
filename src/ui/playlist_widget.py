@@ -20,16 +20,16 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QPixmap
 from src.track import Track
-import requests
+from src import ORANGE
 from src.pic_from_url_thread import PicFromUrlThread
+import src.svg_icon as svg
+
 from .table_widget_drag_rows import TableWidgetDragRows
 
-from src.svg_icon import *
 import logging
 
 logger = logging.getLogger(__name__)
 
-# orange = QtGui.QColor(216, 119, 0)
 white = QtGui.QColor(255, 255, 255)
 
 _translate = QCoreApplication.translate
@@ -46,28 +46,28 @@ class PlayerControlsWidget(QWidget):
 
         self.pauseButton = QPushButton()
         self.pauseButton.setToolTip(_translate("playlist", "Pause"))
-        self.pauseButton.setIcon(get_svg_icon("pause.svg"))
+        self.pauseButton.setIcon(svg.get_svg_icon("pause.svg"))
 
         lay.addWidget(self.pauseButton)
 
         self.previousButton = QPushButton()
         self.previousButton.setToolTip(_translate("playlist", "Previous"))
-        self.previousButton.setIcon(get_svg_icon("step-backward.svg"))
+        self.previousButton.setIcon(svg.get_svg_icon("step-backward.svg"))
         lay.addWidget(self.previousButton)
 
         self.nextButton = QPushButton()
         self.nextButton.setToolTip(_translate("playlist", "Next"))
-        self.nextButton.setIcon(get_svg_icon("step-forward.svg"))
+        self.nextButton.setIcon(svg.get_svg_icon("step-forward.svg"))
         lay.addWidget(self.nextButton)
 
         self.deleteButton = QPushButton()
         self.deleteButton.setToolTip(_translate("playlist", "Delete all tracks"))
-        self.deleteButton.setIcon(get_svg_icon("bin.svg"))
+        self.deleteButton.setIcon(svg.get_svg_icon("bin.svg"))
         lay.addWidget(self.deleteButton)
 
         self.fullscreenButton = QPushButton()
         self.fullscreenButton.setToolTip(_translate("playlist", "Full screen"))
-        self.fullscreenButton.setIcon(get_svg_icon("fullscreen.svg"))
+        self.fullscreenButton.setIcon(svg.get_svg_icon("fullscreen.svg"))
         lay.addWidget(self.fullscreenButton)
 
         self.volumeSlider = QSlider()
@@ -171,7 +171,7 @@ class PlaylistWidget(QDialog):
         self.mainFrame.setLayout(self.hLayout)
 
         self.cover_pixmap = QtGui.QPixmap()
-        self.defaultRadioPix = get_svg_with_color_param("radio.svg", "", "#000000")
+        self.defaultRadioPix = svg.get_svg_with_color_param("radio.svg", "", "#000000")
         self.defaultPixmap = QtGui.QPixmap()
 
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
@@ -594,7 +594,7 @@ class PlaylistWidget(QDialog):
 
 if __name__ == "__main__":
     import sys
-    from player_vlc import PlayerVLC
+    from src.player_vlc import PlayerVLC
 
     player = PlayerVLC()
 

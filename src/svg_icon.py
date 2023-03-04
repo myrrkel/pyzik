@@ -3,7 +3,7 @@
 
 from PyQt5 import QtGui, QtSvg
 from PyQt5.QtCore import Qt, QFile, QXmlStreamReader, QByteArray, QTextStream
-from global_constants import *
+from src import APP_DIR, ORANGE
 
 
 def get_svg_icon(file_name):

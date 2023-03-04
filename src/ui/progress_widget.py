@@ -116,8 +116,8 @@ class ProgressWidget(QtWidgets.QDialog):
 
 
 if __name__ == "__main__":
-    from pyzik import *
-
+    import sys
+    from src import *
     app = QtWidgets.QApplication(sys.argv)
     app.setStyleSheet(qdarktheme.load_stylesheet("dark"))
 

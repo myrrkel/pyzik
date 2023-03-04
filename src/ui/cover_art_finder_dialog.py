@@ -16,7 +16,7 @@ from PyQt5.QtCore import QThread
 
 from src.pic_from_url_thread import PicFromUrlThread
 from src.cover_art_finder import CoverArtFinder
-from src.svg_icon import *
+import svg_icon as svg
 
 from .wait_overlay_widget import WaitOverlay
 from .thumbnail_viewer_widget import ThumbnailViewerWidget
@@ -102,7 +102,7 @@ class CoverArtFinderDialog(QDialog):
         layBt = QHBoxLayout(self.btWidget)
 
         self.saveButton = QPushButton(_translate("coverArtFinder", "Save cover"))
-        self.saveButton.setIcon(get_svg_icon("save.svg"))
+        self.saveButton.setIcon(svg.get_svg_icon("save.svg"))
         self.saveButton.clicked.connect(self.save_cover)
         sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         self.saveButton.setSizePolicy(sizePolicy)

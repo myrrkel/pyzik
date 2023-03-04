@@ -4,7 +4,8 @@ import sqlite3
 from shutil import copyfile
 from io import StringIO
 from utils import year_to_num
-from global_constants import *
+import os
+from src import DATA_DIR
 import logging
 
 logger = logging.getLogger(__name__)

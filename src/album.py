@@ -7,8 +7,8 @@ import fnmatch
 from track import Track
 import database
 from files_utils import *
-from utils import *
-from global_constants import *
+from src import utils, IMAGE_FILE_EXTENSIONS, MUSIC_FILE_EXTENSIONS
+
 import format_string
 import logging
 
@@ -127,12 +127,12 @@ def title_except(title):
     exceptions = ["a", "an", "of", "the", "is", "in", "to"]
     word_list = re.split(" ", title)
 
-    final = [capitalise_word(word_list[0])]
+    final = [utils.capitalise_word(word_list[0])]
     for word in word_list[1:]:
         if str.lower(word) in exceptions:
             final.append(word.lower())
         else:
-            final.append(capitalise_word(word))
+            final.append(utils.capitalise_word(word))
     return " ".join(final)
 
 
@@ -249,10 +249,10 @@ class Album:
                 res_val, res_left = string_to_split, ""
 
         if res_val and string_separator["var"] == "year":
-            if not (res_val.isdigit() and is_year(res_val)):
+            if not (res_val.isdigit() and utils.is_year(res_val)):
                 return False
             else:
-                res_val = year_to_num(res_val)
+                res_val = utils.year_to_num(res_val)
 
         if res_val:
             return res_val, res_left
@@ -325,7 +325,7 @@ class Album:
         self.artist_name = self.artist_name.strip().upper()
         self.title = self.format_title(self.title)
 
-        if is_year(self.artist_name) or not self.title or not self.artist_name:
+        if utils.is_year(self.artist_name) or not self.title or not self.artist_name:
             self.to_verify = True
 
     def get_year_from_tags(self):

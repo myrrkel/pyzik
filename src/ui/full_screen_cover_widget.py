@@ -109,7 +109,7 @@ class FullScreenCoverWidget(QDialog):
 
 if __name__ == "__main__":
     import sys
-    from pic_downloader import PicDownloader
+    from src.pic_downloader import PicDownloader
 
     app = QApplication(sys.argv)
 

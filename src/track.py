@@ -10,7 +10,7 @@ from mutagen import MutagenError
 from mutagen import File
 from urllib.parse import unquote
 import logging
-from utils import *
+from src import utils
 
 logger = logging.getLogger(__name__)
 
@@ -222,7 +222,7 @@ class Track:
         if tag_dict:
             y = tag_dict.get("TYER")
             if y:
-                return year_to_num(y)
+                return utils.year_to_num(y)
             else:
                 y = tag_dict.get("TDRC")
                 if y:
@@ -230,7 +230,7 @@ class Track:
                     if len(str_y) > 4:
                         logger.debug("datas: %s", str_y)
                         str_y = str_y[:4]
-                    return year_to_num(str_y)
+                    return utils.year_to_num(str_y)
 
         return 0
 
