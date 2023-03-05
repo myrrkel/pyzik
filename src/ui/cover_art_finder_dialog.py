@@ -71,45 +71,45 @@ class CoverArtFinderDialog(QDialog):
     def init_ui(self):
         # self.resize(650,400)
 
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(100)
-        sizePolicy.setVerticalStretch(100)
+        size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        size_policy.setHorizontalStretch(100)
+        size_policy.setVerticalStretch(100)
 
-        self.centralWidget = QWidget(self)
+        self.central_widget = QWidget(self)
 
         self.overlay = WaitOverlay(self)
 
-        self.vLayout = QVBoxLayout()
+        self.vertical_layout = QVBoxLayout()
         # self.vLayout = QGridLayout()
-        self.vLayout.setContentsMargins(6, 6, 6, 6)
-        self.centralWidget.setLayout(self.vLayout)
+        self.vertical_layout.setContentsMargins(6, 6, 6, 6)
+        self.central_widget.setLayout(self.vertical_layout)
 
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(100)
-        sizePolicy.setVerticalStretch(100)
-        self.centralWidget.setSizePolicy(sizePolicy)
-        self.centralWidget.resize(652, 400)
+        size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        size_policy.setHorizontalStretch(100)
+        size_policy.setVerticalStretch(100)
+        self.central_widget.setSizePolicy(size_policy)
+        self.central_widget.resize(652, 400)
 
-        self.thumbViewer = ThumbnailViewerWidget(self.items)
-        self.thumbViewer.thumbWidget.setSpacing(4)
+        self.thumb_viewer = ThumbnailViewerWidget(self.items)
+        self.thumb_viewer.thumbWidget.setSpacing(4)
 
-        self.vLayout.addWidget(self.thumbViewer)
+        self.vertical_layout.addWidget(self.thumb_viewer)
 
-        self.btWidget = QWidget()
-        self.vLayout.addWidget(self.btWidget)
-        layBt = QHBoxLayout(self.btWidget)
+        self.bottom_buttons_widget = QWidget()
+        self.vertical_layout.addWidget(self.bottom_buttons_widget)
+        bottom_buttons_layout = QHBoxLayout(self.bottom_buttons_widget)
 
-        self.saveButton = QPushButton(_translate("coverArtFinder", "Save cover"))
-        self.saveButton.setIcon(svg.get_svg_icon("save.svg"))
-        self.saveButton.clicked.connect(self.save_cover)
-        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        self.saveButton.setSizePolicy(sizePolicy)
+        self.save_button = QPushButton(_translate("coverArtFinder", "Save cover"))
+        self.save_button.setIcon(svg.get_svg_icon("save.svg"))
+        self.save_button.clicked.connect(self.save_cover)
+        size_policy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.save_button.setSizePolicy(size_policy)
 
-        layBt.addStretch()
-        layBt.addWidget(self.saveButton)
-        layBt.addStretch()
+        bottom_buttons_layout.addStretch()
+        bottom_buttons_layout.addWidget(self.save_button)
+        bottom_buttons_layout.addStretch()
 
-        self.thumbViewer.reset_selection()
+        self.thumb_viewer.reset_selection()
 
         self.retranslateUi()
 
@@ -117,22 +117,24 @@ class CoverArtFinderDialog(QDialog):
 
     def resizeEvent(self, event):
         self.overlay.resize(event.size())
-        self.centralWidget.resize(event.size())
+        self.central_widget.resize(event.size())
         event.accept()
 
     def showEvent(self, event):
         self.search()
 
-    def search(self):
-        if self.album:
+    def search(self, keyword=''):
+        if keyword:
+            self.keyword = keyword
+        elif self.album:
             self.keyword = self.album.get_cover_search_text()
         self.cover_finder_thread.keyword = self.keyword
         self.cover_finder_thread.start()
 
     def save_cover(self):
-        url = self.thumbViewer.selected_url
+        url = self.thumb_viewer.selected_url
         if url != "":
-            self.selected_file = self.thumbViewer.selected_file
+            self.selected_file = self.thumb_viewer.selected_file
             if self.selected_file == "":
                 self.pic_from_url_thread.url = url
                 self.pic_from_url_thread.start()
@@ -161,14 +163,14 @@ class CoverArtFinderDialog(QDialog):
         self.overlay.hide()
 
     def closeEvent(self, event):
-        self.thumbViewer.thumbWidget.clear()
-        self.thumbViewer.remove_temp_files(self.cover_saved)
-        self.thumbViewer.reset_selection()
+        self.thumb_viewer.thumbWidget.clear()
+        self.thumb_viewer.remove_temp_files(self.cover_saved)
+        self.thumb_viewer.reset_selection()
         self.overlay.kill_timer()
         self.close()
 
     def add_thumbnail_item(self, url, thumbnail_url, name):
-        self.thumbViewer.add_thumbnail_item(url, thumbnail_url, name)
+        self.thumb_viewer.add_thumbnail_item(url, thumbnail_url, name)
 
     def show_thumbnails(self):
         for thumb in self.items:
@@ -181,7 +183,7 @@ class CoverArtFinderDialog(QDialog):
             self.add_thumbnail_item(url, thumbnail_url, name)
 
     def retranslateUi(self):
-        self.saveButton.setText(_translate("coverArtFinder", "Save cover"))
+        self.save_button.setText(_translate("coverArtFinder", "Save cover"))
         self.setWindowTitle(_translate("coverArtFinder", "Cover finder"))
 
 
