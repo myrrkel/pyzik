@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class ExploreAlbumsDirectoriesThread(QThread):
-    """Read datas from files in the album folder"""
+    """Explore album directories"""
 
     do_stop = False
     music_base = None

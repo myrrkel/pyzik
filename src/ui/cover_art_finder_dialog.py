@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtCore import Qt, QSize, QCoreApplication
+from PyQt5.QtCore import Qt, QCoreApplication, pyqtSignal, QThread
 from PyQt5.QtWidgets import (
     QApplication,
     QWidget,
@@ -11,8 +11,6 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QSizePolicy,
 )
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtCore import QThread
 
 from src.pic_from_url_thread import PicFromUrlThread
 from src.cover_art_finder import CoverArtFinder
@@ -28,7 +26,7 @@ _translate = QCoreApplication.translate
 
 
 class CoverFinderSearchThread(QThread):
-    """Read datas from files in the album folder"""
+    """Search image"""
 
     do_stop = False
     music_base = None
@@ -120,7 +118,6 @@ class CoverArtFinderDialog(QDialog):
     def resizeEvent(self, event):
         self.overlay.resize(event.size())
         self.centralWidget.resize(event.size())
-
         event.accept()
 
     def showEvent(self, event):
@@ -153,7 +150,6 @@ class CoverArtFinderDialog(QDialog):
         self.album.cover_saved = True
         self.album.cover = ''
         self.signal_cover_saved.emit(1)
-        print("saveSelectedCover")
         self.close()
 
     def on_cover_finder_result(self, result):

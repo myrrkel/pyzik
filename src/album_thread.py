@@ -3,7 +3,7 @@ from PyQt5.QtCore import QThread
 
 
 class LoadAlbumFilesThread(QThread):
-    """Read datas from files in the album folder"""
+    """Read datas from files in album folder"""
 
     do_stop = False
     album = None
