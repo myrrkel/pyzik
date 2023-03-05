@@ -68,20 +68,20 @@ class ThumbnailViewerWidget(QWidget):
     def __init__(self, items):
         QWidget.__init__(self)
         self.items = items
-        self.tempFiles = []
-        self.selectedFile = ""
-        self.selectedURL = ""
-        self.isDownloading = False
-        self.fullScreenCover = FullScreenCoverWidget()
-        self.picFromUrlThread = PicFromUrlThread()
-        self.picFromUrlThread.download_completed.connect(self.on_pic_downloaded)
+        self.temp_files = []
+        self.selected_file = ""
+        self.selected_url = ""
+        self.is_downloading = False
+        self.full_screen_cover = FullScreenCoverWidget()
+        self.pic_from_url_thread = PicFromUrlThread()
+        self.pic_from_url_thread.download_completed.connect(self.on_pic_downloaded)
 
         self.setWindowFlags(Qt.Window)
         self.initUI()
 
     def reset_selection(self):
-        self.selectedFile = ""
-        self.selectedURL = ""
+        self.selected_file = ""
+        self.selected_url = ""
 
     def initUI(self):
         self.vLayout = QVBoxLayout()
@@ -108,42 +108,42 @@ class ThumbnailViewerWidget(QWidget):
 
     def on_selected_item(self, item):
         print("SelectedURL=" + item.url)
-        self.selectedURL = item.url
-        self.selectedFile = ""
+        self.selected_url = item.url
+        self.selected_file = ""
 
     def show_item(self, item):
-        if self.isDownloading == False:
-            self.fullScreenCover.show()
-            self.fullScreenCover.init_cover()
-            self.picFromUrlThread.url = item.get_url()
-            self.picFromUrlThread.start()
+        if not self.is_downloading:
+            self.full_screen_cover.show()
+            self.full_screen_cover.init_cover()
+            self.pic_from_url_thread.url = item.get_url()
+            self.pic_from_url_thread.start()
 
     def on_pic_downloaded(self, uri):
-        self.tempFiles.append(uri)
-        self.selectedFile = uri
-        self.isDownloading = False
+        self.temp_files.append(uri)
+        self.selected_file = uri
+        self.is_downloading = False
 
-        self.fullScreenCover.set_pixmap_from_uri(uri)
+        self.full_screen_cover.set_pixmap_from_uri(uri)
         # self.fullScreenCover.setBackgroundBlack()
-        self.fullScreenCover.showFullScreen()
+        self.full_screen_cover.showFullScreen()
         # self.fullScreenCover.show()
 
     def add_temp_file(self, path):
-        self.tempFiles.append(path)
+        self.temp_files.append(path)
 
-    def remove_temp_files(self, fileSaved=False):
-        print("Remove temp thumb files:" + str(range(len(self.tempFiles))))
-        for i in reversed(range(len(self.tempFiles))):
-            uri = self.tempFiles[i]
+    def remove_temp_files(self, file_saved=False):
+        print("Remove temp thumb files:" + str(range(len(self.temp_files))))
+        for i in reversed(range(len(self.temp_files))):
+            uri = self.temp_files[i]
             print("File n°" + str(i) + " =" + uri)
-            if not (uri == self.selectedFile and fileSaved):
+            if not (uri == self.selected_file and file_saved):
                 if os.path.isfile(uri):
                     print("remove File=" + uri)
                     os.remove(uri)
-                del self.tempFiles[i]
+                del self.temp_files[i]
 
-    def add_thumbnail_item(self, url, thumbURL, name):
-        self.thumbWidget.addItem(ThumbnailItem(self, url, thumbURL, name))
+    def add_thumbnail_item(self, url, thumbnail_url, name):
+        self.thumbWidget.addItem(ThumbnailItem(self, url, thumbnail_url, name))
 
     # def showThumbnails(self):
     #     for thumb in self.items:

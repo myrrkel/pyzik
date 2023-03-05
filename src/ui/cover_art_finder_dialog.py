@@ -133,9 +133,9 @@ class CoverArtFinderDialog(QDialog):
         self.cover_finder_thread.start()
 
     def save_cover(self):
-        url = self.thumbViewer.selectedURL
+        url = self.thumbViewer.selected_url
         if url != "":
-            self.selected_file = self.thumbViewer.selectedFile
+            self.selected_file = self.thumbViewer.selected_file
             if self.selected_file == "":
                 self.pic_from_url_thread.url = url
                 self.pic_from_url_thread.start()
@@ -161,7 +161,7 @@ class CoverArtFinderDialog(QDialog):
             return
         self.items = self.cover_finder.items
         logger.debug("ITEMS : %s", self.items)
-        self.showThumbnails()
+        self.show_thumbnails()
         self.overlay.hide()
 
     def closeEvent(self, event):
@@ -171,18 +171,18 @@ class CoverArtFinderDialog(QDialog):
         self.overlay.kill_timer()
         self.close()
 
-    def addThumbnailItem(self, url, thumbURL, name):
-        self.thumbViewer.add_thumbnail_item(url, thumbURL, name)
+    def add_thumbnail_item(self, url, thumbnail_url, name):
+        self.thumbViewer.add_thumbnail_item(url, thumbnail_url, name)
 
-    def showThumbnails(self):
+    def show_thumbnails(self):
         for thumb in self.items:
-            thumbURL = thumb["image_thumbnail_url"]
+            thumbnail_url = thumb["image_thumbnail_url"]
             url = thumb["image_link"]
             height = thumb["image_height"]
             width = thumb["image_width"]
             name = str(height) + "x" + str(width)
-            print("thumbURL=" + thumbURL)
-            self.addThumbnailItem(url, thumbURL, name)
+            print("thumbnail_url=" + thumbnail_url)
+            self.add_thumbnail_item(url, thumbnail_url, name)
 
     def retranslateUi(self):
         self.saveButton.setText(_translate("coverArtFinder", "Save cover"))
