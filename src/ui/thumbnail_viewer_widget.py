@@ -45,10 +45,10 @@ class ThumbnailIcon(QtGui.QIcon):
         QtGui.QIcon.__init__(self)
         self.parent = parent
         self.path = ""
-        self.picFromUrlThread = PicFromUrlThread()
-        self.picFromUrlThread.download_completed.connect(self.on_pic_downloaded)
-        self.picFromUrlThread.url = url
-        self.picFromUrlThread.start()
+        self.pic_from_url_thread = PicFromUrlThread()
+        self.pic_from_url_thread.download_completed.connect(self.on_pic_downloaded)
+        self.pic_from_url_thread.url = url
+        self.pic_from_url_thread.start()
 
     def on_pic_downloaded(self, path):
         self.path = path

@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QSizePolicy,
 )
-
+from .labeled_widgets import LineEditLabeledWidget
 from src.pic_from_url_thread import PicFromUrlThread
 from src.cover_art_finder import CoverArtFinder
 import src.svg_icon as svg
@@ -70,25 +70,36 @@ class CoverArtFinderDialog(QDialog):
 
     def init_ui(self):
         # self.resize(650,400)
+        self.overlay = WaitOverlay(self)
 
         size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         size_policy.setHorizontalStretch(100)
         size_policy.setVerticalStretch(100)
 
         self.central_widget = QWidget(self)
-
-        self.overlay = WaitOverlay(self)
-
-        self.vertical_layout = QVBoxLayout()
-        # self.vLayout = QGridLayout()
-        self.vertical_layout.setContentsMargins(6, 6, 6, 6)
-        self.central_widget.setLayout(self.vertical_layout)
-
         size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         size_policy.setHorizontalStretch(100)
         size_policy.setVerticalStretch(100)
         self.central_widget.setSizePolicy(size_policy)
         self.central_widget.resize(652, 400)
+
+        self.vertical_layout = QVBoxLayout()
+        self.vertical_layout.setContentsMargins(6, 6, 6, 6)
+        self.central_widget.setLayout(self.vertical_layout)
+
+        self.top_buttons_widget = QWidget()
+        self.vertical_layout.addWidget(self.top_buttons_widget)
+        top_buttons_layout = QHBoxLayout(self.top_buttons_widget)
+
+        self.search_text = LineEditLabeledWidget(self, 'search_text', 'Extra keywords')
+        top_buttons_layout.addWidget(self.search_text)
+        self.search_button = QPushButton(_translate("coverArtFinder", "Search cover"))
+        self.search_button.setIcon(svg.get_svg_icon("search.svg"))
+        self.search_button.clicked.connect(self.search_extra_keywords)
+        size_policy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.search_button.setSizePolicy(size_policy)
+        top_buttons_layout.addWidget(self.search_button)
+        top_buttons_layout.addStretch()
 
         self.thumb_viewer = ThumbnailViewerWidget(self.items)
         self.thumb_viewer.thumbWidget.setSpacing(4)
@@ -123,11 +134,25 @@ class CoverArtFinderDialog(QDialog):
     def showEvent(self, event):
         self.search()
 
+    def search_extra_keywords(self):
+        self.reset_items()
+        self.search(self.album.get_cover_search_text() + ' ' + self.search_text.line_edit.text())
+
+    def reset_items(self):
+        self.pic_from_url_thread = PicFromUrlThread()
+        self.items = []
+        self.cover_finder.items = []
+        self.thumb_viewer.thumbWidget.clear()
+        self.thumb_viewer.remove_temp_files()
+        self.thumb_viewer.reset_selection()
+
     def search(self, keyword=''):
         if keyword:
             self.keyword = keyword
         elif self.album:
             self.keyword = self.album.get_cover_search_text()
+
+        self.setWindowTitle('%s - %s' % (_translate("coverArtFinder", "Cover finder"), self.keyword))
         self.cover_finder_thread.keyword = self.keyword
         self.cover_finder_thread.start()
 
