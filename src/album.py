@@ -434,6 +434,8 @@ class Album:
         return res
 
     def get_images(self, subdir=""):
+        images = []
+        subdir_images = []
         self.do_stop = False
         if not self.check_dir():
             return False
@@ -453,7 +455,7 @@ class Album:
                 break
             if os.path.isdir(os.path.join(current_dir, str(file))):
                 # file is a directory
-                self.get_images(os.path.join(subdir, file))
+                subdir_images.extend(self.get_images(os.path.join(subdir, file)))
             else:
                 if file == "cover":
                     os.rename(
@@ -464,8 +466,11 @@ class Album:
                 for ext in IMAGE_FILE_EXTENSIONS:
                     if fnmatch.fnmatch(file.lower(), "*." + ext):
                         file_name = os.path.join(current_dir, file)
-                        self.images.append(file_name)
+                        images.append(file_name)
                         break
+        images.extend(subdir_images)
+        self.images = images
+        return images
 
     def get_cover(self):
         if len(self.images) > 0:
