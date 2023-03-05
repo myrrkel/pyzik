@@ -273,7 +273,7 @@ class Radio:
     def is_timeout(self, nb_sec=10):
         res = True
         tsNow = time.time()
-        if self.live_track_end is not None:
+        if self.live_track_end:
             if self.live_track_end > tsNow:
                 res = False
             else:
@@ -359,7 +359,7 @@ class Radio:
         Get live title from Radio France
         """
 
-        if self.live_track_end is not None:
+        if self.live_track_end:
             now = time.time()
             if self.live_track_end > now:
                 return self.live_track_title

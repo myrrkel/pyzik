@@ -29,7 +29,7 @@ class WaitOverlay(QWidget):
         self.circle_size = circle_size
         self.hide_on_click = hide_on_click
 
-        if color is None:
+        if not color:
             self.color = QColor(100, 100, 100)
         else:
             self.color = color

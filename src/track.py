@@ -80,19 +80,19 @@ class Track:
         self.file_name, self.extension = os.path.splitext(basename)
 
     def get_artist_name(self):
-        if self.parent_album is not None:
+        if self.parent_album:
             return self.parent_album.artist_name
         else:
             return self.artist
 
     def get_album_year(self):
-        if self.parent_album is not None and self.year == 0:
+        if self.parent_album and self.year == 0:
             return self.parent_album.year
         else:
             return self.year
 
     def get_album_title(self):
-        if self.parent_album is not None:
+        if self.parent_album:
             return self.parent_album.title
         else:
             return self.album

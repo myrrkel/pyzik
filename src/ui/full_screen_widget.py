@@ -43,11 +43,11 @@ class FullScreenWidget(QDialog):
 
         self.initUI()
 
-        if self.picFromUrlThread is None:
+        if not self.picFromUrlThread:
             self.picFromUrlThread = PicFromUrlThread()
 
         self.shortcutPause = QShortcut(QKeySequence("Space"), self)
-        if self.player is not None:
+        if self.player:
             self.shortcutPause.activated.connect(self.player.pause)
         self.shortcutClose = QShortcut(QKeySequence("Escape"), self)
         self.shortcutClose.activated.connect(self.close)
@@ -125,7 +125,7 @@ class FullScreenWidget(QDialog):
             self.cover.setPixmap(scaledCover)
 
     def set_current_track(self, title=""):
-        if self.player is None:
+        if not self.player:
             return
 
         if self.isVisible() == False:
@@ -146,7 +146,7 @@ class FullScreenWidget(QDialog):
             cover_url = self.player.get_live_cover_url()
             if cover_url == "":
                 rad = self.player.get_current_radio()
-                if rad is not None:
+                if rad:
                     cover_url = rad.get_radio_pic()
 
             if self.currentCoverPath == cover_url:
@@ -158,9 +158,9 @@ class FullScreenWidget(QDialog):
                 self.picFromUrlThread.start()
 
         else:
-            if trk is not None and trk.parentAlbum is not None:
+            if trk and trk.parentAlbum:
                 print("fullscreenWidget trk.parentAlbum.cover=" + trk.parentAlbum.cover)
-                if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
+                if not trk.parentAlbum.cover:
                     self.coverPixmap = self.defaultPixmap
                 else:
                     cover_path = trk.parentAlbum.get_cover_path()
@@ -170,7 +170,7 @@ class FullScreenWidget(QDialog):
                     self.show_cover_pixmap(cover_path)
 
     def show_cover_pixmap(self, path):
-        if self.picBufferManager is None:
+        if not self.picBufferManager:
             self.coverPixmap = QPixmap(path)
         else:
             self.coverPixmap = self.picBufferManager.get_pic(path)

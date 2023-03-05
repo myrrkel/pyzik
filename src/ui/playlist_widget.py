@@ -103,7 +103,7 @@ class PlaylistWidget(QDialog):
         self.mediaList = self.player.media_list
         self.fullScreenWidget = None
 
-        if self.picFromUrlThread is None:
+        if not self.picFromUrlThread:
             self.picFromUrlThread = PicFromUrlThread()
 
         self.initUI()
@@ -213,13 +213,13 @@ class PlaylistWidget(QDialog):
     def set_is_time_slider_down(self, event=None):
         print("setIsTimeSliderDown")
         self.isTimeSliderDown = True
-        if event is not None:
+        if event:
             return event.accept()
 
     def set_is_time_slider_released(self, event=None):
         print("setIsTimeSliderReleased")
         self.isTimeSliderDown = False
-        if event is not None:
+        if event:
             return event.accept()
 
     def onResize(self, event):
@@ -398,14 +398,14 @@ class PlaylistWidget(QDialog):
         self.mediaList = self.player.media_list
         for i in range(self.mediaList.count()):
             m = self.mediaList.item_at_index(i)
-            if m is None:
+            if not m:
                 print("BREAK ShowMediaList media=", i)
                 break
 
             mrl = m.get_mrl()
             # print("ShowMediaList mrl="+mrl)
             t = self.player.get_track_from_mrl(mrl)
-            if t is None:
+            if not t:
                 t = Track()
                 t.set_mrl(mrl)
                 t.title = self.player.get_title()
@@ -445,11 +445,11 @@ class PlaylistWidget(QDialog):
 
         for i in range(0, self.mediaList.count()):
             item = self.tableWidgetTracks.item(i, 0)
-            if item is None:
+            if not item:
                 print("BREAK setCurrentTrack item=", i)
                 break
 
-            if trk is None:
+            if not trk:
                 self.show_default_pixmap()
                 if self.player.radio_mode:
                     item.setText(title)
@@ -457,10 +457,8 @@ class PlaylistWidget(QDialog):
                     item1.setText("")
                     item2 = self.tableWidgetTracks.item(i, 2)
                     item2.setText("")
-                else:
-                    print("trk is None")
 
-            if trk is not None and trk.radio_name != "" and i == index:
+            if trk and trk.radio_name != "" and i == index:
                 if title != "":
                     if title == "NO_META":
                         title = trk.radio_name
@@ -478,7 +476,7 @@ class PlaylistWidget(QDialog):
 
             f = item.font()
             if i == index:
-                if trk is not None:
+                if trk:
                     self.show_cover(trk)
                 f.setBold(True)
                 f.setItalic(True)
@@ -511,7 +509,7 @@ class PlaylistWidget(QDialog):
             cover_url = self.player.get_live_cover_url()
             if cover_url == "":
                 rad = self.player.get_current_radio()
-                if rad is not None:
+                if rad:
                     cover_url = rad.get_radio_pic()
 
             if cover_url is None:
@@ -529,9 +527,9 @@ class PlaylistWidget(QDialog):
 
         else:
             # self.picFromUrlThread.resetLastURL()
-            if trk is not None and trk.parentAlbum is not None:
+            if trk and trk.parentAlbum:
                 print("playlistWidget trk.parentAlbum.cover=" + trk.parentAlbum.cover)
-                if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
+                if not trk.parentAlbum.cover:
                     self.cover_pixmap = self.defaultPixmap
                 else:
                     cover_path = trk.parentAlbum.get_cover_path()
@@ -539,7 +537,7 @@ class PlaylistWidget(QDialog):
                     self.show_cover_pixmap(cover_path)
 
     def show_cover_pixmap(self, path):
-        if self.picBufferManager is None:
+        if not self.picBufferManager:
             self.cover_pixmap = QtGui.QPixmap(path)
         else:
             self.cover_pixmap = self.picBufferManager.get_pic(path)

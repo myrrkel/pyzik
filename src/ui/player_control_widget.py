@@ -157,7 +157,7 @@ class PlayerControlWidget(QWidget):
         self.showFullScreen()
 
     def resizeEvent(self, event):
-        if self.waitOverlay is not None:
+        if self.waitOverlay:
             self.waitOverlay.resize(self.cover.size())
 
         event.accept()
@@ -250,7 +250,7 @@ class PlayerControlWidget(QWidget):
         self.mainFrame.setLayout(self.vLayout)
         self.hMainLayout.addWidget(self.mainFrame)
 
-        if self.pic_from_url_thread is None:
+        if not self.pic_from_url_thread:
             self.pic_from_url_thread = PicFromUrlThread()
 
         self.retranslateUi()
@@ -321,13 +321,13 @@ class PlayerControlWidget(QWidget):
     def set_is_time_slider_down(self, event=None):
         print("setIsTimeSliderDown")
         self.is_time_slider_down = True
-        if event is not None:
+        if event:
             return event.accept()
 
     def set_is_time_slider_released(self, event=None):
         print("setIsTimeSliderReleased")
         self.is_time_slider_down = False
-        if event is not None:
+        if event:
             return event.accept()
 
     def showFullScreen(self):
@@ -358,14 +358,14 @@ class PlayerControlWidget(QWidget):
         process_thread.start()
 
     def set_current_track(self, title=""):
-        if self.player is None:
+        if not self.player:
             return
 
         index = self.player.get_current_index_playlist()
         print("PlayerControl setCurrentTrack:", index)
 
         trk = self.player.get_current_track_playlist()
-        if trk is None and title:
+        if not trk and title:
             self.set_title_label(title)
             self.show_cover()
             return
@@ -381,10 +381,10 @@ class PlayerControlWidget(QWidget):
             cover_url = self.player.get_live_cover_url()
             if cover_url == "":
                 rad = self.player.get_current_radio()
-                if rad is not None:
+                if rad:
                     cover_url = rad.get_radio_pic()
 
-            if cover_url is None:
+            if not cover_url:
                 cover_url = ""
             logger.debug("showCover: %s", cover_url)
             if self.current_cover_path == cover_url:
@@ -405,8 +405,8 @@ class PlayerControlWidget(QWidget):
 
         else:
             self.isWaitingCover = False
-            if trk is not None and trk.parentAlbum is not None:
-                if trk.parentAlbum.cover == "" or trk.parentAlbum.cover is None:
+            if trk and trk.parentAlbum:
+                if not trk.parentAlbum.cover:
                     self.current_cover_path = ""
                     self.coverPixmap = self.defaultPixmap
                 else:
@@ -432,7 +432,7 @@ class PlayerControlWidget(QWidget):
                 self.timeSlider.setVisible(True)
 
     def set_track_label_text(self):
-        if self.current_track is None:
+        if not self.current_track:
             return
 
         art_name = self.current_track.get_artist_name()
@@ -461,7 +461,7 @@ class PlayerControlWidget(QWidget):
         radio_name = ""
         now_playing = ""
         if title == "":
-            if self.current_track is None:
+            if not self.current_track:
                 return
             if self.current_track.radio:
                 radio_name = self.current_track.radio.name

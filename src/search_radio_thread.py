@@ -37,7 +37,7 @@ class SearchRadioThread(QThread):
         self.do_stop = False
         i = 0
         self.emit_progress(0)
-        if self.machines is None:
+        if not self.machines:
             self.machines = self.radio_manager.machines
         self.machine_nb = len(self.machines)
         for machine in self.machines:

@@ -55,14 +55,14 @@ class MusicBase:
     def add_genres_dir_to_albums(self):
         for album in self.album_col.albums:
             music_directory = self.music_directory_col.get_music_directory(album.music_directory_id)
-            if music_directory is not None:
+            if music_directory:
                 if music_directory.style_id >= -1:
                     album.add_style({music_directory.style_id})
 
     def add_albums_to_artists(self):
         for album in self.album_col.albums:
             artist_found = self.artist_col.get_artist_by_id(album.artist_id)
-            if artist_found is not None:
+            if artist_found:
                 album.artist_name = artist_found.name
                 artist_found.add_style(album.style_ids)
                 artist_found.albums.append(album)

@@ -63,7 +63,7 @@ class CoverArtFinderDialog(QDialog):
         self.cover_finder = self.cover_finder_thread.cover_finder
         self.cover_finder_thread.result_found.connect(self.on_cover_finder_result)
 
-        if self.pic_from_url_thread is None:
+        if not self.pic_from_url_thread:
             self.pic_from_url_thread = PicFromUrlThread()
         self.pic_from_url_thread.download_completed.connect(self.on_selected_pic_downloaded)
 
@@ -127,7 +127,7 @@ class CoverArtFinderDialog(QDialog):
         self.search()
 
     def search(self):
-        if self.album is not None:
+        if self.album:
             self.keyword = self.album.get_cover_search_text()
         self.cover_finder_thread.keyword = self.keyword
         self.cover_finder_thread.start()

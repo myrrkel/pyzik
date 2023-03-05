@@ -40,7 +40,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.currentDir.directory_name = self.ui.Name.text()
 
     def on_dir_changed(self, item):
-        if self.currentDir is not None:
+        if self.currentDir:
             self.currentDir.music_base = self.music_base
             self.currentDir.update_music_directory_db()
         sel = self.ui.DirListView.selectionModel().selectedIndexes()
@@ -117,14 +117,14 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         self.currentDir.dir_path = directory
 
     def on_change_genre(self):
-        if self.currentDir is not None:
+        if self.currentDir:
             current_data = self.ui.comboStyle.currentData()
             if current_data:
                 self.currentDir.style_id = current_data
                 print("New Genre ID=", self.currentDir.style_id)
 
     def on_change_dir_type(self):
-        if self.currentDir is not None:
+        if self.currentDir:
             self.currentDir.dir_type = self.ui.comboDirType.currentIndex()
             print("New Dir Type ID=", self.currentDir.dir_type)
 
@@ -132,7 +132,7 @@ class DialogMusicDirectoriesLoader(QtWidgets.QDialog):
         return str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory"))
 
     def closeEvent(self, event):
-        if self.currentDir is not None:
+        if self.currentDir:
             self.currentDir.music_base = self.music_base
             self.currentDir.update_music_directory_db()
 

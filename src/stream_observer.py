@@ -64,8 +64,8 @@ class StreamObserver(QThread):
                     """No meta, no adblock"""
                     self.player.ad_killed = False
                     trk = self.player.get_current_track_playlist()
-                    if trk is not None:
-                        if trk.radio is not None:
+                    if trk:
+                        if trk.radio:
                             rad = trk.radio
                             title = rad.get_current_track()
                             if title == "":

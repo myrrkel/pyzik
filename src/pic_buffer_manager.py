@@ -25,14 +25,11 @@ class PicBufferManager:
 
     def get_pic(self, path):
         item = self.find_item(path)
-        if item is not None:
-            pix = item.pix
-        else:
+        if not item:
             item = PicBufferItem(path)
-            pix = item.pix
             self.items.append(item)
             self.check_buffer_size()
-
+        pix = item.pix
         return pix
 
     def find_item(self, path):
@@ -40,8 +37,6 @@ class PicBufferManager:
         items += [el for el in self.items if el.path == path]
         if len(items) > 0:
             return items[0]
-        else:
-            return None
 
     def check_buffer_size(self):
         """Remove oldest pixmap from the buffer if 5 are in ram"""

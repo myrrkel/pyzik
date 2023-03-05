@@ -16,38 +16,38 @@ class PicFromUrlThread(QThread):
     """Get a pic from url"""
     downloader = PicDownloader()
     download_completed = pyqtSignal(str, name="downloadCompleted")
-    lastTempFile = ""
-    lastUrl = ""
+    last_temp_file = ""
+    last_url = ""
     url = ""
 
     def run(self):
         if self.url == "":
-            self.lastUrl = self.url
+            self.last_url = self.url
             self.download_completed.emit("")
             return
 
-        if self.lastUrl != self.url:
-            self.lastUrl = self.url
-            self.lastTempFile = ""
+        if self.last_url != self.url:
+            self.last_url = self.url
+            self.last_temp_file = ""
             self.remove_last_temp_file()
 
-            self.lastTempFile = self.downloader.get_pic(self.url)
-            if self.lastTempFile:
-                self.download_completed.emit(str(self.lastTempFile))
+            self.last_temp_file = self.downloader.get_pic(self.url)
+            if self.last_temp_file:
+                self.download_completed.emit(str(self.last_temp_file))
             else:
                 logger.error("ERROR NO FILE")
         else:
-            if self.lastTempFile != "":
-                self.download_completed.emit(self.lastTempFile)
+            if self.last_temp_file != "":
+                self.download_completed.emit(self.last_temp_file)
 
     def reset_last_url(self):
-        self.lastUrl = ""
+        self.last_url = ""
 
     def set_url(self, url):
 
         self.url = url
 
     def remove_last_temp_file(self):
-        if self.lastTempFile != "":
-            os.remove(self.lastTempFile)
-            self.lastTempFile = ""
+        if self.last_temp_file != "":
+            os.remove(self.last_temp_file)
+            self.last_temp_file = ""

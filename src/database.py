@@ -275,7 +275,7 @@ class Database:
 
     def get_select(self, select_sql, attach_main=False, params=None):
         c = self.connection.cursor()
-        if params is None:
+        if not params:
             if attach_main:
                 c.execute("ATTACH DATABASE '" + self.dataPathMain + "' as 'maindb';")
             c.execute(select_sql)

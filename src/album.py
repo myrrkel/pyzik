@@ -584,7 +584,7 @@ class Album:
             alb_length += trk.duration
 
         print("album length=" + str(alb_length))
-        if alb_length > 0 and (alb_length != self.length or self.length is None):
+        if alb_length > 0 and (alb_length != self.length or not self.length):
             self.length = int(alb_length)
             self.update_length()
 
