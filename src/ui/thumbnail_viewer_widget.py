@@ -132,13 +132,10 @@ class ThumbnailViewerWidget(QWidget):
         self.temp_files.append(path)
 
     def remove_temp_files(self, file_saved=False):
-        print("Remove temp thumb files:" + str(range(len(self.temp_files))))
         for i in reversed(range(len(self.temp_files))):
             uri = self.temp_files[i]
-            print("File n°" + str(i) + " =" + uri)
             if not (uri == self.selected_file and file_saved):
                 if os.path.isfile(uri):
-                    print("remove File=" + uri)
                     os.remove(uri)
                 del self.temp_files[i]
 

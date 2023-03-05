@@ -15,6 +15,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def keyword_not_back(image, keyword):
+    name = get_file_name(image.lower())
+    return keyword in name and 'back' not in name
+
+
 def get_common_formats(with_year=True, generic=False):
     def get_separator(sep, side, var_name):
         return {"separator": sep, "side": side, "var": var_name}
@@ -473,52 +478,38 @@ class Album:
         return images
 
     def get_cover(self):
-        if len(self.images) > 0:
-            keywords = [
-                "cover",
-                "front",
-                "artwork",
-                "capa",
-                "caratula",
-                "recto",
-                "portada",
-                "frente editada",
-                "frente",
-                "folder",
-                "f",
-            ]
-
-            cover_found = ""
-            for keyword in keywords:
-                cover_found = next(
-                    (x for x in self.images if keyword == get_file_name(x.lower())), ""
-                )
-                if cover_found != "":
-                    self.cover = cover_found
-                    break
-
-            if cover_found == "":
-                for keyword in keywords:
-                    cover_found = next(
-                        (
-                            x for x in self.images
-                            if keyword in get_file_name(x.lower()) and "back" not in get_file_name(x.lower())
-                        ),
-                        "",
-                    )
-                    if cover_found:
-                        self.cover = cover_found
-                        break
-            # print("getCover cover="+self.cover)
-
-            if self.cover == "":
-                # print("getCover GetDefault="+self.images[0])
-                self.cover = self.images[0]
-
-        logger.debug("getCover %s", self.cover)
-        if self.cover == "":
+        if not self.images:
             self.cover = self.get_pic_from_tags()
-            logger.debug("getCover %s", self.cover)
+            return
+
+        keywords = [
+            "cover",
+            "front",
+            "artwork",
+            "capa",
+            "caratula",
+            "recto",
+            "portada",
+            "frente editada",
+            "frente",
+            "folder",
+            "f",
+        ]
+
+        for keyword in keywords:
+            for image in self.images:
+                if keyword == get_file_name(image.lower()):
+                    self.cover = image
+                    return
+
+        for keyword in keywords:
+            for image in self.images:
+                if keyword_not_back(image, keyword):
+                    self.cover = image
+                    return
+
+        if not self.cover:
+            self.cover = self.images[0]
 
     def get_cover_path(self):
         return os.path.join(self.get_album_dir(), self.cover)

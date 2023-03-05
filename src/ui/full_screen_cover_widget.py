@@ -93,7 +93,6 @@ class FullScreenCoverWidget(QDialog):
 
     def show_cover(self):
         if not self.coverPixmap.isNull():
-            print("Pic size=" + str(self.cover.size()))
             scaled_cover = self.coverPixmap.scaled(
                 self.cover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
