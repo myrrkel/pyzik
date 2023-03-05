@@ -22,12 +22,12 @@ class CustomWidget(QtWidgets.QDialog):
         self.parent = parent
         self.setWindowFlags(QtCore.Qt.Window)
 
-        self.initUI()
+        self.init_ui()
 
         # self.showTableItems(self.mainItem.items)
         # self.initColumnHeaders()
 
-    def initUI(self):
+    def init_ui(self):
         layout = QtWidgets.QVBoxLayout()
         self.setLayout(layout)
 

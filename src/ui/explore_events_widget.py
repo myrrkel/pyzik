@@ -23,9 +23,9 @@ class ExploreEventsWidget(QtWidgets.QDialog):
         self.music_base.db = Database()
         self.setWindowFlags(QtCore.Qt.Window)
 
-        self.initUI()
+        self.init_ui()
 
-    def initUI(self):
+    def init_ui(self):
         self.setWindowTitle(_translate("menu", "Explore Events"))
         self.main_layout = QtWidgets.QVBoxLayout()
         self.setLayout(self.main_layout)

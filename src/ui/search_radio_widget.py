@@ -82,7 +82,7 @@ class SearchRadioWidget(QtWidgets.QDialog):
         self.player = player
         self.search_radio_thread = SearchRadioThread()
 
-        self.initUI()
+        self.init_ui()
 
         self.init_column_headers()
 
@@ -91,7 +91,7 @@ class SearchRadioWidget(QtWidgets.QDialog):
             self.searchControls.searchEdit, self.searchControls.searchButton
         )
 
-    def initUI(self):
+    def init_ui(self):
         self.mainLayout = QtWidgets.QVBoxLayout()
         self.setLayout(self.mainLayout)
 

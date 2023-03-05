@@ -152,13 +152,13 @@ class AlbumWidget(QtWidgets.QDialog):
         self.album = album
         self.setWindowFlags(QtCore.Qt.Window)
 
-        self.initUI()
+        self.init_ui()
         self.set_values()
 
         # self.showTableItems(self.mainItem.items)
         # self.initColumnHeaders()
 
-    def initUI(self):
+    def init_ui(self):
         layout = QtWidgets.QVBoxLayout()
         # layout.setContentsMargins(4, 4, 4, 4)
         self.setLayout(layout)

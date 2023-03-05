@@ -14,9 +14,9 @@ class ProgressWidget(QtWidgets.QDialog):
         self.parent = parent
         self.can_be_closed = can_be_closed
         self.with_file_progress = with_file_progress
-        self.initUI()
+        self.init_ui()
 
-    def initUI(self):
+    def init_ui(self):
         self.resize(350, 20)
         # self.setMaximumWidth(150)
         # self.setMaximumSize(QtCore.QSize(350, 150))

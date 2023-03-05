@@ -28,12 +28,12 @@ class HistoryWidget(QtWidgets.QDialog):
         self.history = HistoryManager(music_base)
         self.history.load_history(False)
 
-        self.initUI()
+        self.init_ui()
 
         self.show_history_items(self.history.history)
         self.init_column_headers()
 
-    def initUI(self):
+    def init_ui(self):
         layout = QtWidgets.QVBoxLayout()
         self.setLayout(layout)
 

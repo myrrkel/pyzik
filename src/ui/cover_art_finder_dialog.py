@@ -66,9 +66,9 @@ class CoverArtFinderDialog(QDialog):
         self.pic_from_url_thread.download_completed.connect(self.on_selected_pic_downloaded)
 
         self.setWindowFlags(Qt.Window)
-        self.initUI()
+        self.init_ui()
 
-    def initUI(self):
+    def init_ui(self):
         # self.resize(650,400)
 
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)

@@ -106,7 +106,7 @@ class PlaylistWidget(QDialog):
         if not self.picFromUrlThread:
             self.picFromUrlThread = PicFromUrlThread()
 
-        self.initUI()
+        self.init_ui()
         self.tableWidgetTracks.cellDoubleClicked.connect(self.change_track)
         self.cover.mouseDoubleClickEvent = self.mouseDoubleClickEvent
         self.parent.playlist_changed.connect(self.on_playlist_changed)
@@ -114,7 +114,7 @@ class PlaylistWidget(QDialog):
     def mouseDoubleClickEvent(self, event):
         self.showFullScreen()
 
-    def initUI(self):
+    def init_ui(self):
         self.picFromUrlThread.download_completed.connect(self.on_pic_downloaded)
 
         # self.setWindowIcon(QtGui.QIcon(self.parent.defaultPixmap))

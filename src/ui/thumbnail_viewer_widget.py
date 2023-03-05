@@ -77,13 +77,13 @@ class ThumbnailViewerWidget(QWidget):
         self.pic_from_url_thread.download_completed.connect(self.on_pic_downloaded)
 
         self.setWindowFlags(Qt.Window)
-        self.initUI()
+        self.init_ui()
 
     def reset_selection(self):
         self.selected_file = ""
         self.selected_url = ""
 
-    def initUI(self):
+    def init_ui(self):
         self.vLayout = QVBoxLayout()
         self.vLayout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.vLayout)

@@ -41,7 +41,7 @@ class FullScreenWidget(QDialog):
             | Qt.FramelessWindowHint
         )
 
-        self.initUI()
+        self.init_ui()
 
         if not self.picFromUrlThread:
             self.picFromUrlThread = PicFromUrlThread()
@@ -60,7 +60,7 @@ class FullScreenWidget(QDialog):
     def set_background_black(self):
         self.setStyleSheet("background-color:black;")
 
-    def initUI(self):
+    def init_ui(self):
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)

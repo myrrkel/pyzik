@@ -120,7 +120,7 @@ class PlayerControlWidget(QWidget):
 
         self.defaultRadioPix = svg.get_svg_with_color_param("radio.svg", "", "#000000")
 
-        self.initUI()
+        self.init_ui()
 
         self.parent.isPlayingSignal.connect(self.is_playing)
         self.parent.currentTrackChanged.connect(self.on_current_track_changed)
@@ -162,7 +162,7 @@ class PlayerControlWidget(QWidget):
 
         event.accept()
 
-    def initUI(self):
+    def init_ui(self):
         self.hMainLayout = QHBoxLayout()
         self.hMainLayout.setContentsMargins(0, 4, 0, 0)
         self.hMainLayout.setSpacing(0)

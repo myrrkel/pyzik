@@ -45,7 +45,7 @@ class FullScreenCoverWidget(QDialog):
         self.vLayout.setAlignment(Qt.AlignCenter)
         self.setLayout(self.vLayout)
 
-        self.initUI()
+        self.init_ui()
 
         self.set_background_black()
 
@@ -56,7 +56,7 @@ class FullScreenCoverWidget(QDialog):
     def set_background_black(self):
         self.setStyleSheet("background-color:black;")
 
-    def initUI(self):
+    def init_ui(self):
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(100)
