@@ -168,6 +168,7 @@ class CoverArtFinderDialog(QDialog):
         self.thumbViewer.thumbWidget.clear()
         self.thumbViewer.remove_temp_files(self.cover_saved)
         self.thumbViewer.reset_selection()
+        self.overlay.kill_timer()
         self.close()
 
     def addThumbnailItem(self, url, thumbURL, name):

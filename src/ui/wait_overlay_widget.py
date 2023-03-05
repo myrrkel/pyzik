@@ -76,9 +76,8 @@ class WaitOverlay(QWidget):
         event.accept()
 
     def show_overlay(self):
-        if self.timer == 0:
+        if not self.timer:
             self.timer = self.startTimer(int(800 / self.nb_dots))
-
         self.show()
 
     def timerEvent(self, event):
@@ -88,6 +87,11 @@ class WaitOverlay(QWidget):
     def mouseReleaseEvent(self, event):
         if self.hide_on_click:
             self.hide()
+
+    def kill_timer(self):
+        if self.timer:
+            self.killTimer(self.timer)
+            self.timer = 0
 
 
 class MainWindow(QMainWindow):
