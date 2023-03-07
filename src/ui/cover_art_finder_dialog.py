@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QSizePolicy,
 )
-from .labeled_widgets import LineEditLabeledWidget
+from .labeled_widgets import LineEditLabeledWidget, ComboBoxLabeledWidget
 from src.pic_from_url_thread import PicFromUrlThread
 from src.cover_art_finder import CoverArtFinder
 import src.svg_icon as svg
@@ -91,8 +91,10 @@ class CoverArtFinderDialog(QDialog):
         self.vertical_layout.addWidget(self.top_buttons_widget)
         top_buttons_layout = QHBoxLayout(self.top_buttons_widget)
 
-        self.search_text = LineEditLabeledWidget(self, 'search_text', 'Extra keywords')
+        self.search_text = LineEditLabeledWidget(self, 'search_text', _translate("coverArtFinder", "Extra keywords"))
         top_buttons_layout.addWidget(self.search_text)
+        self.search_type_combo = ComboBoxLabeledWidget(self, 'search_type_combo', _translate("coverArtFinder", "Type"))
+        top_buttons_layout.addWidget(self.search_type_combo)
         self.search_button = QPushButton(_translate("coverArtFinder", "Search cover"))
         self.search_button.setIcon(svg.get_svg_icon("search.svg"))
         self.search_button.clicked.connect(self.search_extra_keywords)

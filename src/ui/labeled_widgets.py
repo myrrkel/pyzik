@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import (
     QSpinBox,
     QSizePolicy,
     QLabel,
+    QComboBox,
 )
 
 
@@ -36,6 +37,7 @@ class LineEditLabeledWidget(LabeledWidget):
         self.line_edit.setSizePolicy(size_policy)
         self.line_edit.setMinimumSize(QSize(50, 27))
         self.line_edit.setMaximumSize(QSize(16777215, 17000))
+        self.line_edit.setObjectName(name)
         self.layout.addWidget(self.line_edit)
 
 
@@ -53,4 +55,20 @@ class SpinBoxLabeledWidget(LabeledWidget):
         self.spin_box.setSingleStep(1)
         self.spin_box.setMinimumSize(QSize(70, 27))
         self.spin_box.setMaximumSize(QSize(70, 40))
+        self.spin_box.setObjectName(name)
         self.layout.addWidget(self.spin_box)
+
+
+class ComboBoxLabeledWidget(LabeledWidget):
+    def __init__(self, parent=None, name='', label=''):
+        LabeledWidget.__init__(self, parent=parent, name=name, label=label)
+        self.combo_box = QComboBox(self)
+
+        size_policy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        size_policy.setHorizontalStretch(100)
+        size_policy.setVerticalStretch(0)
+        self.combo_box.setSizePolicy(size_policy)
+        self.combo_box.setMinimumSize(QSize(50, 27))
+        self.combo_box.setMaximumSize(QSize(16777215, 27))
+        self.combo_box.setObjectName(name)
+        self.layout.addWidget(self.combo_box)
